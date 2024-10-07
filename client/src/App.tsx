@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import "./common/globalStyles.css";
+import MainPage from "@pages/MainPage/MainPage";
 
 function App() {
   const [message, setMessage] = useState("");
@@ -15,6 +17,7 @@ function App() {
       <header className="App-header">
         <h1>{message}!!</h1>
       </header>
+      <MainPage />
     </div>
   );
 }
