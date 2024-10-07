@@ -1,24 +1,14 @@
-import { useEffect, useState } from "react";
+import { Route, Routes } from "react-router-dom";
 import "./common/globalStyles.css";
-import MainPage from "@pages/MainPage/MainPage";
+import UserLayout from "./layouts/UserLayout";
+import AdminLayout from "./layouts/AdminLayout";
 
 function App() {
-  const [message, setMessage] = useState("");
-
-  useEffect(() => {
-    fetch("/api/message")
-      .then((response) => response.json())
-      .then((data) => setMessage(data.message))
-      .catch((error) => console.error("Error fetching data:", error));
-  }, []);
-
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>{message}!!</h1>
-      </header>
-      <MainPage />
-    </div>
+    <Routes>
+      <Route path="/*" element={<UserLayout />} />
+      <Route path="/admin/*" element={<AdminLayout />} />
+    </Routes>
   );
 }
 
