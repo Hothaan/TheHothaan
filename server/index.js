@@ -20,6 +20,9 @@ app.use(
 app.get("/api/message", (req, res) => {
   res.json({ message: "Hello from the backend!" });
 });
+app.get("/api/wellcome", (req, res) => {
+  res.json({ message: "wellcome wellcome wellcome" });
+});
 
 // 프로덕션 환경에서 React 정적 파일 제공
 if (process.env.NODE_ENV === "production") {
