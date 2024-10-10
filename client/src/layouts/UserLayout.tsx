@@ -1,10 +1,14 @@
-import MainPage from "@pages/user/MainPage/MainPage";
 import { Routes, Route } from "react-router-dom";
+import Header from "@components/ui/Header";
+import MainPage from "@pages/user/MainPage/MainPage";
 
 export default function UserLayout() {
   return (
-    <Routes>
-      <Route path="/" element={<MainPage />} />
-    </Routes>
+    <>
+      <Header />
+      <Routes>
+        <Route path="/" element={<MainPage />} />
+      </Routes>
+    </>
   );
 }

@@ -1,4 +1,3 @@
-import TestCom from "@components/TestCom";
 import { useEffect, useState } from "react";
 
 export default function MainPage() {
@@ -23,7 +22,6 @@ export default function MainPage() {
     <>
       <h1>{message}</h1>
       <h1>{wellcome}</h1>
-      <TestCom />
     </>
   );
 }
