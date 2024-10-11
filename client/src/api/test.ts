@@ -1,13 +1,15 @@
 import axios from "axios";
+import { assistantConfig } from "@data/assistantConfig";
 import { DEV_API_KEY } from "./key";
-import { componentStructure } from "@data/componentStructure";
 
 // OpenAI API 호출 함수
-export const generateComponentText = async (componentData: IcomponentData) => {
-  const { character, role } = componentData;
-  const structure = (
-    componentStructure[character] as Record<typeof role, string[]>
-  )[role];
+export const makeComponentText = async (componentData: IcomponentData) => {
+  const { character, role, isCommon, structure } = componentData;
+  // const key = process.env.REACT_APP_API_KEY_DEV;
+
+  // const structure = isCommon
+  //   ? (componentStructure["common"] as Record<typeof role, string[]>)[role]
+  //   : (componentStructure[character] as Record<typeof role, string[]>)[role];
 
   try {
     const response = await axios.post(
@@ -17,13 +19,11 @@ export const generateComponentText = async (componentData: IcomponentData) => {
         messages: [
           {
             role: "system",
-            content: `웹 페이지 성격: ${character}, 컴포넌트 역할: ${role}, 필요한 텍스트 구조: ${JSON.stringify(
-              structure
-            )}`,
+            content: `${assistantConfig}`,
           },
           {
             role: "user",
-            content: "이에 맞는 문구를 JSON 형식으로 생성해 주세요.",
+            content: `text for the ${role} component of the ${character} web page according to the ${structure} structure. and Don't put any explanations other than the structure you set`,
           },
         ],
       },
@@ -35,8 +35,7 @@ export const generateComponentText = async (componentData: IcomponentData) => {
       }
     );
     console.log(response.data.choices[0].message.content);
-    // console.log(typeof response.data.choices[0].message.content);
-    return JSON.parse(response.data.choices[0].message.content)[role];
+    return JSON.parse(response.data.choices[0].message.content);
   } catch (error) {
     console.error("API 요청 중 오류가 발생했습니다: ", error);
     throw error;

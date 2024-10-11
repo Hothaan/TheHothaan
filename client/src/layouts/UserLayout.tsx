@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import Header from "@components/ui/Header";
+import Header from "@components/service/common/Header";
 import MainPage from "@pages/user/MainPage/MainPage";
 
 export default function UserLayout() {

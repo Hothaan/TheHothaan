@@ -7,9 +7,7 @@ declare type Tcharacter = "common" | "shoppingMall"; //쇼핑몰
 // | "homepageBoard" //홈페이지&게시판
 // | "landingIntroduce"; //랜딩&소개
 
-declare type Tunit = "page" | "component";
-
-declare type TcommonComponent =
+declare type TcommonRole =
   | "login"
   | "search"
   | "FAQ"
@@ -19,38 +17,17 @@ declare type TcommonComponent =
   | "slider"
   | "card";
 
-declare type TshoppingMallComponent =
+declare type TshoppingMallRole =
   | "review"
   | "payment"
   | "cart"
   | "orderManagement";
 
-// declare type TcommunitySnsComponent = "follow" | "alarm" | "reply" | "chatting";
-
-// declare type TdashboardStatsComponent = "chart" | "table";
-
-// declare type TintermediaryMatchComponent = "matching" | "recruitment";
-
-// declare type ThomepageBoardComponent = "notice" | "qna" | "event";
-
-// declare type TlandingIntroduceComponent = "about" | "history";
-
-declare interface TcomponentRole {
-  common: TcommonComponent;
-  shoppingMall: TshoppingMallComponent;
-  // communitySns: TcommunitySnsComponent;
-  // dashboardStats: TdashboardStatsComponent;
-  // intermediaryMatch: TintermediaryMatchComponent;
-  // homepageBoard: ThomepageBoardComponent;
-  // landingIntroduce: TlandingIntroduceComponent;
-}
+declare type Trole = { common: TcommonRole; shoppingMall: TshoppingMallRole };
 
 declare interface IcomponentData {
   character: Tcharacter;
-  role: TcomponentRole[Tcharacter];
-}
-
-declare interface IcomponentStructure {
-  common: Record<TcommonComponent, string[]>;
-  shoppingMall: Record<TshoppingMallComponent, string[]>;
+  isCommon: boolean;
+  role: TRole[Tcharacter];
+  structure: string;
 }

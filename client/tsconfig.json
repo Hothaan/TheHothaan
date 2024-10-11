@@ -17,6 +17,6 @@
     "jsx": "react-jsx",
     "baseUrl": "./"
   },
-  "include": ["src"],
+  "include": ["src", "src/emotion.d.ts"],
   "extends": "./tsconfig.paths.json"
 }

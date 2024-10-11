@@ -3,4 +3,4 @@
 server/node_modules/
 client/node_modules/
 client/src/api/key.ts
-*storybook.log
+.env
