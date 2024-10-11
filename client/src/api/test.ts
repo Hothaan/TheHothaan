@@ -4,12 +4,7 @@ import { DEV_API_KEY } from "./key";
 
 // OpenAI API 호출 함수
 export const makeComponentText = async (componentData: IcomponentData) => {
-  const { character, role, isCommon, structure } = componentData;
-  // const key = process.env.REACT_APP_API_KEY_DEV;
-
-  // const structure = isCommon
-  //   ? (componentStructure["common"] as Record<typeof role, string[]>)[role]
-  //   : (componentStructure[character] as Record<typeof role, string[]>)[role];
+  const { character, role, structure } = componentData;
 
   try {
     const response = await axios.post(
@@ -23,7 +18,7 @@ export const makeComponentText = async (componentData: IcomponentData) => {
           },
           {
             role: "user",
-            content: `text for the ${role} component of the ${character} web page according to the ${structure} structure. and Don't put any explanations other than the structure you set`,
+            content: `text for the ${role} component of the ${character} web page according to the ${structure} structure. and Don't put any explanations other than the structure you set. answer with JSON format only. value must be korean`,
           },
         ],
       },

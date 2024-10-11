@@ -1,15 +1,10 @@
 /** @jsxImportSource @emotion/react */
+import React from "react";
+import type { IHeader } from "../../../types/componentStructure";
 
-export interface Istructure {
-  title?: string;
-  navigation?: string[];
-}
-
-export const structure = `{ title: string; navigation: string[]; }`;
-
-export default function Header(props: Istructure) {
+function Header(props: IHeader) {
   if (!props.title && !props.navigation) {
-    return <div>please fetch data</div>;
+    return <div>nothing to show 🤔</div>;
   }
 
   return (
@@ -25,3 +20,5 @@ export default function Header(props: Istructure) {
     </header>
   );
 }
+
+export default React.memo(Header);

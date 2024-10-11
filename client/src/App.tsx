@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
-import "@common/globalStyles.css";
 import "reset-css";
+import "@common/globalStyles.css";
 import UserLayout from "./layouts/UserLayout";
 import AdminLayout from "./layouts/AdminLayout";
 import { ThemeProvider } from "@emotion/react";
