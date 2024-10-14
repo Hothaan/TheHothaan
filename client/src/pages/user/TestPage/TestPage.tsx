@@ -1,18 +1,20 @@
 /** @jsxImportSource @emotion/react */
 import { css, Theme } from "@emotion/react";
 import { useEffect, useState } from "react";
-import Header from "@components/service/common/Header";
-import TestButton from "@components/service/common/Button";
+import TestButton from "@components/template/common/Button";
 import { makeComponentText } from "@api/test";
 import { rolesData } from "@data/componentRolsData";
 import { commonStructureData } from "@data/componentStructureData";
-import { componentMap } from "@components/service/mapping/mapping";
+import { componentMap } from "@components/template/mapping";
+import { useTemplateInfoStore } from "@store/templateInfoStore";
 
 interface Irequest {
+  title: string;
   character: keyof typeof rolesData;
   isCommon: boolean;
   role: string;
   structure: string;
+  desc: string;
 }
 
 const GeneratedComponent: React.FC<{ data: any; role: string }> = ({
@@ -38,10 +40,12 @@ export default function TestPage() {
   const [error, setError] = useState<string | null>(null);
 
   const [request, setRequest] = useState<Irequest>({
+    title: "",
     character: "shoppingMall",
     isCommon: false,
     role: "",
     structure: "",
+    desc: "",
   });
 
   const handleCharacterChange = (
@@ -53,6 +57,7 @@ export default function TestPage() {
       isCommon: false,
       role: "",
       structure: "",
+      desc: "",
     });
   };
 
@@ -116,6 +121,37 @@ export default function TestPage() {
     }
   };
 
+  const [byteLength, setByteLength] = useState<number>(0);
+  const MAX_LENGTH = 300;
+
+  const getByteLength = (text: string): number => {
+    let byteLength = 0;
+    for (let char of text) {
+      byteLength += char.charCodeAt(0) > 127 ? 2 : 1;
+    }
+    return byteLength;
+  };
+
+  function handleDescChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
+    const currentByteLength = getByteLength(event.target.value);
+    if (currentByteLength <= MAX_LENGTH) {
+      setRequest({
+        ...request,
+        desc: event.target.value,
+      });
+      setByteLength(currentByteLength);
+    } else {
+      setByteLength(MAX_LENGTH);
+    }
+  }
+
+  function handleTitleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    setRequest({
+      ...request,
+      title: event.target.value,
+    });
+  }
+
   const getRoleOptions = () => {
     const roles = request.isCommon
       ? rolesData.common.roles
@@ -173,40 +209,64 @@ export default function TestPage() {
         <div css={box}>
           <p css={title}>ready to request component text</p>
           <form css={form_container}>
-            <div css={input_container}>
-              <label htmlFor="character">Web Page Character</label>
-              <select
-                name="character"
-                id="character"
-                value={request.character}
-                onChange={handleCharacterChange}
-              >
-                {getCharacterOptions()}
-              </select>
-            </div>
+            <div css={flex_row}>
+              <div css={input_container}>
+                <label htmlFor="title">Web Page Title</label>
+                <input
+                  type="text"
+                  name="title"
+                  id="title"
+                  onChange={handleTitleChange}
+                />
+              </div>
+              <div css={input_container}>
+                <label htmlFor="character">Web Page Character</label>
+                <select
+                  name="character"
+                  id="character"
+                  value={request.character}
+                  onChange={handleCharacterChange}
+                >
+                  {getCharacterOptions()}
+                </select>
+              </div>
 
-            <div css={input_container}>
-              <label htmlFor="isCommon">Is Common Component?</label>
-              <input
-                type="checkbox"
-                name="isCommon"
-                id="isCommon"
-                checked={request.isCommon}
-                onChange={handleIsCommonChange}
-              />
-            </div>
+              <div css={input_container}>
+                <label htmlFor="isCommon">Is Common Component?</label>
+                <input
+                  type="checkbox"
+                  name="isCommon"
+                  id="isCommon"
+                  checked={request.isCommon}
+                  onChange={handleIsCommonChange}
+                />
+              </div>
 
+              <div css={input_container}>
+                <label htmlFor="role">Component Role</label>
+                <select
+                  name="role"
+                  id="role"
+                  value={request.role}
+                  onChange={handleRoleChange}
+                >
+                  <option value="">Select a Role</option>
+                  {getRoleOptions()}
+                </select>
+              </div>
+            </div>
             <div css={input_container}>
-              <label htmlFor="role">Component Role</label>
-              <select
-                name="role"
-                id="role"
-                value={request.role}
-                onChange={handleRoleChange}
-              >
-                <option value="">Select a Role</option>
-                {getRoleOptions()}
-              </select>
+              <label htmlFor="character">client service desc</label>
+              <textarea
+                name="desc"
+                id="desc"
+                maxLength={MAX_LENGTH}
+                css={textarea}
+                onChange={handleDescChange}
+              ></textarea>
+              <p css={char_count}>
+                {byteLength} / {MAX_LENGTH}
+              </p>
             </div>
           </form>
           <div css={code}>
@@ -268,15 +328,37 @@ const box = (theme: Theme) => css`
 
 const form_container = css`
   display: flex;
+  flex-direction: column;
   margin-bottom: 16px;
-  display: flex;
   justify-content: space-between;
 `;
 
-const input_container = css`
+const flex_row = css`
   display: flex;
-  align-items: center;
-  gap: 4px;
+  justify-content: space-between;
+  margin-bottom: 16px;
+`;
+
+const input_container = css`
+  position: relative;
+  label {
+    display: block;
+    margin-bottom: 8px;
+  }
+`;
+
+const textarea = css`
+  width: 100%;
+  height: 80px;
+`;
+
+const char_count = css`
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  font-size: 14px;
+  color: #555;
+  text-align: right;
 `;
 
 const code = (theme: Theme) => css`
@@ -284,6 +366,7 @@ const code = (theme: Theme) => css`
   padding: 24px 16px;
   background-color: ${theme.colors.text};
   color: ${theme.colors.background};
+  overflow: scroll;
 `;
 
 const title = (theme: Theme) => css`

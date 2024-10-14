@@ -28,10 +28,12 @@ declare type TshoppingMallRole =
 declare type Trole = { common: TcommonRole; shoppingMall: TshoppingMallRole };
 
 declare interface IcomponentData {
+  title: string;
   character: Tcharacter;
   isCommon: boolean;
   role: TRole[Tcharacter];
   structure: string;
+  desc: string;
 }
 
 declare interface IStructure {

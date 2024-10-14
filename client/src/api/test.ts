@@ -1,11 +1,10 @@
-// import axios from "axios";
 import axios from "axios";
 import { assistantConfig } from "@data/assistantConfig";
 import { DEV_API_KEY } from "./key";
 
 // OpenAI API 호출 함수
 export const makeComponentText = async (componentData: IcomponentData) => {
-  const { character, role, structure } = componentData;
+  const { title, character, role, structure, desc } = componentData;
 
   try {
     const response = await axios.post(
@@ -15,11 +14,11 @@ export const makeComponentText = async (componentData: IcomponentData) => {
         messages: [
           {
             role: "system",
-            content: `${assistantConfig}`,
+            content: `${assistantConfig[character]}`,
           },
           {
             role: "user",
-            content: `text for the ${role} component of the ${character} web page according to the ${structure} structure. and Don't put any explanations other than the structure you set. answer with JSON format only. value must be korean`,
+            content: `generate text for the ${role} component of the ${character} web page name ${title}, according to the ${structure} structure. Refer to the description of the web page created by the client: ${desc}. and Don't put any explanations other than the structure you set. answer with JSON format only. value must be korean`,
           },
         ],
       },
