@@ -6,7 +6,6 @@ import { makeComponentText } from "@api/test";
 import { rolesData } from "@data/componentRolsData";
 import { commonStructureData } from "@data/componentStructureData";
 import { componentMap } from "@components/template/mapping";
-import { useTemplateInfoStore } from "@store/templateInfoStore";
 
 interface Irequest {
   title: string;
@@ -309,8 +308,11 @@ export default function TestPage() {
   );
 }
 
-const pageWrap = css`
+const pageWrap = (theme: Theme) => css`
   width: 50%;
+  height: 100%;
+  min-height: 100vh;
+  background-color: ${theme.colors.background};
 `;
 
 const container = (theme: Theme) => css`

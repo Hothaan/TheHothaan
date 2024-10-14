@@ -49,3 +49,12 @@ declare interface IStructureData {
   homepageBoard: IStructure;
   landingIntroduce: IStructure;
 }
+
+// declare interface Irequest {
+//   title: string;
+//   character: keyof typeof rolesData;
+//   isCommon: boolean;
+//   role: string;
+//   structure: string;
+//   desc: string;
+// }
