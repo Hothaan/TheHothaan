@@ -11,4 +11,8 @@ export const globalStyles = css`
     padding: 0;
     border: none;
   }
+
+  textarea {
+    resize: none;
+  }
 `;
