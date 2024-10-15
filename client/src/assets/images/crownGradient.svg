@@ -1,0 +1,11 @@
+<svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="bxs-crown">
+<path id="Vector" d="M14 1.83334L10.6667 5.16668L8 1.83334L5.33333 5.16668L2 1.83334V10.5H14V1.83334ZM3.33333 14.5H12.6667C13.0203 14.5 13.3594 14.3595 13.6095 14.1095C13.8595 13.8594 14 13.5203 14 13.1667V11.8333H2V13.1667C2 13.5203 2.14048 13.8594 2.39052 14.1095C2.64057 14.3595 2.97971 14.5 3.33333 14.5Z" fill="url(#paint0_linear_82_8148)"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_82_8148" x1="1.8" y1="14.5" x2="13.8" y2="14.5" gradientUnits="userSpaceOnUse">
+<stop stop-color="#56C0FE"/>
+<stop offset="1" stop-color="#6D0EE6"/>
+</linearGradient>
+</defs>
+</svg>

@@ -6,6 +6,7 @@ import { makeComponentText } from "@api/test";
 import { rolesData } from "@data/componentRolsData";
 import { commonStructureData } from "@data/componentStructureData";
 import { componentMap } from "@components/template/mapping";
+import Loading from "@components/common/loading";
 
 interface Irequest {
   title: string;
@@ -191,17 +192,6 @@ export default function TestPage() {
       }
     }
   }
-
-  const testButton = {
-    color: "text",
-    padding: "8px 16px",
-    size: "18px",
-    borderRadius: "8px",
-    onClick: () => {
-      fetchData();
-    },
-  };
-
   return (
     <>
       <div css={pageWrap}>
@@ -287,7 +277,11 @@ export default function TestPage() {
           </div>
           <div css={box}>
             <p css={title}>action</p>
-            <TestButton data={testButton}>test button</TestButton>
+            <button
+              onClick={() => {
+                fetchData();
+              }}
+            ></button>
           </div>
         </div>
         <div css={box}>
@@ -303,6 +297,7 @@ export default function TestPage() {
             )}
           </div>
         </div>
+        <Loading />
       </div>
     </>
   );
@@ -312,7 +307,7 @@ const pageWrap = (theme: Theme) => css`
   width: 50%;
   height: 100%;
   min-height: 100vh;
-  background-color: ${theme.colors.background};
+  background-color: ${theme.colors.mono.gray1};
 `;
 
 const container = (theme: Theme) => css`
@@ -324,8 +319,8 @@ const box = (theme: Theme) => css`
   width: 100%;
   box-sizing: border-box;
   padding: 24px;
-  background-color: ${theme.colors.background};
-  border-bottom: 1px solid ${theme.colors.secondary};
+  background-color: ${theme.colors.mono.gray2};
+  border-bottom: 1px solid ${theme.colors.mono.gray4};
 `;
 
 const form_container = css`
@@ -367,7 +362,7 @@ const code = (theme: Theme) => css`
   box-sizing: border-box;
   padding: 24px 16px;
   background-color: ${theme.colors.text};
-  color: ${theme.colors.background};
+  color: ${theme.colors.text.dark};
   overflow: scroll;
 `;
 
@@ -381,5 +376,5 @@ const title = (theme: Theme) => css`
 const component = (theme: Theme) => css`
   box-sizing: border-box;
   padding: 24px 16px;
-  background-color: ${theme.colors.secondary};
+  background-color: ${theme.colors.mono.gray3};
 `;

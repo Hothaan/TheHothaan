@@ -6,26 +6,27 @@ import { Children } from "react";
 interface Iprops {
   data: {
     color: string;
+    bg: string;
     padding: string;
     borderRadius: string;
-    onClick: () => void;
+    onClick?: () => void;
   };
   children: React.ReactNode;
 }
 
 export default function TestButton(props: Iprops) {
-  const { color, padding, borderRadius, onClick } = props.data;
+  const { color, bg, padding, borderRadius, onClick } = props.data;
   const theme = useTheme();
 
-  const button = (theme: Theme) => css`
-    background-color: ${theme.colors.secondary};
-    color: ${theme.colors[color]};
+  const button = css`
+    color: ${color};
+    background-color: ${bg};
     padding: ${padding};
     border-radius: ${borderRadius};
   `;
 
   return (
-    <button css={button(theme)} onClick={onClick}>
+    <button css={button} onClick={onClick}>
       {props.children}
     </button>
   );

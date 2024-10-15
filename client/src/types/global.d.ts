@@ -58,3 +58,11 @@ declare interface IStructureData {
 //   structure: string;
 //   desc: string;
 // }
+
+declare type Tplan = "free" | "basic" | "pro";
+
+declare type TuserInfo = {
+  name: string | null;
+  plan: Tplan | null;
+  term: string | null;
+};
