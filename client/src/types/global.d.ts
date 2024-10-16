@@ -66,3 +66,42 @@ declare type TuserInfo = {
   plan: Tplan | null;
   term: string | null;
 };
+
+declare type TbtnSize = "XL" | "M";
+
+declare type TbtnBg = "gradient" | "blue" | "gray" | "white";
+
+declare interface Ibutton {
+  size: TbtnSize;
+  bg: Tbg;
+  text: string;
+  onClick?: () => void;
+  disabled?: boolean;
+}
+
+declare interface IbuttonIcon {
+  size: TbtnSize;
+  icon: ReactElement;
+  text: string;
+  onClick?: () => void;
+}
+
+declare type TbuttonIconAccordionOption = {
+  text: string;
+  onClick: () => void;
+};
+
+declare interface IbuttonIconAccordion {
+  size: TbtnSize;
+  icon: ReactElement;
+  text: string;
+  onClick: () => void;
+  options: TbuttonIconAccordionOption[];
+}
+
+declare interface Imodal {
+  isOpen: boolean;
+  content: string;
+  onClick: () => void;
+  buttons: Ibutton[];
+}

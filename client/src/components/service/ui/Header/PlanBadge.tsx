@@ -34,7 +34,12 @@ export default function PlanBadge(prop: TuserInfo) {
         </div>
       );
     default:
-      return <></>;
+      return (
+        <div css={badge_free(theme)}>
+          <CrownWhite />
+          <p css={[plan_text, color_white(theme)]}>Free plan</p>
+        </div>
+      );
   }
 }
 

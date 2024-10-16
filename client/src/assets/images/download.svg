@@ -1,0 +1,38 @@
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+  >
+    <path
+      d="M12 16L16 11H13V4H11V11H8L12 16Z"
+    />
+    <path
+      d="M20 18H4V11H2V18C2 19.103 2.897 20 4 20H20C21.103 20 22 19.103 22 18V11H20V18Z"
+    />
+    <defs>
+      <linearGradient
+        id="paint0_linear_82_10918"
+        x1="7.86667"
+        y1="16"
+        x2="15.8667"
+        y2="16"
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stopColor="#56C0FE" />
+        <stop offset="1" stopColor="#6D0EE6" />
+      </linearGradient>
+      <linearGradient
+        id="paint1_linear_82_10918"
+        x1="1.66667"
+        y1="20"
+        x2="21.6667"
+        y2="20"
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stopColor="#56C0FE" />
+        <stop offset="1" stopColor="#6D0EE6" />
+      </linearGradient>
+    </defs>
+  </svg>
