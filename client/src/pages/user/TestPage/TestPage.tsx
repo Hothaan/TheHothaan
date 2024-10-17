@@ -6,7 +6,7 @@ import { makeComponentText } from "@api/test";
 import { rolesData } from "@data/componentRolsData";
 import { commonStructureData } from "@data/componentStructureData";
 import { componentMap } from "@components/template/mapping";
-import Loading from "@components/common/loading";
+import Loading from "@components/service/common/loading";
 
 interface Irequest {
   title: string;

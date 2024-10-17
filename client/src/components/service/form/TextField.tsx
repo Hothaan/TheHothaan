@@ -47,7 +47,6 @@ const input = css`
   padding: 20px;
   align-items: center;
   gap: 10px;
-  flex-shrink: 0;
   border-radius: 10px;
   border: 2px solid var(--DEDEDE, #dedede);
   background: var(--FFFFFF, #fff);

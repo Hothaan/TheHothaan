@@ -105,3 +105,38 @@ declare interface Imodal {
   onClick: () => void;
   buttons: Ibutton[];
 }
+
+declare interface ItoastPopup {
+  text: string;
+  isToast: boolean;
+  setIsToast: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+declare type TbuttonStepStatus = "active" | "disabled" | "complete";
+
+declare interface IbuttonStep {
+  status: TbuttonStepStatus;
+  step: number;
+  text: string;
+  onClick: () => void;
+}
+
+declare interface IbuttonChooseDepth2 {
+  depth2: string | null;
+  options: string[];
+  selectedOption: string | null;
+  onChoose: () => void;
+  onAdd: () => void;
+  deleteFunction: () => void;
+}
+
+declare interface IbuttonClose {
+  deleteFunction?: () => void;
+}
+
+declare type Tdevice = "pc" | "tablet" | "mobile";
+
+declare interface IbuttonChooseDevice {
+  isSelected: boolean;
+  device: Tdevice;
+}

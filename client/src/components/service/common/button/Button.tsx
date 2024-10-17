@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css, Theme } from "@emotion/react";
+import { css } from "@emotion/react";
 
 export default function Button(prop: Ibutton) {
   const { size, bg, text, onClick, disabled } = prop;
@@ -22,7 +22,6 @@ const btn_size = (size: TbtnSize) => {
       return css`
         height: 50px;
         padding: 0px 24px;
-
         font-size: 17px;
         font-weight: 600;
       `;
@@ -43,9 +42,8 @@ const button = css`
   justify-content: center;
   align-items: center;
   gap: 10px;
-  flex-shrink: 0;
-
   width: 190px;
+  flex-grow: 1;
   border-radius: 10px;
 
   font-family: Pretendard;

@@ -1,21 +1,26 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import Button from "@components/service/common/button/Button";
 
-export interface Imodal {
-  isOpen: boolean;
-  content: string;
-  onClick: () => void;
-  buttons: Ibutton[];
-}
 export default function Modal(prop: Imodal) {
-  const { isOpen, content, onClick } = prop;
+  const { isOpen, content, onClick, buttons } = prop;
 
   if (!isOpen) return null;
 
   return (
     <div css={modal_bg} onClick={onClick}>
-      <div css={modal}>
+      <div
+        css={modal}
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
         <p css={content_area}>{content}</p>
+        <div css={button_container}>
+          {buttons.map((button) => (
+            <Button {...button} />
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -30,20 +35,27 @@ const modal_bg = css`
   background: rgba(0, 0, 0, 0.2);
 `;
 
+const button_container = css`
+  display: flex;
+  gap: 7px;
+  width: 100%;
+`;
+
 const modal = css`
   position: fixed;
   z-index: 10;
+  width: 360px;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-
   display: flex;
-  width: 360px;
   padding: 50px 20px 20px 20px;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 30px;
   border-radius: 20px;
+  overflow: hidden;
   background: var(--FFFFFF, #fff);
 `;
 

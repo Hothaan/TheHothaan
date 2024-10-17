@@ -6,7 +6,7 @@ import Header from "@components/service/ui/Header/Header";
 import Footer from "@components/service/ui/Footer/Footer";
 import MainPage from "@pages/user/MainPage/MainPage";
 import TestPage from "@pages/user/TestPage/TestPage";
-import ComponentGuidePage from "@pages/user/TestPage/ComponentGuidePage";
+import ComponentGuidePage from "@pages/user/ComponentGuidePage/ComponentGuidePage";
 import EstimatePage from "@pages/user/EstimatePage/EstimatePage";
 import PlanIntroPage from "@pages/user/PlanIntroPage/PlanIntroPage";
 import ServicePage from "@pages/user/ServicePage/ServicePage";

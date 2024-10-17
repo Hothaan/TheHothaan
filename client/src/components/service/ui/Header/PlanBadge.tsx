@@ -122,7 +122,7 @@ const bg_white = (theme: Theme) => css`
 `;
 
 const plan_text = css`
-  font-family: "SUIT-Regular";
+  font-family: "SUITE Variable", sans-serif;
   font-size: 13px;
   font-style: normal;
   font-weight: 500;

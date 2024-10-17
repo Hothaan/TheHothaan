@@ -78,7 +78,6 @@ const input = css`
   justify-content: flex-end;
   align-items: flex-end;
   gap: 10px;
-  flex-shrink: 0;
 
   border-radius: 20px;
   border: 2px solid var(--DEDEDE, #dedede);
