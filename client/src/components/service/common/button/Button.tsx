@@ -18,6 +18,14 @@ export default function Button(prop: Ibutton) {
 
 const btn_size = (size: TbtnSize) => {
   switch (size) {
+    case "S":
+      return css`
+        height: 50px;
+        padding: 0px 24px;
+        font-size: 15px;
+        font-weight: 600;
+        white-space: nowrap;
+      `;
     case "M":
       return css`
         height: 50px;
@@ -33,6 +41,13 @@ const btn_size = (size: TbtnSize) => {
         font-size: 20px;
         font-weight: 500;
         white-space: nowrap;
+      `;
+    default:
+      return css`
+        height: 50px;
+        padding: 0px 24px;
+        font-size: 17px;
+        font-weight: 600;
       `;
   }
 };

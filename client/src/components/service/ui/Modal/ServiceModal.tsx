@@ -1,11 +1,18 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import Button from "@components/service/common/button/Button";
+import ButtonClose from "@components/service/common/button/ButtonClose";
 
-export default function Modal(prop: Imodal) {
-  const { isOpen, content, onClick, buttons } = prop;
+export default function ServiceModal(prop: IserviceModal) {
+  const { isOpen, title, buttons, children, onClick } = prop;
 
   if (!isOpen) return null;
+
+  const closeButton: IbuttonClose = {
+    onClick: onClick,
+    top: "33px",
+    right: "30px",
+  };
 
   return (
     <div css={modal_bg} onClick={onClick}>
@@ -15,7 +22,11 @@ export default function Modal(prop: Imodal) {
           e.stopPropagation();
         }}
       >
-        <p css={content_area}>{content}</p>
+        <div css={title_area}>
+          <p css={title_style}>{title}</p>
+          <ButtonClose {...closeButton} />
+        </div>
+        <div css={content_area}>{children}</div>
         <div css={button_container}>
           {buttons.map((button) => (
             <Button {...button} />
@@ -36,42 +47,47 @@ const modal_bg = css`
   background: rgba(0, 0, 0, 0.2);
 `;
 
-const button_container = css`
-  display: flex;
-  gap: 7px;
-  width: 100%;
-`;
-
 const modal = css`
   position: fixed;
   z-index: 10;
-  width: 360px;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+
   display: flex;
-  padding: 50px 20px 20px 20px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 30px;
+  gap: 20px;
+
+  width: 400px;
+  padding: 30px;
+
   border-radius: 20px;
   overflow: hidden;
   background: var(--FFFFFF, #fff);
 `;
 
-const content_area = css`
+const title_area = css`
   display: flex;
-  height: 50px;
-  flex-direction: column;
-  justify-content: center;
-  align-self: stretch;
+  width: 100%;
+`;
 
+const title_style = css`
   color: var(--383838, #383838);
-  text-align: center;
   font-family: Pretendard;
-  font-size: 17px;
+  font-size: 20px;
   font-style: normal;
   font-weight: 600;
-  line-height: normal;
+  line-height: 150%; /* 30px */
+`;
+
+const button_container = css`
+  display: flex;
+  gap: 10px;
+  width: 100%;
+`;
+
+const content_area = css`
+  width: 100%;
 `;

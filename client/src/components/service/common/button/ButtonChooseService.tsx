@@ -2,23 +2,10 @@
 import { css } from "@emotion/react";
 import { ReactComponent as ShoppingMall } from "@svgs/shoppingMall.svg";
 import { ReactComponent as CommunitySns } from "@svgs/communitySns.svg";
-import { ReactComponent as DashboardStats } from "@svgs/dashboardStats.svg";
+import { ReactComponent as DashboardStats } from "@svgs/dashboardStatus.svg";
 import { ReactComponent as IntermediaryMatch } from "@svgs/intermediaryMatch.svg";
 import { ReactComponent as HomepageBoard } from "@svgs/homepageBoard.svg";
 import { ReactComponent as LandingIntroduce } from "@svgs/landingIntroduce.svg";
-
-type Tservice =
-  | "shoppingMall"
-  | "communitySns"
-  | "dashboardStats"
-  | "intermediaryMatch"
-  | "homepageBoard"
-  | "landingIntroduce";
-
-interface IbuttonChooseService {
-  isSelected: boolean;
-  service: Tservice;
-}
 
 export default function ButtonChooseService(props: IbuttonChooseService) {
   const { isSelected, service } = props;
@@ -82,9 +69,9 @@ export default function ButtonChooseService(props: IbuttonChooseService) {
 
   return (
     <button css={[choose_device, choose_device_color(isSelected)]}>
-      {makeTitle(service)}
-      {makeDesc(service)}
-      <p>{makeIcon(service)}</p>
+      {makeIcon(service)}
+      <p css={title}>{makeTitle(service)}</p>
+      <p css={desc}>{makeDesc(service)}</p>
     </button>
   );
 }
@@ -137,13 +124,22 @@ const choose_device = css`
     mask-composite: exclude;
     pointer-events: none;
   }
+`;
 
-  p {
-    color: var(--383838, #383838);
-    font-family: Pretendard;
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: normal;
-  }
+const title = css`
+  color: var(--383838, #383838);
+  font-family: Pretendard;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+`;
+
+const desc = css`
+  color: var(--747474, #747474);
+  font-family: Pretendard;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
 `;

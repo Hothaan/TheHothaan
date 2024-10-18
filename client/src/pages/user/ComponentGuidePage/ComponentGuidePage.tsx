@@ -4,6 +4,8 @@ import { useState } from "react";
 
 import TextField from "@components/service/form/TextField";
 import TextArea from "@components/service/form/TextArea";
+import RadioButton from "@components/service/form/RadioButton";
+import Checkbox from "@components/service/form/Checkbox";
 
 import Button from "@components/service/common/button/Button";
 
@@ -18,7 +20,10 @@ import ToastPopup from "@components/service/ui/ToastPopup/ToastPopup";
 
 import ButtonStep from "@components/service/common/button/ButtonStep";
 import ButtonChooseDepth2 from "@components/service/common/button/ButtonChooseDepth2";
+import ButtonAddDepth2 from "@components/service/common/button/ButtonAddDepth2";
 import ButtonChooseDevice from "@components/service/common/button/ButtonChooseDevice";
+import ButtonChooseService from "@components/service/common/button/ButtonChooseService";
+
 export default function ComponentGuidePage() {
   return (
     <div css={wrap}>
@@ -65,8 +70,9 @@ export default function ComponentGuidePage() {
       <ButtonSection />
       <UiEtcSection />
       <StepSection />
-      <ChooseDepth2TitleSection />
+      <ChooseDepth2Section />
       <ChooseDeviceSection />
+      <ChooseServiceSection />
     </div>
   );
 }
@@ -94,32 +100,73 @@ const range = css`
 `;
 
 function FormSection() {
-  const textFieldDefault = {
+  const textFieldDefault: ItextField = {
     label: "textFieldDefault",
     id: "textFieldDefault",
     placeholder: "내용입력",
   };
-  const textFieldFocus = { label: "textFieldFocus", id: "textFieldFocus" };
-  const textFieldDisabled = {
+  const textFieldFocus: ItextField = {
+    label: "textFieldFocus",
+    id: "textFieldFocus",
+  };
+  const textFieldDisabled: ItextField = {
     label: "textFieldDisabled",
     id: "textFieldDisabled",
     placeholder: "내용입력",
     disabled: true,
   };
-  const textAreaDefault = {
+  const textAreaDefault: ItextArea = {
     label: "textAreaDefault",
     id: "textAreaDefault",
     placeholder: "내용입력",
   };
-  const textAreaFocus = {
+  const textAreaFocus: ItextArea = {
     label: "textAreaFocus",
     id: "textAreaFocus",
   };
-  const textAreaDisabled = {
+  const textAreaDisabled: ItextArea = {
     label: "textAreaDisabled",
     id: "textAreaDisabled",
     disabled: true,
     placeholder: "내용입력",
+  };
+
+  const [selectedValue, setSelectedValue] = useState<string>("radioButton1");
+
+  const handleRadioChange = (e: React.FormEvent<HTMLInputElement>) => {
+    setSelectedValue(e.currentTarget.value);
+  };
+
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setChecked(e.target.checked);
+  };
+
+  const [checked, setChecked] = useState(false);
+
+  const radioButton1: IradioButton = {
+    id: "radioButton1",
+    name: "radioButton1",
+    value: "radioButton1",
+    label: "radioButton1",
+    checked: selectedValue === "radioButton1",
+    onChange: handleRadioChange,
+    required: true,
+  };
+  const radioButton2: IradioButton = {
+    id: "radioButton2",
+    name: "radioButton1",
+    value: "radioButton2",
+    label: "radioButton2",
+    checked: selectedValue === "radioButton2",
+    onChange: handleRadioChange,
+    required: true,
+  };
+  const checkbox: Icheckbox = {
+    id: "checkbox",
+    name: "checkbox",
+    label: "checkbox",
+    checked: checked,
+    onChange: handleCheckboxChange,
   };
 
   return (
@@ -148,6 +195,15 @@ function FormSection() {
       <div css={container}>
         <p css={title}>text area disabled</p>
         <TextArea {...textAreaDisabled} />
+      </div>
+      <div css={container}>
+        <p css={title}>radio button</p>
+        <RadioButton {...radioButton1} />
+        <RadioButton {...radioButton2} />
+      </div>
+      <div css={container}>
+        <p css={title}>check box</p>
+        <Checkbox {...checkbox} />
       </div>
     </div>
   );
@@ -344,7 +400,7 @@ function UiEtcSection() {
   };
 
   const toast = {
-    text: "토스트팝업 내용입니다.",
+    text: "토스트가 구워졌어요.",
     isToast: isToast,
     setIsToast: setIsToast,
   };
@@ -412,51 +468,91 @@ function StepSection() {
   );
 }
 
-function ChooseDepth2TitleSection() {
-  const chooseDepth2Yet: IbuttonChooseDepth2 = {
-    depth2: "메뉴명",
+function ChooseDepth2Section() {
+  const [selectedValue, setSelectedValue] = useState<string>("");
+  const [checkedItems, setCheckedItems] = useState<{ [key: string]: boolean }>({
+    notice: false,
+    history: true,
+    companyInfo: false,
+    inquiry: false,
+    recruitment: false,
+    directions: true,
+  });
+
+  const handleRadioChange = (e: React.FormEvent<HTMLInputElement>) => {
+    setSelectedValue(e.currentTarget.value);
+  };
+
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = e.target;
+    setCheckedItems((prev) => ({
+      ...prev,
+      [name]: checked,
+    }));
+  };
+  // const [depth2, setDepth2] = useState<string | null>(null);
+
+  // function handleAdd() {
+  //   setDepth2(selectedValue);
+  // }
+
+  // const chooseDepth2Yet: IbuttonChooseDepth2 = {
+  //   depth2: null,
+  //   options: ["2줄이 넘어가는 텍스트 테스트", "option2", "option3"],
+  //   onChoose: () => {},
+  //   onAdd: () => {},
+  //   onCancel: () => {},
+  //   deleteFunction: () => {
+  //     console.log("delete function");
+  //   },
+  //   addDepth2: {
+  //     radioButton: {
+  //       id: "고객센터",
+  //       name: "2depth",
+  //       value: "고객센터",
+  //       label: "고객센터",
+  //       checked: false,
+  //       onChange: (e) => {
+  //         console.log("radio button change");
+  //       },
+  //     },
+  //     options: [
+  //       {
+  //         id: "공지사항",
+  //         name: "공지사항",
+  //         label: "공지사항",
+  //         checked: false,
+  //         onChange: () => {},
+  //       },
+  //     ],
+  //   },
+  // };
+
+  const chooseDepth2: IbuttonChooseDepth2 = {
+    depth2: "메뉴 추가",
     options: ["option1", "option2", "option3"],
-    selectedOption: null,
     onChoose: () => {},
-    onAdd: () => {},
     deleteFunction: () => {
       console.log("delete function");
     },
   };
-  const chooseDepth2Selected: IbuttonChooseDepth2 = {
-    depth2: "메뉴명",
-    options: ["option1", "option2", "option3"],
-    selectedOption: "option1",
-    onChoose: () => {},
-    onAdd: () => {},
-    deleteFunction: () => {
-      console.log("delete function");
-    },
-  };
-  const chooseDepth2Add: IbuttonChooseDepth2 = {
-    depth2: null,
-    options: ["option1", "option2", "option3"],
-    selectedOption: null,
-    onChoose: () => {},
-    onAdd: () => {},
-    deleteFunction: () => {
-      console.log("delete function");
-    },
-  };
+
+  // const addDepth2: IbuttonAddDepth2 = {
+  //   onClick: () => {
+  //     console.log("add depth2 clicked");
+  //   },
+  // };
   return (
     <div css={category} id="servicechooseDepth2">
-      <h5>choose Depth2</h5>
+      <h5>Depth2</h5>
+
       <div css={container}>
-        <p css={title}>choose Depth2 yet</p>
-        <ButtonChooseDepth2 {...chooseDepth2Yet} />
+        <p css={title}>choose Depth2</p>
+        <ButtonChooseDepth2 {...chooseDepth2} />
       </div>
       <div css={container}>
-        <p css={title}>choose Depth2 selected</p>
-        <ButtonChooseDepth2 {...chooseDepth2Selected} />
-      </div>
-      <div css={container}>
-        <p css={title}>choose Depth2 add</p>
-        <ButtonChooseDepth2 {...chooseDepth2Add} />
+        <p css={title}>add Depth2</p>
+        {/* <ButtonAddDepth2 {...addDepth2} /> */}
       </div>
     </div>
   );
@@ -489,6 +585,62 @@ function ChooseDeviceSection() {
       <div css={container}>
         <p css={title}>choose device mobile</p>
         <ButtonChooseDevice {...mobile} />
+      </div>
+    </div>
+  );
+}
+
+function ChooseServiceSection() {
+  const shoppingMall: IbuttonChooseService = {
+    isSelected: true,
+    service: "shoppingMall",
+  };
+  const communitySns: IbuttonChooseService = {
+    isSelected: false,
+    service: "communitySns",
+  };
+  const dashboardStats: IbuttonChooseService = {
+    isSelected: false,
+    service: "shoppingMall",
+  };
+  const intermediaryMatch: IbuttonChooseService = {
+    isSelected: false,
+    service: "intermediaryMatch",
+  };
+  const homepageBoard: IbuttonChooseService = {
+    isSelected: false,
+    service: "homepageBoard",
+  };
+  const landingIntroduce: IbuttonChooseService = {
+    isSelected: false,
+    service: "landingIntroduce",
+  };
+  return (
+    <div css={category} id="serviceChooseService">
+      <h5>choose service</h5>
+      <div css={container}>
+        <p css={title}>choose service pc</p>
+        <ButtonChooseService {...shoppingMall} />
+      </div>
+      <div css={container}>
+        <p css={title}>choose service tablet</p>
+        <ButtonChooseService {...communitySns} />
+      </div>
+      <div css={container}>
+        <p css={title}>choose service mobile</p>
+        <ButtonChooseService {...dashboardStats} />
+      </div>
+      <div css={container}>
+        <p css={title}>choose service mobile</p>
+        <ButtonChooseService {...intermediaryMatch} />
+      </div>
+      <div css={container}>
+        <p css={title}>choose service mobile</p>
+        <ButtonChooseService {...homepageBoard} />
+      </div>
+      <div css={container}>
+        <p css={title}>choose service mobile</p>
+        <ButtonChooseService {...landingIntroduce} />
       </div>
     </div>
   );

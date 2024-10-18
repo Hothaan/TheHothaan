@@ -67,7 +67,50 @@ declare type TuserInfo = {
   term: string | null;
 };
 
-declare type TbtnSize = "XL" | "M";
+declare interface ItextField {
+  label: string;
+  id: string;
+  placeholder?: string;
+  disabled?: boolean;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  className?: string;
+}
+
+declare interface ItextArea {
+  label: string;
+  id: string;
+  placeholder?: string;
+  disabled?: boolean;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  className?: string;
+}
+
+declare interface IradioButton {
+  id: string;
+  name: string;
+  value: string;
+  label: string;
+  checked: boolean;
+  onChange: (e: React.FormEvent<HTMLInputElement>) => void;
+  required?: boolean;
+}
+
+declare interface IradioButtonAccordion {
+  radioButton: IradioButton;
+  options: Icheckbox[];
+}
+
+declare interface Icheckbox {
+  id: string;
+  name: string;
+  label: string;
+  checked: boolean;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+declare type TbtnSize = "XL" | "M" | "S";
 
 declare type TbtnBg = "gradient" | "blue" | "gray" | "white";
 
@@ -106,6 +149,14 @@ declare interface Imodal {
   buttons: Ibutton[];
 }
 
+declare interface IserviceModal {
+  isOpen: boolean;
+  title: string;
+  buttons: Ibutton[];
+  onClick: () => void;
+  children?: React.ReactNode;
+}
+
 declare interface ItoastPopup {
   text: string;
   isToast: boolean;
@@ -122,16 +173,23 @@ declare interface IbuttonStep {
 }
 
 declare interface IbuttonChooseDepth2 {
-  depth2: string | null;
+  depth2: string;
   options: string[];
-  selectedOption: string | null;
   onChoose: () => void;
-  onAdd: () => void;
   deleteFunction: () => void;
 }
 
+declare interface IbuttonAddDepth2 {
+  onAdd: () => void;
+  onCancel: () => void;
+  addDepth2: IradioButtonAccordion;
+}
+
 declare interface IbuttonClose {
+  top: string;
+  right: string;
   deleteFunction?: () => void;
+  onClick?: () => void;
 }
 
 declare type Tdevice = "pc" | "tablet" | "mobile";
@@ -139,4 +197,17 @@ declare type Tdevice = "pc" | "tablet" | "mobile";
 declare interface IbuttonChooseDevice {
   isSelected: boolean;
   device: Tdevice;
+}
+
+declare type Tservice =
+  | "shoppingMall"
+  | "communitySns"
+  | "dashboardStats"
+  | "intermediaryMatch"
+  | "homepageBoard"
+  | "landingIntroduce";
+
+declare interface IbuttonChooseService {
+  isSelected: boolean;
+  service: Tservice;
 }
