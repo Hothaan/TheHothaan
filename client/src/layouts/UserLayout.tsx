@@ -2,8 +2,8 @@
 import { css } from "@emotion/react";
 
 import { Routes, Route } from "react-router-dom";
-import Header from "@components/service/ui/Header/Header";
-import Footer from "@components/service/ui/Footer/Footer";
+import Header from "@components/common/ui/Header/Header";
+import Footer from "@components/common/ui/Footer/Footer";
 import MainPage from "@pages/user/MainPage/MainPage";
 import TestPage from "@pages/user/TestPage/TestPage";
 import ComponentGuidePage from "@pages/user/ComponentGuidePage/ComponentGuidePage";

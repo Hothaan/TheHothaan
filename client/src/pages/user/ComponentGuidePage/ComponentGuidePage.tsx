@@ -2,27 +2,29 @@
 import { css } from "@emotion/react";
 import { useState } from "react";
 
-import TextField from "@components/service/form/TextField";
-import TextArea from "@components/service/form/TextArea";
-import RadioButton from "@components/service/form/RadioButton";
-import Checkbox from "@components/service/form/Checkbox";
+import TextField from "@components/common/form/TextField";
+import TextArea from "@components/common/form/TextArea";
+import RadioButton from "@components/common/form/RadioButton";
+import Checkbox from "@components/common/form/Checkbox";
 
-import Button from "@components/service/common/button/Button";
+import Button from "@components/common/button/Button";
 
 import { ReactComponent as Doc } from "@svgs/doc.svg";
-import ButtonIcon from "@components/service/common/button/ButtonIcon";
+import ButtonIcon from "@components/service/button/ButtonIcon";
 
 import { ReactComponent as Download } from "@svgs/download.svg";
-import ButtonIconAccordion from "@components/service/common/button/ButtonIconAccordion";
+import ButtonIconAccordion from "@components/service/button/ButtonIconAccordion";
 
-import Modal from "@components/service/ui/Modal/Modal";
-import ToastPopup from "@components/service/ui/ToastPopup/ToastPopup";
+import Modal from "@components/common/ui/Modal/Modal";
+import ToastPopup from "@components/common/ui/ToastPopup/ToastPopup";
 
-import ButtonStep from "@components/service/common/button/ButtonStep";
-import ButtonChooseDepth2 from "@components/service/common/button/ButtonChooseDepth2";
-import ButtonAddDepth2 from "@components/service/common/button/ButtonAddDepth2";
-import ButtonChooseDevice from "@components/service/common/button/ButtonChooseDevice";
-import ButtonChooseService from "@components/service/common/button/ButtonChooseService";
+import ButtonStep from "@components/service/button/ButtonStep";
+import ButtonAddDepth1 from "@components/service/button/ButtonAddDepth1";
+import MenuConstructBox from "@components/service/menuConstructBox/MenuConstructBox";
+import MenuAddbox from "@components/service/menuConstructBox/MenuAddBox";
+
+import ButtonChooseDevice from "@components/service/button/ButtonChooseDevice";
+import ButtonChooseService from "@components/service/button/ButtonChooseService";
 
 export default function ComponentGuidePage() {
   return (
@@ -469,90 +471,31 @@ function StepSection() {
 }
 
 function ChooseDepth2Section() {
-  const [selectedValue, setSelectedValue] = useState<string>("");
-  const [checkedItems, setCheckedItems] = useState<{ [key: string]: boolean }>({
-    notice: false,
-    history: true,
-    companyInfo: false,
-    inquiry: false,
-    recruitment: false,
-    directions: true,
-  });
-
-  const handleRadioChange = (e: React.FormEvent<HTMLInputElement>) => {
-    setSelectedValue(e.currentTarget.value);
+  const service: Tservice = "shoppingMall";
+  const [selectableDepth1, setSelectableDepth1] = useState(["메인", ""]);
+  const [depth1list, setDepth1list] = useState<IbuttonDepth1[]>([
+    { depth1: "상품", deleteFunction: () => {} },
+  ]);
+  const addDepth1: IbuttonAddDepth1 = {
+    service: service,
+    selectableDepth1: depth1list,
   };
-
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, checked } = e.target;
-    setCheckedItems((prev) => ({
-      ...prev,
-      [name]: checked,
-    }));
-  };
-  // const [depth2, setDepth2] = useState<string | null>(null);
-
-  // function handleAdd() {
-  //   setDepth2(selectedValue);
-  // }
-
-  // const chooseDepth2Yet: IbuttonChooseDepth2 = {
-  //   depth2: null,
-  //   options: ["2줄이 넘어가는 텍스트 테스트", "option2", "option3"],
-  //   onChoose: () => {},
-  //   onAdd: () => {},
-  //   onCancel: () => {},
-  //   deleteFunction: () => {
-  //     console.log("delete function");
-  //   },
-  //   addDepth2: {
-  //     radioButton: {
-  //       id: "고객센터",
-  //       name: "2depth",
-  //       value: "고객센터",
-  //       label: "고객센터",
-  //       checked: false,
-  //       onChange: (e) => {
-  //         console.log("radio button change");
-  //       },
-  //     },
-  //     options: [
-  //       {
-  //         id: "공지사항",
-  //         name: "공지사항",
-  //         label: "공지사항",
-  //         checked: false,
-  //         onChange: () => {},
-  //       },
-  //     ],
-  //   },
-  // };
-
-  const chooseDepth2: IbuttonChooseDepth2 = {
-    depth2: "메뉴 추가",
-    options: ["option1", "option2", "option3"],
-    onChoose: () => {},
-    deleteFunction: () => {
-      console.log("delete function");
-    },
-  };
-
-  // const addDepth2: IbuttonAddDepth2 = {
-  //   onClick: () => {
-  //     console.log("add depth2 clicked");
-  //   },
-  // };
+  const menu_construct_box_wrap = css`
+    display: flex;
+    gap: 20px;
+  `;
   return (
     <div css={category} id="servicechooseDepth2">
-      <h5>Depth2</h5>
-
+      <h5>menu construct</h5>
       <div css={container}>
-        <p css={title}>choose Depth2</p>
-        <ButtonChooseDepth2 {...chooseDepth2} />
-      </div>
-      <div css={container}>
-        <p css={title}>add Depth2</p>
-        {/* <ButtonAddDepth2 {...addDepth2} /> */}
+        <p css={title}>menu construct box</p>
+        <div css={menu_construct_box_wrap}>
+          {depth1list.map((item) => (
+            <MenuConstructBox key={item.depth1} {...item} />
+          ))}
+          {/* {depth1list.length < 5 && <ButtonAddDepth1 {...addDepth1} />} */}
+          {/* {depth1list.length < 5 && <MenuAddbox {...addDepth1} />} */}
+        </div>
       </div>
     </div>
   );

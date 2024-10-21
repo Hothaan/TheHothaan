@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { useState } from "react";
-import RadioButton from "./RadioButton";
-import Checkbox from "./Checkbox";
+import RadioButton from "@components/common/form/RadioButton";
+import Checkbox from "@components/common/form/Checkbox";
 import { ReactComponent as ArrowUp } from "@svgs/arrowUp.svg";
 import { ReactComponent as ArrowDown } from "@svgs/arrowDown.svg";
 
@@ -31,7 +31,7 @@ export default function RadioButtonAccordion(prop: IradioButtonAccordion) {
       {isOpen && (
         <div css={accordicon_content}>
           {options.map((option) => (
-            <Checkbox {...option} />
+            <Checkbox {...option} key={option.id} />
           ))}
         </div>
       )}

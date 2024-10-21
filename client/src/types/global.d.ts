@@ -172,22 +172,43 @@ declare interface IbuttonStep {
   onClick: () => void;
 }
 
-declare interface IbuttonChooseDepth2 {
-  depth2: string;
-  options: string[];
-  onChoose: () => void;
+declare interface IbuttonDepth1 {
+  depth1: string;
   deleteFunction: () => void;
 }
 
+declare interface IbuttonChooseDepth2Function {
+  depth1: string;
+  depth2: string;
+  options: string[];
+  onChoose: () => void;
+  deleteFunction: (depth2: string) => void;
+}
+
+declare interface IselectableDepth2 {
+  isSelected: boolean;
+  depth2: string;
+  options: string[];
+}
+
+declare interface IbuttonAddDepth1 {
+  service: Tservice; //선택한 서비스 성격
+  selectableDepth1: IbuttonDepth1[]; //해당 상위 메뉴에서 선택 가능한 하위 메뉴 경우의 수와 선택 값
+  // onAdd: (updateDepth1: IbuttonChooseDepth1[]) => void; //체크
+  // onCancel: () => void; //체크박스 수정사항을 저장하지 않고 원래 값으로 돌린 뒤 모달 닫음
+}
+
 declare interface IbuttonAddDepth2 {
-  onAdd: () => void;
-  onCancel: () => void;
-  addDepth2: IradioButtonAccordion;
+  depth1: string; //상위 메뉴 정보를 받아와서 선택 가능한 메뉴 경우의수 받아옴
+  selectableDepth2: IselectableDepth2[]; //해당 상위 메뉴에서 선택 가능한 하위 메뉴 경우의 수와 선택 값
+  onAdd: (updateDepth2: IselectableDepth2[]) => void; //체크박스 선택 후 저장시 모달을 닫고 새로 선택된 하위메뉴의 buttonChooseDepth2를 생성
+  onCancel: () => void; //체크박스 수정사항을 저장하지 않고 원래 값으로 돌린 뒤 모달 닫음
 }
 
 declare interface IbuttonClose {
   top: string;
   right: string;
+  color?: "gray" | "blue";
   deleteFunction?: () => void;
   onClick?: () => void;
 }

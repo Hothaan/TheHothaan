@@ -2,7 +2,7 @@
 import { css, Theme } from "@emotion/react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import PlanBadge from "@components/service/ui/Header/PlanBadge";
+import PlanBadge from "@components/common/ui/Header/PlanBadge";
 import { useUserInfoStore } from "@store/userInfoStore";
 import useLocationControl from "@hooks/useLocationControl";
 import { ReactComponent as ChevDown } from "@svgs/chevDown.svg";

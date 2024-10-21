@@ -1,16 +1,24 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useState } from "react";
-import ServiceModal from "@components/service/ui/Modal/ServiceModal";
-import RadioButtonAccordion from "@components/service/form/RadioButtonAccordion";
+import { useState, useEffect } from "react";
+import ServiceModal from "@components/common/ui/Modal/ServiceModal";
+import RadioButtonAccordion from "@components/service/accordion/RadioButtonAccordion";
 import { ReactComponent as Add } from "@svgs/add.svg";
 
-export default function ButtonAddDepth2(prop: IbuttonAddDepth2) {
-  const { onAdd, onCancel, addDepth2 } = prop;
+export default function ButtonAddDepth1(prop: IbuttonAddDepth1) {
+  const { service, selectableDepth1 } = prop;
   const [showDeletedButton, setShowDeletedButton] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [selectedValue, setSelectedValue] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [upadateDepth1, setUpdateDepth1] =
+  //   useState<IselectableDepth1[]>(selectableDepth1);
+
+  // useEffect(() => {
+  //   setUpdateDepth1(selectableDepth1); // selectableDepth1 변경 시 upadateDepth1도 업데이트
+  // }, [selectableDepth1]);
+
+  // depth1에 따라 경우의 수 캐스팅
 
   const serviceModal: IserviceModal = {
     isOpen: isModalOpen,
@@ -32,7 +40,7 @@ export default function ButtonAddDepth2(prop: IbuttonAddDepth2) {
         bg: "gradient",
         text: "저장",
         onClick: () => {
-          onAdd();
+          // onAdd(upadateDepth1);
           setIsModalOpen(!isModalOpen);
         },
       },
@@ -58,13 +66,12 @@ export default function ButtonAddDepth2(prop: IbuttonAddDepth2) {
           choose_function,
           choose_function_padding(showOptions),
           choose_function_height(showOptions),
-          choose_function_color(selectedValue),
         ]}
       >
         <Add />
       </button>
       <ServiceModal {...serviceModal}>
-        <RadioButtonAccordion {...addDepth2} />
+        {/* <RadioButtonAccordion {...addDepth1} /> */}
       </ServiceModal>
     </div>
   );
@@ -74,22 +81,6 @@ const wrap = css`
   width: 188px;
   position: relative;
 `;
-
-const choose_function_color = (selectedValue: string | null) => {
-  if (selectedValue) {
-    return css`
-      &:before {
-        background: linear-gradient(to right, #3b82f6, #a855f7);
-      }
-    `;
-  } else {
-    return css`
-      &:before {
-        background: #dedede;
-      }
-    `;
-  }
-};
 
 const choose_function_height = (showOptions: boolean) => {
   if (showOptions) {
@@ -128,12 +119,12 @@ const choose_function = css`
 
   border-radius: 10px;
   border: 2px solid transparent;
-  background: var(--FFF, #fff);
+  background: linear-gradient(0deg, #eff6ff 0%, #eff6ff 100%), #119cd4;
 
   &:before {
     content: "";
     position: absolute;
-    inset: 0;
+    inset: -2px;
     border-radius: 10px;
     padding: 2px;
     -webkit-mask: linear-gradient(#fff 0 0) content-box,
@@ -142,5 +133,10 @@ const choose_function = css`
     -webkit-mask-composite: destination-out;
     mask-composite: exclude;
     pointer-events: none;
+    background: #119cd4;
+  }
+
+  svg * {
+    fill: #119cd4;
   }
 `;
