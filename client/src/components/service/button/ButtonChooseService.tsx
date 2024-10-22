@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import { TserviceDataKey } from "@data/serviceData";
 import { ReactComponent as ShoppingMall } from "@svgs/shoppingMall.svg";
 import { ReactComponent as CommunitySns } from "@svgs/communitySns.svg";
-import { ReactComponent as DashboardStats } from "@svgs/dashboardStatus.svg";
 import { ReactComponent as IntermediaryMatch } from "@svgs/intermediaryMatch.svg";
 import { ReactComponent as HomepageBoard } from "@svgs/homepageBoard.svg";
 import { ReactComponent as LandingIntroduce } from "@svgs/landingIntroduce.svg";
@@ -10,14 +10,12 @@ import { ReactComponent as LandingIntroduce } from "@svgs/landingIntroduce.svg";
 export default function ButtonChooseService(props: IbuttonChooseService) {
   const { isSelected, service } = props;
 
-  function makeTitle(service: Tservice) {
+  function makeTitle(service: TserviceDataKey) {
     switch (service) {
       case "shoppingMall":
         return "쇼핑몰";
       case "communitySns":
         return "커뮤니티‧sns";
-      case "dashboardStats":
-        return "대시보드‧통계";
       case "intermediaryMatch":
         return "중개‧매칭";
       case "homepageBoard":
@@ -29,14 +27,12 @@ export default function ButtonChooseService(props: IbuttonChooseService) {
     }
   }
 
-  function makeDesc(service: Tservice) {
+  function makeDesc(service: TserviceDataKey) {
     switch (service) {
       case "shoppingMall":
         return "상품을 등록하고 판매해요";
       case "communitySns":
         return "게시판을 통해 소통해요";
-      case "dashboardStats":
-        return "통계나 공지를 확인해요";
       case "intermediaryMatch":
         return "플랫폼을 제작해요";
       case "homepageBoard":
@@ -48,14 +44,12 @@ export default function ButtonChooseService(props: IbuttonChooseService) {
     }
   }
 
-  function makeIcon(service: Tservice) {
+  function makeIcon(service: TserviceDataKey) {
     switch (service) {
       case "shoppingMall":
         return <ShoppingMall />;
       case "communitySns":
         return <CommunitySns />;
-      case "dashboardStats":
-        return <DashboardStats />;
       case "intermediaryMatch":
         return <IntermediaryMatch />;
       case "homepageBoard":

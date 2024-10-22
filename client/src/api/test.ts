@@ -31,7 +31,6 @@ export const makeComponentText = async (componentData: IcomponentData) => {
         },
       }
     );
-    console.log(response.data.choices[0].message.content);
     return JSON.parse(response.data.choices[0].message.content);
   } catch (error) {
     console.error("API 요청 중 오류가 발생했습니다: ", error);

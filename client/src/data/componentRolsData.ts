@@ -20,10 +20,6 @@ export const rolesData = {
     roles: ["post", "comment", "profile"],
     label: "communitySns",
   },
-  dashboardStats: {
-    roles: ["report", "chart", "table"],
-    label: "dashboardStats",
-  },
   intermediaryMatch: {
     roles: ["listing", "profile", "review"],
     label: "intermediaryMatch",

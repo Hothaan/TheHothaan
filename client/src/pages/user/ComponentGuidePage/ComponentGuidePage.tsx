@@ -336,7 +336,6 @@ function UiEtcSection() {
     text: "모달 열기 1",
     onClick: () => {
       setIsModal1Open(true);
-      console.log("open modal");
     },
   };
   const buttonOpenModal2: Ibutton = {
@@ -345,7 +344,6 @@ function UiEtcSection() {
     text: "모달 열기 2",
     onClick: () => {
       setIsModal2Open(true);
-      console.log("open modal");
     },
   };
 
@@ -431,25 +429,19 @@ function StepSection() {
     status: "active",
     step: 1,
     text: "프로젝트 생성",
-    onClick: () => {
-      console.log("step 1 clicked");
-    },
+    onClick: () => {},
   };
   const stepDisabled: IbuttonStep = {
     status: "disabled",
     step: 1,
     text: "프로젝트 생성",
-    onClick: () => {
-      console.log("step 1 clicked");
-    },
+    onClick: () => {},
   };
   const stepComplete: IbuttonStep = {
     status: "complete",
     step: 1,
     text: "프로젝트 생성",
-    onClick: () => {
-      console.log("step 1 clicked");
-    },
+    onClick: () => {},
   };
   return (
     <div css={category} id="serviceStep">

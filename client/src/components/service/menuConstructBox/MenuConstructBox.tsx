@@ -56,8 +56,6 @@ export default function MenuConstructBox(prop: IbuttonDepth1) {
     }));
   }, [selectableDepth2]);
 
-  console.log(addDepth2);
-
   return (
     <div css={wrap}>
       <ButtonDepth1 {...prop} />

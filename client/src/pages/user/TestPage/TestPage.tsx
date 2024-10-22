@@ -1,27 +1,31 @@
 /** @jsxImportSource @emotion/react */
 import { css, Theme } from "@emotion/react";
 import { useEffect, useState } from "react";
-import TestButton from "@components/template/common/Button";
+import { TserviceDataKey } from "@data/serviceData";
 import { makeComponentText } from "@api/test";
 import { rolesData } from "@data/componentRolsData";
 import { commonStructureData } from "@data/componentStructureData";
 import { componentMap } from "@components/template/mapping";
 import Loading from "@components/common/loading";
+import {
+  TDepth1KeyForService,
+  TDepth2KeyForService,
+  serviceData,
+} from "@data/serviceData";
 
-interface Irequest {
-  title: string;
-  character: keyof typeof rolesData;
-  isCommon: boolean;
-  role: string;
-  structure: string;
-  desc: string;
+interface IapiRequest<T extends TserviceDataKey> {
+  service: T;
+  serviceTitle: string;
+  serviceDesc: string;
+  depth1: TDepth1KeyForService<T>;
+  depth2: TDepth2KeyForService<T, TDepth1KeyForService<T>>;
 }
 
-const GeneratedComponent: React.FC<{ data: any; role: string }> = ({
+const GeneratedComponent: React.FC<{ data: any; depth2: string }> = ({
   data,
-  role,
+  depth2,
 }) => {
-  const ComponentToRender = componentMap[role];
+  const ComponentToRender = componentMap[depth2];
 
   return (
     <div>
@@ -39,86 +43,38 @@ export default function TestPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [request, setRequest] = useState<Irequest>({
-    title: "",
-    character: "shoppingMall",
-    isCommon: false,
-    role: "",
-    structure: "",
-    desc: "",
+  const [request, setRequest] = useState<IapiRequest<TserviceDataKey>>({
+    service: "shoppingMall",
+    serviceTitle: "",
+    serviceDesc: "",
+    depth1: "main",
+    depth2: "main",
   });
 
   const handleCharacterChange = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
     setRequest({
-      ...request,
-      character: event.target.value as keyof typeof rolesData,
-      isCommon: false,
-      role: "",
-      structure: "",
-      desc: "",
+      service: event.target.value as TserviceDataKey,
+      serviceTitle: "",
+      serviceDesc: "",
+      depth1: "main",
+      depth2: "main",
     });
   };
 
-  const handleIsCommonChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRequest({
-      ...request,
-      isCommon: event.target.checked,
-      role: "",
-    });
+  const handleDepth1Change = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedDepth1 = event.target.value;
   };
 
-  const handleRoleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedRole = event.target.value;
-
-    let selectedStructure = "";
-
-    if (request.isCommon) {
-      if (selectedRole in commonStructureData.common) {
-        selectedStructure =
-          commonStructureData.common[selectedRole as keyof IStructure];
-      }
-    } else {
-      switch (request.character) {
-        case "shoppingMall":
-          if (selectedRole in commonStructureData.shoppingMall) {
-            selectedStructure =
-              commonStructureData.shoppingMall[
-                selectedRole as keyof IStructure
-              ];
-          }
-
-          break;
-        case "communitySns":
-          if (selectedRole in commonStructureData.communitySns) {
-            selectedStructure =
-              commonStructureData.communitySns[
-                selectedRole as keyof IStructure
-              ];
-          }
-          break;
-        default:
-          selectedStructure = "";
-      }
-    }
-
-    setRequest((prevRequest) => ({
-      ...prevRequest,
-      role: selectedRole,
-      structure: selectedStructure,
-    }));
-
-    if (selectedStructure === "") {
-      alert(
-        "structure is empty.please fill structure in /client/src/data/componentStructureData.ts first!"
-      );
-      setRequest((prevRequest) => ({
-        ...prevRequest,
-        role: "",
-        structure: "",
-      }));
-    }
+  const handleDepth2Change = <T extends TserviceDataKey>(
+    event: React.ChangeEvent<HTMLSelectElement>,
+    depth1: TDepth1KeyForService<T>
+  ) => {
+    const selectedDepth2 = event.target.value as TDepth2KeyForService<
+      T,
+      typeof depth1
+    >;
   };
 
   const [byteLength, setByteLength] = useState<number>(0);
@@ -137,7 +93,7 @@ export default function TestPage() {
     if (currentByteLength <= MAX_LENGTH) {
       setRequest({
         ...request,
-        desc: event.target.value,
+        serviceDesc: event.target.value,
       });
       setByteLength(currentByteLength);
     } else {
@@ -148,20 +104,26 @@ export default function TestPage() {
   function handleTitleChange(event: React.ChangeEvent<HTMLInputElement>) {
     setRequest({
       ...request,
-      title: event.target.value,
+      serviceTitle: event.target.value,
     });
   }
 
-  const getRoleOptions = () => {
-    const roles = request.isCommon
-      ? rolesData.common.roles
-      : rolesData[request.character].roles;
-    return roles.map((role) => (
-      <option key={role} value={role}>
-        {role}
+  const getDepth1Options = (service: TserviceDataKey) => {
+    const depth1 = serviceData[service];
+    return Object.entries(depth1).map(([key, value]) => (
+      <option key={key} value={key}>
+        {key}
       </option>
     ));
   };
+
+  // const getDepth2Options = () => {
+  //   return depth2.map((item) => (
+  //     <option key={item} value={item}>
+  //       {item}
+  //     </option>
+  //   ));
+  // };
 
   const getCharacterOptions = () => {
     return Object.keys(rolesData)
@@ -173,25 +135,25 @@ export default function TestPage() {
       ));
   };
 
-  async function fetchData() {
-    if (!loading) {
-      if (request.structure === "") {
-        alert("structure is empty!");
-      } else {
-        setLoading(true);
-        setError(null);
-        try {
-          const response = await makeComponentText(request);
-          setData(response);
-        } catch (error) {
-          console.error("API 요청 실패:", error);
-          setError("API 요청에 실패했습니다.");
-        } finally {
-          setLoading(false);
-        }
-      }
-    }
-  }
+  // async function fetchData() {
+  //   if (!loading) {
+  //     if (request === "") {
+  //       alert("structure is empty!");
+  //     } else {
+  //       setLoading(true);
+  //       setError(null);
+  //       try {
+  //         const response = await makeComponentText(request);
+  //         setData(response);
+  //       } catch (error) {
+  //         console.error("API 요청 실패:", error);
+  //         setError("API 요청에 실패했습니다.");
+  //       } finally {
+  //         setLoading(false);
+  //       }
+  //     }
+  //   }
+  // }
   return (
     <>
       <div css={pageWrap}>
@@ -200,7 +162,7 @@ export default function TestPage() {
           <form css={form_container}>
             <div css={flex_row}>
               <div css={input_container}>
-                <label htmlFor="title">Web Page Title</label>
+                <label htmlFor="title">service title</label>
                 <input
                   type="text"
                   name="title"
@@ -209,43 +171,43 @@ export default function TestPage() {
                 />
               </div>
               <div css={input_container}>
-                <label htmlFor="character">Web Page Character</label>
+                <label htmlFor="service">service</label>
                 <select
-                  name="character"
-                  id="character"
-                  value={request.character}
+                  name="service"
+                  id="service"
+                  value={request.service}
                   onChange={handleCharacterChange}
                 >
                   {getCharacterOptions()}
                 </select>
               </div>
-
               <div css={input_container}>
-                <label htmlFor="isCommon">Is Common Component?</label>
-                <input
-                  type="checkbox"
-                  name="isCommon"
-                  id="isCommon"
-                  checked={request.isCommon}
-                  onChange={handleIsCommonChange}
-                />
-              </div>
-
-              <div css={input_container}>
-                <label htmlFor="role">Component Role</label>
+                <label htmlFor="depth1">1depth</label>
                 <select
-                  name="role"
-                  id="role"
-                  value={request.role}
-                  onChange={handleRoleChange}
+                  name="depth1"
+                  id="depth1"
+                  value={request.depth1}
+                  onChange={handleDepth1Change}
                 >
-                  <option value="">Select a Role</option>
-                  {getRoleOptions()}
+                  <option value="">Select 1depth</option>
+                  {getDepth1Options(request.service)}
+                </select>
+              </div>
+              <div css={input_container}>
+                <label htmlFor="depth2">2depth</label>
+                <select
+                  name="depth2"
+                  id="depth2"
+                  value={request.depth2}
+                  onChange={(e) => handleDepth2Change(e, request.depth1)} // request.depth1 전달
+                >
+                  <option value="">Select 2depth</option>
+                  {/* {getDepth2Options()} */}
                 </select>
               </div>
             </div>
             <div css={input_container}>
-              <label htmlFor="character">client service desc</label>
+              <label htmlFor="character">service desc</label>
               <textarea
                 name="desc"
                 id="desc"
@@ -278,9 +240,10 @@ export default function TestPage() {
           <div css={box}>
             <p css={title}>action</p>
             <button
-              onClick={() => {
-                fetchData();
-              }}
+              css={action_button}
+              // onClick={() => {
+              //   fetchData();
+              // }}
             >
               클릭
             </button>
@@ -293,7 +256,7 @@ export default function TestPage() {
           </div>
           <div css={component}>
             {data ? (
-              <GeneratedComponent data={data} role={request.role} />
+              <GeneratedComponent data={data} depth2={request.depth2} />
             ) : (
               <div>generate some component! 🤔</div>
             )}
@@ -304,6 +267,12 @@ export default function TestPage() {
     </>
   );
 }
+
+const action_button = (theme: Theme) => css`
+  padding: 8px 16px;
+  border-radius: 10px;
+  background-color: ${theme.colors.blue.light};
+`;
 
 const pageWrap = (theme: Theme) => css`
   width: 50%;

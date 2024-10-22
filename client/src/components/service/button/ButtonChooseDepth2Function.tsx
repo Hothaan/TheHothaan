@@ -201,7 +201,8 @@ const choose_function = (
   }
 
   &:hover:before {
-    background: linear-gradient(to right, #383838, #383838);
+    background: ${showOptions === false &&
+    "linear-gradient(to right, #383838, #383838);"};
   }
 `;
 

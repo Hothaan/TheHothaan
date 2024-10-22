@@ -1,5 +1,12 @@
 /* client 단 관련 글로벌 타입 */
 
+declare type Tservice =
+  | "shoppingMall"
+  | "communitySns"
+  | "intermediaryMatch"
+  | "homepageBoard"
+  | "landingIntroduce";
+
 declare type Tcharacter =
   | "common"
   | "shoppingMall" //쇼핑몰
@@ -49,15 +56,6 @@ declare interface IStructureData {
   homepageBoard: IStructure;
   landingIntroduce: IStructure;
 }
-
-// declare interface Irequest {
-//   title: string;
-//   character: keyof typeof rolesData;
-//   isCommon: boolean;
-//   role: string;
-//   structure: string;
-//   desc: string;
-// }
 
 declare type Tplan = "free" | "basic" | "pro";
 
@@ -219,14 +217,6 @@ declare interface IbuttonChooseDevice {
   isSelected: boolean;
   device: Tdevice;
 }
-
-declare type Tservice =
-  | "shoppingMall"
-  | "communitySns"
-  | "dashboardStats"
-  | "intermediaryMatch"
-  | "homepageBoard"
-  | "landingIntroduce";
 
 declare interface IbuttonChooseService {
   isSelected: boolean;
