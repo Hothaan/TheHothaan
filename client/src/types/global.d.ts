@@ -176,6 +176,7 @@ declare interface IbuttonDepth1 {
 }
 
 declare interface IbuttonChooseDepth2Function {
+  info: string;
   depth1: string;
   depth2: string;
   options: string[];

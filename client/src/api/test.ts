@@ -1,10 +1,15 @@
 import axios from "axios";
 import { assistantConfig } from "@data/assistantConfig";
 import { DEV_API_KEY } from "./key";
+import { IapiRequest } from "@pages/user/TestPage/TestPage";
+import { TserviceDataKey } from "@data/serviceData";
 
 // OpenAI API 호출 함수
-export const makeComponentText = async (componentData: IcomponentData) => {
-  const { title, character, role, structure, desc } = componentData;
+export const makeComponentText = async (
+  componentData: IapiRequest<TserviceDataKey>
+) => {
+  const { service, serviceTitle, serviceDesc, depth1, depth2, structure } =
+    componentData;
 
   try {
     const response = await axios.post(
@@ -14,11 +19,11 @@ export const makeComponentText = async (componentData: IcomponentData) => {
         messages: [
           {
             role: "system",
-            content: `${assistantConfig[character]}`,
+            content: `${assistantConfig[service]}`,
           },
           {
             role: "user",
-            content: `generate text for the ${role} component of the ${character} web page name ${title}, according to the ${structure} structure. Refer to the description of the web page created by the client: ${desc}. and Don't put any explanations other than the structure you set. answer with JSON format only. value must be korean`,
+            content: `generate text for the ${depth1} menu ${depth2} page component of the ${service} web page name ${serviceTitle}, according to the ${structure} structure. Refer to the description of the web page created by the client: ${serviceDesc}. and Don't put any explanations other than the structure you set. answer with JSON format only. value must be korean`,
           },
         ],
         temperature: 1,

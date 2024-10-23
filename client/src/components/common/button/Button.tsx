@@ -10,6 +10,7 @@ export default function Button(prop: Ibutton) {
       css={[button, bg_color(bg, disabled), btn_size(size)]}
       onClick={onClick || undefined}
       className={disabled ? "disabled" : ""}
+      disabled={disabled}
     >
       {text}
     </button>
@@ -58,7 +59,7 @@ const button = css`
   align-items: center;
   gap: 10px;
   width: 190px;
-  flex-grow: 1;
+  // flex-grow: 1;
   border-radius: 10px;
 
   font-family: Pretendard;

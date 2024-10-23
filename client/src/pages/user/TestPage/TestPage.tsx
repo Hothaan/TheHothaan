@@ -1,24 +1,25 @@
 /** @jsxImportSource @emotion/react */
 import { css, Theme } from "@emotion/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { TserviceDataKey } from "@data/serviceData";
 import { makeComponentText } from "@api/test";
 import { rolesData } from "@data/componentRolsData";
-import { commonStructureData } from "@data/componentStructureData";
 import { componentMap } from "@components/template/mapping";
 import Loading from "@components/common/loading";
 import {
   TDepth1KeyForService,
-  TDepth2KeyForService,
   serviceData,
+  TallDepth1Keys,
+  Tall2depthKeys,
 } from "@data/serviceData";
 
-interface IapiRequest<T extends TserviceDataKey> {
+export interface IapiRequest<T extends TserviceDataKey> {
   service: T;
   serviceTitle: string;
   serviceDesc: string;
-  depth1: TDepth1KeyForService<T>;
-  depth2: TDepth2KeyForService<T, TDepth1KeyForService<T>>;
+  depth1: TallDepth1Keys;
+  depth2: Tall2depthKeys;
+  structure: string;
 }
 
 const GeneratedComponent: React.FC<{ data: any; depth2: string }> = ({
@@ -49,7 +50,10 @@ export default function TestPage() {
     serviceDesc: "",
     depth1: "main",
     depth2: "main",
+    structure: "",
   });
+
+  console.log(request);
 
   const handleCharacterChange = (
     event: React.ChangeEvent<HTMLSelectElement>
@@ -60,21 +64,61 @@ export default function TestPage() {
       serviceDesc: "",
       depth1: "main",
       depth2: "main",
+      structure: "",
     });
   };
 
-  const handleDepth1Change = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleDepth1Change = <T extends TserviceDataKey>(
+    service: T,
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
     const selectedDepth1 = event.target.value;
+
+    const validDepth1Keys = Object.keys(serviceData[request.service]) as Array<
+      TDepth1KeyForService<T>
+    >;
+
+    if (validDepth1Keys.includes(selectedDepth1 as TDepth1KeyForService<T>)) {
+      const serviceDataEntry =
+        serviceData[service][selectedDepth1 as TDepth1KeyForService<T>];
+
+      if (typeof serviceDataEntry === "object" && serviceDataEntry !== null) {
+        const validDepth2Keys = Object.keys(
+          serviceDataEntry
+        ) as Tall2depthKeys[];
+
+        setRequest({
+          ...request,
+          depth1: selectedDepth1 as TallDepth1Keys,
+          depth2: validDepth2Keys[0],
+        });
+      } else {
+        console.error("Invalid serviceDataEntry for selected depth1.");
+      }
+    } else {
+      console.error("Invalid depth1 value selected.");
+    }
   };
 
   const handleDepth2Change = <T extends TserviceDataKey>(
-    event: React.ChangeEvent<HTMLSelectElement>,
-    depth1: TDepth1KeyForService<T>
+    service: T,
+    depth1: any,
+    event: React.ChangeEvent<HTMLSelectElement>
   ) => {
-    const selectedDepth2 = event.target.value as TDepth2KeyForService<
-      T,
-      typeof depth1
+    const selectedDepth2 = event.target.value;
+
+    const validDepth1Keys = Object.keys(serviceData[service]) as Array<
+      TDepth1KeyForService<T>
     >;
+
+    if (validDepth1Keys.includes(depth1 as TDepth1KeyForService<T>)) {
+      setRequest({
+        ...request,
+        depth2: selectedDepth2 as Tall2depthKeys,
+      });
+    } else {
+      console.error("Invalid depth1 value selected for service.");
+    }
   };
 
   const [byteLength, setByteLength] = useState<number>(0);
@@ -117,13 +161,19 @@ export default function TestPage() {
     ));
   };
 
-  // const getDepth2Options = () => {
-  //   return depth2.map((item) => (
-  //     <option key={item} value={item}>
-  //       {item}
-  //     </option>
-  //   ));
-  // };
+  const getDepth2Options = <T extends TserviceDataKey>(
+    service: T,
+    depth1: TDepth1KeyForService<T> | string
+  ) => {
+    const depth2 = serviceData[service][depth1 as TDepth1KeyForService<T>];
+    return depth2
+      ? Object.entries(depth2).map(([key]) => (
+          <option key={key} value={key}>
+            {key}
+          </option>
+        ))
+      : null;
+  };
 
   const getCharacterOptions = () => {
     return Object.keys(rolesData)
@@ -135,25 +185,34 @@ export default function TestPage() {
       ));
   };
 
-  // async function fetchData() {
-  //   if (!loading) {
-  //     if (request === "") {
-  //       alert("structure is empty!");
-  //     } else {
-  //       setLoading(true);
-  //       setError(null);
-  //       try {
-  //         const response = await makeComponentText(request);
-  //         setData(response);
-  //       } catch (error) {
-  //         console.error("API 요청 실패:", error);
-  //         setError("API 요청에 실패했습니다.");
-  //       } finally {
-  //         setLoading(false);
-  //       }
-  //     }
-  //   }
-  // }
+  function handleEmptyRequestFields(
+    request: IapiRequest<TserviceDataKey>
+  ): boolean {
+    const isAnyFieldEmpty = Object.values(request).some(
+      (value) => value === ""
+    );
+    return isAnyFieldEmpty ? true : false;
+  }
+
+  async function fetchData() {
+    if (!loading) {
+      if (handleEmptyRequestFields(request)) {
+        alert("인풋을 제대로 안채웠거나, structure가 없습니다.");
+      } else {
+        setLoading(true);
+        setError(null);
+        try {
+          const response = await makeComponentText(request);
+          setData(response);
+        } catch (error) {
+          console.error("API 요청 실패:", error);
+          setError("API 요청에 실패했습니다.");
+        } finally {
+          setLoading(false);
+        }
+      }
+    }
+  }
   return (
     <>
       <div css={pageWrap}>
@@ -187,7 +246,9 @@ export default function TestPage() {
                   name="depth1"
                   id="depth1"
                   value={request.depth1}
-                  onChange={handleDepth1Change}
+                  onChange={(e) => {
+                    handleDepth1Change(request.service, e);
+                  }}
                 >
                   <option value="">Select 1depth</option>
                   {getDepth1Options(request.service)}
@@ -199,15 +260,17 @@ export default function TestPage() {
                   name="depth2"
                   id="depth2"
                   value={request.depth2}
-                  onChange={(e) => handleDepth2Change(e, request.depth1)} // request.depth1 전달
+                  onChange={(e) => {
+                    handleDepth2Change(request.service, request.depth1, e);
+                  }}
                 >
                   <option value="">Select 2depth</option>
-                  {/* {getDepth2Options()} */}
+                  {getDepth2Options(request.service, request.depth1)}
                 </select>
               </div>
             </div>
             <div css={input_container}>
-              <label htmlFor="character">service desc</label>
+              <label htmlFor="desc">service desc</label>
               <textarea
                 name="desc"
                 id="desc"
@@ -241,9 +304,9 @@ export default function TestPage() {
             <p css={title}>action</p>
             <button
               css={action_button}
-              // onClick={() => {
-              //   fetchData();
-              // }}
+              onClick={() => {
+                fetchData();
+              }}
             >
               클릭
             </button>

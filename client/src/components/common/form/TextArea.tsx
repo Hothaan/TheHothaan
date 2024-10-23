@@ -51,7 +51,7 @@ export default function TextFArea(prop: ItextArea) {
 
 const text_field = css`
   width: 100%;
-  max-width: 1200px;
+  max-width: 1400px;
   position: relative;
 `;
 

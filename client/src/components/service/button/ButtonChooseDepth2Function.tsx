@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { useState, useRef, useEffect } from "react";
+import ServiceModal from "@components/common/ui/Modal/ServiceModal";
 import Button from "@components/common/button/Button";
 import ButtonClose from "@components/common/button/ButtonClose";
 import RadioButton from "@components/common/form/RadioButton";
@@ -8,11 +9,39 @@ import RadioButton from "@components/common/form/RadioButton";
 export default function ButtonChooseDepth2Function(
   prop: IbuttonChooseDepth2Function
 ) {
-  const { depth2, options, onChoose, deleteFunction } = prop;
+  const { depth2, options, info, onChoose, deleteFunction } = prop;
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [showDeletedButton, setShowDeletedButton] = useState(false);
-  const [showOptions, setShowOptions] = useState(false);
   const [selectedValue, setSelectedValue] = useState<string>("");
   const optionRef = useRef<HTMLDivElement | null>(null);
+
+  const serviceModal: IserviceModal = {
+    isOpen: isModalOpen,
+    title: "메뉴 추가",
+    onClick: () => {
+      setIsModalOpen(false);
+    },
+    buttons: [
+      {
+        size: "M",
+        bg: "gray",
+        text: "취소",
+        onClick: () => {
+          setSelectedValue("");
+          setIsModalOpen(!isModalOpen);
+        },
+      },
+      {
+        size: "M",
+        bg: "gradient",
+        text: "저장",
+        onClick: () => {
+          onChoose();
+          setIsModalOpen(!isModalOpen);
+        },
+      },
+    ],
+  };
 
   function handleChange(e: React.FormEvent<HTMLInputElement>) {
     setSelectedValue(e.currentTarget.value);
@@ -24,26 +53,6 @@ export default function ButtonChooseDepth2Function(
     },
     top: "-3px",
     right: "-6px",
-  };
-  const saveButton: Ibutton = {
-    size: "S",
-    bg: "gradient",
-    text: "저장",
-    onClick: () => {
-      onChoose();
-      setShowOptions(false);
-    },
-    disabled: false,
-  };
-  const cancelButton: Ibutton = {
-    size: "S",
-    bg: "gray",
-    text: "취소",
-    onClick: () => {
-      setSelectedValue("");
-      setShowOptions(false);
-    },
-    disabled: false,
   };
 
   return (
@@ -58,19 +67,15 @@ export default function ButtonChooseDepth2Function(
     >
       <div
         css={[
-          choose_function(selectedValue, showOptions),
-          choose_function_padding(showOptions),
-          choose_function_height(showOptions),
-          choose_function_color(showOptions, selectedValue),
+          choose_function(selectedValue),
+          choose_function_color(selectedValue),
         ]}
         onClick={() => {
-          setShowOptions(!showOptions);
+          setIsModalOpen(!isModalOpen);
         }}
       >
-        <p css={[function_text, function_text_padding(showOptions)]}>
-          {depth2}
-        </p>
-        {selectedValue && !showOptions && (
+        <p css={[function_text]}>{depth2}</p>
+        {selectedValue && (
           <p css={selectedValue_text_container}>
             <span>{`(`}</span>
             <span css={selectedValue_text}>{selectedValue}</span>
@@ -79,13 +84,10 @@ export default function ButtonChooseDepth2Function(
         )}
       </div>
       {showDeletedButton && <ButtonClose {...closeButton} />}
-      {showOptions && (
-        <div
-          css={options_container}
-          ref={optionRef}
-          onClick={(e) => e.stopPropagation()}
-        >
-          <ul css={option_style}>
+      <ServiceModal {...serviceModal}>
+        <p css={info_text}>{info}</p>
+        <div ref={optionRef} onClick={(e) => e.stopPropagation()}>
+          <ul css={options_container}>
             {options.map((option) => {
               const option_radio = {
                 id: option,
@@ -97,32 +99,42 @@ export default function ButtonChooseDepth2Function(
                 required: true,
               };
               return (
-                <li key={option}>
+                <li
+                  key={option}
+                  css={[
+                    option_style,
+                    option_style_color(selectedValue, option),
+                  ]}
+                >
                   <RadioButton {...option_radio} />
                 </li>
               );
             })}
           </ul>
-          <div css={buttons_container}>
-            <Button {...saveButton} />
-            <Button {...cancelButton} />
-          </div>
         </div>
-      )}
+      </ServiceModal>
     </div>
   );
 }
+
+const info_text = css`
+  margin-bottom: 10px;
+
+  color: var(--119CD4, #119cd4);
+  font-family: Pretendard;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 150%; /* 22.5px */
+`;
 
 const wrap = css`
   width: 188px;
   position: relative;
 `;
 
-const choose_function_color = (
-  showOptions: boolean,
-  selectedValue: string | null
-) => {
-  if (showOptions || selectedValue) {
+const choose_function_color = (selectedValue: string | null) => {
+  if (selectedValue) {
     return css`
       &:before {
         background: linear-gradient(to right, #3b82f6, #a855f7);
@@ -137,45 +149,16 @@ const choose_function_color = (
   }
 };
 
-const choose_function_height = (showOptions: boolean) => {
-  if (showOptions) {
-    return css`
-      height: 60px;
-    `;
-  } else {
-    return css`
-      height: 64px;
-    `;
-  }
-};
-
-const choose_function_padding = (showOptions: boolean) => {
-  if (showOptions) {
-    return css`
-      border-radius: 10px 10px 0 0;
-      &:before {
-        padding: 2px 2px 0 2px;
-        border-radius: 10px 10px 0 0;
-        border-bottom: none;
-      }
-    `;
-  } else {
-    return css``;
-  }
-};
-
-const choose_function = (
-  selectedValue: string | null,
-  showOptions: boolean
-) => css`
+const choose_function = (selectedValue: string | null) => css`
   cursor: pointer;
   position: relative;
   display: flex;
   flex-direction: column;
   width: 188px;
+  height: 64px;
   padding: 20px;
 
-  justify-content: ${selectedValue && !showOptions ? "center" : "start"};
+  justify-content: ${selectedValue ? "center" : "start"};
   align-items: center;
   gap: 3px;
   flex-shrink: 0;
@@ -201,34 +184,63 @@ const choose_function = (
   }
 
   &:hover:before {
-    background: ${showOptions === false &&
-    "linear-gradient(to right, #383838, #383838);"};
+    background: linear-gradient(to right, #383838, #383838);
   }
 `;
 
 const options_container = css`
-  position: absolute;
-  z-index: 1;
-  width: 188px;
-  position: absolute;
-  top: 100%;
-  width: 100%;
-  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+const option_style_color = (
+  selectedValue: string | null,
+  option: string | null
+) => {
+  if (selectedValue && option) {
+    if (selectedValue === option) {
+      return css`
+        &:before {
+          background: linear-gradient(to right, #3b82f6, #a855f7);
+        }
+      `;
+    } else {
+      return css`
+        &:before {
+          background: linear-gradient(to right, #ececec, #ececec);
+        }
+      `;
+    }
+  } else {
+    return css`
+      &:before {
+        background: linear-gradient(to right, #ececec, #ececec);
+      }
+    `;
+  }
+};
+
+const option_style = css`
+  position: relative;
+  display: flex;
+  padding: 10px 14px;
+  align-items: center;
+  gap: 6px;
+  align-self: stretch;
+
+  border-radius: 10px;
   border: 2px solid transparent;
-  border-top: 2px solid #fff;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-  background: #fff;
+  border-bottom: 2px solid #fff;
+  background: var(--FFF, #fff);
   background-clip: padding-box;
 
   &:before {
     content: "";
     position: absolute;
     inset: -2px;
-    border-radius: 0 0 10px 10px;
-    padding: 0 2px 2px 2px;
-    background: linear-gradient(to right, #3b82f6, #a855f7);
-    border-top: none;
+    border-radius: 10px;
+    padding: 2px;
     -webkit-mask: linear-gradient(#fff 0 0) content-box,
       linear-gradient(#fff 0 0);
     mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -238,46 +250,8 @@ const options_container = css`
   }
 `;
 
-const option_style = css`
-  li {
-    display: flex;
-    padding: 10px 14px;
-    align-items: center;
-    gap: 6px;
-    align-self: stretch;
-
-    border-bottom: 1px solid var(--ECECEC, #ececec);
-    background-color: #fff;
-    &:hover {
-      background: var(--EEF7FD, #eef7fd);
-    }
-  }
-  li: first-child {
-    border-top: 1px solid var(--ECECEC, #ececec);
-  }
-`;
-
-const buttons_container = css`
-  width: 100%;
-  display: flex;
-  gap: 10px;
-  padding: 14px;
-`;
-
-const function_text_padding = (showOptions: boolean) => {
-  if (showOptions) {
-    return css`
-      // padding-bottom: 15px;
-      padding: 0;
-    `;
-  } else {
-    return css`
-      padding: 0;
-    `;
-  }
-};
-
 const function_text = css`
+  padding: 0;
   color: var(--383838, #383838);
   text-align: center;
   font-family: Pretendard;

@@ -42,7 +42,11 @@ type T2depth =
 const main2depthKeyArr = ["main"] as const;
 type Tmain2depthKey = (typeof main2depthKeyArr)[number];
 
-export const main2depth: Record<Tmain2depthKey, T2depth> = {
+type Tmain2depth = {
+  [K in Tmain2depthKey]: T2depth;
+};
+
+export const main2depth: Tmain2depth = {
   main: { isDefault: true, eng: "main", kor: "메인", structure: "" },
 };
 
@@ -111,7 +115,11 @@ const myPage2depthKeyArr = [
 
 type TmyPage2depthKey = (typeof myPage2depthKeyArr)[number];
 
-const defaultMyPage2depth: Record<TmyPage2depthKey, T2depth> = {
+type TmyPage2depth = {
+  [K in TmyPage2depthKey]: T2depth;
+};
+
+const defaulTmyPage2depth: TmyPage2depth = {
   profile: defaultProfile,
   orderList: defaultOrderList,
   cart: defaultCart,
@@ -120,26 +128,24 @@ const defaultMyPage2depth: Record<TmyPage2depthKey, T2depth> = {
   mileage: defaultMileage,
 };
 
-export const myPage2depth = (
-  service: Tservice
-): Record<TmyPage2depthKey, T2depth> => {
+export const myPage2depth = (service: Tservice): TmyPage2depth => {
   switch (service) {
     case "shoppingMall": {
       const update = {
-        ...defaultMyPage2depth,
-        orderList: { ...defaultMyPage2depth.orderList, isDefault: true },
-        cart: { ...defaultMyPage2depth.cart, isDefault: true },
+        ...defaulTmyPage2depth,
+        orderList: { ...defaulTmyPage2depth.orderList, isDefault: true },
+        cart: { ...defaulTmyPage2depth.cart, isDefault: true },
       };
       return update;
     }
     case "communitySns": {
       const update = {
-        ...defaultMyPage2depth,
-        profile: { ...defaultMyPage2depth.profile, isDefault: true },
-        orderList: { ...defaultMyPage2depth.orderList, isDefault: true },
-        cart: { ...defaultMyPage2depth.cart, isDefault: true },
+        ...defaulTmyPage2depth,
+        profile: { ...defaulTmyPage2depth.profile, isDefault: true },
+        orderList: { ...defaulTmyPage2depth.orderList, isDefault: true },
+        cart: { ...defaulTmyPage2depth.cart, isDefault: true },
         membershipWithdrawal: {
-          ...defaultMyPage2depth.membershipWithdrawal,
+          ...defaulTmyPage2depth.membershipWithdrawal,
           isDefault: true,
         },
       };
@@ -147,17 +153,17 @@ export const myPage2depth = (
     }
     case "intermediaryMatch": {
       const update = {
-        ...defaultMyPage2depth,
-        profile: { ...defaultMyPage2depth.profile, isDefault: true },
+        ...defaulTmyPage2depth,
+        profile: { ...defaulTmyPage2depth.profile, isDefault: true },
         membershipWithdrawal: {
-          ...defaultMyPage2depth.membershipWithdrawal,
+          ...defaulTmyPage2depth.membershipWithdrawal,
           isDefault: true,
         },
       };
       return update;
     }
     default:
-      return defaultMyPage2depth;
+      return defaulTmyPage2depth;
   }
 };
 
@@ -214,7 +220,11 @@ const utility2depthKeyArr = [
 
 type Tutility2depthKey = (typeof utility2depthKeyArr)[number];
 
-export const defaultUtility2depth: Record<Tutility2depthKey, T2depth> = {
+type Tutility2depth = {
+  [K in Tutility2depthKey]: T2depth;
+};
+
+export const defaultUtility2depth: Tutility2depth = {
   login: defaultLogin,
   join: defaultJoin,
   findId: defaultFindId,
@@ -267,16 +277,18 @@ const product2depthKeyArr = [
 
 type Tproduct2depthKey = (typeof product2depthKeyArr)[number];
 
-const defaultProduct2depth: Record<Tproduct2depthKey, T2depth> = {
+type Tproduct2depth = {
+  [K in Tproduct2depthKey]: T2depth;
+};
+
+const defaultProduct2depth: Tproduct2depth = {
   productList: defaultProductList,
   productDetail: defaultProductDetail,
   review: defaultReview,
   productIntroduction: defaultProductIntroduction,
 };
 
-export const product2depth = (
-  service: Tservice
-): Record<Tproduct2depthKey, T2depth> => {
+export const product2depth = (service: Tservice): Tproduct2depth => {
   switch (service) {
     case "shoppingMall": {
       const update = {
@@ -359,18 +371,21 @@ const customerService2depthKeyArr = [
 
 type TcustomerService2depthKey = (typeof customerService2depthKeyArr)[number];
 
-const defaultCustomerService2depth: Record<TcustomerService2depthKey, T2depth> =
-  {
-    notice: defaultNotice,
-    faq: defaultFaq,
-    personalInquiry: defaultPersonalInquiry,
-    userGuide: defaultUserGuide,
-    termsAndConditionsOfUse: defaultTermsAndConditionsOfUse,
-  };
+type TcustomerService2depth = {
+  [K in TcustomerService2depthKey]: T2depth;
+};
+
+const defaultCustomerService2depth: TcustomerService2depth = {
+  notice: defaultNotice,
+  faq: defaultFaq,
+  personalInquiry: defaultPersonalInquiry,
+  userGuide: defaultUserGuide,
+  termsAndConditionsOfUse: defaultTermsAndConditionsOfUse,
+};
 
 export const customerService2depth = (
   service: Tservice
-): Record<TcustomerService2depthKey, T2depth> => {
+): TcustomerService2depth => {
   switch (service) {
     case "shoppingMall": {
       const update = {
@@ -503,7 +518,11 @@ const board2depthKeyArr = [
 
 type Tboard2depthKey = (typeof board2depthKeyArr)[number];
 
-const defaultBoard2depth: Record<Tboard2depthKey, T2depth> = {
+type Tboard2depth = {
+  [K in Tboard2depthKey]: T2depth;
+};
+
+const defaultBoard2depth: Tboard2depth = {
   normalBoard: defaultNormalBoard,
   media: defaultMedia,
   news: defaultBoardNews,
@@ -517,9 +536,7 @@ const defaultBoard2depth: Record<Tboard2depthKey, T2depth> = {
   calendar: defaultCalendar,
 };
 
-export const board2depth = (
-  service: Tservice
-): Record<Tboard2depthKey, T2depth> => {
+export const board2depth = (service: Tservice): Tboard2depth => {
   switch (service) {
     case "communitySns": {
       const update = {
@@ -636,7 +653,11 @@ const service2depthKeyArr = [
 
 type Tservice2depthKey = (typeof service2depthKeyArr)[number];
 
-export const defaultService2depth: Record<Tservice2depthKey, T2depth> = {
+type Tservice2depth = {
+  [K in Tservice2depthKey]: T2depth;
+};
+
+export const defaultService2depth: Tservice2depth = {
   feeForUse: defaultFeeForUse,
   serviceList: defaultServiceList,
   serviceDetail: defaultServiceDetail,
@@ -717,7 +738,11 @@ const companyIntro2depthKeyArr = [
 
 type TcompanyIntro2depthKey = (typeof companyIntro2depthKeyArr)[number];
 
-const defaultCompanyIntro2depth: Record<TcompanyIntro2depthKey, T2depth> = {
+type TcompanyIntro2depth = {
+  [K in TcompanyIntro2depthKey]: T2depth;
+};
+
+const defaultCompanyIntro2depth: TcompanyIntro2depth = {
   greeting: defaultGreeting,
   companyInfo: defaultCompanyInfo,
   history: defaultHistory,
@@ -728,9 +753,7 @@ const defaultCompanyIntro2depth: Record<TcompanyIntro2depthKey, T2depth> = {
   ciBi: defaultCibi,
 };
 
-export const companyIntro2depth = (
-  service: Tservice
-): Record<TcompanyIntro2depthKey, T2depth> => {
+export const companyIntro2depth = (service: Tservice): TcompanyIntro2depth => {
   switch (service) {
     case "homepageBoard": {
       const update = {
@@ -764,6 +787,28 @@ export const companyIntro2depth = (
   }
 };
 
+/* all 2depth */
+
+export type Tall2depth =
+  | Tmain2depth
+  | TmyPage2depth
+  | Tutility2depth
+  | Tproduct2depth
+  | TcustomerService2depth
+  | Tboard2depth
+  | Tservice2depth
+  | TcompanyIntro2depth;
+
+export type Tall2depthKeys =
+  | Tmain2depthKey
+  | TmyPage2depthKey
+  | Tutility2depthKey
+  | Tproduct2depthKey
+  | TcustomerService2depthKey
+  | Tboard2depthKey
+  | Tservice2depthKey
+  | TcompanyIntro2depthKey;
+
 /* 1depth */
 
 const shoppingMall1depthKeyArr = [
@@ -776,19 +821,8 @@ const shoppingMall1depthKeyArr = [
 
 type TshoppingMall1depthKey = (typeof shoppingMall1depthKeyArr)[number];
 
-type TshoppingMall1depthType<T extends TshoppingMall1depthKey> =
-  T extends "main"
-    ? Record<Tmain2depthKey, T2depth>
-    : T extends "product"
-    ? Record<Tproduct2depthKey, T2depth>
-    : T extends "customerService"
-    ? Record<TcustomerService2depthKey, T2depth>
-    : T extends "myPage"
-    ? Record<TmyPage2depthKey, T2depth>
-    : Record<Tutility2depthKey, T2depth>;
-
 type TshoppingMall1depth = {
-  [K in TshoppingMall1depthKey]: TshoppingMall1depthType<K>;
+  [K in TshoppingMall1depthKey]: Tall2depth;
 };
 
 export const shoppingMall1depth: TshoppingMall1depth = {
@@ -808,17 +842,8 @@ const communitySns1depthKeyArr = [
 
 type TcommunitySns1depthKey = (typeof communitySns1depthKeyArr)[number];
 
-type TcommunitySns1depthType<T extends TcommunitySns1depthKey> =
-  T extends "main"
-    ? Record<Tmain2depthKey, T2depth>
-    : T extends "board"
-    ? Record<Tboard2depthKey, T2depth>
-    : T extends "myPage"
-    ? Record<TmyPage2depthKey, T2depth>
-    : Record<Tutility2depthKey, T2depth>;
-
 type TcommunitySns1depth = {
-  [K in TcommunitySns1depthKey]: TcommunitySns1depthType<K>;
+  [K in TcommunitySns1depthKey]: Tall2depth;
 };
 
 export const communitySns1depth: TcommunitySns1depth = {
@@ -839,19 +864,8 @@ const intermediaryMatch1depthKeyArr = [
 type TintermediaryMatch1depthKey =
   (typeof intermediaryMatch1depthKeyArr)[number];
 
-type TintermediaryMatch1depthType<T extends TintermediaryMatch1depthKey> =
-  T extends "main"
-    ? Record<Tmain2depthKey, T2depth>
-    : T extends "service"
-    ? Record<Tservice2depthKey, T2depth>
-    : T extends "customerService"
-    ? Record<TcustomerService2depthKey, T2depth>
-    : T extends "myPage"
-    ? Record<TmyPage2depthKey, T2depth>
-    : Record<Tutility2depthKey, T2depth>;
-
 type TintermediaryMatch1depth = {
-  [K in TintermediaryMatch1depthKey]: TintermediaryMatch1depthType<K>;
+  [K in TintermediaryMatch1depthKey]: Tall2depth;
 };
 
 export const intermediaryMatch1depth: TintermediaryMatch1depth = {
@@ -871,17 +885,8 @@ const homePageBoard1depthKeyArr = [
 
 type ThomePageBoard1depthKey = (typeof homePageBoard1depthKeyArr)[number];
 
-type ThomePageBoard1depthType<T extends ThomePageBoard1depthKey> =
-  T extends "main"
-    ? Record<Tmain2depthKey, T2depth>
-    : T extends "companyIntro"
-    ? Record<TcompanyIntro2depthKey, T2depth>
-    : T extends "product"
-    ? Record<Tproduct2depthKey, T2depth>
-    : Record<Tboard2depthKey, T2depth>;
-
 type ThomePageBoard1depth = {
-  [K in ThomePageBoard1depthKey]: ThomePageBoard1depthType<K>;
+  [K in ThomePageBoard1depthKey]: Tall2depth;
 };
 
 export const homepageBoard1depth: ThomePageBoard1depth = {
@@ -900,17 +905,8 @@ const landingIntroduce1depthKeyArr = [
 
 type TlandingIntroduce1depthKey = (typeof landingIntroduce1depthKeyArr)[number];
 
-type TlandingIntroduce1depthType<T extends TlandingIntroduce1depthKey> =
-  T extends "main"
-    ? Record<Tmain2depthKey, T2depth>
-    : T extends "companyIntro"
-    ? Record<TcompanyIntro2depthKey, T2depth>
-    : T extends "product"
-    ? Record<Tproduct2depthKey, T2depth>
-    : Record<Tboard2depthKey, T2depth>;
-
 type TlandingIntroduce1depth = {
-  [K in TlandingIntroduce1depthKey]: TlandingIntroduce1depthType<K>;
+  [K in TlandingIntroduce1depthKey]: Tall2depth;
 };
 
 export const landingIntroduce1depth: TlandingIntroduce1depth = {
@@ -920,25 +916,14 @@ export const landingIntroduce1depth: TlandingIntroduce1depth = {
   board: board2depth("landingIntroduce"),
 };
 
-/* service */
+export type TallDepth1Keys =
+  | TshoppingMall1depthKey
+  | TcommunitySns1depthKey
+  | TintermediaryMatch1depthKey
+  | ThomePageBoard1depthKey
+  | TlandingIntroduce1depthKey;
 
-export type TDepth1KeyForService<T extends TserviceDataKey> =
-  T extends "shoppingMall"
-    ? TshoppingMall1depthKey
-    : T extends "communitySns"
-    ? TcommunitySns1depthKey
-    : T extends "intermediaryMatch"
-    ? TintermediaryMatch1depthKey
-    : T extends "homepageBoard"
-    ? ThomePageBoard1depthKey
-    : TlandingIntroduce1depthKey;
-
-export type TDepth2KeyForService<
-  T extends TserviceDataKey,
-  D1 extends TDepth1KeyForService<T>
-> = D1 extends keyof TserviceDataType<T>
-  ? keyof TserviceDataType<T>[D1]
-  : never;
+/* service data */
 
 const serviceKeyArr = [
   "shoppingMall",
@@ -950,19 +935,15 @@ const serviceKeyArr = [
 
 export type TserviceDataKey = (typeof serviceKeyArr)[number];
 
-type TserviceDataType<T extends TserviceDataKey> = T extends "shoppingMall"
-  ? TshoppingMall1depth
-  : T extends "communitySns"
-  ? TcommunitySns1depth
-  : T extends "intermediaryMatch"
-  ? TintermediaryMatch1depth
-  : T extends "homepageBoard"
-  ? ThomePageBoard1depth
-  : TlandingIntroduce1depth;
-
-type TserviceData = {
-  [K in TserviceDataKey]: TserviceDataType<K>;
+type ServiceTypeMapping = {
+  shoppingMall: TshoppingMall1depth;
+  communitySns: TcommunitySns1depth;
+  intermediaryMatch: TintermediaryMatch1depth;
+  homepageBoard: ThomePageBoard1depth;
+  landingIntroduce: TlandingIntroduce1depth;
 };
+
+export type TserviceDataType<T extends TserviceDataKey> = ServiceTypeMapping[T];
 
 export const serviceData: TserviceData = {
   shoppingMall: shoppingMall1depth,
@@ -970,4 +951,11 @@ export const serviceData: TserviceData = {
   intermediaryMatch: intermediaryMatch1depth,
   homepageBoard: homepageBoard1depth,
   landingIntroduce: landingIntroduce1depth,
+};
+
+export type TDepth1KeyForService<T extends TserviceDataKey> =
+  keyof TserviceDataType<T>;
+
+type TserviceData = {
+  [T in TserviceDataKey]: TserviceDataType<T>;
 };

@@ -11,6 +11,14 @@ export const globalStyles = css`
     box-sizing: border-box;
   }
 
+  body {
+    -ms-overflow-style: none;
+  }
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
   button {
     cursor: pointer;
     padding: 0;

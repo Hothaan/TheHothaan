@@ -1,34 +1,27 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
 import { useEffect, useState } from "react";
-import { useTemplateInfoStore } from "@store/templateInfoStore";
 import { componentMap } from "@components/template/mapping";
-import { rolesData } from "@data/componentRolsData";
 import { makeComponentText } from "@api/test";
+import { IapiRequest } from "@pages/user/TestPage/TestPage";
+import { TserviceDataKey } from "@data/serviceData";
 
-interface Irequest {
-  title: string;
-  character: keyof typeof rolesData;
-  isCommon: boolean;
-  role: string;
-  structure: string;
-  desc: string;
-}
-
-export default function GenerateComponent(request: Irequest) {
+export default function GenerateComponent(
+  request: IapiRequest<TserviceDataKey>
+) {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const ComponentToRender = componentMap[request.role];
+  const ComponentToRender = componentMap[request.depth2];
 
-  async function fetchData(request: Irequest) {
+  async function fetchData(request: IapiRequest<TserviceDataKey>) {
     if (!loading) {
       if (
-        request.title !== "" &&
-        request.character !== "common" &&
-        request.role !== "" &&
-        request.structure !== "" &&
-        request.desc !== ""
+        request.service &&
+        request.serviceTitle !== "" &&
+        request.serviceDesc !== "" &&
+        request.depth1 &&
+        request.depth2 &&
+        request.structure !== ""
       ) {
         setLoading(true);
         setError(null);

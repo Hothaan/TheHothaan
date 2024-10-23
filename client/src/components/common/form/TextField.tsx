@@ -32,7 +32,7 @@ const none = css`
 const input = css`
   display: flex;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1400px;
   height: 60px;
   padding: 20px;
   align-items: center;

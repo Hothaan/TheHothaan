@@ -63,6 +63,7 @@ export default function MenuAddbox(prop: IbuttonDepth1) {
         .filter((item) => item.isSelected)
         .map((depth2) => {
           const chooseDepth2: IbuttonChooseDepth2Function = {
+            info: "유형 선택",
             depth1: depth1,
             depth2: depth2.depth2,
             options: depth2.options,

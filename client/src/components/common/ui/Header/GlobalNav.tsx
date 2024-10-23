@@ -7,6 +7,7 @@ import useLocationControl from "@hooks/useLocationControl";
 export interface ImenuItem {
   kor: string;
   eng: string;
+  include?: string;
   link: string;
   depth2?: IsubMenuItem[];
 }
@@ -18,7 +19,12 @@ export interface IsubMenuItem {
 }
 
 export const menu: ImenuItem[] = [
-  { kor: "서비스", eng: "service", link: "/service" },
+  {
+    kor: "서비스",
+    eng: "service",
+    link: "/service/step1",
+    include: "/service",
+  },
   { kor: "견적", eng: "estimate", link: "/estimate" },
   { kor: "플랜안내", eng: "pricing", link: "/planIntro" },
   {
@@ -59,7 +65,11 @@ export default function GlobalNav() {
             <Link
               to={item.link}
               css={depth1_btn(theme)}
-              className={includeLocation(item.link) ? "selected" : ""}
+              className={
+                includeLocation(item.include ? item.include : item.link)
+                  ? "selected"
+                  : ""
+              }
             >
               <p className="link">{item.kor}</p>
             </Link>
@@ -131,6 +141,7 @@ const depth1_btn = (theme: Theme) => css`
 
 const depth2_container = (theme: Theme) => css`
   position: absolute;
+  z-index: 10;
   top: calc(100% + 17px);
   left: 50%;
   transform: translateX(-50%);
