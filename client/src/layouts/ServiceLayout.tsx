@@ -1,10 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-
-import React from "react";
 import TitleNstepSection from "@components/service/titleNstepSection/TitleNstepSection";
 import ControlBtnSection from "@components/service/controlBtnSection/ControlBtnSection";
-import { Link, Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
 export default function ServiceLayout() {
   return (
@@ -13,7 +11,7 @@ export default function ServiceLayout() {
       <section css={main_wrap}>
         <Outlet />
       </section>
-      <ControlBtnSection />
+      {/* <ControlBtnSection /> */}
     </div>
   );
 }

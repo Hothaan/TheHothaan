@@ -29,7 +29,7 @@ export default function ButtonDepth1(prop: IbuttonDepth1) {
       <div css={[choose_function]}>
         <p css={[function_text]}>{depth1}</p>
       </div>
-      {showDeletedButton && <ButtonClose {...closeButton} />}
+      {/* {showDeletedButton && <ButtonClose {...closeButton} />} */}
     </div>
   );
 }
@@ -40,7 +40,7 @@ const wrap = css`
 `;
 
 const choose_function = css`
-  cursor: pointer;
+  // cursor: pointer;
   position: relative;
   display: flex;
   flex-direction: column;

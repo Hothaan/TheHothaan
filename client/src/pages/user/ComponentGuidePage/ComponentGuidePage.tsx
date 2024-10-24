@@ -465,13 +465,13 @@ function StepSection() {
 function ChooseDepth2Section() {
   const service: Tservice = "shoppingMall";
   const [selectableDepth1, setSelectableDepth1] = useState(["메인", ""]);
-  const [depth1list, setDepth1list] = useState<IbuttonDepth1[]>([
-    { depth1: "상품", deleteFunction: () => {} },
-  ]);
-  const addDepth1: IbuttonAddDepth1 = {
-    service: service,
-    selectableDepth1: depth1list,
-  };
+  // const [depth1list, setDepth1list] = useState<IbuttonDepth1[]>([
+  //   { depth1: "상품", data: {}, deleteFunction: () => {} },
+  // ]);
+  // const addDepth1: IbuttonAddDepth1 = {
+  //   service: service,
+  //   selectableDepth1: depth1list,
+  // };
   const menu_construct_box_wrap = css`
     display: flex;
     gap: 20px;
@@ -482,9 +482,9 @@ function ChooseDepth2Section() {
       <div css={container}>
         <p css={title}>menu construct box</p>
         <div css={menu_construct_box_wrap}>
-          {depth1list.map((item) => (
+          {/* {depth1list.map((item) => (
             <MenuConstructBox key={item.depth1} {...item} />
-          ))}
+          ))} */}
           {/* {depth1list.length < 5 && <ButtonAddDepth1 {...addDepth1} />} */}
           {/* {depth1list.length < 5 && <MenuAddbox {...addDepth1} />} */}
         </div>

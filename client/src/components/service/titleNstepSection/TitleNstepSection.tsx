@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { ReactComponent as ChevRight } from "@svgs/chevRight.svg";
@@ -75,10 +76,10 @@ export default function TitleNstepSection() {
             return <ButtonStep {...item} key={item.step} />;
           } else {
             return (
-              <>
+              <React.Fragment key={item.step}>
                 <ButtonStep {...item} />
                 <ChevRight />
-              </>
+              </React.Fragment>
             );
           }
         })}

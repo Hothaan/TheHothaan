@@ -5,7 +5,7 @@ import { ReactComponent as Tablet } from "@svgs/tablet.svg";
 import { ReactComponent as Mobile } from "@svgs/mobile.svg";
 
 export default function ButtonChooseDevice(props: IbuttonChooseDevice) {
-  const { isSelected, device } = props;
+  const { isSelected, device, onClick } = props;
 
   function makeText(device: Tdevice) {
     switch (device) {
@@ -34,7 +34,10 @@ export default function ButtonChooseDevice(props: IbuttonChooseDevice) {
   }
 
   return (
-    <button css={[choose_device, choose_device_color(isSelected)]}>
+    <button
+      css={[choose_device, choose_device_color(isSelected)]}
+      onClick={onClick}
+    >
       {makeIcon(device)}
       <p>{makeText(device)}</p>
     </button>

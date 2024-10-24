@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { useState, useRef, useEffect } from "react";
-import ServiceModal from "@components/common/ui/Modal/ServiceModal";
+import ServiceModal from "@components/service/modal/ServiceModal";
 import Button from "@components/common/button/Button";
 import ButtonClose from "@components/common/button/ButtonClose";
 import RadioButton from "@components/common/form/RadioButton";
@@ -9,7 +9,7 @@ import RadioButton from "@components/common/form/RadioButton";
 export default function ButtonChooseDepth2Function(
   prop: IbuttonChooseDepth2Function
 ) {
-  const { depth2, options, info, onChoose, deleteFunction } = prop;
+  const { isDefault, depth2, options, info, onChoose, deleteFunction } = prop;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showDeletedButton, setShowDeletedButton] = useState(false);
   const [selectedValue, setSelectedValue] = useState<string>("");
@@ -17,7 +17,7 @@ export default function ButtonChooseDepth2Function(
 
   const serviceModal: IserviceModal = {
     isOpen: isModalOpen,
-    title: "메뉴 추가",
+    title: depth2,
     onClick: () => {
       setIsModalOpen(false);
     },
@@ -57,7 +57,7 @@ export default function ButtonChooseDepth2Function(
 
   return (
     <div
-      css={wrap}
+      css={wrap(options)}
       onMouseEnter={() => {
         setShowDeletedButton(true);
       }}
@@ -67,7 +67,7 @@ export default function ButtonChooseDepth2Function(
     >
       <div
         css={[
-          choose_function(selectedValue),
+          choose_function(selectedValue, options),
           choose_function_color(selectedValue),
         ]}
         onClick={() => {
@@ -83,36 +83,38 @@ export default function ButtonChooseDepth2Function(
           </p>
         )}
       </div>
-      {showDeletedButton && <ButtonClose {...closeButton} />}
-      <ServiceModal {...serviceModal}>
-        <p css={info_text}>{info}</p>
-        <div ref={optionRef} onClick={(e) => e.stopPropagation()}>
-          <ul css={options_container}>
-            {options.map((option) => {
-              const option_radio = {
-                id: option,
-                name: depth2,
-                value: option,
-                label: option,
-                checked: selectedValue === option,
-                onChange: handleChange,
-                required: true,
-              };
-              return (
-                <li
-                  key={option}
-                  css={[
-                    option_style,
-                    option_style_color(selectedValue, option),
-                  ]}
-                >
-                  <RadioButton {...option_radio} />
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      </ServiceModal>
+      {!isDefault && showDeletedButton && <ButtonClose {...closeButton} />}
+      {options && (
+        <ServiceModal {...serviceModal}>
+          <p css={info_text}>{info}</p>
+          <div ref={optionRef} onClick={(e) => e.stopPropagation()}>
+            <ul css={options_container}>
+              {options.map((option) => {
+                const option_radio = {
+                  id: option.kor,
+                  name: depth2,
+                  value: option.kor,
+                  label: option.kor,
+                  checked: selectedValue === option.kor,
+                  onChange: handleChange,
+                  required: true,
+                };
+                return (
+                  <li
+                    key={option.kor}
+                    css={[
+                      option_style,
+                      option_style_color(selectedValue, option.kor),
+                    ]}
+                  >
+                    <RadioButton {...option_radio} />
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </ServiceModal>
+      )}
     </div>
   );
 }
@@ -128,7 +130,8 @@ const info_text = css`
   line-height: 150%; /* 22.5px */
 `;
 
-const wrap = css`
+const wrap = (options: T2depthOption[] | null) => css`
+  cursor: ${options ? "pointer" : "default"};
   width: 188px;
   position: relative;
 `;
@@ -149,8 +152,11 @@ const choose_function_color = (selectedValue: string | null) => {
   }
 };
 
-const choose_function = (selectedValue: string | null) => css`
-  cursor: pointer;
+const choose_function = (
+  selectedValue: string | null,
+  options: T2depthOption[] | null
+) => css`
+  cursor: ${options ? "pointer" : "default"};
   position: relative;
   display: flex;
   flex-direction: column;

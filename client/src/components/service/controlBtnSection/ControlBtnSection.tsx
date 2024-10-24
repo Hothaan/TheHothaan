@@ -2,6 +2,8 @@
 import { css } from "@emotion/react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { serviceStepStore, TserviceStep } from "@store/serviceStepStore";
+import { serviceDefaultDataStore } from "@store/serviceDefaultDataStore";
 import Button from "@components/common/button/Button";
 
 export default function ControlBtnSection() {
@@ -9,30 +11,53 @@ export default function ControlBtnSection() {
   const location = useLocation();
   const totalStep = 5;
   const [currentStep, setCurrentStep] = useState<number>(1);
+  const { steps, setSteps } = serviceStepStore();
+  const { data, setData } = serviceDefaultDataStore();
 
   function handleNavigation(path: string) {
     navigate(path);
   }
 
-  //추후 메인 영역 폼을 다 채웠는지 여부를 받아 disabled true false 및 색상 변경 처리
+  function isDisabled(steps: TserviceStep, currentStep: number): boolean {
+    switch (currentStep) {
+      case 1:
+        return !steps.step1;
+      case 2:
+        return !steps.step2;
+      case 3:
+        return !steps.step3;
+      case 4:
+        return !steps.step4;
+      case 5:
+        return !steps.step5;
+      default:
+        return false;
+    }
+  }
+
+  function saveDataInStore(currentStep: number) {
+    if (currentStep === 1) {
+      // set
+    }
+  }
 
   const prevButtonData: Ibutton = {
     size: "XL",
-    bg: "gray",
+    bg: "white",
     text: "이전 페이지",
     onClick: () => {
       handleNavigation(`/service/step${currentStep - 1}`);
     },
-    disabled: true,
+    disabled: false,
   };
   const nextButtonData: Ibutton = {
     size: "XL",
-    bg: "gray",
+    bg: "gradient",
     text: "다음으로 넘어가기",
     onClick: () => {
       handleNavigation(`/service/step${currentStep + 1}`);
     },
-    disabled: true,
+    disabled: isDisabled(steps, currentStep),
   };
 
   useEffect(() => {

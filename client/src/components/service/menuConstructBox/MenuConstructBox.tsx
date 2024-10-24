@@ -1,32 +1,34 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { useState, useEffect } from "react";
+import { MAX_NUM } from "@data/maxNum";
+import { T2depth } from "@data/serviceData";
 import ButtonDepth1 from "../button/ButtonDepth1";
 import ButtonChooseDepth2Function from "../button/ButtonChooseDepth2Function";
 import ButtonAddDepth2 from "../button/ButtonAddDepth2";
 
 export default function MenuConstructBox(prop: IbuttonDepth1) {
-  const { depth1, deleteFunction } = prop;
+  const { depth1, data, deleteFunction, onChange } = prop;
+
+  function makeInitialSelectableDepth2(data: any) {
+    return Object.entries(data).map(([key, value]) => {
+      const keyValue = value as T2depth;
+      return {
+        isDefault: keyValue.isDefault,
+        isSelected: keyValue.isDefault,
+        depth2: keyValue.kor,
+        options: keyValue.options || null,
+      };
+    });
+  }
+
+  const initialSelectableDepth2 = makeInitialSelectableDepth2(data);
 
   const [selectableDepth2, setSelectableDepth2] = useState<IselectableDepth2[]>(
-    [
-      {
-        isSelected: true,
-        depth2: "상품 목록",
-        options: ["텍스트형 게시판", "동영상형 게시판", "이미지형 게시판"],
-      },
-      {
-        isSelected: false,
-        depth2: "상품 상세",
-        options: ["텍스트 강조", "동영상 강조", "이미지 강조"],
-      },
-      {
-        isSelected: false,
-        depth2: "상품 리뷰",
-        options: ["텍스트 리뷰", "동영상 리뷰", "이미지 리뷰"],
-      },
-    ]
+    initialSelectableDepth2
   );
+
+  // console.log(selectableDepth2);
 
   function handleSelectableDepth2Change(
     upadateDepth2: IselectableDepth2[]
@@ -35,7 +37,7 @@ export default function MenuConstructBox(prop: IbuttonDepth1) {
   }
 
   const [addDepth2, setAddDepth2] = useState<IbuttonAddDepth2>({
-    depth1: "상품",
+    depth1: depth1,
     selectableDepth2: selectableDepth2,
     onAdd: handleSelectableDepth2Change,
     onCancel: () => {},
@@ -52,7 +54,7 @@ export default function MenuConstructBox(prop: IbuttonDepth1) {
   useEffect(() => {
     setAddDepth2((prev) => ({
       ...prev,
-      selectableDepth2: selectableDepth2, // 변경된 selectableDepth2 반영
+      selectableDepth2: selectableDepth2,
     }));
   }, [selectableDepth2]);
 
@@ -63,6 +65,7 @@ export default function MenuConstructBox(prop: IbuttonDepth1) {
         .filter((item) => item.isSelected)
         .map((depth2) => {
           const chooseDepth2: IbuttonChooseDepth2Function = {
+            isDefault: depth2.isDefault,
             info: "유형 선택",
             depth1: depth1,
             depth2: depth2.depth2,
@@ -74,8 +77,9 @@ export default function MenuConstructBox(prop: IbuttonDepth1) {
             <ButtonChooseDepth2Function {...chooseDepth2} key={depth2.depth2} />
           );
         })}
-      {selectableDepth2.filter((item) => item.isSelected).length <
-        selectableDepth2.length && <ButtonAddDepth2 {...addDepth2} />}
+      {selectableDepth2.filter((item) => item.isSelected).length < MAX_NUM && (
+        <ButtonAddDepth2 {...addDepth2} />
+      )}
     </div>
   );
 }

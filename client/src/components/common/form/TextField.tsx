@@ -17,7 +17,7 @@ export default function TextField(prop: ItextField) {
         className={className || ""}
         onChange={onChange || undefined}
         disabled={disabled || false}
-        value={value || undefined}
+        value={value || ""}
       />
     </div>
   );

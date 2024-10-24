@@ -8,7 +8,7 @@ import { ReactComponent as HomepageBoard } from "@svgs/homepageBoard.svg";
 import { ReactComponent as LandingIntroduce } from "@svgs/landingIntroduce.svg";
 
 export default function ButtonChooseService(props: IbuttonChooseService) {
-  const { isSelected, service } = props;
+  const { isSelected, service, onClick } = props;
 
   function makeTitle(service: TserviceDataKey) {
     switch (service) {
@@ -62,7 +62,10 @@ export default function ButtonChooseService(props: IbuttonChooseService) {
   }
 
   return (
-    <button css={[choose_device, choose_device_color(isSelected)]}>
+    <button
+      css={[choose_device, choose_device_color(isSelected)]}
+      onClick={onClick}
+    >
       {makeIcon(service)}
       <p css={title}>{makeTitle(service)}</p>
       <p css={desc}>{makeDesc(service)}</p>

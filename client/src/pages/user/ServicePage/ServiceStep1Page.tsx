@@ -1,9 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import TextField from "@components/common/form/TextField";
 import TextArea from "@components/common/form/TextArea";
-import { apiRequestStore } from "@store/apiRequestStore";
+import { serviceStepStore, TserviceStep } from "@store/serviceStepStore";
+import { serviceDefaultDataStore } from "@store/serviceDefaultDataStore";
+import Button from "@components/common/button/Button";
 
 interface IformData {
   serviceTitle: string;
@@ -11,13 +14,73 @@ interface IformData {
 }
 
 export default function ServiceStep1Page() {
-  const { apiRequestData, setApiRequestData } = apiRequestStore();
-  const [serviceTitle, setServiceTitle] = useState<string>("");
-  const [isDone, setIsDone] = useState<boolean>(false);
-  const [formData, setFormData] = useState<IformData>({
-    serviceTitle: "",
-    serviceDesc: "",
-  });
+  const { steps, setSteps } = serviceStepStore();
+  const { data, setData } = serviceDefaultDataStore();
+  const initialFormData = {
+    serviceTitle: data.serviceTitle,
+    serviceDesc: data.serviceDesc,
+  };
+  const [formData, setFormData] = useState<IformData>(initialFormData);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const totalStep = 5;
+  const [currentStep, setCurrentStep] = useState<number>(1);
+
+  function handleNavigation(path: string) {
+    navigate(path);
+  }
+
+  function isDisabled(steps: TserviceStep, currentStep: number): boolean {
+    switch (currentStep) {
+      case 1:
+        return !steps.step1;
+      case 2:
+        return !steps.step2;
+      case 3:
+        return !steps.step3;
+      case 4:
+        return !steps.step4;
+      case 5:
+        return !steps.step5;
+      default:
+        return false;
+    }
+  }
+
+  function saveDataInStore(formData: IformData) {
+    const { data, setData } = serviceDefaultDataStore.getState();
+    setData({
+      ...data,
+      serviceTitle: formData.serviceTitle,
+      serviceDesc: formData.serviceDesc,
+    });
+    console.log("Updated store data:", serviceDefaultDataStore.getState().data);
+  }
+
+  const prevButtonData: Ibutton = {
+    size: "XL",
+    bg: "white",
+    text: "이전 페이지",
+    onClick: () => {
+      handleNavigation(`/service/step${currentStep - 1}`);
+    },
+    disabled: false,
+  };
+  const nextButtonData: Ibutton = {
+    size: "XL",
+    bg: "gradient",
+    text: "다음으로 넘어가기",
+    onClick: () => {
+      saveDataInStore(formData);
+      handleNavigation(`/service/step${currentStep + 1}`);
+    },
+    disabled: isDisabled(steps, currentStep),
+  };
+
+  useEffect(() => {
+    setCurrentStep(parseInt(location.pathname.slice(-1)));
+  }, [location.pathname]);
 
   const serviceTitleData: ItextField = {
     label: "serviceTitle",
@@ -41,37 +104,64 @@ export default function ServiceStep1Page() {
 
   useEffect(() => {
     if (formData.serviceTitle !== "" && formData.serviceDesc !== "") {
-      setIsDone(true);
+      setSteps({
+        ...steps,
+        step1: true,
+      });
+    } else {
+      setSteps({
+        ...steps,
+        step1: false,
+      });
     }
   }, [formData]);
 
-  // isDone 넘겨서 다음으로 넘어가기 버튼 활성화
-
   return (
-    <div css={wrap}>
-      <div css={input_container}>
-        <div css={input_guide_container}>
-          <p css={text_left}>
-            <span css={gradient_text}>프로젝트 명</span>
-            <span css={require_text}>을 작성해주세요.</span>
-          </p>
-          <p css={[text_left, guide_text]}>생성할 프로젝트명을 입력하세요.</p>
+    <>
+      <div css={wrap}>
+        <div css={input_container}>
+          <div css={input_guide_container}>
+            <p css={text_left}>
+              <span css={gradient_text}>프로젝트 명</span>
+              <span css={require_text}>을 작성해주세요.</span>
+            </p>
+            <p css={[text_left, guide_text]}>생성할 프로젝트명을 입력하세요.</p>
+          </div>
+          <TextField {...serviceTitleData} />
         </div>
-        <TextField {...serviceTitleData} />
-      </div>
-      <div css={input_container}>
-        <div css={input_guide_container}>
-          <p css={text_left}>
-            <span css={require_text}>홈페이지를</span>
-            <span css={gradient_text}>설명</span>
-            <span css={require_text}>해주세요.</span>
-          </p>
+        <div css={input_container}>
+          <div css={input_guide_container}>
+            <p css={text_left}>
+              <span css={require_text}>홈페이지를</span>
+              <span css={gradient_text}>설명</span>
+              <span css={require_text}>해주세요.</span>
+            </p>
+          </div>
+          <TextArea {...textAreaDefault} />
         </div>
-        <TextArea {...textAreaDefault} />
       </div>
-    </div>
+      <section css={button_wrap}>
+        <div css={button_container}>
+          {currentStep !== 1 && <Button {...prevButtonData} />}
+          {currentStep !== totalStep && <Button {...nextButtonData} />}
+        </div>
+      </section>
+    </>
   );
 }
+
+const button_wrap = css`
+  width: 100%;
+  margin: 0 auto;
+  padding: 80px 0 100px;
+`;
+
+const button_container = css`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+`;
 
 const wrap = css`
   display: flex;

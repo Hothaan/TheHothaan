@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { useState, useEffect } from "react";
-import ServiceModal from "@components/common/ui/Modal/ServiceModal";
+import ServiceModal from "@components/service/modal/ServiceModal";
 import RadioButtonAccordion from "@components/service/accordion/RadioButtonAccordion";
 import { ReactComponent as Add } from "@svgs/add.svg";
 

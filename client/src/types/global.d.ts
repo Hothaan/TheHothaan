@@ -1,4 +1,11 @@
+// import { I2depthOption } from "@data/serviceData";
 /* client 단 관련 글로벌 타입 */
+
+declare type T2depthOption = {
+  eng: string;
+  kor: string;
+  structure: string;
+};
 
 declare type Tservice =
   | "shoppingMall"
@@ -172,22 +179,40 @@ declare interface IbuttonStep {
 
 declare interface IbuttonDepth1 {
   depth1: string;
+  data: any;
+  onChange: (newFormData: IselectableDepth2DataForm) => void;
   deleteFunction: () => void;
 }
 
+declare interface IselectableDepth2DataForm {
+  [key: string]: {
+    depth1: string;
+    selectableDepth2: IselectableDepth2[];
+    deleteFunction: () => void;
+  };
+}
+
 declare interface IbuttonChooseDepth2Function {
+  isDefault: boolean;
   info: string;
   depth1: string;
   depth2: string;
-  options: string[];
+  options: T2depthOption[] | null;
   onChoose: () => void;
   deleteFunction: (depth2: string) => void;
 }
 
+// declare interface IselectableDepth2 {
+//   isSelected: boolean;
+//   depth2: string;
+//   options: string[] | null;
+// }
+
 declare interface IselectableDepth2 {
+  isDefault: boolean;
   isSelected: boolean;
   depth2: string;
-  options: string[];
+  options: T2depthOption[] | null;
 }
 
 declare interface IbuttonAddDepth1 {
@@ -217,9 +242,11 @@ declare type Tdevice = "pc" | "tablet" | "mobile";
 declare interface IbuttonChooseDevice {
   isSelected: boolean;
   device: Tdevice;
+  onClick?: () => void;
 }
 
 declare interface IbuttonChooseService {
   isSelected: boolean;
   service: Tservice;
+  onClick?: () => void;
 }

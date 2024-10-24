@@ -40,7 +40,7 @@ export default function TextFArea(prop: ItextArea) {
         className={className || ""}
         onChange={handleChange}
         disabled={disabled || false}
-        value={value || undefined}
+        value={value || ""}
       />
       <p css={char_count}>
         {byteLength}/{MAX_LENGTH}

@@ -1,21 +1,41 @@
-interface I2depthOption {
-  eng: string;
-  kor: string;
-  structure: string;
-}
+const depth1KeyArr = [
+  "main",
+  "product",
+  "customerService",
+  "myPage",
+  "utility",
+  "board",
+  "companyIntro",
+] as const;
+
+export type Tdepth1KeyTextArr = (typeof depth1KeyArr)[number];
+
+type Tdepth1KeyText = {
+  [K in Tdepth1KeyTextArr]: { eng: string; kor: string };
+};
+
+export const depth1KeyText: Tdepth1KeyText = {
+  main: { eng: "main", kor: "메인" },
+  product: { eng: "product", kor: "상품" },
+  customerService: { eng: "customerService", kor: "고객센터" },
+  myPage: { eng: "myPage", kor: "마이페이지" },
+  utility: { eng: "utility", kor: "유틸리티" },
+  board: { eng: "board", kor: "게시판" },
+  companyIntro: { eng: "companyIntro", kor: "회사 소개" },
+};
 
 /* option */
-const optionImage: I2depthOption = {
+const optionImage: T2depthOption = {
   eng: "image",
   kor: "이미지형",
   structure: "",
 };
-const optionText: I2depthOption = {
+const optionText: T2depthOption = {
   eng: "text",
   kor: "텍스트형",
   structure: "",
 };
-const optionVideo: I2depthOption = {
+const optionVideo: T2depthOption = {
   eng: "video",
   kor: "동영상형",
   structure: "",
@@ -28,16 +48,21 @@ interface I2depthText {
   kor: string;
 }
 
-type T2depth =
-  | (I2depthText & {
-      isDefault: boolean;
-      options: I2depthOption[];
-    })
-  | (I2depthText & {
-      isDefault: boolean;
-      structure: string;
-    });
+// export type T2depth =
+//   | (I2depthText & {
+//       isDefault: boolean;
+//       options: T2depthOption[];
+//     })
+//   | (I2depthText & {
+//       isDefault: boolean;
+//       structure: string;
+//     });
 
+export interface T2depth extends I2depthText {
+  isDefault: boolean;
+  structure?: string;
+  options?: T2depthOption[];
+}
 /* 메인 */
 const main2depthKeyArr = ["main"] as const;
 type Tmain2depthKey = (typeof main2depthKeyArr)[number];
@@ -79,7 +104,7 @@ const defaultMembershipWithdrawal: T2depth = {
 };
 
 const couponText: I2depthText = { eng: "coupon", kor: "쿠폰" };
-const couponOptions: I2depthOption[] = [
+const couponOptions: T2depthOption[] = [
   {
     eng: "coupon download",
     kor: "쿠폰 다운로드",
@@ -169,7 +194,7 @@ export const myPage2depth = (service: Tservice): TmyPage2depth => {
 
 /* 유틸리티 */
 const loginText: I2depthText = { eng: "login", kor: "로그인" };
-const loginOptions: I2depthOption[] = [
+const loginOptions: T2depthOption[] = [
   { eng: "social login", kor: "소셜 로그인", structure: "" },
 ];
 const defaultLogin: T2depth = {
@@ -196,7 +221,7 @@ const defaultFindPw: T2depth = {
 };
 
 const searchText: I2depthText = { eng: "search", kor: "검색" };
-const searchOptions: I2depthOption[] = [
+const searchOptions: T2depthOption[] = [
   { eng: "normal search", kor: "일반 검색", structure: "" },
   { eng: "integration search", kor: "통합 검색", structure: "" },
 ];
@@ -319,7 +344,7 @@ export const product2depth = (service: Tservice): Tproduct2depth => {
 
 /* 고객센터 */
 const noticeText: I2depthText = { eng: "notice", kor: "공지사항" };
-const noticeOptions: I2depthOption[] = [optionImage, optionText];
+const noticeOptions: T2depthOption[] = [optionImage, optionText];
 const defaultNotice: T2depth = {
   isDefault: false,
   ...noticeText,
@@ -340,7 +365,7 @@ const defaultPersonalInquiry: T2depth = {
 };
 
 const userGuideText: I2depthText = { eng: "User Guide", kor: "사용자 가이드" };
-const userGuideOptions: I2depthOption[] = [
+const userGuideOptions: T2depthOption[] = [
   optionImage,
   optionText,
   optionVideo,
@@ -415,7 +440,7 @@ const normalBoardText: I2depthText = {
   eng: "normal board",
   kor: "일반 게시판",
 };
-const normalBoardOptions: I2depthOption[] = [
+const normalBoardOptions: T2depthOption[] = [
   optionImage,
   optionText,
   optionVideo,
@@ -427,7 +452,7 @@ const defaultNormalBoard: T2depth = {
 };
 
 const mediaText: I2depthText = { eng: "media", kor: "미디어" };
-const mediaOptions: I2depthOption[] = [optionImage, optionText, optionVideo];
+const mediaOptions: T2depthOption[] = [optionImage, optionText, optionVideo];
 const defaultMedia: T2depth = {
   isDefault: false,
   ...mediaText,
@@ -435,7 +460,7 @@ const defaultMedia: T2depth = {
 };
 
 const boardNewsText: I2depthText = { eng: "news", kor: "뉴스" };
-const boardNewsOptions: I2depthOption[] = [
+const boardNewsOptions: T2depthOption[] = [
   optionImage,
   optionText,
   optionVideo,
@@ -447,7 +472,7 @@ const defaultBoardNews: T2depth = {
 };
 
 const blogText: I2depthText = { eng: "blog", kor: "블로그" };
-const blogOptions: I2depthOption[] = [optionImage, optionText];
+const blogOptions: T2depthOption[] = [optionImage, optionText];
 const defaultBlog: T2depth = {
   isDefault: false,
   ...blogText,
@@ -455,7 +480,7 @@ const defaultBlog: T2depth = {
 };
 
 const ceremonyText: I2depthText = { eng: "ceremony", kor: "행사" };
-const ceremonyOptions: I2depthOption[] = [optionImage, optionText, optionVideo];
+const ceremonyOptions: T2depthOption[] = [optionImage, optionText, optionVideo];
 const defaultCeremony: T2depth = {
   isDefault: false,
   ...ceremonyText,
@@ -463,7 +488,7 @@ const defaultCeremony: T2depth = {
 };
 
 const galleryText: I2depthText = { eng: "gallery", kor: "갤러리" };
-const galleryOptions: I2depthOption[] = [optionImage, optionText, optionVideo];
+const galleryOptions: T2depthOption[] = [optionImage, optionText, optionVideo];
 const defaultGallery: T2depth = {
   isDefault: false,
   ...galleryText,
@@ -471,7 +496,7 @@ const defaultGallery: T2depth = {
 };
 
 const eventText: I2depthText = { eng: "event", kor: "이벤트" };
-const eventOptions: I2depthOption[] = [optionImage, optionText];
+const eventOptions: T2depthOption[] = [optionImage, optionText];
 const defaultEvent: T2depth = {
   isDefault: false,
   ...eventText,
@@ -610,7 +635,7 @@ const serviceIntroduceText: I2depthText = {
   eng: "service introduce",
   kor: "서비스 소개",
 };
-const serviceIntroduceOptions: I2depthOption[] = [
+const serviceIntroduceOptions: T2depthOption[] = [
   { eng: "one page", kor: "원페이지형", structure: "" },
   { eng: "text list", kor: "목록형(텍스트)", structure: "" },
   { eng: "image list", kor: "목록형(이미지)", structure: "" },
@@ -711,7 +736,7 @@ const defaultDirection: T2depth = {
 };
 
 const companyNewsText: I2depthText = { eng: "news", kor: "뉴스" };
-const companyNewsOptions: I2depthOption[] = [
+const companyNewsOptions: T2depthOption[] = [
   optionImage,
   optionText,
   optionVideo,
