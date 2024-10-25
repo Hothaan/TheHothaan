@@ -8,7 +8,9 @@ import ButtonChooseDepth2Function from "../button/ButtonChooseDepth2Function";
 import ButtonAddDepth2 from "../button/ButtonAddDepth2";
 
 export default function MenuConstructBox(prop: IbuttonDepth1) {
-  const { depth1, data, deleteFunction, onChange } = prop;
+  const { depth1, data, onAddMenu, onSelectOption, deleteFunction } = prop;
+
+  console.log(data);
 
   function makeInitialSelectableDepth2(data: any) {
     return Object.entries(data).map(([key, value]) => {
@@ -16,7 +18,7 @@ export default function MenuConstructBox(prop: IbuttonDepth1) {
       return {
         isDefault: keyValue.isDefault,
         isSelected: keyValue.isDefault,
-        depth2: keyValue.kor,
+        depth2: { eng: keyValue.eng, kor: keyValue.kor },
         options: keyValue.options || null,
       };
     });
@@ -28,8 +30,6 @@ export default function MenuConstructBox(prop: IbuttonDepth1) {
     initialSelectableDepth2
   );
 
-  // console.log(selectableDepth2);
-
   function handleSelectableDepth2Change(
     upadateDepth2: IselectableDepth2[]
   ): void {
@@ -39,14 +39,14 @@ export default function MenuConstructBox(prop: IbuttonDepth1) {
   const [addDepth2, setAddDepth2] = useState<IbuttonAddDepth2>({
     depth1: depth1,
     selectableDepth2: selectableDepth2,
-    onAdd: handleSelectableDepth2Change,
+    onAddMenu: handleSelectableDepth2Change,
     onCancel: () => {},
   });
 
-  function handleDelete(depth2: string) {
+  function handleDelete(depth2Eng: string) {
     setSelectableDepth2((prevDepths) =>
       prevDepths.map((item) =>
-        item.depth2 === depth2 ? { ...item, isSelected: false } : item
+        item.depth2.eng === depth2Eng ? { ...item, isSelected: false } : item
       )
     );
   }
@@ -71,15 +71,18 @@ export default function MenuConstructBox(prop: IbuttonDepth1) {
             depth2: depth2.depth2,
             options: depth2.options,
             onChoose: () => {},
-            deleteFunction: () => handleDelete(depth2.depth2),
+            deleteFunction: () => handleDelete(depth2.depth2.eng),
           };
           return (
-            <ButtonChooseDepth2Function {...chooseDepth2} key={depth2.depth2} />
+            <ButtonChooseDepth2Function
+              {...chooseDepth2}
+              key={depth2.depth2.eng}
+            />
           );
         })}
-      {selectableDepth2.filter((item) => item.isSelected).length < MAX_NUM && (
-        <ButtonAddDepth2 {...addDepth2} />
-      )}
+      {selectableDepth2.filter((item) => item.isSelected).length < MAX_NUM &&
+        selectableDepth2.filter((item) => item.isSelected).length <
+          selectableDepth2.length - 1 && <ButtonAddDepth2 {...addDepth2} />}
     </div>
   );
 }

@@ -33,7 +33,8 @@ export default function ServiceStep3Page() {
     const result: { [key: string]: any } = {};
 
     Object.entries(depth1).map(([key1, value]) => {
-      let text = depth1KeyText[key1 as Tdepth1KeyTextArr].kor;
+      let eng = depth1KeyText[key1 as Tdepth1KeyTextArr].eng;
+      let kor = depth1KeyText[key1 as Tdepth1KeyTextArr].kor;
       let depth2 = value;
 
       let selectableDepth2 = Object.entries(depth2).map(([key2, value]) => {
@@ -41,13 +42,13 @@ export default function ServiceStep3Page() {
         return {
           isDefault: keyValue.isDefault,
           isSelected: keyValue.isDefault,
-          depth2: keyValue.kor,
+          depth2: { eng: keyValue.eng, kor: keyValue.kor },
           options: keyValue.options || null,
         };
       });
 
       result[key1] = {
-        depth1: text,
+        depth1: { kor: kor, eng: eng },
         selectableDepth2,
         deleteFunction: () => {},
       };
@@ -58,12 +59,41 @@ export default function ServiceStep3Page() {
 
   let initialFormData = makeinitialFormData();
 
-  function handleFormDataChange(newFormData: IselectableDepth2DataForm): void {
-    setFormData(newFormData);
-  }
-
   const [formData, setFormData] =
     useState<IselectableDepth2DataForm>(initialFormData);
+
+  console.log(formData);
+
+  function handleAddMenu(
+    depth1prop: string,
+    depth2prop: string,
+    isSelected: boolean
+  ): void {
+    const filteredItem = formData[
+      depth1prop as Tdepth1KeyTextArr
+    ].selectableDepth2.find((item) => item.depth2.eng === depth2prop);
+    if (filteredItem) {
+      filteredItem.isSelected = isSelected;
+    }
+
+    setFormData((prev) => {
+      const updatedFormData = { ...prev };
+      const updatedDepth1 = {
+        ...updatedFormData[depth1prop as Tdepth1KeyTextArr],
+      };
+      const updatedSelectableDepth2 = updatedDepth1.selectableDepth2.map(
+        (item) => {
+          if (item.depth2.eng === depth2prop) {
+            return { ...item, isSelected: isSelected };
+          }
+          return item;
+        }
+      );
+      updatedDepth1.selectableDepth2 = updatedSelectableDepth2;
+      updatedFormData[depth1prop as Tdepth1KeyTextArr] = updatedDepth1;
+      return updatedFormData;
+    });
+  }
 
   const totalStep = 5;
   const [currentStep, setCurrentStep] = useState<number>(2);
@@ -171,9 +201,10 @@ export default function ServiceStep3Page() {
               const data = {
                 depth1: text,
                 data: value,
-                onChange: handleFormDataChange,
-                // 옵션 선택시 선택한 옵션값 업데이트
                 // add로 2depth 추가시 isSelected 업데이트
+                onAddMenu: handleAddMenu,
+                // 옵션 선택시 선택한 옵션값 업데이트
+                onSelectOption: () => {},
                 // delete로 2depth 삭제시 isSelected 업데이트
                 deleteFunction: () => {},
               };

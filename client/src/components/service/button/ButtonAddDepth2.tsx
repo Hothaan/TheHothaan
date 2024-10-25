@@ -6,7 +6,7 @@ import RadioButtonAccordion from "@components/service/accordion/RadioButtonAccor
 import { ReactComponent as Add } from "@svgs/add.svg";
 
 export default function ButtonAddDepth2(prop: IbuttonAddDepth2) {
-  const { depth1, selectableDepth2, onAdd, onCancel } = prop;
+  const { depth1, selectableDepth2, onAddMenu, onCancel } = prop;
   const [showDeletedButton, setShowDeletedButton] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [selectedValue, setSelectedValue] = useState<string>("");
@@ -40,7 +40,8 @@ export default function ButtonAddDepth2(prop: IbuttonAddDepth2) {
         bg: "gradient",
         text: "저장",
         onClick: () => {
-          onAdd(upadateDepth2);
+          onAddMenu(upadateDepth2);
+          // onAdd(upadateDepth2);
           setIsModalOpen(!isModalOpen);
         },
       },
@@ -50,19 +51,19 @@ export default function ButtonAddDepth2(prop: IbuttonAddDepth2) {
   function handleCheckboxChange(id: string, checked: boolean) {
     setUpdateDepth2((prevState) =>
       prevState.map((item) =>
-        item.depth2 === id ? { ...item, isSelected: checked } : item
+        item.depth2.eng === id ? { ...item, isSelected: checked } : item
       )
     );
   }
 
   const options = upadateDepth2.map((item) => {
     return {
-      id: item.depth2,
-      name: item.depth2,
-      label: item.depth2,
+      id: item.depth2.eng,
+      name: item.depth2.eng,
+      label: item.depth2.kor,
       checked: item.isSelected,
       onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
-        handleCheckboxChange(item.depth2, event.target.checked);
+        handleCheckboxChange(item.depth2.eng, event.target.checked);
       },
     };
   });

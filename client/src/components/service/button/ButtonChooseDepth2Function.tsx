@@ -17,7 +17,7 @@ export default function ButtonChooseDepth2Function(
 
   const serviceModal: IserviceModal = {
     isOpen: isModalOpen,
-    title: depth2,
+    title: depth2.kor,
     onClick: () => {
       setIsModalOpen(false);
     },
@@ -49,7 +49,7 @@ export default function ButtonChooseDepth2Function(
 
   const closeButton: IbuttonClose = {
     deleteFunction: () => {
-      deleteFunction(depth2);
+      deleteFunction(depth2.eng);
     },
     top: "-3px",
     right: "-6px",
@@ -74,7 +74,7 @@ export default function ButtonChooseDepth2Function(
           setIsModalOpen(!isModalOpen);
         }}
       >
-        <p css={[function_text]}>{depth2}</p>
+        <p css={[function_text]}>{depth2.kor}</p>
         {selectedValue && (
           <p css={selectedValue_text_container}>
             <span>{`(`}</span>
@@ -92,7 +92,7 @@ export default function ButtonChooseDepth2Function(
               {options.map((option) => {
                 const option_radio = {
                   id: option.kor,
-                  name: depth2,
+                  name: depth2.eng,
                   value: option.kor,
                   label: option.kor,
                   checked: selectedValue === option.kor,
