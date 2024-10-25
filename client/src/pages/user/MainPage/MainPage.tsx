@@ -4,6 +4,7 @@ export default function MainPage() {
   return (
     <>
       <ul>
+        <li>update check (10.25)</li>
         <li>
           <Link to="/test">api 테스트하기</Link>
         </li>
