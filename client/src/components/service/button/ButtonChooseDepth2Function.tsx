@@ -9,7 +9,16 @@ import RadioButton from "@components/common/form/RadioButton";
 export default function ButtonChooseDepth2Function(
   prop: IbuttonChooseDepth2Function
 ) {
-  const { isDefault, depth2, options, info, onChoose, deleteFunction } = prop;
+  const {
+    isDefault,
+    depth1Eng,
+    depth1Kor,
+    depth2,
+    options,
+    info,
+    onSelectOption,
+    onDelete,
+  } = prop;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showDeletedButton, setShowDeletedButton] = useState(false);
   const [selectedValue, setSelectedValue] = useState<string>("");
@@ -36,7 +45,7 @@ export default function ButtonChooseDepth2Function(
         bg: "gradient",
         text: "저장",
         onClick: () => {
-          onChoose();
+          onSelectOption(depth1Eng, depth2.eng, selectedValue);
           setIsModalOpen(!isModalOpen);
         },
       },
@@ -48,8 +57,8 @@ export default function ButtonChooseDepth2Function(
   }
 
   const closeButton: IbuttonClose = {
-    deleteFunction: () => {
-      deleteFunction(depth2.eng);
+    onDelete: () => {
+      onDelete(depth1Eng, depth2.eng);
     },
     top: "-3px",
     right: "-6px",

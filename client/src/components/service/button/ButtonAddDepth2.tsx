@@ -6,19 +6,17 @@ import RadioButtonAccordion from "@components/service/accordion/RadioButtonAccor
 import { ReactComponent as Add } from "@svgs/add.svg";
 
 export default function ButtonAddDepth2(prop: IbuttonAddDepth2) {
-  const { depth1, selectableDepth2, onAddMenu, onCancel } = prop;
+  const { depth1Eng, depth1Kor, selectableDepth2, onAddMenu, onCancel } = prop;
   const [showDeletedButton, setShowDeletedButton] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [selectedValue, setSelectedValue] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [upadateDepth2, setUpdateDepth2] =
+  const [updateDepth2, setUpdateDepth2] =
     useState<IselectableDepth2[]>(selectableDepth2);
 
   useEffect(() => {
-    setUpdateDepth2(selectableDepth2); // selectableDepth2 변경 시 upadateDepth2도 업데이트
+    setUpdateDepth2(selectableDepth2);
   }, [selectableDepth2]);
-
-  // depth1에 따라 경우의 수 캐스팅
 
   const serviceModal: IserviceModal = {
     isOpen: isModalOpen,
@@ -40,8 +38,7 @@ export default function ButtonAddDepth2(prop: IbuttonAddDepth2) {
         bg: "gradient",
         text: "저장",
         onClick: () => {
-          onAddMenu(upadateDepth2);
-          // onAdd(upadateDepth2);
+          onAddMenu(updateDepth2, depth1Kor);
           setIsModalOpen(!isModalOpen);
         },
       },
@@ -56,7 +53,7 @@ export default function ButtonAddDepth2(prop: IbuttonAddDepth2) {
     );
   }
 
-  const options = upadateDepth2.map((item) => {
+  const options = updateDepth2.map((item) => {
     return {
       id: item.depth2.eng,
       name: item.depth2.eng,
@@ -70,10 +67,10 @@ export default function ButtonAddDepth2(prop: IbuttonAddDepth2) {
 
   const addDepth2: IradioButtonAccordion = {
     radioButton: {
-      id: depth1,
-      name: depth1,
-      value: depth1,
-      label: depth1,
+      id: depth1Kor,
+      name: depth1Kor,
+      value: depth1Kor,
+      label: depth1Kor,
       checked: true,
       onChange: () => {},
     },

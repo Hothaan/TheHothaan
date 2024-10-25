@@ -29,16 +29,19 @@ const optionImage: T2depthOption = {
   eng: "image",
   kor: "이미지형",
   structure: "",
+  isSelected: false,
 };
 const optionText: T2depthOption = {
   eng: "text",
   kor: "텍스트형",
   structure: "",
+  isSelected: false,
 };
 const optionVideo: T2depthOption = {
   eng: "video",
   kor: "동영상형",
   structure: "",
+  isSelected: false,
 };
 
 /* 2depth */
@@ -48,18 +51,9 @@ interface I2depthText {
   kor: string;
 }
 
-// export type T2depth =
-//   | (I2depthText & {
-//       isDefault: boolean;
-//       options: T2depthOption[];
-//     })
-//   | (I2depthText & {
-//       isDefault: boolean;
-//       structure: string;
-//     });
-
 export interface T2depth extends I2depthText {
   isDefault: boolean;
+  isSelected: boolean;
   structure?: string;
   options?: T2depthOption[];
 }
@@ -72,13 +66,20 @@ type Tmain2depth = {
 };
 
 export const main2depth: Tmain2depth = {
-  main: { isDefault: true, eng: "main", kor: "메인", structure: "" },
+  main: {
+    isDefault: true,
+    isSelected: true,
+    eng: "main",
+    kor: "메인",
+    structure: "",
+  },
 };
 
 /* 마이페이지 */
 const profileText: I2depthText = { eng: "profile", kor: "내 프로필" };
 const defaultProfile: T2depth = {
   isDefault: false,
+  isSelected: false,
   ...profileText,
   structure: "",
 };
@@ -86,12 +87,18 @@ const defaultProfile: T2depth = {
 const orderListText: I2depthText = { eng: "order list", kor: "주문 목록" };
 const defaultOrderList: T2depth = {
   isDefault: false,
+  isSelected: false,
   ...orderListText,
   structure: "",
 };
 
 const cartText: I2depthText = { eng: "cart", kor: "장바구니" };
-const defaultCart: T2depth = { isDefault: false, ...cartText, structure: "" };
+const defaultCart: T2depth = {
+  isDefault: false,
+  isSelected: false,
+  ...cartText,
+  structure: "",
+};
 
 const membershipWithdrawalText: I2depthText = {
   eng: "membership withdrawal",
@@ -99,6 +106,7 @@ const membershipWithdrawalText: I2depthText = {
 };
 const defaultMembershipWithdrawal: T2depth = {
   isDefault: false,
+  isSelected: false,
   ...membershipWithdrawalText,
   structure: "",
 };
@@ -109,15 +117,18 @@ const couponOptions: T2depthOption[] = [
     eng: "coupon download",
     kor: "쿠폰 다운로드",
     structure: "",
+    isSelected: false,
   },
   {
     eng: "coupon register",
     kor: "쿠폰 등록",
     structure: "",
+    isSelected: false,
   },
 ];
 const defaultCoupon: T2depth = {
   isDefault: false,
+  isSelected: false,
   ...couponText,
   options: couponOptions,
 };
@@ -125,6 +136,7 @@ const defaultCoupon: T2depth = {
 const mileageText: I2depthText = { eng: "mileage", kor: "마일리지" };
 const defaultMileage: T2depth = {
   isDefault: false,
+  isSelected: false,
   ...mileageText,
   structure: "",
 };
@@ -158,20 +170,41 @@ export const myPage2depth = (service: Tservice): TmyPage2depth => {
     case "shoppingMall": {
       const update = {
         ...defaulTmyPage2depth,
-        orderList: { ...defaulTmyPage2depth.orderList, isDefault: true },
-        cart: { ...defaulTmyPage2depth.cart, isDefault: true },
+        orderList: {
+          ...defaulTmyPage2depth.orderList,
+          isDefault: true,
+          isSelected: true,
+        },
+        cart: {
+          ...defaulTmyPage2depth.cart,
+          isDefault: true,
+          isSelected: true,
+        },
       };
       return update;
     }
     case "communitySns": {
       const update = {
         ...defaulTmyPage2depth,
-        profile: { ...defaulTmyPage2depth.profile, isDefault: true },
-        orderList: { ...defaulTmyPage2depth.orderList, isDefault: true },
-        cart: { ...defaulTmyPage2depth.cart, isDefault: true },
+        profile: {
+          ...defaulTmyPage2depth.profile,
+          isDefault: true,
+          isSelected: true,
+        },
+        orderList: {
+          ...defaulTmyPage2depth.orderList,
+          isDefault: true,
+          isSelected: true,
+        },
+        cart: {
+          ...defaulTmyPage2depth.cart,
+          isDefault: true,
+          isSelected: true,
+        },
         membershipWithdrawal: {
           ...defaulTmyPage2depth.membershipWithdrawal,
           isDefault: true,
+          isSelected: true,
         },
       };
       return update;
@@ -179,10 +212,15 @@ export const myPage2depth = (service: Tservice): TmyPage2depth => {
     case "intermediaryMatch": {
       const update = {
         ...defaulTmyPage2depth,
-        profile: { ...defaulTmyPage2depth.profile, isDefault: true },
+        profile: {
+          ...defaulTmyPage2depth.profile,
+          isDefault: true,
+          isSelected: true,
+        },
         membershipWithdrawal: {
           ...defaulTmyPage2depth.membershipWithdrawal,
           isDefault: true,
+          isSelected: true,
         },
       };
       return update;
@@ -195,20 +233,27 @@ export const myPage2depth = (service: Tservice): TmyPage2depth => {
 /* 유틸리티 */
 const loginText: I2depthText = { eng: "login", kor: "로그인" };
 const loginOptions: T2depthOption[] = [
-  { eng: "social login", kor: "소셜 로그인", structure: "" },
+  { eng: "social login", kor: "소셜 로그인", structure: "", isSelected: false },
 ];
 const defaultLogin: T2depth = {
   isDefault: true,
+  isSelected: true,
   ...loginText,
   options: loginOptions,
 };
 
 const joinText: I2depthText = { eng: "join", kor: "회원가입" };
-const defaultJoin: T2depth = { isDefault: true, ...joinText, structure: "" };
+const defaultJoin: T2depth = {
+  isDefault: true,
+  isSelected: true,
+  ...joinText,
+  structure: "",
+};
 
 const findIdText: I2depthText = { eng: "find id", kor: "아이디 찾기" };
 const defaultFindId: T2depth = {
   isDefault: true,
+  isSelected: true,
   ...findIdText,
   structure: "",
 };
@@ -216,23 +261,35 @@ const defaultFindId: T2depth = {
 const findPwText: I2depthText = { eng: "find pw", kor: "비밀번호 찾기" };
 const defaultFindPw: T2depth = {
   isDefault: true,
+  isSelected: true,
   ...findPwText,
   structure: "",
 };
 
 const searchText: I2depthText = { eng: "search", kor: "검색" };
 const searchOptions: T2depthOption[] = [
-  { eng: "normal search", kor: "일반 검색", structure: "" },
-  { eng: "integration search", kor: "통합 검색", structure: "" },
+  { eng: "normal search", kor: "일반 검색", structure: "", isSelected: false },
+  {
+    eng: "integration search",
+    kor: "통합 검색",
+    structure: "",
+    isSelected: false,
+  },
 ];
 const defaultSearch: T2depth = {
   isDefault: false,
+  isSelected: false,
   ...searchText,
   options: searchOptions,
 };
 
 const alarmText: I2depthText = { eng: "alarm", kor: "알림" };
-const defaultAlarm: T2depth = { isDefault: false, ...alarmText, structure: "" };
+const defaultAlarm: T2depth = {
+  isDefault: false,
+  isSelected: false,
+  ...alarmText,
+  structure: "",
+};
 
 const utility2depthKeyArr = [
   "login",
@@ -262,6 +319,7 @@ export const defaultUtility2depth: Tutility2depth = {
 const productListText: I2depthText = { eng: "product list", kor: "상품 목록" };
 const defaultProductList: T2depth = {
   isDefault: false,
+  isSelected: false,
   ...productListText,
   structure: "",
 };
@@ -272,6 +330,7 @@ const productDetailText: I2depthText = {
 };
 const defaultProductDetail: T2depth = {
   isDefault: false,
+  isSelected: false,
   ...productDetailText,
   structure: "",
 };
@@ -279,6 +338,7 @@ const defaultProductDetail: T2depth = {
 const productReviewText: I2depthText = { eng: "review", kor: "리뷰" };
 const defaultReview: T2depth = {
   isDefault: false,
+  isSelected: false,
   ...productReviewText,
   structure: "",
 };
@@ -289,6 +349,7 @@ const productIntroductionText: I2depthText = {
 };
 const defaultProductIntroduction: T2depth = {
   isDefault: false,
+  isSelected: false,
   ...productIntroductionText,
   structure: "",
 };
@@ -318,10 +379,15 @@ export const product2depth = (service: Tservice): Tproduct2depth => {
     case "shoppingMall": {
       const update = {
         ...defaultProduct2depth,
-        productList: { ...defaultProduct2depth.productList, isDefault: true },
+        productList: {
+          ...defaultProduct2depth.productList,
+          isDefault: true,
+          isSelected: true,
+        },
         productDetail: {
           ...defaultProduct2depth.productDetail,
           isDefault: true,
+          isSelected: true,
         },
       };
       return update;
@@ -333,6 +399,7 @@ export const product2depth = (service: Tservice): Tproduct2depth => {
         productIntroduction: {
           ...defaultProduct2depth.productIntroduction,
           isDefault: true,
+          isSelected: true,
         },
       };
       return update;
@@ -347,12 +414,18 @@ const noticeText: I2depthText = { eng: "notice", kor: "공지사항" };
 const noticeOptions: T2depthOption[] = [optionImage, optionText];
 const defaultNotice: T2depth = {
   isDefault: false,
+  isSelected: false,
   ...noticeText,
   options: noticeOptions,
 };
 
 const faqText: I2depthText = { eng: "FAQ", kor: "FAQ" };
-const defaultFaq: T2depth = { isDefault: false, ...faqText, structure: "" };
+const defaultFaq: T2depth = {
+  isDefault: false,
+  isSelected: false,
+  ...faqText,
+  structure: "",
+};
 
 const personalInquiryText: I2depthText = {
   eng: "1:1 Inquiry",
@@ -360,6 +433,7 @@ const personalInquiryText: I2depthText = {
 };
 const defaultPersonalInquiry: T2depth = {
   isDefault: false,
+  isSelected: false,
   ...personalInquiryText,
   structure: "",
 };
@@ -372,6 +446,7 @@ const userGuideOptions: T2depthOption[] = [
 ];
 const defaultUserGuide: T2depth = {
   isDefault: false,
+  isSelected: false,
   ...userGuideText,
   options: userGuideOptions,
 };
@@ -382,6 +457,7 @@ const termsAndConditionsOfUseText: I2depthText = {
 };
 const defaultTermsAndConditionsOfUse: T2depth = {
   isDefault: false,
+  isSelected: false,
   ...termsAndConditionsOfUseText,
   structure: "",
 };
@@ -415,17 +491,26 @@ export const customerService2depth = (
     case "shoppingMall": {
       const update = {
         ...defaultCustomerService2depth,
-        notice: { ...defaultCustomerService2depth.notice, isDefault: true },
+        notice: {
+          ...defaultCustomerService2depth.notice,
+          isDefault: true,
+          isSelected: true,
+        },
       };
       return update;
     }
     case "intermediaryMatch": {
       const update = {
         ...defaultCustomerService2depth,
-        faq: { ...defaultCustomerService2depth.faq, isDefault: true },
+        faq: {
+          ...defaultCustomerService2depth.faq,
+          isDefault: true,
+          isSelected: true,
+        },
         userGuide: {
           ...defaultCustomerService2depth.userGuide,
           isDefault: true,
+          isSelected: true,
         },
       };
       return update;
@@ -447,6 +532,7 @@ const normalBoardOptions: T2depthOption[] = [
 ];
 const defaultNormalBoard: T2depth = {
   isDefault: false,
+  isSelected: false,
   ...normalBoardText,
   options: normalBoardOptions,
 };
@@ -455,6 +541,7 @@ const mediaText: I2depthText = { eng: "media", kor: "미디어" };
 const mediaOptions: T2depthOption[] = [optionImage, optionText, optionVideo];
 const defaultMedia: T2depth = {
   isDefault: false,
+  isSelected: false,
   ...mediaText,
   options: mediaOptions,
 };
@@ -467,6 +554,7 @@ const boardNewsOptions: T2depthOption[] = [
 ];
 const defaultBoardNews: T2depth = {
   isDefault: false,
+  isSelected: false,
   ...boardNewsText,
   options: boardNewsOptions,
 };
@@ -475,6 +563,7 @@ const blogText: I2depthText = { eng: "blog", kor: "블로그" };
 const blogOptions: T2depthOption[] = [optionImage, optionText];
 const defaultBlog: T2depth = {
   isDefault: false,
+  isSelected: false,
   ...blogText,
   options: blogOptions,
 };
@@ -483,6 +572,7 @@ const ceremonyText: I2depthText = { eng: "ceremony", kor: "행사" };
 const ceremonyOptions: T2depthOption[] = [optionImage, optionText, optionVideo];
 const defaultCeremony: T2depth = {
   isDefault: false,
+  isSelected: false,
   ...ceremonyText,
   options: ceremonyOptions,
 };
@@ -491,6 +581,7 @@ const galleryText: I2depthText = { eng: "gallery", kor: "갤러리" };
 const galleryOptions: T2depthOption[] = [optionImage, optionText, optionVideo];
 const defaultGallery: T2depth = {
   isDefault: false,
+  isSelected: false,
   ...galleryText,
   options: galleryOptions,
 };
@@ -499,16 +590,23 @@ const eventText: I2depthText = { eng: "event", kor: "이벤트" };
 const eventOptions: T2depthOption[] = [optionImage, optionText];
 const defaultEvent: T2depth = {
   isDefault: false,
+  isSelected: false,
   ...eventText,
   options: eventOptions,
 };
 
 const feedText: I2depthText = { eng: "feed", kor: "피드" };
-const defaultFeed: T2depth = { isDefault: false, ...feedText, structure: "" };
+const defaultFeed: T2depth = {
+  isDefault: false,
+  isSelected: false,
+  ...feedText,
+  structure: "",
+};
 
 const qnaBoardText: I2depthText = { eng: "Q&A board", kor: "Q&A 게시판" };
 const defaultQnaBoard: T2depth = {
   isDefault: false,
+  isSelected: false,
   ...qnaBoardText,
   structure: "",
 };
@@ -516,6 +614,7 @@ const defaultQnaBoard: T2depth = {
 const reservationText: I2depthText = { eng: "reservation", kor: "예약" };
 const defaultReservation: T2depth = {
   isDefault: false,
+  isSelected: false,
   ...reservationText,
   structure: "",
 };
@@ -523,6 +622,7 @@ const defaultReservation: T2depth = {
 const calendarText: I2depthText = { eng: "calendar", kor: "캘린더" };
 const defaultCalendar: T2depth = {
   isDefault: false,
+  isSelected: false,
   ...calendarText,
   structure: "",
 };
@@ -570,10 +670,12 @@ export const board2depth = (service: Tservice): Tboard2depth => {
         feed: {
           ...defaultBoard2depth.feed,
           isDefault: false,
+          isSelected: true,
         },
         qnaBoard: {
           ...defaultBoard2depth.qnaBoard,
           isDefault: false,
+          isSelected: true,
         },
       };
       return update;
@@ -585,6 +687,7 @@ export const board2depth = (service: Tservice): Tboard2depth => {
         news: {
           ...defaultBoard2depth.news,
           isDefault: true,
+          isSelected: true,
         },
       };
       return update;
@@ -600,6 +703,7 @@ export const board2depth = (service: Tservice): Tboard2depth => {
 const feeForUseText: I2depthText = { eng: "fee for use", kor: "요금안내" };
 const defaultFeeForUse: T2depth = {
   isDefault: true,
+  isSelected: true,
   ...feeForUseText,
   structure: "",
 };
@@ -610,6 +714,7 @@ const serviceListText: I2depthText = {
 };
 const defaultServiceList: T2depth = {
   isDefault: false,
+  isSelected: false,
   ...serviceListText,
   structure: "",
 };
@@ -620,6 +725,7 @@ const serviceDetailText: I2depthText = {
 };
 const defaultServiceDetail: T2depth = {
   isDefault: false,
+  isSelected: false,
   ...serviceDetailText,
   structure: "",
 };
@@ -627,6 +733,7 @@ const defaultServiceDetail: T2depth = {
 const serviceReviewText: I2depthText = { eng: "review", kor: "리뷰" };
 const defaultServiceReview: T2depth = {
   isDefault: false,
+  isSelected: false,
   ...serviceReviewText,
   structure: "",
 };
@@ -636,12 +743,18 @@ const serviceIntroduceText: I2depthText = {
   kor: "서비스 소개",
 };
 const serviceIntroduceOptions: T2depthOption[] = [
-  { eng: "one page", kor: "원페이지형", structure: "" },
-  { eng: "text list", kor: "목록형(텍스트)", structure: "" },
-  { eng: "image list", kor: "목록형(이미지)", structure: "" },
+  { eng: "one page", kor: "원페이지형", structure: "", isSelected: false },
+  { eng: "text list", kor: "목록형(텍스트)", structure: "", isSelected: false },
+  {
+    eng: "image list",
+    kor: "목록형(이미지)",
+    structure: "",
+    isSelected: false,
+  },
 ];
 const defaultServiceIntroduce: T2depth = {
   isDefault: true,
+  isSelected: true,
   ...serviceIntroduceText,
   options: serviceIntroduceOptions,
 };
@@ -652,6 +765,7 @@ const estimateInquiryText: I2depthText = {
 };
 const defaultEstimateInquiry: T2depth = {
   isDefault: true,
+  isSelected: true,
   ...estimateInquiryText,
   structure: "",
 };
@@ -662,6 +776,7 @@ const serviceInquiryText: I2depthText = {
 };
 const defaultServiceInquiry: T2depth = {
   isDefault: true,
+  isSelected: true,
   ...serviceInquiryText,
   structure: "",
 };
@@ -696,6 +811,7 @@ export const defaultService2depth: Tservice2depth = {
 const greetingText: I2depthText = { eng: "greetings", kor: "인사말" };
 const defaultGreeting: T2depth = {
   isDefault: false,
+  isSelected: false,
   ...greetingText,
   structure: "",
 };
@@ -703,6 +819,7 @@ const defaultGreeting: T2depth = {
 const companyInfoText: I2depthText = { eng: "company info", kor: "회사소개" };
 const defaultCompanyInfo: T2depth = {
   isDefault: false,
+  isSelected: false,
   ...companyInfoText,
   structure: "",
 };
@@ -710,6 +827,7 @@ const defaultCompanyInfo: T2depth = {
 const historyText: I2depthText = { eng: "history", kor: "연혁" };
 const defaultHistory: T2depth = {
   isDefault: false,
+  isSelected: false,
   ...historyText,
   structure: "",
 };
@@ -717,6 +835,7 @@ const defaultHistory: T2depth = {
 const inquiryText: I2depthText = { eng: "inquiry", kor: "문의" };
 const defaultInquiry: T2depth = {
   isDefault: false,
+  isSelected: false,
   ...inquiryText,
   structure: "",
 };
@@ -724,6 +843,7 @@ const defaultInquiry: T2depth = {
 const recruitText: I2depthText = { eng: "recruit", kor: "채용" };
 const defaultRecruit: T2depth = {
   isDefault: false,
+  isSelected: false,
   ...recruitText,
   structure: "",
 };
@@ -731,6 +851,7 @@ const defaultRecruit: T2depth = {
 const directionText: I2depthText = { eng: "direction", kor: "오시는 길" };
 const defaultDirection: T2depth = {
   isDefault: false,
+  isSelected: false,
   ...directionText,
   structure: "",
 };
@@ -743,12 +864,18 @@ const companyNewsOptions: T2depthOption[] = [
 ];
 const defaultCompanyNews: T2depth = {
   isDefault: false,
+  isSelected: false,
   ...companyNewsText,
   options: companyNewsOptions,
 };
 
 const cibiText: I2depthText = { eng: "CI/BI", kor: "CI/BI" };
-const defaultCibi: T2depth = { isDefault: false, ...cibiText, structure: "" };
+const defaultCibi: T2depth = {
+  isDefault: false,
+  isSelected: false,
+  ...cibiText,
+  structure: "",
+};
 
 const companyIntro2depthKeyArr = [
   "greeting",
@@ -783,27 +910,57 @@ export const companyIntro2depth = (service: Tservice): TcompanyIntro2depth => {
     case "homepageBoard": {
       const update = {
         ...defaultCompanyIntro2depth,
-        greeting: { ...defaultCompanyIntro2depth.greeting, isDefault: true },
+        greeting: {
+          ...defaultCompanyIntro2depth.greeting,
+          isDefault: true,
+          isSelected: true,
+        },
         companyInfo: {
           ...defaultCompanyIntro2depth.companyInfo,
           isDefault: true,
+          isSelected: true,
         },
-        history: { ...defaultCompanyIntro2depth.history, isDefault: true },
-        recruit: { ...defaultCompanyIntro2depth.recruit, isDefault: true },
-        news: { ...defaultCompanyIntro2depth.news, isDefault: true },
+        history: {
+          ...defaultCompanyIntro2depth.history,
+          isDefault: true,
+          isSelected: true,
+        },
+        recruit: {
+          ...defaultCompanyIntro2depth.recruit,
+          isDefault: true,
+          isSelected: true,
+        },
+        news: {
+          ...defaultCompanyIntro2depth.news,
+          isDefault: true,
+          isSelected: true,
+        },
       };
       return update;
     }
     case "landingIntroduce": {
       const update = {
         ...defaultCompanyIntro2depth,
-        greeting: { ...defaultCompanyIntro2depth.greeting, isDefault: true },
-        inquiry: { ...defaultCompanyIntro2depth.inquiry, isDefault: true },
+        greeting: {
+          ...defaultCompanyIntro2depth.greeting,
+          isDefault: true,
+          isSelected: true,
+        },
+        inquiry: {
+          ...defaultCompanyIntro2depth.inquiry,
+          isDefault: true,
+          isSelected: true,
+        },
         direction: {
           ...defaultCompanyIntro2depth.direction,
           isDefault: true,
+          isSelected: true,
         },
-        news: { ...defaultCompanyIntro2depth.news, isDefault: true },
+        news: {
+          ...defaultCompanyIntro2depth.news,
+          isDefault: true,
+          isSelected: true,
+        },
       };
       return update;
     }

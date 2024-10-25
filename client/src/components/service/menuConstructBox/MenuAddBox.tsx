@@ -6,7 +6,7 @@ import ButtonChooseDepth2Function from "../button/ButtonChooseDepth2Function";
 import ButtonAddDepth2 from "../button/ButtonAddDepth2";
 
 export default function MenuAddbox(prop: IbuttonDepth1) {
-  const { depth1, deleteFunction } = prop;
+  // const { depth1, deleteFunction } = prop;
 
   // const [selectableDepth2, setSelectableDepth2] = useState<IselectableDepth2[]>(
   //   [

@@ -55,10 +55,6 @@ export default function ServiceStep2Page() {
         device: formData.device,
         service: formData.service,
       });
-      console.log(
-        "Updated store data:",
-        serviceDefaultDataStore.getState().data
-      );
     }
   }
 

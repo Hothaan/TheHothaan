@@ -4,12 +4,12 @@ import { useState } from "react";
 import ButtonClose from "../../common/button/ButtonClose";
 
 export default function ButtonDepth1(prop: IbuttonDepth1) {
-  const { depth1, deleteFunction } = prop;
+  const { depth1Kor, depth1Eng, onDelete } = prop;
   const [showDeletedButton, setShowDeletedButton] = useState(false);
 
   const closeButton: IbuttonClose = {
-    deleteFunction: () => {
-      deleteFunction();
+    onDelete: () => {
+      // onDelete();
     },
     top: "-3px",
     right: "-6px",
@@ -27,7 +27,7 @@ export default function ButtonDepth1(prop: IbuttonDepth1) {
       }}
     >
       <div css={[choose_function]}>
-        <p css={[function_text]}>{depth1}</p>
+        <p css={[function_text]}>{depth1Kor}</p>
       </div>
       {/* {showDeletedButton && <ButtonClose {...closeButton} />} */}
     </div>

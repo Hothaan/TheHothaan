@@ -17,7 +17,6 @@ interface IselectableDepth2DataForm {
   [key: string]: {
     depth1: string;
     selectableDepth2: IselectableDepth2[];
-    deleteFunction: () => void;
   };
 }
 
@@ -25,9 +24,6 @@ export default function ServiceStep3Page() {
   const { steps, setSteps } = serviceStepStore();
   const { data, setData } = serviceDefaultDataStore();
   const depth1 = data.service !== "" && serviceData[data.service];
-
-  //menuconstructbox 에 뿌려줄 값을 미리 생성해서 뿌려주고, 상태관리로 업데이트 가능해야함,
-  //다음 페이지로 넘어갈 때 전역변수에 각 값을 저장
 
   function makeinitialFormData() {
     const result: { [key: string]: any } = {};
@@ -50,7 +46,6 @@ export default function ServiceStep3Page() {
       result[key1] = {
         depth1: { kor: kor, eng: eng },
         selectableDepth2,
-        deleteFunction: () => {},
       };
     });
 
@@ -62,35 +57,84 @@ export default function ServiceStep3Page() {
   const [formData, setFormData] =
     useState<IselectableDepth2DataForm>(initialFormData);
 
-  console.log(formData);
-
   function handleAddMenu(
-    depth1prop: string,
-    depth2prop: string,
-    isSelected: boolean
+    updatedDepth2Data: IselectableDepth2[],
+    depth1prop: string
   ): void {
-    const filteredItem = formData[
-      depth1prop as Tdepth1KeyTextArr
-    ].selectableDepth2.find((item) => item.depth2.eng === depth2prop);
-    if (filteredItem) {
-      filteredItem.isSelected = isSelected;
-    }
-
     setFormData((prev) => {
       const updatedFormData = { ...prev };
       const updatedDepth1 = {
         ...updatedFormData[depth1prop as Tdepth1KeyTextArr],
       };
+
+      updatedDepth1.selectableDepth2 = updatedDepth2Data;
+      updatedFormData[depth1prop as Tdepth1KeyTextArr] = updatedDepth1;
+
+      return updatedFormData;
+    });
+  }
+
+  function handleDeleteMenu(depth1prop: string, depth2prop: string): void {
+    setFormData((prev) => {
+      const updatedFormData = { ...prev };
+      const updatedDepth1 = {
+        ...updatedFormData[depth1prop as Tdepth1KeyTextArr],
+      };
+
       const updatedSelectableDepth2 = updatedDepth1.selectableDepth2.map(
         (item) => {
           if (item.depth2.eng === depth2prop) {
-            return { ...item, isSelected: isSelected };
+            return { ...item, isSelected: false };
           }
           return item;
         }
       );
+
       updatedDepth1.selectableDepth2 = updatedSelectableDepth2;
       updatedFormData[depth1prop as Tdepth1KeyTextArr] = updatedDepth1;
+
+      return updatedFormData;
+    });
+  }
+
+  function handleOptionChange(
+    depth1Eng: string,
+    depth2Eng: string,
+    optionKor: string
+  ) {
+    console.log(depth1Eng, depth2Eng, optionKor);
+    setFormData((prev) => {
+      const updatedFormData = { ...prev };
+
+      const updatedDepth1 = {
+        ...updatedFormData[depth1Eng as Tdepth1KeyTextArr],
+      };
+
+      if (!updatedDepth1) {
+        console.error(`depth1Eng (${depth1Eng}) is invalid.`);
+        return prev;
+      }
+
+      console.log(updatedDepth1.selectableDepth2);
+
+      const updatedSelectableDepth2 = updatedDepth1.selectableDepth2.map(
+        (depth2Item) => {
+          if (depth2Item.depth2.eng === depth2Eng && depth2Item.options) {
+            const updatedOptions = depth2Item.options.map((option) => {
+              if (option.kor === optionKor) {
+                return { ...option, isSelected: true };
+              }
+              return option;
+            });
+            return { ...depth2Item, options: updatedOptions };
+          }
+          return depth2Item;
+        }
+      );
+
+      updatedDepth1.selectableDepth2 = updatedSelectableDepth2;
+      updatedFormData[depth1Eng as Tdepth1KeyTextArr] = updatedDepth1;
+
       return updatedFormData;
     });
   }
@@ -197,16 +241,15 @@ export default function ServiceStep3Page() {
           </div>
           <div css={select_container}>
             {Object.entries(depth1).map(([key, value]) => {
-              let text = depth1KeyText[key as Tdepth1KeyTextArr].kor;
+              let depth1Kor = depth1KeyText[key as Tdepth1KeyTextArr].kor;
+              let depth1Eng = depth1KeyText[key as Tdepth1KeyTextArr].eng;
               const data = {
-                depth1: text,
+                depth1Kor: depth1Kor,
+                depth1Eng: depth1Eng,
                 data: value,
-                // add로 2depth 추가시 isSelected 업데이트
                 onAddMenu: handleAddMenu,
-                // 옵션 선택시 선택한 옵션값 업데이트
-                onSelectOption: () => {},
-                // delete로 2depth 삭제시 isSelected 업데이트
-                deleteFunction: () => {},
+                onSelectOption: handleOptionChange,
+                onDelete: handleDeleteMenu,
               };
               return <MenuConstructBox {...data} key={key} />;
             })}

@@ -5,6 +5,7 @@ declare type T2depthOption = {
   eng: string;
   kor: string;
   structure: string;
+  isSelected: boolean;
 };
 
 declare type Tservice =
@@ -178,15 +179,19 @@ declare interface IbuttonStep {
 }
 
 declare interface IbuttonDepth1 {
-  depth1: string;
+  depth1Kor: string;
+  depth1Eng: string;
   data: any;
   onAddMenu: (
-    depth1prop: string,
-    depth2prop: string,
-    isSelected: boolean
+    updatedDepth2Data: IselectableDepth2[],
+    depth1prop: string
   ) => void;
-  onSelectOption: () => void;
-  deleteFunction: () => void;
+  onSelectOption: (
+    depth1Eng: string,
+    depth2Eng: string,
+    optionKor: string
+  ) => void;
+  onDelete: (depth1prop: string, depth2prop: string) => void;
 }
 
 declare interface IselectableDepth2DataForm {
@@ -200,23 +205,25 @@ declare interface IselectableDepth2DataForm {
 declare interface IbuttonChooseDepth2Function {
   isDefault: boolean;
   info: string;
-  depth1: string;
+  depth1Kor: string;
+  depth1Eng: string;
   depth2: { eng: string; kor: string };
   options: T2depthOption[] | null;
-  onChoose: () => void;
-  deleteFunction: (depth2: string) => void;
+  onSelectOption: (
+    depth1Eng: string,
+    depth2Eng: string,
+    optionKor: string
+  ) => void;
+  onDelete: (depth1prop: string, depth2prop: string) => void;
 }
 
-// declare interface IselectableDepth2 {
-//   isSelected: boolean;
-//   depth2: string;
-//   options: string[] | null;
-// }
-
 declare interface IselectableDepth2 {
+  depth2: { eng: string; kor: string };
+  // kor: string;
+  // eng: string;
   isDefault: boolean;
   isSelected: boolean;
-  depth2: { eng: string; kor: string };
+  // depth2: { eng: string; kor: string };
   options: T2depthOption[] | null;
 }
 
@@ -227,10 +234,21 @@ declare interface IbuttonAddDepth1 {
   // onCancel: () => void; //체크박스 수정사항을 저장하지 않고 원래 값으로 돌린 뒤 모달 닫음
 }
 
+// declare interface IbuttonAddDepth2 {
+//   depth1: string; //상위 메뉴 정보를 받아와서 선택 가능한 메뉴 경우의수 받아옴
+//   selectableDepth2: IselectableDepth2[]; //해당 상위 메뉴에서 선택 가능한 하위 메뉴 경우의 수와 선택 값
+//   onAddMenu: (updateDepth2: IselectableDepth2[]) => void; //체크박스 선택 후 저장시 모달을 닫고 새로 선택된 하위메뉴의 buttonChooseDepth2를 생성
+//   onCancel: () => void; //체크박스 수정사항을 저장하지 않고 원래 값으로 돌린 뒤 모달 닫음
+// }
+
 declare interface IbuttonAddDepth2 {
-  depth1: string; //상위 메뉴 정보를 받아와서 선택 가능한 메뉴 경우의수 받아옴
+  depth1Kor: string;
+  depth1Eng: string; //상위 메뉴 정보를 받아와서 선택 가능한 메뉴 경우의수 받아옴
   selectableDepth2: IselectableDepth2[]; //해당 상위 메뉴에서 선택 가능한 하위 메뉴 경우의 수와 선택 값
-  onAddMenu: (updateDepth2: IselectableDepth2[]) => void; //체크박스 선택 후 저장시 모달을 닫고 새로 선택된 하위메뉴의 buttonChooseDepth2를 생성
+  onAddMenu: (
+    updatedDepth2Data: IselectableDepth2[],
+    depth1prop: string
+  ) => void; //체크박스 선택 후 저장시 모달을 닫고 새로 선택된 하위메뉴의 buttonChooseDepth2를 생성
   onCancel: () => void; //체크박스 수정사항을 저장하지 않고 원래 값으로 돌린 뒤 모달 닫음
 }
 
@@ -238,7 +256,7 @@ declare interface IbuttonClose {
   top: string;
   right: string;
   color?: "gray" | "blue";
-  deleteFunction?: () => void;
+  onDelete?: () => void;
   onClick?: () => void;
 }
 

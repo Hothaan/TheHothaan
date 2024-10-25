@@ -3,14 +3,14 @@ import { css, SerializedStyles } from "@emotion/react";
 import { ReactComponent as Close } from "@svgs/close.svg";
 
 export default function ButtonClose(prop: IbuttonClose) {
-  const { deleteFunction, color, onClick, top, right } = prop;
+  const { onDelete, color, onClick, top, right } = prop;
   return (
     <button
       type="button"
       css={[close_button(top, right), close_button_color(color)]}
       onClick={() => {
         if (onClick) onClick();
-        if (deleteFunction) deleteFunction();
+        if (onDelete) onDelete();
       }}
     >
       <Close />
