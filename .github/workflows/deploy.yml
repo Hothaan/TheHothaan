@@ -20,7 +20,7 @@ jobs:
 
     # 서버의 호스트 키를 known_hosts에 추가
     - name: Add server to known_hosts
-      run: ssh-keyscan 172.234.80.216 >> ~/.ssh/known_hosts
+      run: ssh-keyscan -H 172.234.80.216 >> ~/.ssh/known_hosts
 
     - name: Set environment variables
       run: |
@@ -46,14 +46,14 @@ jobs:
 
     - name: Deploy client to server
       run: |
-        ssh root@172.234.80.216 'rm -rf /var/www/TheHothaan/client/build/*'
-        scp -r client/build/* root@172.234.80.216:/var/www/TheHothaan/client/build/
+        ssh -o StrictHostKeyChecking=no root@172.234.80.216 'rm -rf /var/www/TheHothaan/client/build/*'
+        scp -o StrictHostKeyChecking=no -r client/build/* root@172.234.80.216:/var/www/TheHothaan/client/build/
 
     - name: Deploy server to server
       run: |
-        ssh root@172.234.80.216 'rm -rf /var/www/TheHothaan/server/*'
-        scp -r server/* root@172.234.80.216:/var/www/TheHothaan/server/
+        ssh -o StrictHostKeyChecking=no root@172.234.80.216 'rm -rf /var/www/TheHothaan/server/*'
+        scp -o StrictHostKeyChecking=no -r server/* root@172.234.80.216:/var/www/TheHothaan/server/
 
     - name: Restart server process
       run: |
-        ssh root@172.234.80.216 'pm2 restart all'
+        ssh -o StrictHostKeyChecking=no root@172.234.80.216 'pm2 restart all'
