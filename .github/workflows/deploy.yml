@@ -1,0 +1,62 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - main  # 'main' 브랜치로 푸시될 때마다 배포가 실행됩니다.
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install SSH Key
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Set environment variables
+      run: |
+        echo "REACT_APP_API_KEY_DEV=${{ secrets.REACT_APP_API_KEY_DEV }}" >> client/.env
+
+    # Client dependencies 설치
+    - name: Install client dependencies
+      run: |
+        cd client
+        npm install
+
+    # Server dependencies 설치
+    - name: Install server dependencies
+      run: |
+        cd server
+        npm install
+
+    # Root 디렉토리의 dependencies 설치
+    - name: Install root dependencies
+      run: |
+        npm install
+
+    # 프로젝트 빌드 (client + server)
+    - name: Build project
+      run: |
+        npm run build
+
+    # 클라이언트 배포
+    - name: Deploy client to server
+      run: |
+        ssh root@172.234.80.216 'rm -rf /var/www/TheHothaan/client/build/*'
+        scp -r client/build/* root@172.234.80.216:/var/www/TheHothaan/client/build/
+
+    # 서버 배포
+    - name: Deploy server to server
+      run: |
+        ssh root@172.234.80.216 'rm -rf /var/www/TheHothaan/server/*'
+        scp -r server/* root@172.234.80.216:/var/www/TheHothaan/server/
+      
+    # 서버 재시작 (PM2 사용 가정)
+    - name: Restart server process
+      run: |
+        ssh root@172.234.80.216 'pm2 restart all'
