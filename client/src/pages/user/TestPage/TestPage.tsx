@@ -1,17 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import { css, Theme } from "@emotion/react";
 import { useState } from "react";
-import { TserviceDataKey } from "@data/serviceData";
+import { TserviceDataKey } from "@data/service/serviceData";
 import { makeComponentText } from "@api/test";
-import { rolesData } from "@data/componentRolsData";
+import { rolesData } from "@data/components/componentRolsData";
 import { componentMap } from "@components/template/mapping";
 import Loading from "@components/common/loading";
-import {
-  TDepth1KeyForService,
-  serviceData,
-  TallDepth1Keys,
-  Tall2depthKeys,
-} from "@data/serviceData";
+import { TDepth1KeyForService, serviceData } from "@data/service/serviceData";
+import { TallDepth1Keys } from "@data/service/depth1/common";
+import { Tall2depthKeys } from "@data/service/depth2/types";
 
 export interface IapiRequest<T extends TserviceDataKey> {
   service: T;

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { componentMap } from "@components/template/mapping";
 import { makeComponentText } from "@api/test";
 import { IapiRequest } from "@pages/user/TestPage/TestPage";
-import { TserviceDataKey } from "@data/serviceData";
+import { TserviceDataKey } from "@data/service/serviceData";
 
 export default function GenerateComponent(
   request: IapiRequest<TserviceDataKey>

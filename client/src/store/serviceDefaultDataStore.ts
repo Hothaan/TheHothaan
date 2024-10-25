@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { TserviceDataKey } from "@data/serviceData";
+import { TserviceDataKey } from "@data/service/serviceData";
 
 type TserviceDefaultData = {
   serviceTitle: string;

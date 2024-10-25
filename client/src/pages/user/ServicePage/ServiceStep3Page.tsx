@@ -4,12 +4,9 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { serviceStepStore, TserviceStep } from "@store/serviceStepStore";
 import { serviceDefaultDataStore } from "@store/serviceDefaultDataStore";
-import {
-  serviceData,
-  depth1KeyText,
-  Tdepth1KeyTextArr,
-  T2depth,
-} from "@data/serviceData";
+import { serviceData } from "@data/service/serviceData";
+import { depth1KeyText, Tdepth1KeyTextArr } from "@data/service/depth1/common";
+import { T2depth } from "@data/service/depth2/types";
 import Button from "@components/common/button/Button";
 import MenuConstructBox from "@components/service/menuConstructBox/MenuConstructBox";
 

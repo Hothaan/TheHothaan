@@ -46,7 +46,7 @@
 
 import axios from "axios";
 import { IapiRequest } from "@pages/user/TestPage/TestPage";
-import { TserviceDataKey } from "@data/serviceData";
+import { TserviceDataKey } from "@data/service/serviceData";
 
 // 서버를 통해 OpenAI API 호출 함수
 export const makeComponentText = async (

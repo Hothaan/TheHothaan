@@ -2,7 +2,7 @@
 import { css } from "@emotion/react";
 import { useState, useEffect, useMemo } from "react";
 import { MAX_NUM } from "@data/maxNum";
-import { T2depth } from "@data/serviceData";
+import { T2depth } from "@data/service/depth2/types";
 import ButtonDepth1 from "../button/ButtonDepth1";
 import ButtonChooseDepth2Function from "../button/ButtonChooseDepth2Function";
 import ButtonAddDepth2 from "../button/ButtonAddDepth2";

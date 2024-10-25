@@ -1,0 +1,118 @@
+import { T2depth } from "./types";
+import { I2depthText } from "./types";
+import { optionImage, optionText, optionVideo } from "../option/option";
+
+/* 고객센터 */
+export const noticeText: I2depthText = { eng: "notice", kor: "공지사항" };
+export const noticeOptions: T2depthOption[] = [optionImage, optionText];
+export const defaultNotice: T2depth = {
+  isDefault: false,
+  isSelected: false,
+  ...noticeText,
+  options: noticeOptions,
+};
+
+export const faqText: I2depthText = { eng: "FAQ", kor: "FAQ" };
+export const defaultFaq: T2depth = {
+  isDefault: false,
+  isSelected: false,
+  ...faqText,
+  structure: "",
+};
+
+export const personalInquiryText: I2depthText = {
+  eng: "1:1 Inquiry",
+  kor: "1:1 문의",
+};
+export const defaultPersonalInquiry: T2depth = {
+  isDefault: false,
+  isSelected: false,
+  ...personalInquiryText,
+  structure: "",
+};
+
+export const userGuideText: I2depthText = {
+  eng: "User Guide",
+  kor: "사용자 가이드",
+};
+export const userGuideOptions: T2depthOption[] = [
+  optionImage,
+  optionText,
+  optionVideo,
+];
+export const defaultUserGuide: T2depth = {
+  isDefault: false,
+  isSelected: false,
+  ...userGuideText,
+  options: userGuideOptions,
+};
+
+export const termsAndConditionsOfUseText: I2depthText = {
+  eng: "Terms and Conditions of Use",
+  kor: "이용약관",
+};
+export const defaultTermsAndConditionsOfUse: T2depth = {
+  isDefault: false,
+  isSelected: false,
+  ...termsAndConditionsOfUseText,
+  structure: "",
+};
+
+export const customerService2depthKeyArr = [
+  "notice",
+  "faq",
+  "personalInquiry",
+  "userGuide",
+  "termsAndConditionsOfUse",
+] as const;
+
+export type TcustomerService2depthKey =
+  (typeof customerService2depthKeyArr)[number];
+
+export type TcustomerService2depth = {
+  [K in TcustomerService2depthKey]: T2depth;
+};
+
+export const defaultCustomerService2depth: TcustomerService2depth = {
+  notice: defaultNotice,
+  faq: defaultFaq,
+  personalInquiry: defaultPersonalInquiry,
+  userGuide: defaultUserGuide,
+  termsAndConditionsOfUse: defaultTermsAndConditionsOfUse,
+};
+
+export const customerService2depth = (
+  service: Tservice
+): TcustomerService2depth => {
+  switch (service) {
+    case "shoppingMall": {
+      const update = {
+        ...defaultCustomerService2depth,
+        notice: {
+          ...defaultCustomerService2depth.notice,
+          isDefault: true,
+          isSelected: true,
+        },
+      };
+      return update;
+    }
+    case "intermediaryMatch": {
+      const update = {
+        ...defaultCustomerService2depth,
+        faq: {
+          ...defaultCustomerService2depth.faq,
+          isDefault: true,
+          isSelected: true,
+        },
+        userGuide: {
+          ...defaultCustomerService2depth.userGuide,
+          isDefault: true,
+          isSelected: true,
+        },
+      };
+      return update;
+    }
+    default:
+      return defaultCustomerService2depth;
+  }
+};

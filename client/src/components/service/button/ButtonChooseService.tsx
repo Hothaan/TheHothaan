@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { TserviceDataKey } from "@data/serviceData";
+import { TserviceDataKey } from "@data/service/serviceData";
 import { ReactComponent as ShoppingMall } from "@svgs/shoppingMall.svg";
 import { ReactComponent as CommunitySns } from "@svgs/communitySns.svg";
 import { ReactComponent as IntermediaryMatch } from "@svgs/intermediaryMatch.svg";
