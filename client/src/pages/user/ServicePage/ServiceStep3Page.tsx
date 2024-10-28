@@ -6,9 +6,11 @@ import { serviceStepStore, TserviceStep } from "@store/serviceStepStore";
 import { serviceDefaultDataStore } from "@store/serviceDefaultDataStore";
 import { serviceData } from "@data/service/serviceData";
 import { depth1KeyText, Tdepth1KeyTextArr } from "@data/service/depth1/common";
-import { T2depth } from "@data/service/depth2/types";
+import { T2depth } from "@data/service/depth2/common";
+import { Ibutton } from "@components/common/button/Button";
 import Button from "@components/common/button/Button";
 import MenuConstructBox from "@components/service/menuConstructBox/MenuConstructBox";
+import { IselectableDepth2 } from "@components/service/button/ButtonAddDepth2";
 
 interface IselectableDepth2DataForm {
   [key: string]: {
@@ -19,10 +21,12 @@ interface IselectableDepth2DataForm {
 
 export default function ServiceStep3Page() {
   const { steps, setSteps } = serviceStepStore();
-  const { data, setData } = serviceDefaultDataStore();
-  const depth1 = data.service !== "" && serviceData[data.service];
+  const { serviceDefaultData } = serviceDefaultDataStore();
+  const depth1 =
+    serviceDefaultData.service !== "" &&
+    serviceData[serviceDefaultData.service];
 
-  function makeinitialFormData() {
+  function makeInitialFormData() {
     const result: { [key: string]: any } = {};
 
     Object.entries(depth1).map(([key1, value]) => {
@@ -49,10 +53,12 @@ export default function ServiceStep3Page() {
     return result;
   }
 
-  let initialFormData = makeinitialFormData();
+  let initialFormData = makeInitialFormData();
 
   const [formData, setFormData] =
     useState<IselectableDepth2DataForm>(initialFormData);
+
+  console.log(formData);
 
   function handleAddMenu(
     updatedDepth2Data: IselectableDepth2[],
@@ -163,6 +169,7 @@ export default function ServiceStep3Page() {
   }
 
   function saveDataInStore(formData: IselectableDepth2DataForm) {
+    //어떻게 저장할건지 송이님과 논의해서 결정해야할듯
     // if (formData.device !== "" && formData.service !== "") {
     //   const { data, setData } = serviceDefaultDataStore.getState();
     //   setData({
@@ -238,11 +245,11 @@ export default function ServiceStep3Page() {
           </div>
           <div css={select_container}>
             {Object.entries(depth1).map(([key, value]) => {
-              let depth1Kor = depth1KeyText[key as Tdepth1KeyTextArr].kor;
-              let depth1Eng = depth1KeyText[key as Tdepth1KeyTextArr].eng;
               const data = {
-                depth1Kor: depth1Kor,
-                depth1Eng: depth1Eng,
+                depth1: {
+                  kor: depth1KeyText[key as Tdepth1KeyTextArr].kor,
+                  eng: depth1KeyText[key as Tdepth1KeyTextArr].eng,
+                },
                 data: value,
                 onAddMenu: handleAddMenu,
                 onSelectOption: handleOptionChange,

@@ -1,7 +1,17 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import { Ibutton } from "@components/common/button/Button";
 import Button from "@components/common/button/Button";
+import { IbuttonClose } from "@components/common/button/ButtonClose";
 import ButtonClose from "@components/common/button/ButtonClose";
+
+export interface IserviceModal {
+  isOpen: boolean;
+  title: string;
+  buttons: Ibutton[];
+  onClick: () => void;
+  children?: React.ReactNode;
+}
 
 export default function ServiceModal(prop: IserviceModal) {
   const { isOpen, title, buttons, children, onClick } = prop;

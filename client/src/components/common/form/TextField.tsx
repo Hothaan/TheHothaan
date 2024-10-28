@@ -1,6 +1,16 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
+export interface ItextField {
+  label: string;
+  id: string;
+  placeholder?: string;
+  disabled?: boolean;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  className?: string;
+}
+
 export default function TextField(prop: ItextField) {
   const { label, id, placeholder, disabled, value, onChange, className } = prop;
   return (

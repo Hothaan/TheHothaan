@@ -1,6 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import { Ibutton } from "@components/common/button/Button";
 import Button from "@components/common/button/Button";
+
+export interface Imodal {
+  isOpen: boolean;
+  content: string;
+  onClick: () => void;
+  buttons: Ibutton[];
+}
 
 export default function Modal(prop: Imodal) {
   const { isOpen, content, onClick, buttons } = prop;

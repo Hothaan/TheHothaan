@@ -1,10 +1,27 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { useState, useRef, useEffect } from "react";
+import { IserviceModal } from "@components/service/modal/ServiceModal";
 import ServiceModal from "@components/service/modal/ServiceModal";
 import Button from "@components/common/button/Button";
+import { IbuttonClose } from "@components/common/button/ButtonClose";
 import ButtonClose from "@components/common/button/ButtonClose";
 import RadioButton from "@components/common/form/RadioButton";
+
+export interface IbuttonChooseDepth2Function {
+  isDefault: boolean;
+  info: string;
+  depth1Kor: string;
+  depth1Eng: string;
+  depth2: { eng: string; kor: string };
+  options: T2depthOption[] | null;
+  onSelectOption: (
+    depth1Eng: string,
+    depth2Eng: string,
+    optionKor: string
+  ) => void;
+  onDelete: (depth1prop: string, depth2prop: string) => void;
+}
 
 export default function ButtonChooseDepth2Function(
   prop: IbuttonChooseDepth2Function

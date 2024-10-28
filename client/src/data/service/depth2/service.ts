@@ -1,5 +1,6 @@
-import { T2depth } from "./types";
-import { I2depthText } from "./types";
+import { T2depth } from "./common";
+import { I2depthText } from "./common";
+import { Tdepth1Text } from "../depth1/common";
 
 /* 서비스 */
 export const feeForUseText: I2depthText = {
@@ -102,7 +103,10 @@ export type Tservice2depth = {
   [K in Tservice2depthKey]: T2depth;
 };
 
-export const defaultService2depth: Tservice2depth = {
+interface Iservice2depth extends Tservice2depth, Tdepth1Text {}
+
+export const defaultService2depth: Iservice2depth = {
+  depth1: { eng: "service", kor: "서비스" },
   feeForUse: defaultFeeForUse,
   serviceList: defaultServiceList,
   serviceDetail: defaultServiceDetail,

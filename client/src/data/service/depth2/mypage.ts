@@ -1,5 +1,5 @@
-import { T2depth } from "./types";
-import { I2depthText } from "./types";
+import { T2depth } from "./common";
+import { I2depthText } from "./common";
 
 /* 마이페이지 */
 export const profileText: I2depthText = { eng: "profile", kor: "내 프로필" };

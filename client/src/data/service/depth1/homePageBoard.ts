@@ -1,4 +1,4 @@
-import { Tall2depth } from "../depth2/types";
+import { Tall2depth } from "../depth2/common";
 import { main2depth } from "../depth2/main";
 import { companyIntro2depth } from "../depth2/companyIntro";
 import { product2depth } from "../depth2/product";

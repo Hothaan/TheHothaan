@@ -4,6 +4,7 @@ import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { ReactComponent as ChevRight } from "@svgs/chevRight.svg";
+import { IbuttonStep } from "@components/service/button/ButtonStep";
 import ButtonStep from "@components/service/button/ButtonStep";
 
 const initialStepData: IbuttonStep[] = [

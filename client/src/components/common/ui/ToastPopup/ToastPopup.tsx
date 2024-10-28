@@ -2,6 +2,12 @@
 import { css, keyframes } from "@emotion/react";
 import { Dispatch, useEffect } from "react";
 
+export interface ItoastPopup {
+  text: string;
+  isToast: boolean;
+  setIsToast: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
 export default function ToastPopup(prop: ItoastPopup) {
   const { text, isToast, setIsToast } = prop;
 

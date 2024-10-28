@@ -1,5 +1,6 @@
-import { T2depth } from "./types";
-import { I2depthText } from "./types";
+import { T2depth } from "./common";
+import { I2depthText } from "./common";
+import { Tdepth1Text } from "../depth1/common";
 import { optionImage, optionText, optionVideo } from "../option/option";
 
 /* 고객센터 */
@@ -73,7 +74,10 @@ export type TcustomerService2depth = {
   [K in TcustomerService2depthKey]: T2depth;
 };
 
-export const defaultCustomerService2depth: TcustomerService2depth = {
+interface IcustomerService2depth extends TcustomerService2depth, Tdepth1Text {}
+
+export const defaultCustomerService2depth: IcustomerService2depth = {
+  depth1: { eng: "customer service", kor: "고객센터" },
   notice: defaultNotice,
   faq: defaultFaq,
   personalInquiry: defaultPersonalInquiry,
@@ -83,7 +87,7 @@ export const defaultCustomerService2depth: TcustomerService2depth = {
 
 export const customerService2depth = (
   service: Tservice
-): TcustomerService2depth => {
+): IcustomerService2depth => {
   switch (service) {
     case "shoppingMall": {
       const update = {

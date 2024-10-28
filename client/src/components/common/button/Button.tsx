@@ -1,6 +1,16 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
+export type TbtnSize = "XL" | "M" | "S";
+export type TbtnBg = "gradient" | "blue" | "gray" | "white";
+export interface Ibutton {
+  size: TbtnSize;
+  bg: TbtnBg;
+  text: string;
+  onClick?: () => void;
+  disabled?: boolean;
+}
+
 export default function Button(prop: Ibutton) {
   const { size, bg, text, onClick, disabled } = prop;
 

@@ -8,7 +8,7 @@ import { componentMap } from "@components/template/mapping";
 import Loading from "@components/common/loading";
 import { TDepth1KeyForService, serviceData } from "@data/service/serviceData";
 import { TallDepth1Keys } from "@data/service/depth1/common";
-import { Tall2depthKeys } from "@data/service/depth2/types";
+import { Tall2depthKeys } from "@data/service/depth2/common";
 
 export interface IapiRequest<T extends TserviceDataKey> {
   service: T;

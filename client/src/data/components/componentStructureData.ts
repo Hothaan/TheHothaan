@@ -1,10 +1,4 @@
 export const commonStructureData: IStructureData = {
-  common: {
-    header: `{ title: string; navigation: string[]; }`,
-    footer: `{ copyright: string; links: string[]; }`,
-    login: `{ username: string; password: string; }`,
-    search: `{ query: string; results: string[]; }`,
-  },
   shoppingMall: {
     review: `{ title: string; content: string; rating: number; }`,
     payment: `{ totalPrice: number; paymentMethods: string[]; }`,

@@ -2,10 +2,13 @@
 import { css } from "@emotion/react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { ItextField } from "@components/common/form/TextField";
 import TextField from "@components/common/form/TextField";
+import { ItextArea } from "@components/common/form/TextArea";
 import TextArea from "@components/common/form/TextArea";
 import { serviceStepStore, TserviceStep } from "@store/serviceStepStore";
 import { serviceDefaultDataStore } from "@store/serviceDefaultDataStore";
+import { Ibutton } from "@components/common/button/Button";
 import Button from "@components/common/button/Button";
 
 interface IformData {
@@ -15,10 +18,11 @@ interface IformData {
 
 export default function ServiceStep1Page() {
   const { steps, setSteps } = serviceStepStore();
-  const { data, setData } = serviceDefaultDataStore();
+  const { serviceDefaultData, setServiceDefaultData } =
+    serviceDefaultDataStore();
   const initialFormData = {
-    serviceTitle: data.serviceTitle,
-    serviceDesc: data.serviceDesc,
+    serviceTitle: serviceDefaultData.serviceTitle,
+    serviceDesc: serviceDefaultData.serviceDesc,
   };
   const [formData, setFormData] = useState<IformData>(initialFormData);
 
@@ -49,13 +53,17 @@ export default function ServiceStep1Page() {
   }
 
   function saveDataInStore(formData: IformData) {
-    const { data, setData } = serviceDefaultDataStore.getState();
-    setData({
-      ...data,
+    const { serviceDefaultData, setServiceDefaultData } =
+      serviceDefaultDataStore.getState();
+    setServiceDefaultData({
+      ...serviceDefaultData,
       serviceTitle: formData.serviceTitle,
       serviceDesc: formData.serviceDesc,
     });
-    console.log("Updated store data:", serviceDefaultDataStore.getState().data);
+    console.log(
+      "Updated store data:",
+      serviceDefaultDataStore.getState().serviceDefaultData
+    );
   }
 
   const prevButtonData: Ibutton = {

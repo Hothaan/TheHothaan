@@ -2,6 +2,16 @@
 import { css } from "@emotion/react";
 import { useState } from "react";
 
+export interface IradioButton {
+  id: string;
+  name: string;
+  value: string;
+  label: string;
+  checked: boolean;
+  onChange: (e: React.FormEvent<HTMLInputElement>) => void;
+  required?: boolean;
+}
+
 export default function RadioButton(prop: IradioButton) {
   const { id, name, value, label, checked, onChange, required } = prop;
 

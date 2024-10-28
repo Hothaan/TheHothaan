@@ -1,5 +1,6 @@
-import { T2depth } from "./types";
-import { I2depthText } from "./types";
+import { T2depth } from "./common";
+import { I2depthText } from "./common";
+import { Tdepth1Text } from "../depth1/common";
 
 export const loginText: I2depthText = { eng: "login", kor: "로그인" };
 export const loginOptions: T2depthOption[] = [
@@ -76,7 +77,10 @@ export type Tutility2depth = {
   [K in Tutility2depthKey]: T2depth;
 };
 
-export const defaultUtility2depth: Tutility2depth = {
+interface Iutility2depth extends Tutility2depth, Tdepth1Text {}
+
+export const defaultUtility2depth: Iutility2depth = {
+  depth1: { eng: "utility", kor: "유틸리티" },
   login: defaultLogin,
   join: defaultJoin,
   findId: defaultFindId,

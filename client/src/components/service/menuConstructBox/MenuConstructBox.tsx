@@ -2,14 +2,18 @@
 import { css } from "@emotion/react";
 import { useState, useEffect, useMemo } from "react";
 import { MAX_NUM } from "@data/maxNum";
-import { T2depth } from "@data/service/depth2/types";
+import { T2depth } from "@data/service/depth2/common";
 import ButtonDepth1 from "../button/ButtonDepth1";
+import { IbuttonChooseDepth2Function } from "../button/ButtonChooseDepth2Function";
 import ButtonChooseDepth2Function from "../button/ButtonChooseDepth2Function";
+import { IbuttonAddDepth2 } from "../button/ButtonAddDepth2";
 import ButtonAddDepth2 from "../button/ButtonAddDepth2";
+import { IbuttonDepth1 } from "../button/ButtonDepth1";
+import { IselectableDepth2 } from "../button/ButtonAddDepth2";
 
 export default function MenuConstructBox(prop: IbuttonDepth1) {
-  const { depth1Kor, depth1Eng, data, onAddMenu, onSelectOption, onDelete } =
-    prop;
+  // const { depth1Kor, depth1Eng, data, onAddMenu, onSelectOption, onDelete } =
+  const { depth1, data, onAddMenu, onSelectOption, onDelete } = prop;
 
   const initialSelectableDepth2 = useMemo(() => {
     return Object.entries(data).map(([key, value]) => {
@@ -35,13 +39,13 @@ export default function MenuConstructBox(prop: IbuttonDepth1) {
     filteredSelectedDepth2.length < selectableDepth2.length - 1;
 
   function handleAddMenu(updatedDepth2: IselectableDepth2[]) {
-    onAddMenu(updatedDepth2, depth1Eng);
+    onAddMenu(updatedDepth2, depth1.eng);
     setSelectableDepth2(updatedDepth2);
   }
 
   const [addDepth2, setAddDepth2] = useState<IbuttonAddDepth2>({
-    depth1Kor: depth1Kor,
-    depth1Eng: depth1Eng,
+    depth1Kor: depth1.kor,
+    depth1Eng: depth1.eng,
     selectableDepth2: selectableDepth2,
     onAddMenu: handleAddMenu,
     onCancel: () => {},
@@ -69,14 +73,14 @@ export default function MenuConstructBox(prop: IbuttonDepth1) {
         const chooseDepth2: IbuttonChooseDepth2Function = {
           isDefault: depth2.isDefault,
           info: "유형 선택",
-          depth1Kor: depth1Kor,
-          depth1Eng: depth1Eng,
+          depth1Kor: depth1.kor,
+          depth1Eng: depth1.eng,
           depth2: { eng: depth2.depth2.eng, kor: depth2.depth2.kor },
           options: depth2.options,
           onSelectOption: onSelectOption,
           onDelete: () => {
-            handleDelete(depth1Eng, depth2.depth2.eng);
-            onDelete(depth1Eng, depth2.depth2.eng);
+            handleDelete(depth1.eng, depth2.depth2.eng);
+            onDelete(depth1.eng, depth2.depth2.eng);
           },
         };
         return (

@@ -1,9 +1,29 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { useState, useEffect } from "react";
+import { IserviceModal } from "@components/service/modal/ServiceModal";
 import ServiceModal from "@components/service/modal/ServiceModal";
+import { IradioButtonAccordion } from "@components/service/accordion/RadioButtonAccordion";
 import RadioButtonAccordion from "@components/service/accordion/RadioButtonAccordion";
 import { ReactComponent as Add } from "@svgs/add.svg";
+
+export interface IbuttonAddDepth2 {
+  depth1Kor: string;
+  depth1Eng: string; //상위 메뉴 정보를 받아와서 선택 가능한 메뉴 경우의수 받아옴
+  selectableDepth2: IselectableDepth2[]; //해당 상위 메뉴에서 선택 가능한 하위 메뉴 경우의 수와 선택 값
+  onAddMenu: (
+    updatedDepth2Data: IselectableDepth2[],
+    depth1prop: string
+  ) => void; //체크박스 선택 후 저장시 모달을 닫고 새로 선택된 하위메뉴의 buttonChooseDepth2를 생성
+  onCancel: () => void; //체크박스 수정사항을 저장하지 않고 원래 값으로 돌린 뒤 모달 닫음
+}
+
+export interface IselectableDepth2 {
+  depth2: { eng: string; kor: string };
+  isDefault: boolean;
+  isSelected: boolean;
+  options: T2depthOption[] | null;
+}
 
 export default function ButtonAddDepth2(prop: IbuttonAddDepth2) {
   const { depth1Eng, depth1Kor, selectableDepth2, onAddMenu, onCancel } = prop;

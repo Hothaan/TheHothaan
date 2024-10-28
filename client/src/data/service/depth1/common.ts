@@ -27,6 +27,10 @@ export type Tdepth1KeyText = {
   [K in Tdepth1KeyTextArr]: { eng: string; kor: string };
 };
 
+export type Tdepth1Text = {
+  depth1: { eng: string; kor: string };
+};
+
 export const depth1KeyText: Tdepth1KeyText = {
   main: { eng: "main", kor: "메인" },
   product: { eng: "product", kor: "상품" },

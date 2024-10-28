@@ -9,18 +9,19 @@ type TserviceDefaultData = {
 };
 
 declare interface IserviceDefaultDataStore {
-  data: TserviceDefaultData;
-  setData: (newData: TserviceDefaultData) => void;
+  serviceDefaultData: TserviceDefaultData;
+  setServiceDefaultData: (newData: TserviceDefaultData) => void;
 }
 
 export const serviceDefaultDataStore = create<IserviceDefaultDataStore>()(
   (set) => ({
-    data: {
+    serviceDefaultData: {
       serviceTitle: "",
       serviceDesc: "",
       device: "",
       service: "",
     },
-    setData: (newData: TserviceDefaultData) => set({ data: newData }),
+    setServiceDefaultData: (newData: TserviceDefaultData) =>
+      set({ serviceDefaultData: newData }),
   })
 );

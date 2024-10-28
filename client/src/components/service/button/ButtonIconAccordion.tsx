@@ -1,8 +1,22 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useState } from "react";
+import { useState, ReactElement } from "react";
+import { TbtnSize } from "@components/common/button/Button";
 import { ReactComponent as ArrowUp } from "@svgs/arrowUp.svg";
 import { ReactComponent as ArrowDown } from "@svgs/arrowDown.svg";
+
+export type TbuttonIconAccordionOption = {
+  text: string;
+  onClick: () => void;
+};
+
+export interface IbuttonIconAccordion {
+  size: TbtnSize;
+  icon: ReactElement;
+  text: string;
+  onClick: () => void;
+  options: TbuttonIconAccordionOption[];
+}
 
 export default function ButtonIconAccordion(prop: IbuttonIconAccordion) {
   const { size, icon, text, onClick, options } = prop;

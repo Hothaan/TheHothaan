@@ -18,3 +18,10 @@ export const optionVideo: T2depthOption = {
   structure: "",
   isSelected: false,
 };
+
+export const optionDefault: T2depthOption = {
+  eng: "default",
+  kor: "기본형",
+  structure: "",
+  isSelected: true,
+};

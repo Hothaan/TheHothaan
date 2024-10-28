@@ -4,6 +4,12 @@ import { ReactComponent as Pc } from "@svgs/pc.svg";
 import { ReactComponent as Tablet } from "@svgs/tablet.svg";
 import { ReactComponent as Mobile } from "@svgs/mobile.svg";
 
+export interface IbuttonChooseDevice {
+  isSelected: boolean;
+  device: Tdevice;
+  onClick?: () => void;
+}
+
 export default function ButtonChooseDevice(props: IbuttonChooseDevice) {
   const { isSelected, device, onClick } = props;
 
@@ -96,7 +102,7 @@ const choose_device = css`
   p {
     color: var(--383838, #383838);
     font-family: Pretendard;
-    font-size: 20px;
+    font-size: 18px;
     font-style: normal;
     font-weight: 600;
     line-height: normal;

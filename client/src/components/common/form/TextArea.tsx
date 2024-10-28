@@ -2,6 +2,16 @@
 import { css } from "@emotion/react";
 import { useState } from "react";
 
+export interface ItextArea {
+  label: string;
+  id: string;
+  placeholder?: string;
+  disabled?: boolean;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  className?: string;
+}
+
 export default function TextFArea(prop: ItextArea) {
   const { label, id, placeholder, disabled, value, onChange, className } = prop;
   const [byteLength, setByteLength] = useState<number>(0);

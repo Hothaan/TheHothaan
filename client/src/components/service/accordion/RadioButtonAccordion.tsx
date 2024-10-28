@@ -1,10 +1,17 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { useState } from "react";
+import { IradioButton } from "@components/common/form/RadioButton";
 import RadioButton from "@components/common/form/RadioButton";
+import { Icheckbox } from "@components/common/form/Checkbox";
 import Checkbox from "@components/common/form/Checkbox";
 import { ReactComponent as ArrowUp } from "@svgs/arrowUp.svg";
 import { ReactComponent as ArrowDown } from "@svgs/arrowDown.svg";
+
+export interface IradioButtonAccordion {
+  radioButton: IradioButton;
+  options: Icheckbox[];
+}
 
 export default function RadioButtonAccordion(prop: IradioButtonAccordion) {
   const { radioButton, options } = prop;

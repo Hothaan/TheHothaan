@@ -1,4 +1,4 @@
-import { Tall2depth } from "../depth2/types";
+import { Tall2depth } from "../depth2/common";
 import { main2depth } from "../depth2/main";
 import { board2depth } from "../depth2/board";
 import { myPage2depth } from "../depth2/mypage";

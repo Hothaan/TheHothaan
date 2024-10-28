@@ -1,5 +1,6 @@
-import { T2depth } from "./types";
-import { I2depthText } from "./types";
+import { T2depth } from "./common";
+import { I2depthText } from "./common";
+import { Tdepth1Text } from "../depth1/common";
 
 /* 상품 */
 export const productListText: I2depthText = {
@@ -56,14 +57,17 @@ export type Tproduct2depth = {
   [K in Tproduct2depthKey]: T2depth;
 };
 
-export const defaultProduct2depth: Tproduct2depth = {
+interface Iproduct2depth extends Tproduct2depth, Tdepth1Text {}
+
+export const defaultProduct2depth: Iproduct2depth = {
+  depth1: { eng: "product", kor: "상품" },
   productList: defaultProductList,
   productDetail: defaultProductDetail,
   review: defaultReview,
   productIntroduction: defaultProductIntroduction,
 };
 
-export const product2depth = (service: Tservice): Tproduct2depth => {
+export const product2depth = (service: Tservice): Iproduct2depth => {
   switch (service) {
     case "shoppingMall": {
       const update = {

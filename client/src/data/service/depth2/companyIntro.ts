@@ -1,5 +1,6 @@
-import { T2depth } from "./types";
-import { I2depthText } from "./types";
+import { T2depth } from "./common";
+import { I2depthText } from "./common";
+import { Tdepth1Text } from "../depth1/common";
 import { optionImage, optionText, optionVideo } from "../option/option";
 
 /* 회사 소개 */
@@ -95,7 +96,10 @@ export type TcompanyIntro2depth = {
   [K in TcompanyIntro2depthKey]: T2depth;
 };
 
-export const defaultCompanyIntro2depth: TcompanyIntro2depth = {
+export interface IcompanyIntro2depth extends TcompanyIntro2depth, Tdepth1Text {}
+
+export const defaultCompanyIntro2depth: IcompanyIntro2depth = {
+  depth1: { eng: "company intro", kor: "회사 소개" },
   greeting: defaultGreeting,
   companyInfo: defaultCompanyInfo,
   history: defaultHistory,
@@ -106,7 +110,7 @@ export const defaultCompanyIntro2depth: TcompanyIntro2depth = {
   ciBi: defaultCibi,
 };
 
-export const companyIntro2depth = (service: Tservice): TcompanyIntro2depth => {
+export const companyIntro2depth = (service: Tservice): IcompanyIntro2depth => {
   switch (service) {
     case "homepageBoard": {
       const update = {

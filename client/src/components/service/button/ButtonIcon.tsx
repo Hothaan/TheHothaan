@@ -1,5 +1,14 @@
 /** @jsxImportSource @emotion/react */
+import { ReactElement } from "react";
 import { css } from "@emotion/react";
+import { TbtnSize } from "@components/common/button/Button";
+
+export interface IbuttonIcon {
+  size: TbtnSize;
+  icon: ReactElement;
+  text: string;
+  onClick?: () => void;
+}
 
 export default function ButtonIcon(prop: IbuttonIcon) {
   const { size, icon, text, onClick } = prop;

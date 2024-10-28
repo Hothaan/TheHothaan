@@ -3,6 +3,14 @@ import { css } from "@emotion/react";
 import { useState } from "react";
 import { ReactComponent as Check } from "@svgs/check.svg";
 
+export interface Icheckbox {
+  id: string;
+  name: string;
+  label: string;
+  checked: boolean;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
 export default function Checkbox(prop: Icheckbox) {
   const { id, name, label, checked, onChange } = prop;
 

@@ -2,6 +2,14 @@
 import { css, SerializedStyles } from "@emotion/react";
 import { ReactComponent as Close } from "@svgs/close.svg";
 
+export interface IbuttonClose {
+  top: string;
+  right: string;
+  color?: "gray" | "blue";
+  onDelete?: () => void;
+  onClick?: () => void;
+}
+
 export default function ButtonClose(prop: IbuttonClose) {
   const { onDelete, color, onClick, top, right } = prop;
   return (

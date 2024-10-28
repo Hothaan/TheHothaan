@@ -2,10 +2,13 @@
 import { css } from "@emotion/react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { IbuttonChooseDevice } from "@components/service/button/ButtonChooseDevice";
 import ButtonChooseDevice from "@components/service/button/ButtonChooseDevice";
+import { IbuttonChooseService } from "@components/service/button/ButtonChooseService";
 import ButtonChooseService from "@components/service/button/ButtonChooseService";
 import { serviceStepStore, TserviceStep } from "@store/serviceStepStore";
 import { serviceDefaultDataStore } from "@store/serviceDefaultDataStore";
+import { Ibutton } from "@components/common/button/Button";
 import Button from "@components/common/button/Button";
 
 interface IformData {
@@ -15,10 +18,11 @@ interface IformData {
 
 export default function ServiceStep2Page() {
   const { steps, setSteps } = serviceStepStore();
-  const { data, setData } = serviceDefaultDataStore();
+  const { serviceDefaultData, setServiceDefaultData } =
+    serviceDefaultDataStore();
   const initialFormData = {
-    device: data.device,
-    service: data.service,
+    device: serviceDefaultData.device,
+    service: serviceDefaultData.service,
   };
   const totalStep = 5;
   const [currentStep, setCurrentStep] = useState<number>(2);
@@ -49,9 +53,10 @@ export default function ServiceStep2Page() {
 
   function saveDataInStore(formData: IformData) {
     if (formData.device !== "" && formData.service !== "") {
-      const { data, setData } = serviceDefaultDataStore.getState();
-      setData({
-        ...data,
+      const { serviceDefaultData, setServiceDefaultData } =
+        serviceDefaultDataStore.getState();
+      setServiceDefaultData({
+        ...serviceDefaultData,
         device: formData.device,
         service: formData.service,
       });

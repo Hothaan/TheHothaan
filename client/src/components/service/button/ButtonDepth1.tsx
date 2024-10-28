@@ -1,10 +1,30 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { useState } from "react";
+import { IselectableDepth2 } from "./ButtonAddDepth2";
+import { IbuttonClose } from "@components/common/button/ButtonClose";
 import ButtonClose from "../../common/button/ButtonClose";
 
+export interface IbuttonDepth1 {
+  // depth1Kor: string;
+  // depth1Eng: string;
+  depth1: { kor: string; eng: string };
+  data: any;
+  onAddMenu: (
+    updatedDepth2Data: IselectableDepth2[],
+    depth1prop: string
+  ) => void;
+  onSelectOption: (
+    depth1Eng: string,
+    depth2Eng: string,
+    optionKor: string
+  ) => void;
+  onDelete: (depth1prop: string, depth2prop: string) => void;
+}
+
 export default function ButtonDepth1(prop: IbuttonDepth1) {
-  const { depth1Kor, depth1Eng, onDelete } = prop;
+  // const { depth1Kor, depth1Eng, onDelete } = prop;
+  const { depth1, onDelete } = prop;
   const [showDeletedButton, setShowDeletedButton] = useState(false);
 
   const closeButton: IbuttonClose = {
@@ -27,7 +47,7 @@ export default function ButtonDepth1(prop: IbuttonDepth1) {
       }}
     >
       <div css={[choose_function]}>
-        <p css={[function_text]}>{depth1Kor}</p>
+        <p css={[function_text]}>{depth1.kor}</p>
       </div>
       {/* {showDeletedButton && <ButtonClose {...closeButton} />} */}
     </div>

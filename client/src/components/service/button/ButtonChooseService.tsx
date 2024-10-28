@@ -7,6 +7,12 @@ import { ReactComponent as IntermediaryMatch } from "@svgs/intermediaryMatch.svg
 import { ReactComponent as HomepageBoard } from "@svgs/homepageBoard.svg";
 import { ReactComponent as LandingIntroduce } from "@svgs/landingIntroduce.svg";
 
+export interface IbuttonChooseService {
+  isSelected: boolean;
+  service: Tservice;
+  onClick?: () => void;
+}
+
 export default function ButtonChooseService(props: IbuttonChooseService) {
   const { isSelected, service, onClick } = props;
 
@@ -126,7 +132,7 @@ const choose_device = css`
 const title = css`
   color: var(--383838, #383838);
   font-family: Pretendard;
-  font-size: 20px;
+  font-size: 18px;
   font-style: normal;
   font-weight: 600;
   line-height: normal;

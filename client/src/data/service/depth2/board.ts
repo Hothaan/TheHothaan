@@ -1,8 +1,8 @@
-import { T2depth } from "./types";
-import { I2depthText } from "./types";
+import { T2depth } from "./common";
+import { I2depthText } from "./common";
 import { optionImage, optionText, optionVideo } from "../option/option";
+import { Tdepth1Text } from "../depth1/common";
 
-/* 게시판 */
 export const normalBoardText: I2depthText = {
   eng: "normal board",
   kor: "일반 게시판",
@@ -141,51 +141,94 @@ export const board2depthKeyArr = [
 export type Tboard2depthKey = (typeof board2depthKeyArr)[number];
 
 export type Tboard2depth = {
-  [K in Tboard2depthKey]: T2depth;
+  selectableDepth2: { [K in Tboard2depthKey]: T2depth }[];
 };
 
-export const defaultBoard2depth: Tboard2depth = {
-  normalBoard: defaultNormalBoard,
-  media: defaultMedia,
-  news: defaultBoardNews,
-  blog: defaultBlog,
-  ceremony: defaultCeremony,
-  gallery: defaultGallery,
-  event: defaultEvent,
-  feed: defaultFeed,
-  qnaBoard: defaultQnaBoard,
-  reservation: defaultReservation,
-  calendar: defaultCalendar,
+interface Iboard2depth extends Tdepth1Text {
+  selectableDepth2: { [K in Tboard2depthKey]: T2depth }[];
+}
+
+export const defaultBoard2depth: Iboard2depth = {
+  depth1: { eng: "board", kor: "게시판" },
+  selectableDepth2: [
+    {
+      normalBoard: defaultNormalBoard,
+      media: defaultMedia,
+      news: defaultBoardNews,
+      blog: defaultBlog,
+      ceremony: defaultCeremony,
+      gallery: defaultGallery,
+      event: defaultEvent,
+      feed: defaultFeed,
+      qnaBoard: defaultQnaBoard,
+      reservation: defaultReservation,
+      calendar: defaultCalendar,
+    },
+  ],
 };
 
-export const board2depth = (service: Tservice): Tboard2depth => {
+export const board2depth = (service: Tservice): Iboard2depth => {
   switch (service) {
     case "communitySns": {
       const update = {
         ...defaultBoard2depth,
-        normalBoard: { ...defaultBoard2depth.normalBoard, isDefault: true },
-        feed: {
-          ...defaultBoard2depth.feed,
-          isDefault: false,
-          isSelected: true,
-        },
-        qnaBoard: {
-          ...defaultBoard2depth.qnaBoard,
-          isDefault: false,
-          isSelected: true,
-        },
+        selectableDepth2: defaultBoard2depth.selectableDepth2.map((depth) => {
+          if (depth.normalBoard) {
+            return {
+              ...depth,
+              normalBoard: {
+                ...depth.normalBoard,
+                isDefault: true,
+              },
+            };
+          }
+          if (depth.feed) {
+            return {
+              ...depth,
+              feed: {
+                ...depth.feed,
+                isDefault: false,
+                isSelected: true,
+              },
+            };
+          }
+          if (depth.qnaBoard) {
+            return {
+              ...depth,
+              qnaBoard: {
+                ...depth.qnaBoard,
+                isDefault: false,
+                isSelected: true,
+              },
+            };
+          }
+          return depth;
+        }),
       };
       return update;
     }
     case "homepageBoard": {
       const update = {
         ...defaultBoard2depth,
-        media: { ...defaultBoard2depth.media, isDefault: true },
-        news: {
-          ...defaultBoard2depth.news,
-          isDefault: true,
-          isSelected: true,
-        },
+        selectableDepth2: defaultBoard2depth.selectableDepth2.map((depth) => {
+          if (depth.media) {
+            return {
+              ...depth,
+              media: { ...depth.media, isDefault: true },
+            };
+          }
+          if (depth.news) {
+            return {
+              ...depth,
+              news: {
+                ...depth.news,
+                isDefault: true,
+                isSelected: true,
+              },
+            };
+          }
+          return depth;
+        }),
       };
       return update;
     }

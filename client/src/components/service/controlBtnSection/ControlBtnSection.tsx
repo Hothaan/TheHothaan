@@ -3,6 +3,7 @@ import { css } from "@emotion/react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { serviceStepStore, TserviceStep } from "@store/serviceStepStore";
+import { Ibutton } from "@components/common/button/Button";
 import { serviceDefaultDataStore } from "@store/serviceDefaultDataStore";
 import Button from "@components/common/button/Button";
 
@@ -12,7 +13,6 @@ export default function ControlBtnSection() {
   const totalStep = 5;
   const [currentStep, setCurrentStep] = useState<number>(1);
   const { steps, setSteps } = serviceStepStore();
-  const { data, setData } = serviceDefaultDataStore();
 
   function handleNavigation(path: string) {
     navigate(path);

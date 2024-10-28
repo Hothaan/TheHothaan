@@ -1,6 +1,15 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
+export type TbuttonStepStatus = "active" | "disabled" | "complete";
+
+export interface IbuttonStep {
+  status: TbuttonStepStatus;
+  step: number;
+  text: string;
+  onClick: () => void;
+}
+
 export default function ButtonStep(prop: IbuttonStep) {
   const { status, step, text, onClick } = prop;
   return (
@@ -136,7 +145,7 @@ const step_text_color = (status: TbuttonStepStatus) => {
 
 const step_text = css`
   font-family: Pretendard;
-  font-size: 15px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 700;
   line-height: normal;

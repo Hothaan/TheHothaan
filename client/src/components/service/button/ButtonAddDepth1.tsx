@@ -1,9 +1,16 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { useState, useEffect } from "react";
+import { IserviceModal } from "@components/service/modal/ServiceModal";
 import ServiceModal from "@components/service/modal/ServiceModal";
 import RadioButtonAccordion from "@components/service/accordion/RadioButtonAccordion";
 import { ReactComponent as Add } from "@svgs/add.svg";
+import { IbuttonDepth1 } from "./ButtonDepth1";
+
+export interface IbuttonAddDepth1 {
+  service: Tservice;
+  selectableDepth1: IbuttonDepth1[];
+}
 
 export default function ButtonAddDepth1(prop: IbuttonAddDepth1) {
   const { service, selectableDepth1 } = prop;
