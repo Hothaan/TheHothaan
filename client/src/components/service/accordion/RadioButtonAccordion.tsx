@@ -15,7 +15,7 @@ export interface IradioButtonAccordion {
 
 export default function RadioButtonAccordion(prop: IradioButtonAccordion) {
   const { radioButton, options } = prop;
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
   return (
     <div css={wrap}>

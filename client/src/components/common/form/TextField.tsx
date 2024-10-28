@@ -50,12 +50,14 @@ const input = css`
   border-radius: 10px;
   border: 2px solid var(--DEDEDE, #dedede);
   background: var(--FFFFFF, #fff);
+  font-family: "Pretendard";
   color: var(--383838, #383838);
   font-size: 17px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
   &:placeholder {
+    font-family: "Pretendard";
     color: var(--747474, #747474);
     font-size: 17px;
     font-style: normal;

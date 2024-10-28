@@ -14,7 +14,7 @@ export interface IbuttonChooseDepth2Function {
   depth1Kor: string;
   depth1Eng: string;
   depth2: { eng: string; kor: string };
-  options: T2depthOption[] | null;
+  options?: T2depthOption[];
   onSelectOption: (
     depth1Eng: string,
     depth2Eng: string,
@@ -156,8 +156,8 @@ const info_text = css`
   line-height: 150%; /* 22.5px */
 `;
 
-const wrap = (options: T2depthOption[] | null) => css`
-  cursor: ${options ? "pointer" : "default"};
+const wrap = (options: T2depthOption[] | undefined) => css`
+  cursor: ${options !== undefined ? "pointer" : "default"};
   width: 188px;
   position: relative;
 `;
@@ -180,9 +180,9 @@ const choose_function_color = (selectedValue: string | null) => {
 
 const choose_function = (
   selectedValue: string | null,
-  options: T2depthOption[] | null
+  options: T2depthOption[] | undefined
 ) => css`
-  cursor: ${options ? "pointer" : "default"};
+  cursor: ${options !== undefined ? "pointer" : "default"};
   position: relative;
   display: flex;
   flex-direction: column;
@@ -233,6 +233,7 @@ const option_style_color = (
   if (selectedValue && option) {
     if (selectedValue === option) {
       return css`
+        background: var(--EEF7FD, #eef7fd);
         &:before {
           background: linear-gradient(to right, #3b82f6, #a855f7);
         }

@@ -28,9 +28,6 @@ import ToastPopup from "@components/common/ui/ToastPopup/ToastPopup";
 
 import { IbuttonStep } from "@components/service/button/ButtonStep";
 import ButtonStep from "@components/service/button/ButtonStep";
-// import ButtonAddDepth1 from "@components/service/button/ButtonAddDepth1";
-// import MenuConstructBox from "@components/service/menuConstructBox/MenuConstructBox";
-// import MenuAddbox from "@components/service/menuConstructBox/MenuAddBox";
 
 import { IbuttonChooseDevice } from "@components/service/button/ButtonChooseDevice";
 import ButtonChooseDevice from "@components/service/button/ButtonChooseDevice";
@@ -59,22 +56,10 @@ export default function ComponentGuidePage() {
             <a href="#serviceStep">step</a>
           </li>
           <li>
-            <a href="#servicechooseDepth2">chooseDepth2</a>
-          </li>
-          <li>
-            <a href="#servicechooseDepth2Title">chooseDepth2Title</a>
-          </li>
-          <li>
             <a href="#serviceChooseDevice">chooseDevice</a>
           </li>
           <li>
             <a href="#serviceChooseService">chooseService</a>
-          </li>
-          <li>
-            <a href="#serviceAddMenuToggle">addMenuToggle</a>
-          </li>
-          <li>
-            <a href="#serviceAddMenuModal">addMenuModal</a>
           </li>
         </ul>
       </div>
@@ -83,7 +68,6 @@ export default function ComponentGuidePage() {
       <ButtonSection />
       <UiEtcSection />
       <StepSection />
-      <ChooseDepth2Section />
       <ChooseDeviceSection />
       <ChooseServiceSection />
     </div>
@@ -440,19 +424,16 @@ function StepSection() {
     status: "active",
     step: 1,
     text: "프로젝트 생성",
-    onClick: () => {},
   };
   const stepDisabled: IbuttonStep = {
     status: "disabled",
     step: 1,
     text: "프로젝트 생성",
-    onClick: () => {},
   };
   const stepComplete: IbuttonStep = {
     status: "complete",
     step: 1,
     text: "프로젝트 생성",
-    onClick: () => {},
   };
   return (
     <div css={category} id="serviceStep">
@@ -468,37 +449,6 @@ function StepSection() {
       <div css={container}>
         <p css={title}>step button complete</p>
         <ButtonStep {...stepComplete} />
-      </div>
-    </div>
-  );
-}
-
-function ChooseDepth2Section() {
-  const service: Tservice = "shoppingMall";
-  const [selectableDepth1, setSelectableDepth1] = useState(["메인", ""]);
-  // const [depth1list, setDepth1list] = useState<IbuttonDepth1[]>([
-  //   { depth1: "상품", data: {}, deleteFunction: () => {} },
-  // ]);
-  // const addDepth1: IbuttonAddDepth1 = {
-  //   service: service,
-  //   selectableDepth1: depth1list,
-  // };
-  const menu_construct_box_wrap = css`
-    display: flex;
-    gap: 20px;
-  `;
-  return (
-    <div css={category} id="servicechooseDepth2">
-      <h5>menu construct</h5>
-      <div css={container}>
-        <p css={title}>menu construct box</p>
-        <div css={menu_construct_box_wrap}>
-          {/* {depth1list.map((item) => (
-            <MenuConstructBox key={item.depth1} {...item} />
-          ))} */}
-          {/* {depth1list.length < 5 && <ButtonAddDepth1 {...addDepth1} />} */}
-          {/* {depth1list.length < 5 && <MenuAddbox {...addDepth1} />} */}
-        </div>
       </div>
     </div>
   );

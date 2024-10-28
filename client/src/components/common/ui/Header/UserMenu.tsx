@@ -135,6 +135,7 @@ const user_not_memeber = (theme: Theme) => css`
 
 const user_menu_layer = (theme: Theme) => css`
   position: absolute;
+  z-index: 10;
   top: calc(100% + 18px);
   left: 50%;
   transform: translateX(-50%);

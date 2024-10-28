@@ -60,10 +60,6 @@ export default function ServiceStep1Page() {
       serviceTitle: formData.serviceTitle,
       serviceDesc: formData.serviceDesc,
     });
-    console.log(
-      "Updated store data:",
-      serviceDefaultDataStore.getState().serviceDefaultData
-    );
   }
 
   const prevButtonData: Ibutton = {

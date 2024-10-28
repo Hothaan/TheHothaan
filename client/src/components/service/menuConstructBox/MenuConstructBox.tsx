@@ -12,22 +12,23 @@ import { IbuttonDepth1 } from "../button/ButtonDepth1";
 import { IselectableDepth2 } from "../button/ButtonAddDepth2";
 
 export default function MenuConstructBox(prop: IbuttonDepth1) {
-  // const { depth1Kor, depth1Eng, data, onAddMenu, onSelectOption, onDelete } =
   const { depth1, data, onAddMenu, onSelectOption, onDelete } = prop;
 
+  console.log(data);
+
   const initialSelectableDepth2 = useMemo(() => {
-    return Object.entries(data).map(([key, value]) => {
+    return Object.entries(data.selectableDepth2).map(([key, value]) => {
       const keyValue = value as T2depth;
       return {
-        depth2: { kor: keyValue.kor, eng: keyValue.eng },
+        depth2: keyValue.depth2,
         isDefault: keyValue.isDefault,
         isSelected: keyValue.isDefault,
-        options: keyValue.options || null,
+        options: keyValue.options,
       };
     });
   }, [data]);
 
-  const [selectableDepth2, setSelectableDepth2] = useState<IselectableDepth2[]>(
+  const [selectableDepth2, setSelectableDepth2] = useState<T2depth[]>(
     initialSelectableDepth2
   );
 
@@ -38,7 +39,7 @@ export default function MenuConstructBox(prop: IbuttonDepth1) {
     filteredSelectedDepth2.length < MAX_NUM &&
     filteredSelectedDepth2.length < selectableDepth2.length - 1;
 
-  function handleAddMenu(updatedDepth2: IselectableDepth2[]) {
+  function handleAddMenu(updatedDepth2: T2depth[]) {
     onAddMenu(updatedDepth2, depth1.eng);
     setSelectableDepth2(updatedDepth2);
   }

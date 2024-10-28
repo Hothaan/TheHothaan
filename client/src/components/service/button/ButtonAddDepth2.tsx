@@ -2,6 +2,7 @@
 import { css } from "@emotion/react";
 import { useState, useEffect } from "react";
 import { IserviceModal } from "@components/service/modal/ServiceModal";
+import { T2depth } from "@data/service/depth2/common";
 import ServiceModal from "@components/service/modal/ServiceModal";
 import { IradioButtonAccordion } from "@components/service/accordion/RadioButtonAccordion";
 import RadioButtonAccordion from "@components/service/accordion/RadioButtonAccordion";
@@ -9,20 +10,18 @@ import { ReactComponent as Add } from "@svgs/add.svg";
 
 export interface IbuttonAddDepth2 {
   depth1Kor: string;
-  depth1Eng: string; //상위 메뉴 정보를 받아와서 선택 가능한 메뉴 경우의수 받아옴
-  selectableDepth2: IselectableDepth2[]; //해당 상위 메뉴에서 선택 가능한 하위 메뉴 경우의 수와 선택 값
-  onAddMenu: (
-    updatedDepth2Data: IselectableDepth2[],
-    depth1prop: string
-  ) => void; //체크박스 선택 후 저장시 모달을 닫고 새로 선택된 하위메뉴의 buttonChooseDepth2를 생성
-  onCancel: () => void; //체크박스 수정사항을 저장하지 않고 원래 값으로 돌린 뒤 모달 닫음
+  depth1Eng: string;
+  selectableDepth2: T2depth[];
+  onAddMenu: (updatedDepth2Data: T2depth[], depth1prop: string) => void;
+  onCancel: () => void;
 }
 
 export interface IselectableDepth2 {
   depth2: { eng: string; kor: string };
   isDefault: boolean;
   isSelected: boolean;
-  options: T2depthOption[] | null;
+  structure?: string;
+  options?: T2depthOption[];
 }
 
 export default function ButtonAddDepth2(prop: IbuttonAddDepth2) {
@@ -31,8 +30,7 @@ export default function ButtonAddDepth2(prop: IbuttonAddDepth2) {
   const [showOptions, setShowOptions] = useState(false);
   const [selectedValue, setSelectedValue] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [updateDepth2, setUpdateDepth2] =
-    useState<IselectableDepth2[]>(selectableDepth2);
+  const [updateDepth2, setUpdateDepth2] = useState<T2depth[]>(selectableDepth2);
 
   useEffect(() => {
     setUpdateDepth2(selectableDepth2);
@@ -50,6 +48,7 @@ export default function ButtonAddDepth2(prop: IbuttonAddDepth2) {
         bg: "gray",
         text: "취소",
         onClick: () => {
+          setUpdateDepth2(selectableDepth2);
           setIsModalOpen(!isModalOpen);
         },
       },

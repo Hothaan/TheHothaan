@@ -1,8 +1,11 @@
+import { Tdepth1Text } from "../depth1/common";
 import { T2depth } from "./common";
 import { I2depthText } from "./common";
 
 /* 마이페이지 */
-export const profileText: I2depthText = { eng: "profile", kor: "내 프로필" };
+export const profileText: I2depthText = {
+  depth2: { eng: "profile", kor: "내 프로필" },
+};
 export const defaultProfile: T2depth = {
   isDefault: false,
   isSelected: false,
@@ -11,8 +14,7 @@ export const defaultProfile: T2depth = {
 };
 
 export const orderListText: I2depthText = {
-  eng: "order list",
-  kor: "주문 목록",
+  depth2: { eng: "order list", kor: "주문 목록" },
 };
 export const defaultOrderList: T2depth = {
   isDefault: false,
@@ -21,7 +23,9 @@ export const defaultOrderList: T2depth = {
   structure: "",
 };
 
-export const cartText: I2depthText = { eng: "cart", kor: "장바구니" };
+export const cartText: I2depthText = {
+  depth2: { eng: "cart", kor: "장바구니" },
+};
 export const defaultCart: T2depth = {
   isDefault: false,
   isSelected: false,
@@ -30,8 +34,7 @@ export const defaultCart: T2depth = {
 };
 
 export const membershipWithdrawalText: I2depthText = {
-  eng: "membership withdrawal",
-  kor: "회원 탈퇴",
+  depth2: { eng: "membership withdrawal", kor: "회원 탈퇴" },
 };
 export const defaultMembershipWithdrawal: T2depth = {
   isDefault: false,
@@ -40,7 +43,9 @@ export const defaultMembershipWithdrawal: T2depth = {
   structure: "",
 };
 
-export const couponText: I2depthText = { eng: "coupon", kor: "쿠폰" };
+export const couponText: I2depthText = {
+  depth2: { eng: "coupon", kor: "쿠폰" },
+};
 export const couponOptions: T2depthOption[] = [
   {
     eng: "coupon download",
@@ -62,7 +67,9 @@ export const defaultCoupon: T2depth = {
   options: couponOptions,
 };
 
-export const mileageText: I2depthText = { eng: "mileage", kor: "마일리지" };
+export const mileageText: I2depthText = {
+  depth2: { eng: "mileage", kor: "마일리지" },
+};
 export const defaultMileage: T2depth = {
   isDefault: false,
   isSelected: false,
@@ -82,16 +89,21 @@ export const myPage2depthKeyArr = [
 export type TmyPage2depthKey = (typeof myPage2depthKeyArr)[number];
 
 export type TmyPage2depth = {
-  [K in TmyPage2depthKey]: T2depth;
+  selectableDepth2: { [K in TmyPage2depthKey]: T2depth };
 };
 
-export const defaulTmyPage2depth: TmyPage2depth = {
-  profile: defaultProfile,
-  orderList: defaultOrderList,
-  cart: defaultCart,
-  membershipWithdrawal: defaultMembershipWithdrawal,
-  coupon: defaultCoupon,
-  mileage: defaultMileage,
+interface ImyPage2depth extends TmyPage2depth, Tdepth1Text {}
+
+export const defaulTmyPage2depth: ImyPage2depth = {
+  depth1: { eng: "my page", kor: "마이페이지" },
+  selectableDepth2: {
+    profile: defaultProfile,
+    orderList: defaultOrderList,
+    cart: defaultCart,
+    membershipWithdrawal: defaultMembershipWithdrawal,
+    coupon: defaultCoupon,
+    mileage: defaultMileage,
+  },
 };
 
 export const myPage2depth = (service: Tservice): TmyPage2depth => {
@@ -99,15 +111,18 @@ export const myPage2depth = (service: Tservice): TmyPage2depth => {
     case "shoppingMall": {
       const update = {
         ...defaulTmyPage2depth,
-        orderList: {
-          ...defaulTmyPage2depth.orderList,
-          isDefault: true,
-          isSelected: true,
-        },
-        cart: {
-          ...defaulTmyPage2depth.cart,
-          isDefault: true,
-          isSelected: true,
+        selectableDepth2: {
+          ...defaulTmyPage2depth.selectableDepth2,
+          orderList: {
+            ...defaulTmyPage2depth.selectableDepth2.orderList,
+            isDefault: true,
+            isSelected: true,
+          },
+          cart: {
+            ...defaulTmyPage2depth.selectableDepth2.cart,
+            isDefault: true,
+            isSelected: true,
+          },
         },
       };
       return update;
@@ -115,25 +130,28 @@ export const myPage2depth = (service: Tservice): TmyPage2depth => {
     case "communitySns": {
       const update = {
         ...defaulTmyPage2depth,
-        profile: {
-          ...defaulTmyPage2depth.profile,
-          isDefault: true,
-          isSelected: true,
-        },
-        orderList: {
-          ...defaulTmyPage2depth.orderList,
-          isDefault: true,
-          isSelected: true,
-        },
-        cart: {
-          ...defaulTmyPage2depth.cart,
-          isDefault: true,
-          isSelected: true,
-        },
-        membershipWithdrawal: {
-          ...defaulTmyPage2depth.membershipWithdrawal,
-          isDefault: true,
-          isSelected: true,
+        selectableDepth2: {
+          ...defaulTmyPage2depth.selectableDepth2,
+          profile: {
+            ...defaulTmyPage2depth.selectableDepth2.profile,
+            isDefault: true,
+            isSelected: true,
+          },
+          orderList: {
+            ...defaulTmyPage2depth.selectableDepth2.orderList,
+            isDefault: true,
+            isSelected: true,
+          },
+          cart: {
+            ...defaulTmyPage2depth.selectableDepth2.cart,
+            isDefault: true,
+            isSelected: true,
+          },
+          membershipWithdrawal: {
+            ...defaulTmyPage2depth.selectableDepth2.membershipWithdrawal,
+            isDefault: true,
+            isSelected: true,
+          },
         },
       };
       return update;
@@ -141,15 +159,18 @@ export const myPage2depth = (service: Tservice): TmyPage2depth => {
     case "intermediaryMatch": {
       const update = {
         ...defaulTmyPage2depth,
-        profile: {
-          ...defaulTmyPage2depth.profile,
-          isDefault: true,
-          isSelected: true,
-        },
-        membershipWithdrawal: {
-          ...defaulTmyPage2depth.membershipWithdrawal,
-          isDefault: true,
-          isSelected: true,
+        selectableDepth2: {
+          ...defaulTmyPage2depth.selectableDepth2,
+          profile: {
+            ...defaulTmyPage2depth.selectableDepth2.profile,
+            isDefault: true,
+            isSelected: true,
+          },
+          membershipWithdrawal: {
+            ...defaulTmyPage2depth.selectableDepth2.membershipWithdrawal,
+            isDefault: true,
+            isSelected: true,
+          },
         },
       };
       return update;

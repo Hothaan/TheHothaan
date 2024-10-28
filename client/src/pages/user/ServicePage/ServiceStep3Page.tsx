@@ -5,98 +5,237 @@ import { useState, useEffect } from "react";
 import { serviceStepStore, TserviceStep } from "@store/serviceStepStore";
 import { serviceDefaultDataStore } from "@store/serviceDefaultDataStore";
 import { serviceData } from "@data/service/serviceData";
-import { depth1KeyText, Tdepth1KeyTextArr } from "@data/service/depth1/common";
-import { T2depth } from "@data/service/depth2/common";
+import { IloadingModal } from "@components/common/ui/Modal/LoadingModal";
+import LoadingModal from "@components/common/ui/Modal/LoadingModal";
+import {
+  depth1KeyText,
+  TallDepth1Keys,
+  Tdepth1KeyTextArr,
+} from "@data/service/depth1/common";
+import { Tboard2depthKey } from "@data/service/depth2/board";
+import { T2depth, Tall2depthKeys } from "@data/service/depth2/common";
+import { TmyPage2depthKey } from "@data/service/depth2/mypage";
 import { Ibutton } from "@components/common/button/Button";
 import Button from "@components/common/button/Button";
 import MenuConstructBox from "@components/service/menuConstructBox/MenuConstructBox";
 import { IselectableDepth2 } from "@components/service/button/ButtonAddDepth2";
+import { TserviceDataType } from "@data/service/serviceData";
+import { Tproduct2depthKey } from "@data/service/depth2/product";
+import { TcompanyIntro2depthKey } from "@data/service/depth2/companyIntro";
+import { TcustomerService2depthKey } from "@data/service/depth2/customerService";
+import { Tmain2depthKey } from "@data/service/depth2/main";
+import { Tservice2depthKey } from "@data/service/depth2/service";
+import { Tutility2depthKey } from "@data/service/depth2/utility";
 
 interface IselectableDepth2DataForm {
   [key: string]: {
     depth1: string;
-    selectableDepth2: IselectableDepth2[];
+    selectableDepth2: T2depth[];
   };
 }
 
 export default function ServiceStep3Page() {
   const { steps, setSteps } = serviceStepStore();
   const { serviceDefaultData } = serviceDefaultDataStore();
-  const depth1 =
-    serviceDefaultData.service !== "" &&
-    serviceData[serviceDefaultData.service];
+  const service =
+    serviceDefaultData.service !== ""
+      ? serviceDefaultData.service
+      : "shoppingMall";
 
-  function makeInitialFormData() {
-    const result: { [key: string]: any } = {};
+  const [formData, setFormData] = useState<TserviceDataType<typeof service>>(
+    serviceData[service] as TserviceDataType<typeof service>
+  );
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-    Object.entries(depth1).map(([key1, value]) => {
-      let eng = depth1KeyText[key1 as Tdepth1KeyTextArr].eng;
-      let kor = depth1KeyText[key1 as Tdepth1KeyTextArr].kor;
-      let depth2 = value;
-
-      let selectableDepth2 = Object.entries(depth2).map(([key2, value]) => {
-        const keyValue = value as T2depth;
-        return {
-          isDefault: keyValue.isDefault,
-          isSelected: keyValue.isDefault,
-          depth2: { eng: keyValue.eng, kor: keyValue.kor },
-          options: keyValue.options || null,
-        };
-      });
-
-      result[key1] = {
-        depth1: { kor: kor, eng: eng },
-        selectableDepth2,
-      };
-    });
-
-    return result;
-  }
-
-  let initialFormData = makeInitialFormData();
-
-  const [formData, setFormData] =
-    useState<IselectableDepth2DataForm>(initialFormData);
-
-  console.log(formData);
+  const loadingModal: IloadingModal = {
+    isOpen: isModalOpen,
+    content: {
+      title: serviceDefaultData.serviceTitle,
+      desc: ["화면을 구성중이에요!", <br key="1" />, "잠시만 기다려주세요"],
+    },
+    onLoad: () => {},
+    onComplete: () => {},
+  };
 
   function handleAddMenu(
-    updatedDepth2Data: IselectableDepth2[],
+    updatedDepth2Data: T2depth[],
     depth1prop: string
   ): void {
     setFormData((prev) => {
-      const updatedFormData = { ...prev };
-      const updatedDepth1 = {
-        ...updatedFormData[depth1prop as Tdepth1KeyTextArr],
-      };
+      const recentFormData = { ...prev };
+      const recentDepth1 =
+        recentFormData[depth1prop as keyof typeof recentFormData];
 
-      updatedDepth1.selectableDepth2 = updatedDepth2Data;
-      updatedFormData[depth1prop as Tdepth1KeyTextArr] = updatedDepth1;
+      let newSelectableDepth2: any;
 
-      return updatedFormData;
+      switch (depth1prop) {
+        case "board": {
+          const SelectableDepth2 = recentDepth1.selectableDepth2 as {
+            [K in Tboard2depthKey]: T2depth;
+          };
+
+          updatedDepth2Data.forEach((item) => {
+            const key = item.depth2.eng as Tboard2depthKey;
+            if (SelectableDepth2.hasOwnProperty(key)) {
+              SelectableDepth2[key] = { ...item };
+            }
+          });
+
+          newSelectableDepth2 = SelectableDepth2;
+          break;
+        }
+
+        case "companyIntro": {
+          const SelectableDepth2 = recentDepth1.selectableDepth2 as {
+            [K in TcompanyIntro2depthKey]: T2depth;
+          };
+
+          updatedDepth2Data.forEach((item) => {
+            const key = item.depth2.eng as TcompanyIntro2depthKey;
+            if (SelectableDepth2.hasOwnProperty(key)) {
+              SelectableDepth2[key] = { ...item };
+            }
+          });
+
+          newSelectableDepth2 = SelectableDepth2;
+          break;
+        }
+
+        case "customerService": {
+          const SelectableDepth2 = recentDepth1.selectableDepth2 as {
+            [K in TcustomerService2depthKey]: T2depth;
+          };
+
+          updatedDepth2Data.forEach((item) => {
+            const key = item.depth2.eng as TcustomerService2depthKey;
+            if (SelectableDepth2.hasOwnProperty(key)) {
+              SelectableDepth2[key] = { ...item };
+            }
+          });
+
+          newSelectableDepth2 = SelectableDepth2;
+          break;
+        }
+
+        case "main": {
+          const selectableDepth2 = recentDepth1.selectableDepth2 as {
+            [K in Tmain2depthKey]: T2depth;
+          };
+
+          updatedDepth2Data.forEach((item) => {
+            const key = item.depth2.eng as Tmain2depthKey;
+            if (selectableDepth2.hasOwnProperty(key)) {
+              selectableDepth2[key] = { ...item };
+            }
+          });
+
+          newSelectableDepth2 = selectableDepth2;
+          break;
+        }
+
+        case "myPage": {
+          const selectableDepth2 = recentDepth1.selectableDepth2 as {
+            [K in TmyPage2depthKey]: T2depth;
+          };
+
+          updatedDepth2Data.forEach((item) => {
+            const key = item.depth2.eng as TmyPage2depthKey;
+            if (selectableDepth2.hasOwnProperty(key)) {
+              selectableDepth2[key] = { ...item };
+            }
+          });
+
+          newSelectableDepth2 = selectableDepth2;
+          break;
+        }
+
+        case "product": {
+          const selectableDepth2 = recentDepth1.selectableDepth2 as {
+            [K in Tproduct2depthKey]: T2depth;
+          };
+
+          updatedDepth2Data.forEach((item) => {
+            const key = item.depth2.eng as Tproduct2depthKey;
+            if (selectableDepth2.hasOwnProperty(key)) {
+              selectableDepth2[key] = { ...item };
+            }
+          });
+
+          newSelectableDepth2 = selectableDepth2;
+          break;
+        }
+
+        case "service": {
+          const selectableDepth2 = recentDepth1.selectableDepth2 as {
+            [K in Tservice2depthKey]: T2depth;
+          };
+
+          updatedDepth2Data.forEach((item) => {
+            const key = item.depth2.eng as Tservice2depthKey;
+            if (selectableDepth2.hasOwnProperty(key)) {
+              selectableDepth2[key] = { ...item };
+            }
+          });
+
+          newSelectableDepth2 = selectableDepth2;
+          break;
+        }
+
+        case "utility": {
+          const selectableDepth2 = recentDepth1.selectableDepth2 as {
+            [K in Tutility2depthKey]: T2depth;
+          };
+
+          updatedDepth2Data.forEach((item) => {
+            const key = item.depth2.eng as Tutility2depthKey;
+            if (selectableDepth2.hasOwnProperty(key)) {
+              selectableDepth2[key] = { ...item };
+            }
+          });
+
+          newSelectableDepth2 = selectableDepth2;
+          break;
+        }
+
+        default:
+          console.error(`Unknown depth1prop: ${depth1prop}`);
+          return prev;
+      }
+
+      recentDepth1.selectableDepth2 = newSelectableDepth2;
+      recentFormData[depth1prop as keyof typeof recentFormData] = recentDepth1;
+
+      return recentFormData;
     });
   }
 
   function handleDeleteMenu(depth1prop: string, depth2prop: string): void {
     setFormData((prev) => {
-      const updatedFormData = { ...prev };
-      const updatedDepth1 = {
-        ...updatedFormData[depth1prop as Tdepth1KeyTextArr],
+      const recentFormData = { ...prev };
+      const recentDepth1 =
+        recentFormData[depth1prop as keyof typeof recentFormData];
+
+      if (!recentDepth1) return prev;
+
+      const newSelectableDepth2 = { ...recentDepth1.selectableDepth2 } as {
+        [K in Tservice2depthKey]: T2depth;
       };
 
-      const updatedSelectableDepth2 = updatedDepth1.selectableDepth2.map(
-        (item) => {
-          if (item.depth2.eng === depth2prop) {
-            return { ...item, isSelected: false };
-          }
-          return item;
+      Object.keys(newSelectableDepth2).forEach((key) => {
+        const depth2Item = newSelectableDepth2[key as Tservice2depthKey];
+
+        if (depth2Item.depth2.eng === depth2prop) {
+          newSelectableDepth2[key as Tservice2depthKey] = {
+            ...depth2Item,
+            isSelected: false,
+          };
         }
-      );
+      });
 
-      updatedDepth1.selectableDepth2 = updatedSelectableDepth2;
-      updatedFormData[depth1prop as Tdepth1KeyTextArr] = updatedDepth1;
+      recentDepth1.selectableDepth2 = newSelectableDepth2;
+      recentFormData[depth1prop as keyof typeof recentFormData] = recentDepth1;
 
-      return updatedFormData;
+      return recentFormData;
     });
   }
 
@@ -105,40 +244,38 @@ export default function ServiceStep3Page() {
     depth2Eng: string,
     optionKor: string
   ) {
-    console.log(depth1Eng, depth2Eng, optionKor);
     setFormData((prev) => {
-      const updatedFormData = { ...prev };
+      const recentFormData = { ...prev };
+      const recentDepth1 =
+        recentFormData[depth1Eng as keyof typeof recentFormData];
 
-      const updatedDepth1 = {
-        ...updatedFormData[depth1Eng as Tdepth1KeyTextArr],
+      if (!recentDepth1) return prev;
+
+      const newSelectableDepth2 = { ...recentDepth1.selectableDepth2 } as {
+        [K in Tservice2depthKey]: T2depth;
       };
 
-      if (!updatedDepth1) {
-        console.error(`depth1Eng (${depth1Eng}) is invalid.`);
-        return prev;
-      }
+      Object.keys(newSelectableDepth2).forEach((key) => {
+        const depth2Item = newSelectableDepth2[key as Tservice2depthKey];
 
-      console.log(updatedDepth1.selectableDepth2);
+        if (depth2Item.depth2.eng === depth2Eng && depth2Item.options) {
+          const updatedOptions = depth2Item.options.map((option) => {
+            return option.kor === optionKor
+              ? { ...option, isSelected: true }
+              : option;
+          });
 
-      const updatedSelectableDepth2 = updatedDepth1.selectableDepth2.map(
-        (depth2Item) => {
-          if (depth2Item.depth2.eng === depth2Eng && depth2Item.options) {
-            const updatedOptions = depth2Item.options.map((option) => {
-              if (option.kor === optionKor) {
-                return { ...option, isSelected: true };
-              }
-              return option;
-            });
-            return { ...depth2Item, options: updatedOptions };
-          }
-          return depth2Item;
+          newSelectableDepth2[key as Tservice2depthKey] = {
+            ...depth2Item,
+            options: updatedOptions,
+          };
         }
-      );
+      });
 
-      updatedDepth1.selectableDepth2 = updatedSelectableDepth2;
-      updatedFormData[depth1Eng as Tdepth1KeyTextArr] = updatedDepth1;
+      recentDepth1.selectableDepth2 = newSelectableDepth2;
+      recentFormData[depth1Eng as keyof typeof recentFormData] = recentDepth1;
 
-      return updatedFormData;
+      return recentFormData;
     });
   }
 
@@ -170,18 +307,6 @@ export default function ServiceStep3Page() {
 
   function saveDataInStore(formData: IselectableDepth2DataForm) {
     //어떻게 저장할건지 송이님과 논의해서 결정해야할듯
-    // if (formData.device !== "" && formData.service !== "") {
-    //   const { data, setData } = serviceDefaultDataStore.getState();
-    //   setData({
-    //     ...data,
-    //     device: formData.device,
-    //     service: formData.service,
-    //   });
-    //   console.log(
-    //     "Updated store data:",
-    //     serviceDefaultDataStore.getState().data
-    //   );
-    // }
   }
 
   const prevButtonData: Ibutton = {
@@ -198,8 +323,9 @@ export default function ServiceStep3Page() {
     bg: "gradient",
     text: "다음으로 넘어가기",
     onClick: () => {
-      saveDataInStore(formData);
-      handleNavigation(`/service/step${currentStep + 1}`);
+      setIsModalOpen(true);
+      // saveDataInStore(formData);
+      // handleNavigation(`/service/step${currentStep + 1}`);
     },
     disabled: isDisabled(steps, currentStep),
   };
@@ -208,22 +334,41 @@ export default function ServiceStep3Page() {
     setCurrentStep(parseInt(location.pathname.slice(-1)));
   }, [location.pathname]);
 
+  function checkAllOptionSelected(
+    formData: TserviceDataType<typeof service>
+  ): boolean {
+    return Object.entries(formData).some(([key1, value1]) => {
+      if (value1.selectableDepth2) {
+        return Object.entries(value1.selectableDepth2).some(
+          ([key2, value2]) => {
+            return (
+              value2.options &&
+              value2.options.some((option) => option.isSelected)
+            );
+          }
+        );
+      }
+      return false;
+    });
+  }
+
   useEffect(() => {
-    if (formData.device && formData.service) {
+    if (checkAllOptionSelected(formData)) {
       setSteps({
         ...steps,
-        step2: true,
+        step3: true,
       });
     } else {
       setSteps({
         ...steps,
-        step2: false,
+        step3: false,
       });
     }
   }, [formData]);
 
   return (
     <>
+      <LoadingModal {...loadingModal} />
       <div css={wrap}>
         <div css={input_container}>
           <div css={input_guide_container}>
@@ -244,7 +389,7 @@ export default function ServiceStep3Page() {
             </p>
           </div>
           <div css={select_container}>
-            {Object.entries(depth1).map(([key, value]) => {
+            {Object.entries(formData).map(([key, value]) => {
               const data = {
                 depth1: {
                   kor: depth1KeyText[key as Tdepth1KeyTextArr].kor,

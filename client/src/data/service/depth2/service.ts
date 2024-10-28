@@ -4,8 +4,7 @@ import { Tdepth1Text } from "../depth1/common";
 
 /* 서비스 */
 export const feeForUseText: I2depthText = {
-  eng: "fee for use",
-  kor: "요금안내",
+  depth2: { eng: "fee for use", kor: "요금안내" },
 };
 export const defaultFeeForUse: T2depth = {
   isDefault: true,
@@ -15,8 +14,7 @@ export const defaultFeeForUse: T2depth = {
 };
 
 export const serviceListText: I2depthText = {
-  eng: "service list",
-  kor: "서비스 목록",
+  depth2: { eng: "service list", kor: "서비스 목록" },
 };
 export const defaultServiceList: T2depth = {
   isDefault: false,
@@ -26,8 +24,7 @@ export const defaultServiceList: T2depth = {
 };
 
 export const serviceDetailText: I2depthText = {
-  eng: "service detail",
-  kor: "서비스 상세",
+  depth2: { eng: "service detail", kor: "서비스 상세" },
 };
 export const defaultServiceDetail: T2depth = {
   isDefault: false,
@@ -36,7 +33,9 @@ export const defaultServiceDetail: T2depth = {
   structure: "",
 };
 
-export const serviceReviewText: I2depthText = { eng: "review", kor: "리뷰" };
+export const serviceReviewText: I2depthText = {
+  depth2: { eng: "review", kor: "리뷰" },
+};
 export const defaultServiceReview: T2depth = {
   isDefault: false,
   isSelected: false,
@@ -45,8 +44,7 @@ export const defaultServiceReview: T2depth = {
 };
 
 export const serviceIntroduceText: I2depthText = {
-  eng: "service introduce",
-  kor: "서비스 소개",
+  depth2: { eng: "service introduce", kor: "서비스 소개" },
 };
 export const serviceIntroduceOptions: T2depthOption[] = [
   { eng: "one page", kor: "원페이지형", structure: "", isSelected: false },
@@ -66,8 +64,7 @@ export const defaultServiceIntroduce: T2depth = {
 };
 
 export const estimateInquiryText: I2depthText = {
-  eng: "estimate inquiry",
-  kor: "견적문의",
+  depth2: { eng: "estimate inquiry", kor: "견적문의" },
 };
 export const defaultEstimateInquiry: T2depth = {
   isDefault: true,
@@ -77,8 +74,7 @@ export const defaultEstimateInquiry: T2depth = {
 };
 
 export const serviceInquiryText: I2depthText = {
-  eng: "service inquiry",
-  kor: "서비스 문의",
+  depth2: { eng: "service inquiry", kor: "서비스 문의" },
 };
 export const defaultServiceInquiry: T2depth = {
   isDefault: true,
@@ -100,18 +96,20 @@ export const service2depthKeyArr = [
 export type Tservice2depthKey = (typeof service2depthKeyArr)[number];
 
 export type Tservice2depth = {
-  [K in Tservice2depthKey]: T2depth;
+  selectableDepth2: { [K in Tservice2depthKey]: T2depth };
 };
 
 interface Iservice2depth extends Tservice2depth, Tdepth1Text {}
 
 export const defaultService2depth: Iservice2depth = {
   depth1: { eng: "service", kor: "서비스" },
-  feeForUse: defaultFeeForUse,
-  serviceList: defaultServiceList,
-  serviceDetail: defaultServiceDetail,
-  review: defaultServiceReview,
-  serviceIntroduce: defaultServiceIntroduce,
-  estimateInquiry: defaultEstimateInquiry,
-  serviceInquiry: defaultServiceInquiry,
+  selectableDepth2: {
+    feeForUse: defaultFeeForUse,
+    serviceList: defaultServiceList,
+    serviceDetail: defaultServiceDetail,
+    review: defaultServiceReview,
+    serviceIntroduce: defaultServiceIntroduce,
+    estimateInquiry: defaultEstimateInquiry,
+    serviceInquiry: defaultServiceInquiry,
+  },
 };

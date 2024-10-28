@@ -11,8 +11,10 @@ import { Tservice2depth, Tservice2depthKey } from "./service";
 import { TcompanyIntro2depth, TcompanyIntro2depthKey } from "./companyIntro";
 
 export interface I2depthText {
-  eng: string;
-  kor: string;
+  depth2: {
+    eng: string;
+    kor: string;
+  };
 }
 
 export interface T2depth extends I2depthText {

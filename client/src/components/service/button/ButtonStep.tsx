@@ -7,17 +7,13 @@ export interface IbuttonStep {
   status: TbuttonStepStatus;
   step: number;
   text: string;
-  onClick: () => void;
+  title?: React.ReactNode;
 }
 
 export default function ButtonStep(prop: IbuttonStep) {
-  const { status, step, text, onClick } = prop;
+  const { status, step, text } = prop;
   return (
-    <button
-      type="button"
-      css={[step_button, step_button_color(status)]}
-      onClick={onClick}
-    >
+    <button type="button" css={[step_button, step_button_color(status)]}>
       <p css={[step_number, step_number_color(status)]}>0{step}</p>
       <p css={[step_text_color(status), step_text]}>{text}</p>
     </button>

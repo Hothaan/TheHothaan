@@ -48,9 +48,8 @@ const btn_size = (size: TbtnSize) => {
       return css`
         height: auto;
         padding: 20px 24px;
-
         font-size: 20px;
-        font-weight: 500;
+        font-weight: 800;
         white-space: nowrap;
       `;
     default:
@@ -104,7 +103,7 @@ const bg_color = (bg: TbtnBg, disabled?: boolean) => {
         return css`
           color: #383838;
           background-color: #ffffff;
-          box-shadow: 0 0 0 2px #dedede inset;
+          box-shadow: 0 0 0 2px #747474 inset;
         `;
       default:
         return css`

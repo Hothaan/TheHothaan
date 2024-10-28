@@ -116,7 +116,7 @@ const depth1_btn = (theme: Theme) => css`
   justify-content: center;
   align-items: center;
   border-radius: 60px;
-  font-size: 19px;
+  font-size: 17px;
   font-weight: 600;
   line-height: normal;
   cursor: pointer;
