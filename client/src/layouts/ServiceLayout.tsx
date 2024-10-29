@@ -1,17 +1,18 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import { useLocation } from "react-router-dom";
 import TitleNstepSection from "@components/service/titleNstepSection/TitleNstepSection";
-import ControlBtnSection from "@components/service/controlBtnSection/ControlBtnSection";
 import { Outlet } from "react-router-dom";
 
 export default function ServiceLayout() {
+  const location = useLocation();
+
   return (
     <div css={wrap}>
-      <TitleNstepSection />
+      {location.pathname !== "/service/preview" && <TitleNstepSection />}
       <section css={main_wrap}>
         <Outlet />
       </section>
-      {/* <ControlBtnSection /> */}
     </div>
   );
 }

@@ -54,6 +54,8 @@ const step_button_color = (status: TbuttonStepStatus) => {
 };
 
 const step_button = css`
+  cursor: default;
+
   display: flex;
   padding: 10px 20px;
   align-items: center;

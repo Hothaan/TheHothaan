@@ -26,7 +26,7 @@ export default function ButtonIconAccordion(prop: IbuttonIconAccordion) {
     <div css={container}>
       <button
         type="button"
-        css={[button, btn_size(size)]}
+        css={[button(size), btn_size(size)]}
         className={isOpen ? "open" : ""}
         onClick={() => {
           setIsOpen(!isOpen);
@@ -146,7 +146,7 @@ const accordion_content = css`
   }
 `;
 
-const button = css`
+const button = (btnSize: TbtnSize) => css`
   position: relative;
   display: flex;
   align-items: center;
@@ -161,7 +161,7 @@ const button = css`
   p {
     color: var(--383838, #383838);
     font-family: Pretendard;
-    font-size: 17px;
+    font-size: ${btnSize === "XL" ? "20px" : "17px"};
     font-weight: 500;
   }
 

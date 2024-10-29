@@ -50,7 +50,10 @@ export default function ServiceStep3Page() {
   const loadingModal: IloadingModal = {
     isOpen: isModalOpen,
     content: {
-      title: serviceDefaultData.serviceTitle,
+      title:
+        serviceDefaultData.serviceTitle === ""
+          ? "프로젝트"
+          : serviceDefaultData.serviceTitle,
       desc: ["화면을 구성중이에요!", <br key="1" />, "잠시만 기다려주세요"],
     },
     onLoad: () => {},

@@ -48,7 +48,7 @@ const btn_size = (size: TbtnSize) => {
       return css`
         height: auto;
         padding: 20px 24px;
-        font-size: 20px;
+        font-size: 17px;
         font-weight: 800;
         white-space: nowrap;
       `;
