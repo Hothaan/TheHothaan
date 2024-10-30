@@ -1,11 +1,14 @@
 /** @jsxImportSource @emotion/react */
-import { css, Theme } from "@emotion/react";
+import { css } from "@emotion/react";
 import { useState } from "react";
-import { ReactComponent as ArrowDown } from "@svgs/arrowDownSmall.svg";
+
+import { ReactComponent as UnderLine } from "@svgs/underLine.svg";
+import { ReactComponent as CancleLine } from "@svgs/cancleLine.svg";
 import { ReactComponent as Bold } from "@svgs/bold.svg";
 import { ReactComponent as Italic } from "@svgs/italic.svg";
-import { ReactComponent as TextColor } from "@svgs/textColor.svg";
 import { ReactComponent as TextAlignCenter } from "@svgs/textAlignCenter.svg";
+import { ReactComponent as TextAlignLeft } from "@svgs/textAlignLeft.svg";
+import { ReactComponent as TextAlignRight } from "@svgs/textAlignRight.svg";
 
 type TselectableColor = "#383838" | "#000";
 type TselectableFontSize =
@@ -18,12 +21,23 @@ type TselectableFontSize =
   | "40px"
   | "48px";
 type TselectableFontStyle = "normal" | "italic";
-type TselectableFontDecoration = "";
+type TselectableTextDecoration = "underline" | "line-through" | "none";
+type TselectableTextAlign = "center" | "left" | "right";
+type TfontWeight = "bold" | "regular";
+
+interface Istyles {
+  color: TselectableColor;
+  fontSize: TselectableFontSize;
+  fontStyle: TselectableFontStyle;
+  textDecoration: TselectableTextDecoration;
+  textAlign: TselectableTextAlign;
+  fontWeight: TfontWeight;
+}
 
 export default function EditableText() {
   const [isEditing, setIsEditing] = useState(false);
   const [textContent, setTextContent] = useState("편집 가능한 텍스트");
-  const [styles, setStyles] = useState({
+  const [styles, setStyles] = useState<Istyles>({
     color: "#383838",
     fontSize: "16px",
     fontStyle: "normal",
@@ -31,51 +45,58 @@ export default function EditableText() {
     textAlign: "left",
     fontWeight: "regular",
   });
-  const [style, setStyle] = useState<React.CSSProperties>({
-    color: "",
-    fontSize: "16px",
-    fontStyle: "normal",
-    textDecoration: "none",
-    textAlign: "left",
-  });
 
-  const Toolbar: React.FC<{
-    applyStyle: (style: React.CSSProperties) => void;
-  }> = ({ applyStyle }) => (
+  const updateStyles = (newStyle: Partial<Istyles>) => {
+    setStyles((prevStyles) => ({ ...prevStyles, ...newStyle }));
+  };
+
+  const Toolbar: React.FC = () => (
     <div css={toolbar}>
-      <button onClick={() => applyStyle({ fontWeight: "bold" })}>Bold</button>
-      <button onClick={() => applyStyle({ fontStyle: "italic" })}>
-        Italic
+      <button onClick={() => updateStyles({ fontWeight: "bold" })}>
+        <Bold />
       </button>
-      <button onClick={() => applyStyle({ textDecoration: "underline" })}>
-        Underline
+      <button onClick={() => updateStyles({ fontStyle: "italic" })}>
+        <Italic />
       </button>
-      <button onClick={() => applyStyle({ textAlign: "left" })}>Left</button>
-      <button onClick={() => applyStyle({ textAlign: "center" })}>
-        Center
+      <button onClick={() => updateStyles({ textDecoration: "line-through" })}>
+        <CancleLine />
       </button>
-      <button onClick={() => applyStyle({ textAlign: "right" })}>Right</button>
+      <button onClick={() => updateStyles({ textDecoration: "underline" })}>
+        <UnderLine />
+      </button>
+      <button onClick={() => updateStyles({ textAlign: "left" })}>
+        <TextAlignLeft />
+      </button>
+      <button onClick={() => updateStyles({ textAlign: "center" })}>
+        <TextAlignCenter />
+      </button>
+      <button onClick={() => updateStyles({ textAlign: "right" })}>
+        <TextAlignRight />
+      </button>
     </div>
   );
 
-  console.log(isEditing);
-
-  const handleStyleChange = (newStyle: React.CSSProperties) => {
-    setStyle((prevStyle) => ({ ...prevStyle, ...newStyle }));
-  };
-
   return (
     <div style={{ position: "relative" }}>
-      {isEditing && <Toolbar applyStyle={handleStyleChange} />}
-      <div
-        contentEditable={isEditing}
-        suppressContentEditableWarning
-        style={{ ...style, cursor: "pointer" }}
+      {isEditing && <Toolbar />}
+      <input
+        css={css`
+          color: ${styles.color};
+          font-size: ${styles.fontSize};
+          font-style: ${styles.fontStyle};
+          text-decoration: ${styles.textDecoration};
+          text-align: ${styles.textAlign};
+          font-weight: ${styles.fontWeight === "bold" ? "bold" : "normal"};
+          cursor: ${isEditing ? "text" : "pointer"};
+          border: none;
+          outline: none;
+          width: 100%;
+          background: transparent;
+        `}
+        value={textContent}
         onClick={() => setIsEditing(!isEditing)}
-        onInput={(e) => setTextContent(e.currentTarget.innerText)}
-      >
-        {textContent}
-      </div>
+        onChange={(e) => setTextContent(e.target.value)}
+      />
     </div>
   );
 }
@@ -85,13 +106,11 @@ const toolbar = css`
   top: -24px;
   left: 0;
   transform: translate(-25%, -100%);
-
   display: flex;
   align-items: center;
   padding: 12px 8px;
   border-radius: 8px;
   background: var(--Neutral-Background, #fff);
-
   box-shadow: 0px 327px 91px 0px rgba(0, 0, 0, 0),
     0px 209px 84px 0px rgba(0, 0, 0, 0.01),
     0px 118px 71px 0px rgba(0, 0, 0, 0.05),

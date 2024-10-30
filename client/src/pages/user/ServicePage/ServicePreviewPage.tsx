@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ButtonArrowIcon from "@components/service/button/ButtonArrowIcon";
 import { IbuttonArrow } from "@components/service/button/ButtonArrowIcon";
@@ -8,13 +9,16 @@ import { ReactComponent as Preview } from "@svgs/previewGradient.svg";
 import { IbuttonIcon } from "@components/service/button/ButtonIcon";
 import ButtonIcon from "@components/service/button/ButtonIcon";
 import { ReactComponent as Download } from "@svgs/download.svg";
+import ButtonFullPage, {
+  IbuttonFullPage,
+} from "@components/service/button/ButtonFullPage";
 import { IbuttonIconAccordion } from "@components/service/button/ButtonIconAccordion";
 import ButtonIconAccordion from "@components/service/button/ButtonIconAccordion";
-import { useState } from "react";
+import FullPageModal from "@components/service/modal/FullPageModal";
 
 export default function ServicePreviewPage() {
   const navigate = useNavigate();
-  const buttonArrowIcon: IbuttonArrow = {
+  const buttonPrevPage: IbuttonArrow = {
     direction: "left",
     onClick: () => {
       navigate(-1);
@@ -57,51 +61,134 @@ export default function ServicePreviewPage() {
 
   const [selectedItem, setSelectedItem] = useState<string>(listData[0].title);
 
-  function handleSelectItem(e: React.MouseEvent) {
-    let title = e.currentTarget.querySelector("p")?.innerText;
-    if (title) {
-      setSelectedItem(title);
+  function handleSelectItem(e: React.MouseEvent<HTMLLIElement>) {
+    const idx = parseInt(e.currentTarget.dataset.idx || "0");
+    if (idx !== null) {
+      setSelectedItem(listData[idx].title);
     }
   }
 
+  function handleSelectPrevItem() {
+    const currentIdx = listData.findIndex(
+      (item) => item.title === selectedItem
+    );
+    if (currentIdx === 0) {
+      return;
+    } else {
+      setSelectedItem(listData[currentIdx - 1].title);
+    }
+  }
+
+  function handleNextPrevItem() {
+    const currentIdx = listData.findIndex(
+      (item) => item.title === selectedItem
+    );
+    if (currentIdx === listData.length - 1) {
+      return;
+    } else {
+      setSelectedItem(listData[currentIdx + 1].title);
+    }
+  }
+
+  const buttonSelectPrevItem: IbuttonArrow = {
+    direction: "left",
+    onClick: () => {
+      handleSelectPrevItem();
+    },
+  };
+
+  const buttonSelectNextItem: IbuttonArrow = {
+    direction: "right",
+    onClick: () => {
+      handleNextPrevItem();
+    },
+  };
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const buttonFullPage: IbuttonFullPage = {
+    onClick: () => {
+      setIsModalOpen(true);
+    },
+  };
+
+  function handleChangeisModalOpen(isModalOpen: boolean) {
+    setIsModalOpen(isModalOpen);
+  }
+
+  const fullPageModal = {
+    onClick: handleChangeisModalOpen,
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsModalOpen(false); // Esc 키를 누르면 상태를 false로 설정
+      }
+    };
+
+    // 키보드 이벤트 리스너 추가
+    window.addEventListener("keydown", handleKeyDown);
+
+    // 컴포넌트 언마운트 시 이벤트 리스너 제거
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   return (
-    <div css={wrap}>
-      <div css={title_section}>
-        <div css={title_container}>
-          <ButtonArrowIcon {...buttonArrowIcon} />
-          <p css={title}>프로젝트명</p>
-        </div>
-        <div css={button_container}>
-          <ButtonIcon {...buttonEstimate} />
-          <ButtonIconAccordion {...buttonDownload} />
-        </div>
-      </div>
-      <div css={main}>
-        <aside css={side_nav}>
-          <div css={list_title_container}>
-            <Preview />
-            <p css={list_title}>모든화면</p>
+    <>
+      <div css={wrap}>
+        <div css={title_section}>
+          <div css={title_container}>
+            <ButtonArrowIcon {...buttonPrevPage} />
+            <p css={title}>프로젝트명</p>
           </div>
-          <ul css={list}>
-            {listData.map((item) => (
-              <li
-                css={[list_item, list_item_color(selectedItem === item.title)]}
-                onClick={handleSelectItem}
-              >
-                <p css={list_item_title(selectedItem === item.title)}>
-                  {item.title}
-                </p>
-                <div css={image_container}></div>
-              </li>
-            ))}
-          </ul>
-        </aside>
-        <div css={preview_container}>
-          <div css={preview}></div>
-          <div css={controller}></div>
+          <div css={button_container}>
+            <ButtonIcon {...buttonEstimate} />
+            <ButtonIconAccordion {...buttonDownload} />
+          </div>
+        </div>
+        <div css={main}>
+          <aside css={side_nav}>
+            <div css={list_title_container}>
+              <Preview />
+              <p css={list_title}>모든화면</p>
+            </div>
+            <ul css={list}>
+              {listData.map((item, idx) => (
+                <li
+                  css={[
+                    list_item,
+                    list_item_color(selectedItem === item.title),
+                  ]}
+                  onClick={handleSelectItem}
+                  data-idx={idx}
+                >
+                  <p css={list_item_title(selectedItem === item.title)}>
+                    {item.title}
+                  </p>
+                  <div css={image_container}></div>
+                </li>
+              ))}
+            </ul>
+          </aside>
+          <div css={preview_container}>
+            <div css={preview}></div>
+            <div css={controller}>
+              <ButtonArrowIcon {...buttonSelectPrevItem} />
+              <p css={pagination}>
+                {listData.findIndex((item) => item.title === selectedItem) + 1}/
+                {listData.length}
+              </p>
+              <ButtonArrowIcon {...buttonSelectNextItem} />
+              <ButtonFullPage {...buttonFullPage} />
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+      {isModalOpen && <FullPageModal {...fullPageModal} />}
+    </>
   );
 }
 
@@ -231,6 +318,9 @@ const image_container = css`
   background: url(<path-to-image>) lightgray 50% / cover no-repeat, #f6f6f6;
 `;
 const preview_container = css`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   width: 100%;
 `;
 const preview = css`
@@ -245,4 +335,24 @@ const preview = css`
   border: 1px solid var(--DEDEDE, #dedede);
   background: url(<path-to-image>) lightgray 50% / cover no-repeat, #f6f6f6;
 `;
-const controller = css``;
+const controller = css`
+  position: fixed;
+  left: calc(50% + 100px);
+  transform: translateX(-50%);
+  bottom: 60px;
+  display: flex;
+  height: 44px;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  align-self: stretch;
+`;
+
+const pagination = css`
+  color: var(--383838, #383838);
+  font-family: Pretendard;
+  font-size: 17px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+`;

@@ -1,9 +1,5 @@
 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="24" height="24" fill="#1E1E1E"/>
 <g id="button arrow icon">
-<rect x="-81.5" y="-19.5" width="156" height="63" rx="4.5" stroke="#9747FF" stroke-dasharray="10 5"/>
-<g id="&#235;&#170;&#133;&#236;&#185;&#173;=&#8;right">
-<path id="Vector" d="M9 7L13.293 11.293L9 15.586L10.414 17L16.121 11.293L10.414 5.586L9 7Z" fill="#DEDEDE"/>
-</g>
+<path id="Vector" d="M9 7L13.293 11.293L9 15.586L10.414 17L16.121 11.293L10.414 5.586L9 7Z" fill="#747474"/>
 </g>
 </svg>

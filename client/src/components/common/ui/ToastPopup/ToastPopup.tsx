@@ -50,7 +50,7 @@ const toastPopup = css`
   bottom: 40px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 1;
+  z-index: 11;
 
   display: inline-flex;
   height: 50px;

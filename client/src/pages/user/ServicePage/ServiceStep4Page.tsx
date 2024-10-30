@@ -51,14 +51,14 @@ export default function ServiceStep4Page() {
   return (
     <>
       <LoadingModal {...loadingModal} />
-      <section>
+      <div>
         <TemplateSlide />
-      </section>
-      <section css={button_wrap}>
+      </div>
+      <div css={button_wrap}>
         <div css={button_container}>
           {currentStep !== totalStep && <Button {...nextButtonData} />}
         </div>
-      </section>
+      </div>
     </>
   );
 }

@@ -44,6 +44,7 @@ const info = css`
   }
   span:not(:last-child):after {
     position: absolute;
+    z-index: 0;
     display: block;
     content: "";
     top: 50%;

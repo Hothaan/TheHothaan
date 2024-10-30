@@ -1,15 +1,15 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useLocation } from "react-router-dom";
 import TitleNstepSection from "@components/service/titleNstepSection/TitleNstepSection";
 import { Outlet } from "react-router-dom";
+import useLocationControl from "@hooks/useLocationControl";
 
 export default function ServiceLayout() {
-  const location = useLocation();
+  const { checkLocation } = useLocationControl();
 
   return (
     <div css={wrap}>
-      {location.pathname !== "/service/preview" && <TitleNstepSection />}
+      {!checkLocation(["/service/preview"]) && <TitleNstepSection />}
       <section css={main_wrap}>
         <Outlet />
       </section>

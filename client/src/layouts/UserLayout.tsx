@@ -57,5 +57,6 @@ export default function UserLayout() {
 }
 
 const full_height = css`
+  overflow-x: hidden;
   min-height: calc(100vh - 211px - 80px);
 `;
