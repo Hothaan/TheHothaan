@@ -1,0 +1,16 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="button icon">
+<path id="Vector" d="M16 7H4C2.897 7 2 7.897 2 9V19C2 20.103 2.897 21 4 21H16C17.103 21 18 20.103 18 19V9C18 7.897 17.103 7 16 7ZM4 19V11H16V9L16.002 19H4Z" fill="url(#paint0_linear_82_11053)"/>
+<path id="Vector_2" d="M22 5C22 3.897 21.103 3 20 3H7C5.897 3 5 3.897 5 5H18.001C19.102 5 19.997 5.895 20 6.994L20.002 15H20V17C21.103 17 22 16.103 22 15V8.007L22.001 8V6L22 5.99V5Z" fill="url(#paint1_linear_82_11053)"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_82_11053" x1="1.73333" y1="21" x2="17.7333" y2="21" gradientUnits="userSpaceOnUse">
+<stop stop-color="#56C0FE"/>
+<stop offset="1" stop-color="#6D0EE6"/>
+</linearGradient>
+<linearGradient id="paint1_linear_82_11053" x1="4.71665" y1="17" x2="21.7176" y2="17" gradientUnits="userSpaceOnUse">
+<stop stop-color="#56C0FE"/>
+<stop offset="1" stop-color="#6D0EE6"/>
+</linearGradient>
+</defs>
+</svg>

@@ -159,6 +159,7 @@ const button = (btnSize: TbtnSize) => css`
   cursor: pointer;
 
   p {
+    white-space: nowrap;
     color: var(--383838, #383838);
     font-family: Pretendard;
     font-size: ${btnSize === "XL" ? "20px" : "17px"};

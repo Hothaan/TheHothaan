@@ -37,6 +37,7 @@ export default function TitleNstepSection() {
       status: "disabled",
       step: 5,
       text: "결과",
+      title: [`결과`],
     },
   ];
   const [stepData, setStepData] = useState(initialStepData);
@@ -47,12 +48,27 @@ export default function TitleNstepSection() {
     const currentStep = parseInt(location.pathname.slice(-1));
     const newStepData = [...stepData];
     newStepData.forEach((step) => {
-      if (step.title !== undefined) {
+      if (step.step === 4) {
         step.title = [
-          <span css={gradient_text}>{serviceDefaultData.serviceTitle}</span>,
+          <span css={gradient_text}>
+            {" "}
+            {serviceDefaultData.serviceTitle !== ""
+              ? serviceDefaultData.serviceTitle
+              : "프로젝트"}
+          </span>,
           ` 화면을 구성해봤어요.`,
           <br key="1" />,
           `화면을 클릭해 내용을 수정해보세요!`,
+        ];
+      }
+      if (step.step === 5) {
+        step.title = [
+          <span css={gradient_text}>
+            {serviceDefaultData.serviceTitle !== ""
+              ? serviceDefaultData.serviceTitle
+              : "프로젝트"}
+          </span>,
+          ` 기획안 파일이 생성되었어요 👀🎉`,
         ];
       }
       if (step.step === currentStep) {

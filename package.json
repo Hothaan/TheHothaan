@@ -10,8 +10,7 @@
   "dependencies": {
     "@tinymce/tinymce-react": "^5.1.1",
     "concurrently": "^9.0.1",
-    "dotenv": "^16.4.5",
-    "tinymce": "^7.4.1"
+    "dotenv": "^16.4.5"
   },
   "devDependencies": {
     "@types/tinymce": "^4.6.9"
