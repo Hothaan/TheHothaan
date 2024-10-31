@@ -1,21 +1,17 @@
 /** @jsxImportSource @emotion/react */
-import { css, Theme } from "@emotion/react";
+import { css } from "@emotion/react";
 import { useState } from "react";
 import { ReactComponent as Prev } from "@svgs/arrowLeft.svg";
 import { ReactComponent as Next } from "@svgs/arrowRight.svg";
 import EditableText from "../editableText/EditableText";
-// import TextEditor from "@components/service/editableText/EditableTextTinymce";
-// import TextEditor from "../editableText/EditableTextQuill";
 
 interface ItemplateBox {
-  title: string;
+  children?: React.ReactNode;
 }
 
 type TslideBtnColor = "white" | "gray";
 
-export default function TemplateSlide() {
-  // const { title } = prop;
-
+export default function TemplateSlide({ children }: ItemplateBox) {
   const templateBoxData = [
     { title: "메인" },
     { title: "상품" },
@@ -43,19 +39,6 @@ export default function TemplateSlide() {
     }
   }
 
-  const [editorContent, setEditorContent] =
-    useState<string>("Quill 라이브러리");
-  const [plainTextContent, setPlainTextContent] =
-    useState<string>("Quill 라이브러리");
-
-  const handleContentChange = (newContent: string) => {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(newContent, "text/html");
-    const plainText = doc.body.textContent || "";
-    setEditorContent(newContent);
-    setPlainTextContent(plainText);
-  };
-
   return (
     <div css={container}>
       <div css={slide_container}>
@@ -68,21 +51,7 @@ export default function TemplateSlide() {
               data-idx={index}
             >
               <p css={title_style}>{data.title || "제목"}</p>
-              <div css={box}>
-                <EditableText />
-                {/* <div style={{ padding: "20px" }}>
-                  <TextEditor
-                    content={editorContent}
-                    onChange={handleContentChange}
-                  />
-                  <input
-                    type="text"
-                    value={plainTextContent}
-                    onChange={(e) => setPlainTextContent(e.target.value)}
-                    style={{ marginTop: "20px", width: "100%" }}
-                  />
-                </div> */}
-              </div>
+              <div css={box}>{children}</div>
             </div>
           ))}
         </div>

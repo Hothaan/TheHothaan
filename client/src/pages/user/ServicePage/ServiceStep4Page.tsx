@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { IloadingModal } from "@components/common/ui/Modal/LoadingModal";
 import LoadingModal from "@components/common/ui/Modal/LoadingModal";
 import { serviceDefaultDataStore } from "@store/serviceDefaultDataStore";
-import { serviceStepStore, TserviceStep } from "@store/serviceStepStore";
+import EditableText from "@components/service/editableText/EditableText";
 import { Ibutton } from "@components/common/button/Button";
 import Button from "@components/common/button/Button";
 import TemplateSlide from "@components/service/templateSlide/TemplateSlide";
@@ -52,7 +52,9 @@ export default function ServiceStep4Page() {
     <>
       <LoadingModal {...loadingModal} />
       <div>
-        <TemplateSlide />
+        <TemplateSlide>
+          <EditableText />
+        </TemplateSlide>
       </div>
       <div css={button_wrap}>
         <div css={button_container}>

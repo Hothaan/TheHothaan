@@ -87,6 +87,7 @@ export default function ServiceStep1Page() {
   }, [location.pathname]);
 
   const serviceTitleData: ItextField = {
+    size: "normal",
     label: "serviceTitle",
     id: "serviceTitle",
     placeholder: "내용입력",

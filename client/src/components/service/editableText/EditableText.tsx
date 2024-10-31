@@ -1,7 +1,22 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { useState } from "react";
-
+import {
+  TselectableColor,
+  TfontFamily,
+  TselectableFontSize,
+  TselectableFontStyle,
+  TselectableTextDecoration,
+  TselectableTextAlign,
+  TfontWeight,
+  fontFamilyArr,
+  selectableFontSizeArr,
+  selectableColorArr,
+} from "./types";
+import { IdropDown } from "./DropDown";
+import DropDown from "./DropDown";
+import { IcolorPicker } from "./ColorPicker";
+import ColorPicker from "./ColorPicker";
 import { ReactComponent as UnderLine } from "@svgs/underLine.svg";
 import { ReactComponent as CancleLine } from "@svgs/cancleLine.svg";
 import { ReactComponent as Bold } from "@svgs/bold.svg";
@@ -10,23 +25,9 @@ import { ReactComponent as TextAlignCenter } from "@svgs/textAlignCenter.svg";
 import { ReactComponent as TextAlignLeft } from "@svgs/textAlignLeft.svg";
 import { ReactComponent as TextAlignRight } from "@svgs/textAlignRight.svg";
 
-type TselectableColor = "#383838" | "#000";
-type TselectableFontSize =
-  | "16px"
-  | "18px"
-  | "24px"
-  | "28px"
-  | "32px"
-  | "36px"
-  | "40px"
-  | "48px";
-type TselectableFontStyle = "normal" | "italic";
-type TselectableTextDecoration = "underline" | "line-through" | "none";
-type TselectableTextAlign = "center" | "left" | "right";
-type TfontWeight = "bold" | "regular";
-
 interface Istyles {
   color: TselectableColor;
+  fontFamily: TfontFamily;
   fontSize: TselectableFontSize;
   fontStyle: TselectableFontStyle;
   textDecoration: TselectableTextDecoration;
@@ -39,6 +40,7 @@ export default function EditableText() {
   const [textContent, setTextContent] = useState("편집 가능한 텍스트");
   const [styles, setStyles] = useState<Istyles>({
     color: "#383838",
+    fontFamily: "Pretendard",
     fontSize: "16px",
     fontStyle: "normal",
     textDecoration: "none",
@@ -50,29 +52,138 @@ export default function EditableText() {
     setStyles((prevStyles) => ({ ...prevStyles, ...newStyle }));
   };
 
+  const [showFontFamilyOptions, setShowFontFamilyOptions] =
+    useState<boolean>(false);
+  const [showFontSizeOptions, setShowFontSizeOptions] =
+    useState<boolean>(false);
+
+  const fontFamilyDropDown: IdropDown = {
+    show: showFontFamilyOptions,
+    isFontFamily: true,
+    size: "140px",
+    selected: styles.fontFamily,
+    options: fontFamilyArr,
+    onClick: () => {
+      setShowFontFamilyOptions(!showFontFamilyOptions);
+    },
+    onSelect: (e: React.MouseEvent<HTMLLIElement>) => {
+      setShowFontFamilyOptions(!showFontFamilyOptions);
+      updateStyles({ fontFamily: e.currentTarget.innerText as TfontFamily });
+    },
+  };
+
+  const fontSizeDropDown: IdropDown = {
+    show: showFontSizeOptions,
+    isFontFamily: false,
+    size: "111px",
+    selected: styles.fontSize,
+    options: selectableFontSizeArr,
+    onClick: () => {
+      setShowFontSizeOptions(!showFontSizeOptions);
+    },
+    onSelect: (e: React.MouseEvent<HTMLLIElement>) => {
+      setShowFontSizeOptions(!showFontSizeOptions);
+      updateStyles({
+        fontSize: e.currentTarget.innerText as TselectableFontSize,
+      });
+    },
+  };
+
+  function handleChangeStyle(type: string, normal: string, change: string) {
+    styles[type as keyof Istyles] === change
+      ? updateStyles({ [type as keyof Istyles]: normal })
+      : updateStyles({ [type as keyof Istyles]: change });
+  }
+
+  const [showColorPickerOptions, setShowColorPickerOptions] =
+    useState<boolean>(false);
+
+  const colorPicker: IcolorPicker = {
+    show: showColorPickerOptions,
+    selected: styles.color,
+    options: selectableColorArr,
+    onClick: () => {
+      setShowColorPickerOptions(!showColorPickerOptions);
+    },
+    onSelect: (color: string) => {
+      setShowColorPickerOptions(false);
+      updateStyles({ color: color as TselectableColor });
+    },
+  };
+
   const Toolbar: React.FC = () => (
-    <div css={toolbar}>
-      <button onClick={() => updateStyles({ fontWeight: "bold" })}>
-        <Bold />
-      </button>
-      <button onClick={() => updateStyles({ fontStyle: "italic" })}>
-        <Italic />
-      </button>
-      <button onClick={() => updateStyles({ textDecoration: "line-through" })}>
-        <CancleLine />
-      </button>
-      <button onClick={() => updateStyles({ textDecoration: "underline" })}>
-        <UnderLine />
-      </button>
-      <button onClick={() => updateStyles({ textAlign: "left" })}>
-        <TextAlignLeft />
-      </button>
-      <button onClick={() => updateStyles({ textAlign: "center" })}>
-        <TextAlignCenter />
-      </button>
-      <button onClick={() => updateStyles({ textAlign: "right" })}>
-        <TextAlignRight />
-      </button>
+    <div
+      css={toolbar}
+      onMouseLeave={() => {
+        setIsEditing(false);
+      }}
+    >
+      <div css={font_container}>
+        <DropDown {...fontFamilyDropDown} />
+        <DropDown {...fontSizeDropDown} />
+      </div>
+      <div css={deco_container}>
+        <button
+          onClick={() => {
+            handleChangeStyle("fontWeight", "regular", "bold");
+          }}
+          css={button}
+        >
+          <Bold />
+        </button>
+        <button
+          onClick={() => {
+            handleChangeStyle("fontStyle", "normal", "italic");
+          }}
+          css={button}
+        >
+          <Italic />
+        </button>
+        <button
+          onClick={() => {
+            handleChangeStyle("textDecoration", "none", "line-through");
+          }}
+          css={button}
+        >
+          <CancleLine />
+        </button>
+        <button
+          onClick={() => {
+            handleChangeStyle("textDecoration", "none", "underline");
+          }}
+          css={button}
+        >
+          <UnderLine />
+        </button>
+        <ColorPicker {...colorPicker} />
+      </div>
+      <span css={divider}></span>
+      <div css={align_container}>
+        <button
+          onClick={() => {
+            handleChangeStyle("textAlign", "left", "left");
+          }}
+          css={button}
+        >
+          <TextAlignLeft />
+        </button>
+        <button
+          onClick={() => {
+            handleChangeStyle("textAlign", "left", "center");
+          }}
+          css={button}
+        >
+          <TextAlignCenter />
+        </button>
+        <button
+          onClick={() => {
+            handleChangeStyle("textAlign", "left", "right");
+          }}
+          css={button}
+        >
+          <TextAlignRight />
+        </button>
+      </div>
     </div>
   );
 
@@ -82,6 +193,7 @@ export default function EditableText() {
       <input
         css={css`
           color: ${styles.color};
+          font-family: ${styles.fontFamily};
           font-size: ${styles.fontSize};
           font-style: ${styles.fontStyle};
           text-decoration: ${styles.textDecoration};
@@ -89,6 +201,7 @@ export default function EditableText() {
           font-weight: ${styles.fontWeight === "bold" ? "bold" : "normal"};
           cursor: ${isEditing ? "text" : "pointer"};
           border: none;
+          box-shadow: ${isEditing ? "0 0 0 1px #ededed" : "none"};
           outline: none;
           width: 100%;
           background: transparent;
@@ -101,11 +214,57 @@ export default function EditableText() {
   );
 }
 
+const font_container = css`
+  display: flex;
+  align-items: center;
+  gap: 14px;
+`;
+
+const deco_container = css`
+  display: flex;
+  align-items: center;
+  gap: 14px;
+`;
+
+const color = css`
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+
+  background-color: #3e3e3e;
+  border: 1px solid #dedede;
+`;
+
+const align_container = css`
+  display: flex;
+  align-items: center;
+  gap: 14px;
+`;
+
+const divider = css`
+  width: 1px;
+  height: 20px;
+  background: #dedede;
+`;
+
+const button = css`
+  display: flex;
+  justify-content: center;
+  algin-align: center;
+
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+`;
+
 const toolbar = css`
   position: absolute;
+  z-index: 10;
   top: -24px;
   left: 0;
   transform: translate(-25%, -100%);
+  gap: 14px;
   display: flex;
   align-items: center;
   padding: 12px 8px;

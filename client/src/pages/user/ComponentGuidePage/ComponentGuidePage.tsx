@@ -98,15 +98,18 @@ const range = css`
 
 function FormSection() {
   const textFieldDefault: ItextField = {
+    size: "normal",
     label: "textFieldDefault",
     id: "textFieldDefault",
     placeholder: "내용입력",
   };
   const textFieldFocus: ItextField = {
+    size: "normal",
     label: "textFieldFocus",
     id: "textFieldFocus",
   };
   const textFieldDisabled: ItextField = {
+    size: "normal",
     label: "textFieldDisabled",
     id: "textFieldDisabled",
     placeholder: "내용입력",
