@@ -115,7 +115,7 @@ export default function EditableText() {
     <div
       css={toolbar}
       onMouseLeave={() => {
-        setIsEditing(false);
+        // setIsEditing(false);
       }}
     >
       <div css={font_container}>
