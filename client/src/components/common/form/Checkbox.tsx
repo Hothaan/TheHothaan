@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useState } from "react";
 import { ReactComponent as Check } from "@svgs/check.svg";
 
 export interface Icheckbox {
@@ -8,11 +7,12 @@ export interface Icheckbox {
   name: string;
   label: string;
   checked: boolean;
+  padding?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export default function Checkbox(prop: Icheckbox) {
-  const { id, name, label, checked, onChange } = prop;
+  const { id, name, label, checked, padding, onChange } = prop;
 
   const handleDivClick = () => {
     const fakeEvent = {
@@ -23,7 +23,7 @@ export default function Checkbox(prop: Icheckbox) {
   };
 
   return (
-    <div css={checkboxContainerStyle}>
+    <div css={checkboxContainerStyle(padding)}>
       <input
         type="checkbox"
         id={id}
@@ -42,12 +42,12 @@ export default function Checkbox(prop: Icheckbox) {
   );
 }
 
-const checkboxContainerStyle = css`
+const checkboxContainerStyle = (padding?: string) => css`
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 10px;
+  padding: ${padding ? padding : "10px"};
   flex-basis: 50%;
 `;
 

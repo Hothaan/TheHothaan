@@ -35,7 +35,9 @@ export default function TextField(prop: ItextField) {
   );
 }
 
-const text_field = css``;
+const text_field = css`
+  width: 100%;
+`;
 
 const none = css`
   display: none;

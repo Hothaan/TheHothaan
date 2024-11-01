@@ -11,6 +11,7 @@ import { Ibutton } from "@components/common/button/Button";
 import ButtonSnsLogin, {
   IbuttonSnsLogin,
 } from "@components/user/button/ButtonSnsLogin";
+import TextCaption, { ITextCaption } from "@components/common/text/TextCaption";
 
 export default function LoginPage() {
   const userPageTitle: IuserPageTitle = { title: "로그인" };
@@ -48,6 +49,12 @@ export default function LoginPage() {
     sns: "facebook",
     onClick: () => {},
   };
+  const loginCaption: ITextCaption = {
+    caption: "로그인 정보를 잊으셨나요?",
+  };
+  const joinCaption: ITextCaption = {
+    caption: "아직 회원가입을 하지 않으셨나요?",
+  };
 
   return (
     <UserPageWrap>
@@ -56,8 +63,8 @@ export default function LoginPage() {
         <form css={form_container}>
           <UserTextField {...textFieldId} />
           <UserTextField {...textFieldPw} />
-          <Link to="/" css={[link_gray, text_align_right]}>
-            로그인 정보를 잊으셨나요?
+          <Link to="/" css={text_align_right}>
+            <TextCaption {...loginCaption} />
           </Link>
           <Button {...buttonLogin} />
         </form>
@@ -68,7 +75,7 @@ export default function LoginPage() {
           <ButtonSnsLogin {...buttonFacebookLogin} />
         </div>
         <div css={link_container}>
-          <p css={link_gray}>아직 회원가입을 하지 않으셨나요?</p>
+          <TextCaption {...joinCaption} />
           <Link to="/join" css={link_blue}>
             회원가입
           </Link>
@@ -95,6 +102,7 @@ const link_container = css`
 `;
 
 const text_align_right = css`
+  color: var(--747474, #747474);
   width: 100%;
   text-align: right;
   margin-bottom: 16px;
