@@ -1,4 +1,4 @@
-import { T2depth } from "./common";
+import { T2depth, Tall2depth } from "./common";
 import { I2depthText } from "./common";
 import { Tdepth1Text } from "../depth1/common";
 
@@ -59,13 +59,11 @@ export type Tproduct2depth = {
   selectableDepth2: { [K in Tproduct2depthKey]: T2depth };
 };
 
-// export type Tproduct2depth = {
-//   selectableDepth2: Record<string, T2depth>;
-// };
+interface Iproduct2depth extends Tdepth1Text {
+  selectableDepth2: { [K in Tproduct2depthKey]: T2depth };
+}
 
-interface Iproduct2depth extends Tproduct2depth, Tdepth1Text {}
-
-export const defaultProduct2depth: Iproduct2depth = {
+export const defaultProduct2depth: Tall2depth = {
   depth1: { eng: "product", kor: "상품" },
   selectableDepth2: {
     productList: defaultProductList,
@@ -75,7 +73,7 @@ export const defaultProduct2depth: Iproduct2depth = {
   },
 };
 
-export const product2depth = (service: Tservice): Iproduct2depth => {
+export const product2depth = (service: Tservice): Tall2depth => {
   switch (service) {
     case "shoppingMall": {
       const update = {

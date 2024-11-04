@@ -7,6 +7,7 @@ import Footer from "@components/common/ui/Footer/Footer";
 import MainPage from "@pages/user/MainPage/MainPage";
 import TestPage from "@pages/user/TestPage/TestPage";
 import ComponentGuidePage from "@pages/user/ComponentGuidePage/ComponentGuidePage";
+import TemplateComponentGuidePage from "@pages/user/TemplateComponentGuidePage/TemplateComponentGuidePage";
 import EstimatePage from "@pages/user/EstimatePage/EstimatePage";
 import PlanIntroPage from "@pages/user/PlanIntroPage/PlanIntroPage";
 import ServiceLayout from "./ServiceLayout";
@@ -49,6 +50,10 @@ export default function UserLayout() {
           {/* ---- test -------------- */}
           <Route path="/test" element={<TestPage />} />
           <Route path="/componentGuide" element={<ComponentGuidePage />} />
+          <Route
+            path="/templateComponentGuide"
+            element={<TemplateComponentGuidePage />}
+          />
         </Routes>
       </main>
       <Footer />

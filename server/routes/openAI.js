@@ -1,7 +1,9 @@
+require("dotenv").config();
+
 const express = require("express");
 const axios = require("axios");
 const router = express.Router();
-const apiKey = process.env.REACT_APP_API_KEY_DEV;
+const apiKey = process.env.API_KEY_DEV;
 
 /**
  * @swagger
@@ -37,8 +39,15 @@ const apiKey = process.env.REACT_APP_API_KEY_DEV;
  *               type: object
  */
 router.post("/", async (req, res) => {
-  const { service, serviceTitle, serviceDesc, depth1, depth2, structure } =
-    req.body;
+  const {
+    service,
+    serviceTitle,
+    serviceDesc,
+    depth1,
+    depth2,
+    structure,
+    component,
+  } = req.body;
 
   try {
     const response = await axios.post(

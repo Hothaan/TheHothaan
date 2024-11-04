@@ -1,4 +1,4 @@
-import { T2depth } from "./common";
+import { T2depth, Tall2depth } from "./common";
 import { I2depthText } from "./common";
 import { optionImage, optionText, optionVideo } from "../option/option";
 import { Tdepth1Text } from "../depth1/common";
@@ -162,9 +162,11 @@ export type Tboard2depth = {
   selectableDepth2: { [K in Tboard2depthKey]: T2depth };
 };
 
-interface Iboard2depth extends Tdepth1Text, Tboard2depth {}
+interface Iboard2depth extends Tdepth1Text {
+  selectableDepth2: { [K in Tboard2depthKey]: T2depth };
+}
 
-export const defaultBoard2depth: Iboard2depth = {
+export const defaultBoard2depth: Tall2depth = {
   depth1: { eng: "board", kor: "게시판" },
   selectableDepth2: {
     normalBoard: defaultNormalBoard,
@@ -181,7 +183,7 @@ export const defaultBoard2depth: Iboard2depth = {
   },
 };
 
-export const board2depth = (service: Tservice): Iboard2depth => {
+export const board2depth = (service: Tservice): Tall2depth => {
   switch (service) {
     case "communitySns": {
       const update = {

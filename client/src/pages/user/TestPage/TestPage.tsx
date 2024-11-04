@@ -5,10 +5,10 @@ import { TserviceDataKey } from "@data/service/serviceData";
 import { makeComponentText } from "@api/test";
 import { rolesData } from "@data/components/componentRolsData";
 import { componentMap } from "@components/template/mapping";
-import Loading from "@components/common/ui/Loading/loading";
 import { TDepth1KeyForService, serviceData } from "@data/service/serviceData";
 import { TallDepth1Keys } from "@data/service/depth1/common";
-import { Tall2depthKeys } from "@data/service/depth2/common";
+import { T2depth, Tall2depthKeys } from "@data/service/depth2/common";
+import { componentStructureData } from "@data/components/componentStructureData";
 
 export interface IapiRequest<T extends TserviceDataKey> {
   service: T;
@@ -16,6 +16,7 @@ export interface IapiRequest<T extends TserviceDataKey> {
   serviceDesc: string;
   depth1: TallDepth1Keys;
   depth2: Tall2depthKeys;
+  component: string;
   structure: string;
 }
 
@@ -47,10 +48,9 @@ export default function TestPage() {
     serviceDesc: "",
     depth1: "main",
     depth2: "main",
+    component: "",
     structure: "",
   });
-
-  console.log(request);
 
   const handleCharacterChange = (
     event: React.ChangeEvent<HTMLSelectElement>
@@ -61,6 +61,7 @@ export default function TestPage() {
       serviceDesc: "",
       depth1: "main",
       depth2: "main",
+      component: "",
       structure: "",
     });
   };
@@ -103,7 +104,6 @@ export default function TestPage() {
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
     const selectedDepth2 = event.target.value;
-
     const validDepth1Keys = Object.keys(serviceData[service]) as Array<
       TDepth1KeyForService<T>
     >;
@@ -116,6 +116,16 @@ export default function TestPage() {
     } else {
       console.error("Invalid depth1 value selected for service.");
     }
+  };
+
+  const handleComponentChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    setRequest({
+      ...request,
+      component: event.target.value,
+      structure: componentStructureData[event.target.value],
+    });
   };
 
   const [byteLength, setByteLength] = useState<number>(0);
@@ -158,18 +168,44 @@ export default function TestPage() {
     ));
   };
 
+  function hasSelectableDepth2<T>(
+    obj: T
+  ): obj is T & { selectableDepth2: { [key: string]: T2depth } } {
+    return obj && typeof obj === "object" && "selectableDepth2" in obj;
+  }
+
   const getDepth2Options = <T extends TserviceDataKey>(
     service: T,
     depth1: TDepth1KeyForService<T> | string
   ) => {
     const depth2 = serviceData[service][depth1 as TDepth1KeyForService<T>];
-    return depth2
-      ? Object.entries(depth2).map(([key]) => (
-          <option key={key} value={key}>
-            {key}
-          </option>
-        ))
-      : null;
+
+    if (hasSelectableDepth2(depth2)) {
+      const selectable = depth2.selectableDepth2;
+      return Object.entries(selectable).map(([key]) => (
+        <option key={key} value={key}>
+          {key}
+        </option>
+      ));
+    }
+    return null;
+  };
+
+  const getComponentOptions = <T extends TserviceDataKey>(
+    service: T,
+    depth1: TDepth1KeyForService<T> | string
+  ) => {
+    const depth2 = serviceData[service][depth1 as TDepth1KeyForService<T>];
+
+    if (hasSelectableDepth2(depth2)) {
+      const selectable = depth2.selectableDepth2;
+      return Object.entries(selectable).map(([key]) => (
+        <option key={key} value={key}>
+          {key}
+        </option>
+      ));
+    }
+    return null;
   };
 
   const getCharacterOptions = () => {
@@ -265,6 +301,18 @@ export default function TestPage() {
                   {getDepth2Options(request.service, request.depth1)}
                 </select>
               </div>
+              <div css={input_container}>
+                <label htmlFor="component">component</label>
+                <select
+                  name="component"
+                  id="component"
+                  value={request.component}
+                  onChange={handleComponentChange}
+                >
+                  <option value="">Select component</option>
+                  <option value={"mainBanner"}>mainBanner</option>
+                </select>
+              </div>
             </div>
             <div css={input_container}>
               <label htmlFor="desc">service desc</label>
@@ -322,7 +370,6 @@ export default function TestPage() {
             )}
           </div>
         </div>
-        <Loading />
       </div>
     </>
   );

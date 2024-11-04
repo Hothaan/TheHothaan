@@ -1,4 +1,4 @@
-import { T2depth } from "./common";
+import { T2depth, Tall2depth } from "./common";
 import { I2depthText } from "./common";
 import { Tdepth1Text } from "../depth1/common";
 
@@ -101,7 +101,7 @@ export type Tservice2depth = {
 
 interface Iservice2depth extends Tservice2depth, Tdepth1Text {}
 
-export const defaultService2depth: Iservice2depth = {
+export const defaultService2depth: Tall2depth = {
   depth1: { eng: "service", kor: "서비스" },
   selectableDepth2: {
     feeForUse: defaultFeeForUse,

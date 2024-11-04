@@ -1,4 +1,4 @@
-import { T2depth } from "./common";
+import { T2depth, Tall2depth } from "./common";
 import { I2depthText } from "./common";
 import { Tdepth1Text } from "../depth1/common";
 import { optionImage, optionText, optionVideo } from "../option/option";
@@ -76,9 +76,11 @@ export type TcustomerService2depth = {
   selectableDepth2: { [K in TcustomerService2depthKey]: T2depth };
 };
 
-interface IcustomerService2depth extends TcustomerService2depth, Tdepth1Text {}
+interface IcustomerService2depth extends Tdepth1Text {
+  selectableDepth2: { [K in TcustomerService2depthKey]: T2depth };
+}
 
-export const defaultCustomerService2depth: IcustomerService2depth = {
+export const defaultCustomerService2depth: Tall2depth = {
   depth1: { eng: "customer service", kor: "고객센터" },
   selectableDepth2: {
     notice: defaultNotice,
@@ -89,9 +91,7 @@ export const defaultCustomerService2depth: IcustomerService2depth = {
   },
 };
 
-export const customerService2depth = (
-  service: Tservice
-): IcustomerService2depth => {
+export const customerService2depth = (service: Tservice): Tall2depth => {
   switch (service) {
     case "shoppingMall": {
       const update = {

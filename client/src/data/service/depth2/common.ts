@@ -9,6 +9,7 @@ import {
 import { Tboard2depth, Tboard2depthKey } from "./board";
 import { Tservice2depth, Tservice2depthKey } from "./service";
 import { TcompanyIntro2depth, TcompanyIntro2depthKey } from "./companyIntro";
+import { Tdepth1Text } from "../depth1/common";
 
 export interface I2depthText {
   depth2: {
@@ -24,17 +25,25 @@ export interface T2depth extends I2depthText {
   options?: T2depthOption[];
 }
 
+export type ServiceTypeWithDepth2 = {
+  selectableDepth2: { [key: string]: T2depth };
+};
+
+export type Tall2depth = Tdepth1Text & {
+  selectableDepth2: { [key: string]: T2depth };
+};
+
 /* all 2depth */
 
-export type Tall2depth =
-  | Tmain2depth
-  | TmyPage2depth
-  | Tutility2depth
-  | Tproduct2depth
-  | TcustomerService2depth
-  | Tboard2depth
-  | Tservice2depth
-  | TcompanyIntro2depth;
+// export type Tall2depth =
+//   | Tmain2depth
+//   | TmyPage2depth
+//   | Tutility2depth
+//   | Tproduct2depth
+//   | TcustomerService2depth
+//   | Tboard2depth
+//   | Tservice2depth
+//   | TcompanyIntro2depth;
 
 export type Tall2depthKeys =
   | Tmain2depthKey

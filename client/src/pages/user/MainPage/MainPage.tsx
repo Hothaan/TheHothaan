@@ -11,6 +11,9 @@ export default function MainPage() {
         <li>
           <Link to="/componentGuide">컴포넌트 가이드 보기</Link>
         </li>
+        <li>
+          <Link to="/templateComponentGuide">템플릿 컴포넌트 가이드 보기</Link>
+        </li>
       </ul>
     </>
   );

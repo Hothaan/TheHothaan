@@ -1,5 +1,5 @@
 import { Tdepth1Text } from "../depth1/common";
-import { T2depth } from "./common";
+import { T2depth, Tall2depth } from "./common";
 import { I2depthText } from "./common";
 
 /* 마이페이지 */
@@ -92,9 +92,11 @@ export type TmyPage2depth = {
   selectableDepth2: { [K in TmyPage2depthKey]: T2depth };
 };
 
-interface ImyPage2depth extends TmyPage2depth, Tdepth1Text {}
+interface ImyPage2depth extends Tdepth1Text {
+  selectableDepth2: { [K in TmyPage2depthKey]: T2depth };
+}
 
-export const defaulTmyPage2depth: ImyPage2depth = {
+export const defaulTmyPage2depth: Tall2depth = {
   depth1: { eng: "my page", kor: "마이페이지" },
   selectableDepth2: {
     profile: defaultProfile,
@@ -106,7 +108,7 @@ export const defaulTmyPage2depth: ImyPage2depth = {
   },
 };
 
-export const myPage2depth = (service: Tservice): TmyPage2depth => {
+export const myPage2depth = (service: Tservice): Tall2depth => {
   switch (service) {
     case "shoppingMall": {
       const update = {

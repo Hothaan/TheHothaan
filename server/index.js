@@ -31,52 +31,6 @@ app.use(
   })
 );
 
-// const apiKey = process.env.REACT_APP_API_KEY_DEV;
-
-// // OpenAI API 호출을 처리하는 엔드포인트
-// app.post("/api/openai", async (req, res) => {
-//   const { service, serviceTitle, serviceDesc, depth1, depth2, structure } =
-//     req.body;
-
-//   try {
-//     const response = await axios.post(
-//       "https://api.openai.com/v1/chat/completions",
-//       {
-//         model: "gpt-4",
-//         messages: [
-//           {
-//             role: "system",
-//             content: `assistantConfig for ${service}`, // 여기에 적합한 설정을 넣으세요
-//           },
-//           {
-//             role: "user",
-//             content: `generate text for the ${depth1} menu ${depth2} page component of the ${service} web page name ${serviceTitle}, according to the ${structure} structure. Refer to the description of the web page created by the client: ${serviceDesc}. Don't put any explanations other than the structure you set. answer with JSON format only. value must be korean`,
-//           },
-//         ],
-//         temperature: 1,
-//         top_p: 1,
-//       },
-//       {
-//         headers: {
-//           Authorization: `Bearer ${apiKey}`,
-//           "Content-Type": "application/json",
-//         },
-//       }
-//     );
-//     // OpenAI의 응답을 클라이언트로 전송
-//     res.json(JSON.parse(response.data.choices[0].message.content));
-//   } catch (error) {
-//     console.error("API 요청 중 오류가 발생했습니다: ", error);
-//     res.status(500).json({ error: "OpenAI API 요청 실패" });
-//   }
-// });
-
-// // API 엔드포인트 예시
-// app.get("/api/message", (req, res) => {
-//   res.json({ message: "Hello from the backend!" });
-// });
-
-// 프로덕션 환경에서 React 정적 파일 제공
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../client/build")));
 

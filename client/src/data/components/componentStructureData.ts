@@ -15,3 +15,11 @@ export const commonStructureData: IStructureData = {
   homepageBoard: {},
   landingIntroduce: {},
 };
+
+export interface IcomponentStructureData {
+  [key: string]: string;
+}
+
+export const componentStructureData: IcomponentStructureData = {
+  mainBanner: `{title: string; desc: string; }`,
+};

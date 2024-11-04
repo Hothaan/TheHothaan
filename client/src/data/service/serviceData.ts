@@ -12,6 +12,7 @@ import {
   landingIntroduce1depth,
   TlandingIntroduce1depth,
 } from "./depth1/landingIntroduce";
+import { T2depth } from "./depth2/common";
 
 const serviceKeyArr = [
   "shoppingMall",
