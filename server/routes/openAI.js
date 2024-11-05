@@ -4,7 +4,7 @@ const express = require("express");
 const axios = require("axios");
 const router = express.Router();
 const apiKey = process.env.API_KEY_DEV;
-const { assistantConfig } = require("../../shared/assistantconfig.js");
+const { assistantConfig } = require("../shared/assistantconfig.js");
 
 /**
  * @swagger

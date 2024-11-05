@@ -1,10 +1,9 @@
 require("dotenv").config();
 const express = require("express");
-const axios = require("axios"); // OpenAI API 호출을 위한 axios
 const cors = require("cors");
 const path = require("path");
 
-const setupSwagger = require("./swagger"); // Swagger 설정 불러오기
+const setupSwagger = require("./swagger");
 
 const openAIRoutes = require("./routes/openAI");
 const userRoutes = require("./routes/user");
@@ -30,7 +29,7 @@ app.use("/api/openai", openAIRoutes);
 app.use("/api/user", userRoutes);
 
 // Swagger 문서화
-setupSwagger(app); // Swagger 설정 추가
+setupSwagger(app);
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../client/build")));
