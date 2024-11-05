@@ -142,7 +142,7 @@ const depth1_btn = (theme: Theme) => css`
 const depth2_container = (theme: Theme) => css`
   position: absolute;
   z-index: 10;
-  top: calc(100% + 17px);
+  top: calc(100% + 19px);
   left: 50%;
   transform: translateX(-50%);
   display: flex;
