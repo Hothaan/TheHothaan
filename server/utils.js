@@ -9,4 +9,9 @@ function generateRandomCode() {
     return Math.floor(100000 + Math.random() * 900000).toString(); // 6자리 랜덤 코드
 }
 
-module.exports = { isValidEmail, generateRandomCode };
+// HTML 이스케이프 처리
+const escapeHTMLContent = (html) => {
+    return html.replace(/"/g, '\\"').replace(/\n/g, ''); // "를 \\"로, 줄바꿈은 제거
+};
+
+module.exports = { isValidEmail, generateRandomCode, escapeHTMLContent };
