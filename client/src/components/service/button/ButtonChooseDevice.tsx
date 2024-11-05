@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { ReactComponent as Pc } from "@svgs/pc.svg";
-import { ReactComponent as Tablet } from "@svgs/tablet.svg";
-import { ReactComponent as Mobile } from "@svgs/mobile.svg";
+import { ReactComponent as Pc } from "@svgs/service/pc.svg";
+import { ReactComponent as Tablet } from "@svgs/service/tablet.svg";
+import { ReactComponent as Mobile } from "@svgs/service/mobile.svg";
 
 export interface IbuttonChooseDevice {
   isSelected: boolean;
@@ -53,16 +53,16 @@ export default function ButtonChooseDevice(props: IbuttonChooseDevice) {
 const choose_device_color = (isSelected: boolean) => {
   if (isSelected) {
     return css`
-      background: var(--EEF7FD, #eef7fd);
+      background: var(--FFF, #fff);
       &:before {
         background: linear-gradient(to right, #56c0fe, #6d0ee6);
       }
     `;
   } else {
     return css`
-      background: var(--FFF, #fff);
+      background: var(--F6F8FF, #f6f8ff);
       &:before {
-        background: linear-gradient(to right, #dedede, #dedede);
+        background: linear-gradient(to right, #f6f8ff, #f6f8ff);
       }
     `;
   }
@@ -72,9 +72,11 @@ const choose_device = css`
   position: relative;
   display: flex;
   width: 400px;
+  height: 197px;
   padding: 30px;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 15px;
   border-radius: 10px;
   border: 2px solid transparent;

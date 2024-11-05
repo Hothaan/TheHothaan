@@ -3,9 +3,9 @@ import { css } from "@emotion/react";
 import { useState, useRef, useEffect } from "react";
 import { IserviceModal } from "@components/service/modal/ServiceModal";
 import ServiceModal from "@components/service/modal/ServiceModal";
-import Button from "@components/common/button/Button";
 import { IbuttonClose } from "@components/common/button/ButtonClose";
 import ButtonClose from "@components/common/button/ButtonClose";
+import ButtonAdd, { IbuttonAdd } from "@components/service/button/ButtonAdd";
 import RadioButton from "@components/common/form/RadioButton";
 
 export interface IbuttonChooseDepth2Function {
@@ -81,6 +81,11 @@ export default function ButtonChooseDepth2Function(
     right: "-6px",
   };
 
+  const addButton: IbuttonAdd = {
+    top: "-3px",
+    left: "-6px",
+  };
+
   return (
     <div
       css={wrap(options)}
@@ -109,6 +114,7 @@ export default function ButtonChooseDepth2Function(
           </p>
         )}
       </div>
+      {options && selectedValue === "" && <ButtonAdd {...addButton} />}
       {!isDefault && showDeletedButton && <ButtonClose {...closeButton} />}
       {options && (
         <ServiceModal {...serviceModal}>

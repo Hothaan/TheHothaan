@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { TserviceDataKey } from "@data/service/serviceData";
-import { ReactComponent as ShoppingMall } from "@svgs/shoppingMall.svg";
-import { ReactComponent as CommunitySns } from "@svgs/communitySns.svg";
-import { ReactComponent as IntermediaryMatch } from "@svgs/intermediaryMatch.svg";
-import { ReactComponent as HomepageBoard } from "@svgs/homepageBoard.svg";
-import { ReactComponent as LandingIntroduce } from "@svgs/landingIntroduce.svg";
+import { ReactComponent as ShoppingMall } from "@svgs/service/shoppingMall.svg";
+import { ReactComponent as CommunitySns } from "@svgs/service/communitySns.svg";
+import { ReactComponent as IntermediaryMatch } from "@svgs/service/intermediaryMatch.svg";
+import { ReactComponent as HomepageBoard } from "@svgs/service/homepageBoard.svg";
+import { ReactComponent as LandingIntroduce } from "@svgs/service/landingIntroduce.svg";
 
 export interface IbuttonChooseService {
   isSelected: boolean;
@@ -82,16 +82,18 @@ export default function ButtonChooseService(props: IbuttonChooseService) {
 const choose_device_color = (isSelected: boolean) => {
   if (isSelected) {
     return css`
-      background: var(--EEF7FD, #eef7fd);
+      border-radius: 10px;
+      border: 2px solid var(--Linear, #56c0fe);
+      background: var(--FFF, #fff);
       &:before {
         background: linear-gradient(to right, #56c0fe, #6d0ee6);
       }
     `;
   } else {
     return css`
-      background: var(--FFF, #fff);
+      background: var(--F6F8FF, #f6f8ff);
       &:before {
-        background: linear-gradient(to right, #dedede, #dedede);
+        background: linear-gradient(to right, #f6f8ff, #f6f8ff);
       }
     `;
   }
@@ -101,8 +103,11 @@ const choose_device = css`
   position: relative;
   display: flex;
   width: 400px;
+  height: 219px;
   padding: 30px;
+
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   gap: 15px;
   border-radius: 10px;
