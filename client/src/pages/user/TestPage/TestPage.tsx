@@ -2,7 +2,7 @@
 import { css, Theme } from "@emotion/react";
 import { useState } from "react";
 import { TserviceDataKey } from "@data/service/serviceData";
-import { makeComponentText } from "@api/test";
+import { makeComponentTextTest } from "@api/test";
 import { rolesData } from "@data/components/componentRolsData";
 import { componentMap } from "@components/template/mapping";
 import { TDepth1KeyForService, serviceData } from "@data/service/serviceData";
@@ -235,7 +235,8 @@ export default function TestPage() {
         setLoading(true);
         setError(null);
         try {
-          const response = await makeComponentText(request);
+          const response = await makeComponentTextTest(request);
+          console.log(response);
           setData(response);
         } catch (error) {
           console.error("API 요청 실패:", error);
@@ -362,13 +363,13 @@ export default function TestPage() {
           <div css={code}>
             <pre>{JSON.stringify(data, null, 2)}</pre>
           </div>
-          <div css={component}>
+          {/* <div css={component}>
             {data ? (
               <GeneratedComponent data={data} depth2={request.depth2} />
             ) : (
               <div>generate some component! 🤔</div>
             )}
-          </div>
+          </div> */}
         </div>
       </div>
     </>

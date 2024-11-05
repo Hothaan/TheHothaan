@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { useEffect, useState } from "react";
 import { componentMap } from "@components/template/mapping";
-import { makeComponentText } from "@api/test";
+import { makeComponentTextTest } from "@api/test";
 import { IapiRequest } from "@pages/user/TestPage/TestPage";
 import { TserviceDataKey } from "@data/service/serviceData";
 
@@ -26,7 +26,7 @@ export default function GenerateComponent(
         setLoading(true);
         setError(null);
         try {
-          const response = await makeComponentText(request);
+          const response = await makeComponentTextTest(request);
           setData(response);
         } catch (error) {
           console.error("API 요청 실패:", error);
