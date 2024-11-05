@@ -25,6 +25,14 @@ app.use(
   })
 );
 
+// 캐시 방지 헤더 설정 (API 요청에만 적용)
+app.use("/api", (req, res, next) => {
+  res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  res.set("Pragma", "no-cache");
+  res.set("Expires", "0");
+  next();
+});
+
 // JSON 요청을 처리하기 위한 미들웨어
 app.use(express.json());
 
