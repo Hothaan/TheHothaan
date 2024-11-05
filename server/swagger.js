@@ -10,7 +10,14 @@ const swaggerDefinition = {
   },
   servers: [
     {
-      url: "http://localhost:5001", // API 서버 URL
+      url:
+        process.env.NODE_ENV === "production"
+          ? "http://dolllpitoxic3.mycafe24.com/api"
+          : "http://localhost:5001/api",
+      description:
+        process.env.NODE_ENV === "production"
+          ? "Production Server"
+          : "Development Server",
     },
   ],
 };
