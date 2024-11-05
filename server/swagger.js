@@ -12,8 +12,8 @@ const swaggerDefinition = {
     {
       url:
         process.env.NODE_ENV === "production"
-          ? "http://dolllpitoxic3.mycafe24.com/api"
-          : "http://localhost:5001/api",
+          ? "http://dolllpitoxic3.mycafe24.com"
+          : "http://localhost:5001",
       description:
         process.env.NODE_ENV === "production"
           ? "Production Server"
