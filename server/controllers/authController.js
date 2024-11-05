@@ -93,9 +93,9 @@ const sendVerificationCode = async (req, res) => {
         <h2 style="color: #4CAF50;">회원가입 인증 코드</h2>
         <p style="font-size: 18px;">안녕하세요.</p>
         <p style="font-size: 16px;">아래 인증 코드를 입력하여 회원가입을 완료해 주세요.</p>
-        <p style="font-size: 24px; font-weight: bold; color: #333;">${verificationCode}</p>
-        <p style="font-size: 14px; color: #888;">이 인증 코드는 <strong>5분</strong> 동안만 유효합니다. 감사합니다</p>
-        <p style="font-size: 14px; color: #888;"><br/>The핫한 고객지원</p>
+        <p style="font-size: 24px; font-weight: bold; color: #333;margin: 5px;">${verificationCode}</p>
+        <p style="font-size: 14px; color: #888;">이 인증 코드는 <strong>5분</strong> 동안만 유효합니다.</p>
+        <p style="font-size: 14px; color: #888;">감사합니다.<br>The핫한 고객지원</p>
       </div>
     `,
   };
