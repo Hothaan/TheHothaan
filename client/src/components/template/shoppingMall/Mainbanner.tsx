@@ -26,7 +26,9 @@ export default function Mainbanner(prop: ImainBanner) {
 
 const wrap = css`
   position: relative;
-  width: 1920px;
+  width: 100%;
+  max-width: 1920px;
+  min-width: 1000px;
   height: 860px;
   background-color: #eff2f6;
 `;
@@ -36,6 +38,8 @@ const gradient = css`
   height: 100%;
   background: linear-gradient(180deg, #9cb0c900 0%, #9cb0c933 100%);
   padding: 212px 132px;
+
+  @media (max-width: 19);
 `;
 
 const container = css`

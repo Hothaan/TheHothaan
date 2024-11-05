@@ -4,6 +4,7 @@ import Mainbanner from "@components/template/shoppingMall/Mainbanner";
 import Header from "@components/template/shoppingMall/Header";
 import ProductList from "@components/template/shoppingMall/ProductList";
 import Review from "@components/template/shoppingMall/Review";
+import Footer from "@components/template/shoppingMall/Footer";
 
 export default function TemplateComponentGuidePage() {
   const mainbanner = {
@@ -27,6 +28,10 @@ export default function TemplateComponentGuidePage() {
       <div css={container}>
         <p css={title}>review</p>
         <Review />
+      </div>
+      <div css={container}>
+        <p css={title}>footer</p>
+        <Footer />
       </div>
     </div>
   );

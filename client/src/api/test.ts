@@ -69,3 +69,24 @@ export const makeComponentTextTest = async (
     throw error;
   }
 };
+
+export const makeComponentTextTestWithUrl = async (
+  componentData: IapiRequest<TserviceDataKey>,
+  isProduction: boolean
+) => {
+  try {
+    const response = await axios.post(
+      `http://${
+        isProduction ? "dolllpitoxic3.mycafe24.com" : "localhost:5001"
+      }/api/openai`,
+      componentData
+    );
+
+    console.log(response);
+
+    return response.data;
+  } catch (error) {
+    console.error("서버 요청 중 오류가 발생했습니다: ", error);
+    throw error;
+  }
+};

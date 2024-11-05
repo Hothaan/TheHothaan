@@ -51,8 +51,9 @@ export default function Header() {
 
 const wrap = css`
   width: 100%;
-  display: flex;
   max-width: 1920px;
+  min-width: 1000px;
+  display: flex;
   justify-content: space-between;
   align-items: center;
 
@@ -62,6 +63,7 @@ const wrap = css`
 const logo_wrap = css`
   display: flex;
   gap: 13px;
+  align-items: center;
 `;
 
 const logo_container = css`
@@ -88,6 +90,9 @@ const logo_text = css`
   font-style: normal;
   font-weight: 800;
   line-height: normal;
+  @media (max-width: 1300px) {
+    font-size: 30px;
+  }
 `;
 
 const nav_container = css`
@@ -95,6 +100,10 @@ const nav_container = css`
   justify-content: center;
   align-items: center;
   gap: 50px;
+
+  @media (max-width: 1300px) {
+    gap: 20px;
+  }
 `;
 
 const nav_item = css`
@@ -110,16 +119,23 @@ const nav_text = css`
   font-weight: 500;
   line-height: normal;
   text-transform: capitalize;
+  @media (max-width: 1300px) {
+    font-size: 16px;
+  }
 `;
 
 const user_container = css`
   display: flex;
   align-items: center;
-  gap: 30px;
+  gap: 20px;
+  @media (max-width: 1300px) {
+    gap: 10px;
+  }
 `;
 
 const bag_container = css`
   position: relative;
+  margin-right: 10px;
 `;
 
 const badge_container = css`

@@ -2,9 +2,8 @@
 import { css, Theme } from "@emotion/react";
 import { useState } from "react";
 import { TserviceDataKey } from "@data/service/serviceData";
-import { makeComponentTextTest } from "@api/test";
+import { makeComponentTextTest, makeComponentTextTestWithUrl } from "@api/test";
 import { rolesData } from "@data/components/componentRolsData";
-import { componentMap } from "@components/template/mapping";
 import { TDepth1KeyForService, serviceData } from "@data/service/serviceData";
 import { TallDepth1Keys } from "@data/service/depth1/common";
 import { T2depth, Tall2depthKeys } from "@data/service/depth2/common";
@@ -211,6 +210,16 @@ export default function TestPage() {
     return isAnyFieldEmpty ? true : false;
   }
 
+  function getIsProcduction(): boolean {
+    if (window.location.host === "localhost:3000") {
+      return false;
+    } else if (window.location.host === "dolllpitoxic3.mycafe24.com") {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   async function fetchData() {
     if (!loading) {
       if (handleEmptyRequestFields(request)) {
@@ -219,7 +228,12 @@ export default function TestPage() {
         setLoading(true);
         setError(null);
         try {
-          const response = await makeComponentTextTest(request);
+          const isProduction: boolean = getIsProcduction();
+          // const response = await makeComponentTextTest(request);
+          const response = await makeComponentTextTestWithUrl(
+            request,
+            isProduction
+          );
           console.log(response);
           setData(response);
         } catch (error) {

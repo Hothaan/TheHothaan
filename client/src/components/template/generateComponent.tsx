@@ -4,6 +4,7 @@ import { componentMap } from "@components/template/mapping";
 import { makeComponentTextTest } from "@api/test";
 import { IapiRequest } from "@pages/user/TestPage/TestPage";
 import { TserviceDataKey } from "@data/service/serviceData";
+import Loading from "@components/common/ui/Loading/loading";
 
 export default function GenerateComponent(prop: IapiRequest<TserviceDataKey>) {
   const [data, setData] = useState<any>(null);
@@ -45,7 +46,7 @@ export default function GenerateComponent(prop: IapiRequest<TserviceDataKey>) {
     return <div>Error: {error}</div>;
   }
   if (loading) {
-    return <div>loading component</div>;
+    return <Loading />;
   }
 
   return (

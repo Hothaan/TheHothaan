@@ -68,11 +68,15 @@ export default function ProductList() {
 
 const wrap = css`
   width: 100%;
+  max-width: 1920px;
+  min-width: 1000px;
+
   padding: 100px 0;
 
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
 `;
 
 const title = css`
@@ -90,7 +94,7 @@ const title = css`
 
 const slide_container = css`
   width: 100%;
-
+  max-width: 1000px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -98,6 +102,8 @@ const slide_container = css`
 `;
 
 const slide_item = css`
+  width: 100%;
+  max-width: 418px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -105,8 +111,8 @@ const slide_item = css`
 
 const slide_image = css`
   position: relative;
-
-  width: 418px;
+  width: 100%;
+  max-width: 418px;
   height: 420px;
   background-color: #eff2f6;
 `;
