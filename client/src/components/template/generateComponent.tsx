@@ -5,28 +5,27 @@ import { makeComponentTextTest } from "@api/test";
 import { IapiRequest } from "@pages/user/TestPage/TestPage";
 import { TserviceDataKey } from "@data/service/serviceData";
 
-export default function GenerateComponent(
-  request: IapiRequest<TserviceDataKey>
-) {
+export default function GenerateComponent(prop: IapiRequest<TserviceDataKey>) {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const ComponentToRender = componentMap[request.depth2];
+  const ComponentToRender = componentMap[prop.component];
 
   async function fetchData(request: IapiRequest<TserviceDataKey>) {
     if (!loading) {
       if (
-        request.service &&
-        request.serviceTitle !== "" &&
-        request.serviceDesc !== "" &&
-        request.depth1 &&
-        request.depth2 &&
-        request.structure !== ""
+        prop.service &&
+        prop.serviceTitle !== "" &&
+        prop.serviceDesc !== "" &&
+        prop.depth1 &&
+        prop.depth2 &&
+        prop.component !== "" &&
+        prop.structure !== ""
       ) {
         setLoading(true);
         setError(null);
         try {
-          const response = await makeComponentTextTest(request);
+          const response = await makeComponentTextTest(prop);
           setData(response);
         } catch (error) {
           console.error("API 요청 실패:", error);
@@ -39,7 +38,7 @@ export default function GenerateComponent(
   }
 
   useEffect(() => {
-    fetchData(request);
+    fetchData(prop);
   }, []);
 
   if (error) {

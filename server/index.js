@@ -12,7 +12,6 @@ const userRoutes = require("./routes/user");
 const app = express();
 const port = process.env.PORT || 5001;
 
-// CORS 설정
 app.use(
   cors({
     origin: ["http://localhost:3000", "http://dolllpitoxic3.mycafe24.com"], // 허용할 도메인 목록 추가

@@ -9,6 +9,7 @@ import { TDepth1KeyForService, serviceData } from "@data/service/serviceData";
 import { TallDepth1Keys } from "@data/service/depth1/common";
 import { T2depth, Tall2depthKeys } from "@data/service/depth2/common";
 import { componentStructureData } from "@data/components/componentStructureData";
+import GenerateComponent from "@components/template/generateComponent";
 
 export interface IapiRequest<T extends TserviceDataKey> {
   service: T;
@@ -20,23 +21,6 @@ export interface IapiRequest<T extends TserviceDataKey> {
   structure: string;
 }
 
-const GeneratedComponent: React.FC<{ data: any; depth2: string }> = ({
-  data,
-  depth2,
-}) => {
-  const ComponentToRender = componentMap[depth2];
-
-  return (
-    <div>
-      {ComponentToRender ? (
-        <ComponentToRender {...data} />
-      ) : (
-        <div>make component file first! 🤔</div>
-      )}
-    </div>
-  );
-};
-
 export default function TestPage() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
@@ -44,12 +28,12 @@ export default function TestPage() {
 
   const [request, setRequest] = useState<IapiRequest<TserviceDataKey>>({
     service: "shoppingMall",
-    serviceTitle: "",
-    serviceDesc: "",
+    serviceTitle: "더핫한",
+    serviceDesc: "기획안 생성 플랫폼",
     depth1: "main",
     depth2: "main",
-    component: "",
-    structure: "",
+    component: "mainBanner",
+    structure: "{title: string; desc: string; }",
   });
 
   const handleCharacterChange = (
@@ -260,6 +244,7 @@ export default function TestPage() {
                   type="text"
                   name="title"
                   id="title"
+                  value={request.serviceTitle}
                   onChange={handleTitleChange}
                 />
               </div>
@@ -310,7 +295,7 @@ export default function TestPage() {
                   value={request.component}
                   onChange={handleComponentChange}
                 >
-                  <option value="">Select component</option>
+                  {/* <option value="">Select component</option> */}
                   <option value={"mainBanner"}>mainBanner</option>
                 </select>
               </div>
@@ -322,6 +307,7 @@ export default function TestPage() {
                 id="desc"
                 maxLength={MAX_LENGTH}
                 css={textarea}
+                value={request.serviceDesc}
                 onChange={handleDescChange}
               ></textarea>
               <p css={char_count}>
@@ -363,14 +349,14 @@ export default function TestPage() {
           <div css={code}>
             <pre>{JSON.stringify(data, null, 2)}</pre>
           </div>
-          {/* <div css={component}>
-            {data ? (
-              <GeneratedComponent data={data} depth2={request.depth2} />
-            ) : (
-              <div>generate some component! 🤔</div>
-            )}
-          </div> */}
         </div>
+      </div>
+      <div css={component}>
+        {data ? (
+          <GenerateComponent {...request} />
+        ) : (
+          <div>generate some component! 🤔</div>
+        )}
       </div>
     </>
   );
@@ -383,9 +369,8 @@ const action_button = (theme: Theme) => css`
 `;
 
 const pageWrap = (theme: Theme) => css`
-  width: 50%;
+  width: 100%;
   height: 100%;
-  min-height: 100vh;
   background-color: ${theme.colors.mono.gray1};
 `;
 
@@ -453,7 +438,5 @@ const title = (theme: Theme) => css`
 `;
 
 const component = (theme: Theme) => css`
-  box-sizing: border-box;
-  padding: 24px 16px;
   background-color: ${theme.colors.mono.gray3};
 `;

@@ -1,6 +1,6 @@
 import React from "react";
-import Header from "@components/template/common/Header";
+import Mainbanner from "./shoppingMall/Mainbanner";
 
 export const componentMap: { [key: string]: React.FC<any> } = {
-  header: Header,
+  mainBanner: Mainbanner,
 };

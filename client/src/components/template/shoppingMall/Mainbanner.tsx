@@ -38,10 +38,14 @@ const gradient = css`
   padding: 212px 132px;
 `;
 
-const container = css``;
+const container = css`
+  position: relative;
+  z-index: 1;
+`;
 
 const icon = css`
   position: absolute;
+  z-index: 0;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -63,6 +67,8 @@ const h1 = css`
 `;
 
 const desc_style = css`
+  width: 40%;
+  word-break: keep-all;
   color: #486284;
   font-family: Inter;
   font-size: 32px;
