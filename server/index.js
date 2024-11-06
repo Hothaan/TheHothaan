@@ -12,6 +12,7 @@ const setupSwagger = require("./swagger");
 const openAIRoutes = require("./routes/openAI");
 const userRoutes = require("./routes/user");
 const imageRoutes = require("./routes/image");
+const serviceRoutes = require("./routes/service");
 
 const app = express();
 const port = process.env.PORT || 5001;
@@ -41,6 +42,7 @@ app.use(express.json());
 app.use("/api/openai", openAIRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/image", imageRoutes);
+app.use("/api/service", serviceRoutes);
 
 // Swagger 문서화
 setupSwagger(app);

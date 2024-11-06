@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const { saveImageFromHTML } = require("../controllers/imageController");
+const { saveImageFromURL } = require("../controllers/imageController");
 
 /**
  * @swagger
  * /api/image/save:
  *   post:
- *     summary: HTML 코드를 이미지로 저장
- *     description: HTML 코드를 PNG 이미지로 변환하고 저장합니다.
+ *     summary: URL 페이지를 이미지로 저장
+ *     description: URL 페이지를 PNG 이미지로 변환하고 저장합니다.
  *     requestBody:
  *       required: true
  *       content:
@@ -15,9 +15,9 @@ const { saveImageFromHTML } = require("../controllers/imageController");
  *           schema:
  *             type: object
  *             properties:
- *               htmlContent:
+ *               url:
  *                 type: string
- *                 description: 변환할 HTML 코드
+ *                 description: 변환할 url
  *     responses:
  *       200:
  *         description: 이미지 저장 성공
@@ -31,6 +31,6 @@ const { saveImageFromHTML } = require("../controllers/imageController");
  *                 path:
  *                   type: string
  */
-router.post("/save", saveImageFromHTML);
+router.post("/save", saveImageFromURL);
 
 module.exports = router;

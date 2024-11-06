@@ -1,5 +1,7 @@
 const pool = require('../config/dbConfig');
 
+// DB TABLE : "users"
+
 // 회원가입
 async function registerUser(userData) {
   const { email, name, password } = userData;
