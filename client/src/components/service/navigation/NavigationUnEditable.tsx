@@ -13,13 +13,14 @@ interface IlistItem {
   image?: React.ReactElement;
 }
 
-export interface InavigationOnEdit {
-  listData: IlistItem[];
+export interface INavigationUnEditable {
+  // listData: IlistItem[];
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function NavigationOnEdit() {
+export default function NavigationUnEditable(prop: INavigationUnEditable) {
+  const { isOpen, setIsOpen } = prop;
   const listData: IlistItem[] = [
     { title: "메인" },
     { title: "상품" },
@@ -27,7 +28,7 @@ export default function NavigationOnEdit() {
     { title: "FAQ" },
   ];
 
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  // const [isOpen, setIsOpen] = useState<boolean>(false);
   const [currentIdx, setCurrentIdx] = useState<number>(0);
   const [selectedItem, setSelectedItem] = useState<string>(listData[0].title);
 
@@ -97,7 +98,6 @@ export default function NavigationOnEdit() {
             <div css={image_container}></div>
             <div css={list_item_info_container(selectedItem === item.title)}>
               <p css={list_item_title}>{item.title}</p>
-              {selectedItem === item.title && <Edit />}
             </div>
           </li>
         ))}
@@ -110,10 +110,6 @@ export default function NavigationOnEdit() {
         </p>
         <ButtonArrowIconControler {...buttonSelectNextItemAside} />
       </div>
-      <p css={caption}>
-        내용을 수정하시려면
-        <br /> <span css={text_blue}>썸네일을 더블클릭</span>하세요
-      </p>
     </aside>
   );
 }

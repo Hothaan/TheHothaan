@@ -8,8 +8,9 @@ import ToastPopup from "@components/common/ui/ToastPopup/ToastPopup";
 import { ReactComponent as LogoLight } from "@svgs/logoLight.svg";
 import { ReactComponent as Minimize } from "@svgs/buttonMinimizePage.svg";
 import Button, { Ibutton } from "@components/common/button/Button";
-import NavigationOnEdit from "../navigation/NavigationOnEdit";
-import { InavigationOnEdit } from "../navigation/NavigationOnEdit";
+import NavigationEditable from "../navigation/NavigationEditable";
+import { INavigationEditable } from "../navigation/NavigationEditable";
+import EditableText from "../editableText/EditableText";
 
 interface IFullPageModal {
   onClick: (isModalOpen: boolean) => void;
@@ -55,7 +56,7 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
 
   return (
     <>
-      <NavigationOnEdit />
+      <NavigationEditable />
       <div css={wrap}>
         <div css={title_bar}>
           <LogoLight />
@@ -76,11 +77,14 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
         </div>
         <div css={content_container}>
           <div css={content}>
-            <div css={scroll_item}></div>
+            <div css={scroll_item}>
+              <EditableText />
+            </div>
           </div>
         </div>
       </div>
       <ToastPopup {...toast} />
+      {isLoadingModalOpen && <LoadingModal {...loadingModal} />}
     </>
   );
 }
@@ -149,4 +153,7 @@ const scroll_item = css`
   border-radius: 20px;
   background: #ededed;
   height: 2000px;
+
+  /* 임시 */
+  padding: 100px;
 `;

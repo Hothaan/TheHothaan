@@ -67,6 +67,7 @@ const button = css`
     color: var(--383838, #383838);
     font-family: Pretendard;
     font-weight: 500;
+    white-space: nowrap;
   }
 
   &:before {

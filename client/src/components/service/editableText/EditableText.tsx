@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useState } from "react";
+import { useState, useRef, useLayoutEffect } from "react";
 import {
   TselectableColor,
   TfontFamily,
@@ -36,6 +36,9 @@ interface Istyles {
 }
 
 export default function EditableText() {
+  const divRef = useRef<HTMLDivElement>(null);
+  const toolbarRef = useRef<HTMLDivElement>(null);
+  const [toolbarPosition, setToolbarPosition] = useState({ top: 0, left: 0 });
   const [isEditing, setIsEditing] = useState(false);
   const [textContent, setTextContent] = useState("편집 가능한 텍스트");
   const [styles, setStyles] = useState<Istyles>({
@@ -47,6 +50,46 @@ export default function EditableText() {
     textAlign: "left",
     fontWeight: "regular",
   });
+
+  useLayoutEffect(() => {
+    if (isEditing && divRef.current && toolbarRef.current) {
+      const divRect = divRef.current.getBoundingClientRect();
+      const toolbarRect = toolbarRef.current.getBoundingClientRect();
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+
+      const minimalPadding: number = 20;
+      const needHeightSpace = toolbarRect.height - minimalPadding;
+      const needWidthSpace = toolbarRect.width - minimalPadding;
+
+      let top = 0;
+
+      if (divRect.top <= needHeightSpace) {
+        // 위쪽 공간이 없을 때 아래 배치
+        top = minimalPadding + toolbarRect.height;
+      } else if (divRect.bottom + toolbarRect.height > viewportHeight) {
+        // 아래쪽 공간이 부족할 때 위에 배치
+        top = -minimalPadding - toolbarRect.height;
+      } else {
+        // 기본적으로 위에 배치
+        top = -minimalPadding - toolbarRect.height;
+      }
+
+      let left = divRect.left;
+
+      if (divRect.left <= needWidthSpace) {
+        // 왼쪽 공간이 부족할 때 오른쪽에 배치
+        left = minimalPadding;
+      } else if (divRect.right + toolbarRect.width > viewportWidth) {
+        // 오른쪽 공간이 부족할 때 화면 끝에 맞추기
+        left = viewportWidth - toolbarRect.width - minimalPadding;
+      } else {
+        left = 0;
+      }
+
+      setToolbarPosition({ top, left });
+    }
+  }, [isEditing]);
 
   const updateStyles = (newStyle: Partial<Istyles>) => {
     setStyles((prevStyles) => ({ ...prevStyles, ...newStyle }));
@@ -188,8 +231,19 @@ export default function EditableText() {
   );
 
   return (
-    <div style={{ position: "relative" }}>
-      {isEditing && <Toolbar />}
+    <div style={{ position: "relative" }} ref={divRef}>
+      {isEditing && (
+        <div
+          ref={toolbarRef}
+          style={{
+            position: "absolute",
+            top: `${toolbarPosition.top}px`,
+            left: `${toolbarPosition.left}px`,
+          }}
+        >
+          <Toolbar />
+        </div>
+      )}
       <input
         css={css`
           color: ${styles.color};
@@ -259,11 +313,11 @@ const button = css`
 `;
 
 const toolbar = css`
-  position: absolute;
+  // position: absolute;
   z-index: 10;
-  top: -24px;
-  left: 0;
-  transform: translate(-25%, -100%);
+  // top: -24px;
+  // left: 0;
+  // transform: translate(-25%, -100%);
   gap: 14px;
   display: flex;
   align-items: center;

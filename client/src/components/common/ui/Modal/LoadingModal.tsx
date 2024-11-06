@@ -15,7 +15,7 @@ export default function LoadingModal(prop: IloadingModal) {
   if (!isOpen) return null;
 
   return (
-    <div css={modal_bg}>
+    <div css={modal_bg} className="loading_modal_bg">
       <div
         css={modal}
         onClick={(e) => {
@@ -34,7 +34,7 @@ export default function LoadingModal(prop: IloadingModal) {
 
 const modal_bg = css`
   position: fixed;
-  z-index: 1;
+  z-index: 12;
   top: 0;
   left: 0;
   right: 0;
@@ -44,7 +44,7 @@ const modal_bg = css`
 
 const modal = css`
   position: fixed;
-  z-index: 10;
+  z-index: 13;
   width: 400px;
   top: 50%;
   left: 50%;

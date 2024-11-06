@@ -1,20 +1,25 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useState, useEffect } from "react";
+import { useState, Dispatch } from "react";
 import { ReactComponent as Edit } from "@svgs/service/edit.svg";
 import { ReactComponent as Preview } from "@svgs/service/previewGray.svg";
+import { ReactComponent as Button } from "@svgs/service/navigationButton.svg";
 import ButtonArrowIconControler, {
   IbuttonArrowControler,
 } from "../button/ButtonArrowIconControler";
 
-export default function NavigationOnPreview() {
-  const [isFullpageModalOpen, setIsFullpageModalOpen] = useState(false);
+interface IlistItem {
+  title: string;
+  image?: React.ReactElement;
+}
 
-  interface IlistItem {
-    title: string;
-    image?: React.ReactElement;
-  }
+export interface INavigationEditable {
+  listData: IlistItem[];
+  isOpen: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
+export default function NavigationEditable() {
   const listData: IlistItem[] = [
     { title: "메인" },
     { title: "상품" },
@@ -22,6 +27,7 @@ export default function NavigationOnPreview() {
     { title: "FAQ" },
   ];
 
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [currentIdx, setCurrentIdx] = useState<number>(0);
   const [selectedItem, setSelectedItem] = useState<string>(listData[0].title);
 
@@ -68,28 +74,15 @@ export default function NavigationOnPreview() {
     },
   };
 
-  function handleChangeisFullpageModalOpen(isFullpageModalOpen: boolean) {
-    setIsFullpageModalOpen(isFullpageModalOpen);
+  function handleIsOpenChange() {
+    setIsOpen(!isOpen);
   }
-
-  function handleOpenFullPageModalEditable() {
-    setIsFullpageModalOpen(true);
-  }
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setIsFullpageModalOpen(false);
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
 
   return (
-    <aside css={side_nav}>
+    <aside css={side_nav(isOpen)}>
+      <button type="button" css={aside_button} onClick={handleIsOpenChange}>
+        <Button css={arrow_icon(isOpen)} />
+      </button>
       <div css={list_title_container}>
         <Preview />
         <p css={list_title}>모든화면</p>
@@ -99,7 +92,6 @@ export default function NavigationOnPreview() {
           <li
             css={[list_item, list_item_color(selectedItem === item.title)]}
             onClick={handleSelectItem}
-            onDoubleClick={handleOpenFullPageModalEditable}
             data-idx={idx}
           >
             <div css={image_container}></div>
@@ -125,13 +117,42 @@ export default function NavigationOnPreview() {
     </aside>
   );
 }
-const side_nav = css`
+const side_nav = (isOpen: boolean) => css`
+  position: fixed;
+  z-index: 11;
+  top: 64px;
+  transform: ${isOpen ? "translateX(0)" : "translateX(-100%)"};
+  transition: transform 0.3s ease-out;
+  left: 0;
   display: flex;
   width: 200px;
+  height: 100%;
   flex-shrink: 0;
   flex-direction: column;
   align-items: flex-start;
   gap: 14px;
+  padding: 20px;
+  background-color: #fff;
+`;
+
+const aside_button = css`
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translate(100%, -50%);
+  display: flex;
+  width: 44px;
+  padding: 10px;
+  align-items: center;
+  gap: 10px;
+
+  border-radius: 0px 10px 10px 0px;
+  background: var(--119CD4, #119cd4);
+  box-shadow: 0px 0px 11px 0px rgba(0, 0, 0, 0.25);
+`;
+
+const arrow_icon = (isOpen: boolean) => css`
+  transform: ${isOpen ? "scale(-1)" : "none"};
 `;
 
 const list_title_container = css`
