@@ -63,6 +63,18 @@ export default function ServiceStep5Page() {
     setCurrentStep(parseInt(location.pathname.slice(-1)));
   }, [location.pathname]);
 
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsFullpageModalOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   return (
     <>
       <div css={wrap}>
