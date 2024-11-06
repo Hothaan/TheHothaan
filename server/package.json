@@ -18,11 +18,8 @@
     "express": "^4.21.0",
     "mariadb": "^3.4.0",
     "nodemailer": "^6.9.16",
-<<<<<<< HEAD
     "puppeteer": "^23.7.0",
-=======
     "openai": "^4.71.0",
->>>>>>> 9c18463a9786dccd4a39a353b2cda1b72524b600
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "zod": "^3.23.8"
