@@ -3,7 +3,7 @@ const pool = require('../config/dbConfig');
 // 특정 서비스 타입의 메뉴와 하위 아이템 가져오기
 async function getMenusWithItems(serviceTypeId) {
     const query = `
-        SELECT m.id AS menu_id, m.name AS menu_name, mi.id AS item_id, mi.name AS item_name, mi.is_default
+        SELECT m.id AS menu_id, m.name AS menu_name, mi.id AS item_id, mi.name AS item_name, mi.is_default, mi.is_option
         FROM service_menu AS m
         LEFT JOIN service_menu_items AS mi ON m.id = mi.menu_id
         WHERE m.service_type_id = ?
