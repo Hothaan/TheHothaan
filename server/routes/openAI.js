@@ -5,7 +5,7 @@ const axios = require("axios");
 const router = express.Router();
 const apiKey = process.env.API_KEY_DEV;
 const { assistantConfig } = require("../shared/assistantconfig.js");
-
+const logger = require('../config/logger');
 /**
  * @swagger
  * /api/openai:
@@ -79,12 +79,14 @@ router.post("/", async (req, res) => {
         },
       }
     );
-    console.log(response.data);
-    // res.response;
+    // 성공 로그 기록
+    logger.info('OpenAI API 성공: ', response.data);
     res.json(JSON.parse(response.data.choices[0].message.content));
   } catch (error) {
     console.error("API 요청 중 오류가 발생했습니다: ", error);
-    // res.status(500).json({ error: "OpenAI API 요청 실패" });
+    // 실패 로그 기록
+    logger.error('API 요청 중 오류 발생: ', error);
+    res.status(500).json({ error: "OpenAI API 요청 실패" });
   }
 });
 
