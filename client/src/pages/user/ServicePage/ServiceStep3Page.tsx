@@ -47,6 +47,8 @@ export default function ServiceStep3Page() {
   );
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
+  console.log(serviceData);
+
   const loadingModal: IloadingModal = {
     isOpen: isModalOpen,
     content: {

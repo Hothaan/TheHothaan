@@ -35,63 +35,23 @@ export default function Review() {
             <p css={item_caption}>Lorem ipsum</p>
           </div>
         </div>
-        <div css={item}>
-          <div css={image_container}>
-            <div css={gradient}>
-              <Image css={logo} />
-            </div>
-          </div>
-          <div css={info_container}>
-            <div css={star_container}>
-              <Star />
-              <Star />
-              <Star />
-              <Star />
-              <Star />
-            </div>
-            <p css={item_desc}>
-              Lorem ipsum dolor sit amet consectetur adipiscing eli mattis sit
-              phasellus mollis sit aliquam sit nullam.
-            </p>
-            <p css={item_caption}>Lorem ipsum</p>
-          </div>
-        </div>
-        <div css={item}>
-          <div css={image_container}>
-            <div css={gradient}>
-              <Image css={logo} />
-            </div>
-          </div>
-          <div css={info_container}>
-            <div css={star_container}>
-              <Star />
-              <Star />
-              <Star />
-              <Star />
-              <Star />
-            </div>
-            <p css={item_desc}>
-              Lorem ipsum dolor sit amet consectetur adipiscing eli mattis sit
-              phasellus mollis sit aliquam sit nullam.
-            </p>
-            <p css={item_caption}>Lorem ipsum</p>
-          </div>
-        </div>
       </div>
     </div>
   );
 }
 
 const wrap = css`
+  width: 100%;
+  max-width: 1920px;
+  padding: 120px 112px 80px;
+
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
-  padding: 120px 112px 80px;
 `;
 
 const text_container = css`
-  width: 420px;
+  width: 900px;
   margin-bottom: 10px;
 `;
 
@@ -133,21 +93,21 @@ const info_container = css`
 `;
 
 const item = css`
-  width: 394px;
-  display: flex;
+  width: 260px;
   padding: 24px;
-  gap: 16px;
 
-  border-radius: 30px;
-  background: #f6f6f6;
+  display: flex;
+  flex-direction: column;
+
+  border-radius: 8px;
+  // background: #f6f6f6;
 `;
 
 const image_container = css`
-  width: 48px;
-  height: 48px;
+  width: 260px;
+  height: 260px;
 
   flex-shrink: 0;
-  border-radius: 50%;
   background-color: #e2e8ef;
 `;
 
@@ -159,7 +119,6 @@ const gradient = css`
   width: 100%;
   height: 100%;
   background: linear-gradient(180deg, #9cb0c900 0%, #9cb0c933 100%);
-  border-radius: 50%;
 `;
 
 const logo = css`

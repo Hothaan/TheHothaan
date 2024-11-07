@@ -10,7 +10,7 @@ export default function ProductList() {
       <div css={slide_container}>
         <div css={slide_item}>
           <div css={slide_image}>
-            <SlideButton css={slide_button_prev} />
+            {/* <SlideButton css={slide_button_prev} /> */}
             <div css={gradient}>
               <Image css={image_icon} />
             </div>
@@ -45,7 +45,7 @@ export default function ProductList() {
         </div>
         <div css={slide_item}>
           <div css={slide_image}>
-            <SlideButton css={slide_button_next} />
+            {/* <SlideButton css={slide_button_next} /> */}
             <div css={gradient}>
               <Image css={image_icon} />
             </div>
@@ -71,7 +71,7 @@ const wrap = css`
   max-width: 1920px;
   min-width: 1000px;
 
-  padding: 100px 0;
+  padding: 100px 50px;
 
   display: flex;
   flex-direction: column;
@@ -103,7 +103,7 @@ const slide_container = css`
 
 const slide_item = css`
   width: 100%;
-  max-width: 418px;
+  max-width: 280px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -111,9 +111,8 @@ const slide_item = css`
 
 const slide_image = css`
   position: relative;
-  width: 100%;
-  max-width: 418px;
-  height: 420px;
+  width: 280px;
+  height: 280px;
   background-color: #eff2f6;
 `;
 
