@@ -1,6 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import { OuterWrap } from "../commonComponent/Wrap";
+import ImageBox from "../commonComponent/ImageBox";
 import { ReactComponent as Image } from "@svgs/template/imageTemplate.svg";
+import TemplateButton from "../commonComponent/TemplateButton";
 
 export interface ImainBanner {
   title: string;
@@ -11,51 +14,47 @@ export default function Mainbanner(prop: ImainBanner) {
   const { title, desc } = prop;
 
   return (
-    <div css={wrap}>
-      <div css={gradient}>
+    <OuterWrap padding="0">
+      <div css={banner_container}>
+        <ImageBox
+          container={{ width: "100%", height: "850px" }}
+          icon={{ width: "210px", height: "210px" }}
+          borderRadius="none"
+          responsive={{
+            maxWidth: 1000,
+            container: "",
+            icon: "width: 110px; height: 108px;",
+          }}
+        />
         <div css={container}>
           <p css={h1}>{title}</p>
           <p css={desc_style}>{desc}</p>
-          <button css={button}>button</button>
+          <TemplateButton type="default" text="button" />
         </div>
-        <Image css={icon} />
       </div>
-    </div>
+    </OuterWrap>
   );
 }
 
-const wrap = css`
+const banner_container = css`
   position: relative;
   width: 100%;
-  max-width: 1920px;
-  min-width: 1000px;
-  height: 860px;
-  background-color: #eff2f6;
-`;
-
-const gradient = css`
-  width: 100%;
   height: 100%;
-  background: linear-gradient(180deg, #9cb0c900 0%, #9cb0c933 100%);
-  padding: 212px 132px;
-
-  @media (max-width: 19);
 `;
 
 const container = css`
-  position: relative;
-  z-index: 1;
-`;
-
-const icon = css`
   position: absolute;
-  z-index: 0;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 
-  width: 210px;
-  height: 210px;
+  width: 100%;
+  height: 100%;
+  padding: 212px 132px;
+  left: 0;
+  top: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: start;
 `;
 
 const h1 = css`
@@ -71,7 +70,6 @@ const h1 = css`
 `;
 
 const desc_style = css`
-  width: 40%;
   word-break: keep-all;
   color: #486284;
   font-family: Inter;
@@ -80,26 +78,6 @@ const desc_style = css`
   font-weight: 400;
   line-height: normal;
   margin-bottom: 80px;
-`;
 
-const button = css`
-  display: flex;
-  width: 221px;
-  height: 82px;
-  padding: 18px 63px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
-
-  border-radius: 10px;
-  background: #486284;
-
-  color: var(--FFFFFF, #fff);
-
-  font-family: Inter;
-  font-size: 32px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
+  max-width: 676px;
 `;

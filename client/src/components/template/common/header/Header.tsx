@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { ReactComponent as Image } from "@svgs/template/imageTemplate.svg";
-import { ReactComponent as ChevDown } from "@svgs/template/chevDownTemplate.svg";
 import { ReactComponent as User } from "@svgs/template/userTemplate.svg";
 import { ReactComponent as Bag } from "@svgs/template/bagTemplate.svg";
 import { ReactComponent as Search } from "@svgs/template/searchTemplate.svg";
+import NavItem from "@components/template/commonComponent/NavItem";
 
 export default function Header() {
   return (
@@ -16,23 +16,12 @@ export default function Header() {
         <p css={logo_text}>logo</p>
       </div>
       <ul css={nav_container}>
-        <li css={nav_item}>
-          <p css={nav_text}>category</p>
-          <ChevDown />
-        </li>
-        <li css={nav_item}>
-          <p css={nav_text}>category</p>
-          <ChevDown />
-        </li>
-        <li css={nav_item}>
-          <p css={nav_text}>category</p>
-        </li>
-        <li css={nav_item}>
-          <p css={nav_text}>category</p>
-        </li>
-        <li css={nav_item}>
-          <p css={nav_text}>category</p>
-        </li>
+        <NavItem isOption={true} />
+        <NavItem isOption={true} />
+        <NavItem isOption={false} />
+        <NavItem isOption={false} />
+        <NavItem isOption={false} />
+        <NavItem isOption={false} />
       </ul>
       <div css={user_container}>
         <User />
@@ -58,6 +47,10 @@ const wrap = css`
   align-items: center;
 
   padding: 30px 100px;
+
+  @media (max-width: 1200px) {
+    padding: 30px 50px;
+  }
 `;
 
 const logo_wrap = css`

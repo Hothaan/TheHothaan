@@ -3,7 +3,7 @@ import { Tdepth1Text } from "../depth1/common";
 import { I2depthText } from "./common";
 
 export const mainText: I2depthText = {
-  depth2: { eng: "main", kor: "메뉴" },
+  depth2: { eng: "main", kor: "메인" },
 };
 
 const mainDefault: T2depth = {
