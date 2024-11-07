@@ -12,6 +12,8 @@ const { assistantConfig } = require("../shared/assistantconfig.js");
  *   post:
  *     summary: OpenAI API 호출
  *     description: OpenAI API를 호출하여 텍스트를 생성합니다.
+ *     tags:
+ *       - AI(gpt)
  *     requestBody:
  *       required: true
  *       content:

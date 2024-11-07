@@ -1,5 +1,5 @@
 const nodemailer = require('nodemailer');
-const userModel = require('../models/userModel');
+const userModel = require('../models/users');
 const util = require('../utils');
 
 // 인증 코드를 저장할 Map 객체와 만료 시간을 관리할 객체 생성

@@ -1,47 +1,65 @@
-// server/controllers/serviceController.js
-const {
-    createService,
-    addServiceOption,
-    addServicePlan
-} = require('../models/serviceModel');
+// controllers/serviceController.js
+const ServiceEnvironment = require('../models/service_environment');
+const ServiceTypes = require('../models/service_type');
+const ServiceMenu = require('../models/service_menu');
+const ServiceMenuItems = require('../models/service_menu_items');
+// const ServiceOptions = require('../models/service_options');
+exports.getDeviceOptions = async (req, res) => {
+  try {
+    const environments = await ServiceEnvironment.getAllEnvironmentOptions();
+    res.json(environments);
+  } catch (error) {
+    res.status(500).json({ error: '디바이스 환경을 가져오는 중 에러가 발생했습니다.' });
+  }
+};
 
-// 서비스 생성
-async function createServiceHandler(req, res) {
-    const { userId, name, description } = req.body;
+exports.getServiceTypes = async (req, res) => {
+  try {
+    const serviceTypes = await ServiceTypes.getAllTypes();
+    res.json(serviceTypes);
+  } catch (error) {
+    res.status(500).json({ error: '서비스 종류를 가져오는 중 에러가 발생했습니다.' });
+  }
+};
 
+
+// 특정 서비스 타입의 메뉴와 하위 아이템 가져오기
+exports.getMenusWithItems = async (req, res) => {
+    const { serviceTypeId } = req.params;
     try {
-        const serviceId = await createService({ userId, name, description });
-        res.status(201).json({ message: 'Service created successfully', serviceId });
+      const rows = await ServiceMenu.getMenusWithItems(serviceTypeId);
+  
+      // 데이터를 상위 메뉴별로 그룹화
+      const result = rows.reduce((acc, row) => {
+        const { menu_id, menu_name, item_id, item_name, is_default } = row;
+  
+        // 상위 메뉴가 이미 존재하면 추가하지 않고 하위 메뉴만 추가
+        let menu = acc.find(m => m.menu_id === menu_id);
+        if (!menu) {
+          menu = {
+            menu_id,
+            menu_name,
+            items: []
+          };
+          acc.push(menu);
+        }
+  
+        // 하위 메뉴 아이템이 존재하는 경우만 추가
+        if (item_id) {
+          menu.items.push({
+            item_id,
+            item_name,
+            is_default: !!is_default
+          });
+        }
+  
+        return acc;
+      }, []);
+  
+      res.json(result);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Error creating service', error });
+      console.error('Error fetching menus with items:', error);
+      res.status(500).json({ error: '메뉴와 하위 아이템을 가져오는 중 에러가 발생했습니다.' });
     }
-}
+  };
 
-// 템플릿 추가
-async function addTemplateHandler(req, res) {
-    const { serviceId, menuName, templateName, generatedText } = req.body;
-
-    try {
-        const templateId = await addServiceTemplate({ serviceId, menuName, templateName, generatedText });
-        res.status(201).json({ message: 'Template added successfully', templateId });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Error adding template', error });
-    }
-}
-
-// 메뉴 항목 추가
-async function addMenuItemHandler(req, res) {
-    const { serviceId, menuName, itemName } = req.body;
-
-    try {
-        const menuItemId = await addMenuItem({ serviceId, menuName, itemName });
-        res.status(201).json({ message: 'Menu item added successfully', menuItemId });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Error adding menu item', error });
-    }
-}
-
-module.exports = { createServiceHandler, addTemplateHandler, addMenuItemHandler };

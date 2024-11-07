@@ -1,7 +1,7 @@
 // server/routes/user.js
 const express = require("express");
 const router = express.Router();
-const controller = require('../controllers/authController');
+const controller = require('../controllers/userController');
 
 /**
  * @swagger
@@ -9,6 +9,8 @@ const controller = require('../controllers/authController');
  *   post:
  *     summary: 회원가입 API
  *     description: 새로운 사용자를 등록합니다.
+ *     tags:
+ *       - User
  *     requestBody:
  *       required: true
  *       content:
@@ -38,6 +40,8 @@ router.post("/register", controller.register); // 회원가입 요청을 처리�
  *   get:
  *     summary: 아이디 중복 확인 API
  *     description: 아이디가 이미 사용 중인지 확인합니다.
+ *     tags:
+ *       - User
  *     parameters:
  *       - in: query
  *         name: useremail
@@ -66,6 +70,8 @@ router.get("/check-useremail", controller.checkUseremail); // 아이디 중복 �
  *   post:
  *     summary: 이메일 인증 코드 전송 API
  *     description: 이메일로 인증 코드를 전송합니다.
+ *     tags:
+ *       - User
  *     requestBody:
  *       required: true
  *       content:
@@ -95,6 +101,8 @@ router.post("/send-verification-code", controller.sendVerificationCode); // 이�
  *   post:
  *     summary: 이메일 인증 코드 확인 API
  *     description: 이메일로 받은 인증 코드를 확인합니다.
+ *     tags:
+ *       - User
  *     requestBody:
  *       required: true
  *       content:

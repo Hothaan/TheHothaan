@@ -8,6 +8,8 @@ const { saveImageFromURL } = require("../controllers/imageController");
  *   post:
  *     summary: URL 페이지를 이미지로 저장
  *     description: URL 페이지를 PNG 이미지로 변환하고 저장합니다.
+ *     tags:
+ *       - Image
  *     requestBody:
  *       required: true
  *       content:
