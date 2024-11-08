@@ -9,7 +9,14 @@ import Review from "@components/template/product/Review";
 import Footer from "@components/template/common/footer/Footer";
 import ServiceIntroduction from "@components/template/service/ServiceIntroduction";
 import ServiceContact from "@components/template/service/ServiceContact";
-import Notice from "@components/template/board/Notice";
+import Notice from "@components/template/customerService/Notice";
+import OrderList from "@components/template/mypage/OrderList";
+import Cart from "@components/template/mypage/Cart";
+import WithDrawer from "@components/template/mypage/WithDrawer";
+import Login from "@components/template/utility/Login";
+import Join from "@components/template/utility/Join";
+import FindId from "@components/template/utility/FindId";
+import FindPw from "@components/template/utility/FindPw";
 
 export default function TemplateComponentGuidePage() {
   const mainbanner = {
@@ -42,9 +49,63 @@ export default function TemplateComponentGuidePage() {
         <Footer />
       </div>
       <div css={container}>
-        <p css={title}>shppingMall notice page</p>
+        <p css={title}>shppingMall notice page(option: text)</p>
         <Header />
-        <Notice />
+        <Notice option="text" />
+        <Footer />
+      </div>
+      <div css={container}>
+        <p css={title}>shppingMall notice page(option: image)</p>
+        <Header />
+        <Notice option="image" />
+        <Footer />
+      </div>
+      <div css={container}>
+        <p css={title}>shppingMall order list page</p>
+        <Header />
+        <OrderList />
+        <Footer />
+      </div>
+      <div css={container}>
+        <p css={title}>shppingMall cart page</p>
+        <Header />
+        <Cart />
+        <Footer />
+      </div>
+      <div css={container}>
+        <p css={title}>shppingMall withDrawer page</p>
+        <Header />
+        <WithDrawer />
+        <Footer />
+      </div>
+      <div css={container}>
+        <p css={title}>shppingMall login page(option: default)</p>
+        <Header />
+        <Login option="default" />
+        <Footer />
+      </div>
+      <div css={container}>
+        <p css={title}>shppingMall login page(option: snsLogin)</p>
+        <Header />
+        <Login option="snsLogin" />
+        <Footer />
+      </div>
+      <div css={container}>
+        <p css={title}>shppingMall Join page</p>
+        <Header />
+        <Join />
+        <Footer />
+      </div>
+      <div css={container}>
+        <p css={title}>shppingMall FindId page</p>
+        <Header />
+        <FindId />
+        <Footer />
+      </div>
+      <div css={container}>
+        <p css={title}>shppingMall FindPw page</p>
+        <Header />
+        <FindPw />
         <Footer />
       </div>
     </div>

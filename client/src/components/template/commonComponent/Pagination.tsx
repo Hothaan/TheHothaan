@@ -2,7 +2,13 @@
 import { css } from "@emotion/react";
 import { ReactComponent as Arrow } from "@svgs/template/paginationArrow.svg";
 
-export default function Pagination() {
+export interface Ipagination {
+  isOnePage?: boolean;
+}
+
+export default function Pagination(prop: Ipagination) {
+  const { isOnePage } = prop;
+
   return (
     <div css={container}>
       <div css={icon_container}>
@@ -13,10 +19,17 @@ export default function Pagination() {
         <Arrow />
       </div>
       <div css={[page_container, selected]}>1</div>
-      <div css={[page_container]}>2</div>
-      <div css={[page_container]}>3</div>
-      <div css={[page_container]}>4</div>
-      <div css={[page_container]}>5</div>
+      {isOnePage ? (
+        ""
+      ) : (
+        <>
+          <div css={[page_container]}>2</div>
+          <div css={[page_container]}>3</div>
+          <div css={[page_container]}>4</div>
+          <div css={[page_container]}>5</div>
+        </>
+      )}
+
       <div css={icon_container}>
         <Arrow css={rotate} />
         <Arrow css={rotate} />
