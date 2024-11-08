@@ -18,7 +18,7 @@ const saveImageFromURL = async (req, res) => {
 
     // 페이지의 넓이를 고정하기 위해 뷰포트를 설정
     await page.setViewport({ width: 1920, height: 1080 });
-    await page.goto(url, { waitUntil: "load" });
+    await page.goto(url, { waitUntil: "networkidle0" });
 
     // 전체 페이지를 캡처
     const imageBuffer = await page.screenshot({ fullPage: true });
