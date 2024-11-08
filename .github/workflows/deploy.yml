@@ -26,26 +26,11 @@ jobs:
       run: |
         echo "REACT_APP_API_KEY_DEV=${{ secrets.REACT_APP_API_KEY_DEV }}" >> client/.env
 
-    - name: Install client dependencies
-      run: |
-        cd client
-        npm install
-
-    - name: Build client
-      run: |
-        cd client
-        npm run build
-
-    - name: Deploy client build to server
-      run: |
-        ssh -o StrictHostKeyChecking=no root@172.234.80.216 'rm -rf /var/www/TheHothaan/client/build/*'
-        scp -o StrictHostKeyChecking=no -r client/build/* root@172.234.80.216:/var/www/TheHothaan/client/build/
-
-    - name: Deploy server to server using Git Pull
+    # 서버에 최신 코드 가져오고 PM2로 재시작
+    - name: Pull latest code and restart server
       run: |
         ssh -o StrictHostKeyChecking=no root@172.234.80.216 '
-          cd /var/www/TheHothaan/server &&
+          cd /var/www/TheHothaan &&
           git pull origin main &&
-          npm install &&
           pm2 restart all
         '
