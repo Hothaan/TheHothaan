@@ -27,7 +27,8 @@ const saveImageFromURL = async (req, res) => {
     const imageBuffer = await page.screenshot({ fullPage: true });
 
     // .env에 설정된 IMAGE_DIRECTORY 경로 사용
-    const imagePath = path.join(process.env.IMAGE_DIRECTORY, `image-${Date.now()}.png`);
+    const imageName = `image-${Date.now()}.png`;
+    const imagePath = path.join(process.env.IMAGE_DIRECTORY, imageName);
 
     if (!fs.existsSync(path.dirname(imagePath))) {
       fs.mkdirSync(path.dirname(imagePath), { recursive: true });
