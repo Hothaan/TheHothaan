@@ -26,13 +26,16 @@ jobs:
       run: |
         echo "REACT_APP_API_KEY_DEV=${{ secrets.REACT_APP_API_KEY_DEV }}" >> client/.env
 
-    # 서버에 최신 코드 가져오고 PM2로 재시작
-    - name: Pull latest code and restart server
+    # 서버에 최신 코드 가져오고, 빌드 및 PM2로 재시작
+    - name: Pull latest code, build client, and restart server
       run: |
         ssh -o StrictHostKeyChecking=no root@172.234.80.216 '
           cd /var/www/TheHothaan &&
           git reset --hard HEAD &&
           git clean -fd &&
           git pull origin main &&
+          cd client &&
+          CI=false npm run build &&
+          cd .. &&
           pm2 restart all
         '
