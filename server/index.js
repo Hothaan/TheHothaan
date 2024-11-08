@@ -44,6 +44,9 @@ app.use("/api/user", userRoutes);
 app.use("/api/image", imageRoutes);
 app.use("/api/service", serviceRoutes);
 
+// /var/www/images 경로를 "/images" URL로 접근할 수 있도록 설정
+app.use('/images', express.static(path.join('/var/www/images')));
+
 // Swagger 문서화
 setupSwagger(app);
 
