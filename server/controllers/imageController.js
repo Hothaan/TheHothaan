@@ -11,7 +11,7 @@ const saveImageFromURL = async (req, res) => {
   }
 
   try {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
 
     // 페이지의 넓이를 고정하기 위해 뷰포트를 설정

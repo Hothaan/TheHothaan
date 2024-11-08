@@ -31,21 +31,29 @@ jobs:
         cd client
         npm install
 
-    - name: Build client
+    - name: Install server dependencies
       run: |
-        cd client
-        npm run build
+        cd server
+        npm install
 
-    - name: Deploy client build to server
+    - name: Install root dependencies
+      run: |
+        npm install
+
+    - name: Build project
+      run: |
+        CI=false npm run build
+
+    - name: Deploy client to server
       run: |
         ssh -o StrictHostKeyChecking=no root@172.234.80.216 'rm -rf /var/www/TheHothaan/client/build/*'
         scp -o StrictHostKeyChecking=no -r client/build/* root@172.234.80.216:/var/www/TheHothaan/client/build/
 
-    - name: Deploy server to server using Git Pull
+    - name: Deploy server to server
       run: |
-        ssh -o StrictHostKeyChecking=no root@172.234.80.216 '
-          cd /var/www/TheHothaan/server &&
-          git pull origin main &&
-          npm install &&
-          pm2 restart all
-        '
+        ssh -o StrictHostKeyChecking=no root@172.234.80.216 'rm -rf /var/www/TheHothaan/server/*'
+        scp -o StrictHostKeyChecking=no -r server/* root@172.234.80.216:/var/www/TheHothaan/server/
+
+    - name: Restart server process
+      run: |
+        ssh -o StrictHostKeyChecking=no root@172.234.80.216 'pm2 restart all'
