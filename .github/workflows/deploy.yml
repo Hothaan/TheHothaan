@@ -31,6 +31,8 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no root@172.234.80.216 '
           cd /var/www/TheHothaan &&
+          git reset --hard HEAD &&
+          git clean -fd &&
           git pull origin main &&
           pm2 restart all
         '
