@@ -10,6 +10,8 @@ import { serviceStepStore, TserviceStep } from "@store/serviceStepStore";
 import { serviceDefaultDataStore } from "@store/serviceDefaultDataStore";
 import { Ibutton } from "@components/common/button/Button";
 import Button from "@components/common/button/Button";
+import useIsProduction from "@hooks/useIsProduction";
+import { getServiceTypes } from "@api/service/serviceTypes";
 
 interface IformData {
   device: Tdevice | "";
@@ -158,6 +160,27 @@ export default function ServiceStep2Page() {
       });
     }
   }, [formData]);
+
+  const { isProduction } = useIsProduction();
+  const [loading, setLoading] = useState(false);
+
+  async function fetchData() {
+    if (!loading) {
+      setLoading(true);
+      try {
+        const response = await getServiceTypes(isProduction);
+        console.log(response);
+      } catch (error) {
+        console.error("API 요청 실패:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+  }
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <>
