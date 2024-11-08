@@ -52,8 +52,6 @@ router.post("/", async (req, res) => {
     component,
   } = req.body;
 
-  console.log("apiKey", apiKey);
-
   try {
     const response = await axios.post(
       "https://api.openai.com/v1/chat/completions",

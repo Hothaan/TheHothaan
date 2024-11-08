@@ -1,7 +1,7 @@
 const puppeteer = require("puppeteer");
 const fs = require("fs");
 const path = require("path");
-const util = require('../utils');
+require('dotenv').config();
 
 const saveImageFromURL = async (req, res) => {
   const { url } = req.body;
@@ -21,7 +21,8 @@ const saveImageFromURL = async (req, res) => {
     // 전체 페이지를 캡처
     const imageBuffer = await page.screenshot({ fullPage: true });
 
-    const imagePath = path.join(__dirname, "../images", `image-${Date.now()}.png`);
+    // .env에 설정된 IMAGE_DIRECTORY 경로 사용
+    const imagePath = path.join(process.env.IMAGE_DIRECTORY, `image-${Date.now()}.png`);
 
     if (!fs.existsSync(path.dirname(imagePath))) {
       fs.mkdirSync(path.dirname(imagePath), { recursive: true });

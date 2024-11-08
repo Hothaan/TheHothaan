@@ -1,5 +1,14 @@
-// server/config/logger.js
+const path = require('path');
+const fs = require('fs');
 const winston = require('winston');
+
+// 환경 변수로부터 로그 폴더 경로를 가져옵니다.
+const logDirectory = process.env.LOG_DIRECTORY || './logs';
+
+// 로그 폴더가 존재하지 않으면 생성합니다.
+if (!fs.existsSync(logDirectory)) {
+  fs.mkdirSync(logDirectory);
+}
 
 const logger = winston.createLogger({
   level: 'info',
@@ -8,8 +17,8 @@ const logger = winston.createLogger({
     winston.format.json()
   ),
   transports: [
-    new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
-    new winston.transports.File({ filename: 'logs/combined.log' }),
+    new winston.transports.File({ filename: path.join(logDirectory, 'error.log'), level: 'error' }),
+    new winston.transports.File({ filename: path.join(logDirectory, 'combined.log') }),
   ],
 });
 
