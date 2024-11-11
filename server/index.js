@@ -13,6 +13,7 @@ const openAIRoutes = require("./routes/openAI");
 const userRoutes = require("./routes/user");
 const imageRoutes = require("./routes/image");
 const serviceRoutes = require("./routes/service");
+const projectRoutes = require("./routes/project");
 
 const app = express();
 const port = process.env.PORT || 5001;
@@ -43,6 +44,7 @@ app.use("/api/openai", openAIRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/image", imageRoutes);
 app.use("/api/service", serviceRoutes);
+app.use("/api/project", projectRoutes);
 
 // /var/www/images 경로를 "/images" URL로 접근할 수 있도록 설정
 app.use('/images', express.static(path.join('/var/www/images')));

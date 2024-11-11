@@ -1,84 +1,10 @@
 require("dotenv").config();
-
-const express = require("express");
 const axios = require("axios");
-const router = express.Router();
 const apiKey = process.env.API_KEY_DEV;
 const { assistantConfig } = require("../shared/assistantconfig.js");
 const logger = require('../config/logger');
 
-/**
- * @swagger
- * /api/openai:
- *   post:
- *     summary: OpenAI API 호출
- *     description: OpenAI API를 호출하여 텍스트를 생성합니다.
- *     tags:
- *       - AI(gpt)
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               service:
- *                 type: string
- *                 example: "shoppingMall"
- *               serviceTitle:
- *                 type: string
- *                 example: "더핫한"
- *               serviceDesc:
- *                 type: string
- *                 example: "기획안 생성 플랫폼"
- *               depth1:
- *                 type: string
- *                 example: "main"
- *               depth2:
- *                 type: string
- *                 example: "main"
- *               component:
- *                 type: string
- *                 example: "mainBanner"
- *               structure:
- *                 type: string
- *                 example: "{title: string; desc: string; }"
- *     responses:
- *       200:
- *         description: 성공
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 title:
- *                   type: string
- *                   example: "더핫한 쇼핑몰에 오신 것을 환영합니다"
- *                 desc:
- *                   type: string
- *                   example: "당신의 기획안 생성 플랫폼, 더핫한에서 필요한 모든 상품을 찾아보세요"
- *       500:
- *         description: 실패
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- */
-
-router.post("/", async (req, res) => {
-  const {
-    service,
-    serviceTitle,
-    serviceDesc,
-    depth1,
-    depth2,
-    structure,
-    component,
-  } = req.body;
-
+async function generateOpenAiText(service, serviceTitle, serviceDesc, depth1, depth2, component, structure) {
   try {
     const response = await axios.post(
       "https://api.openai.com/v1/chat/completions",
@@ -156,17 +82,16 @@ router.post("/", async (req, res) => {
       };
       logger.info('OpenAI API 성공 요약: ', summaryLog);
 
-      // 클라이언트에는 요약 제외한 응답만 반환
-      res.json(responseData);
+      // summaryContent를 포함하여 반환
+    //   return { ...responseData, summary: summaryContent };
+    return { ...responseData};
     } else {
-      logger.error('OpenAI API 실패 - 예상치 못한 응답 형식', { responseData });
-      res.status(500).json({ error: "OpenAI API가 예상한 JSON 형식을 반환하지 않았습니다." });
+      throw new Error("OpenAI API가 예상한 JSON 형식을 반환하지 않았습니다.");
     }
   } catch (error) {
-    console.error("API 요청 중 오류가 발생했습니다: ", error);
-    logger.error('API 요청 중 오류 발생: ', error);
-    res.status(500).json({ error: "OpenAI API 요청 실패" });
+    logger.error("OpenAI API 호출 중 오류 발생", error);
+    throw error;
   }
-});
+}
 
-module.exports = router;
+module.exports = { generateOpenAiText };
