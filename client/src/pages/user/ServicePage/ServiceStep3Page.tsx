@@ -1,24 +1,24 @@
+// import React from "react";
+
+// export default function ServiceStep3Page() {
+//   return <div>ServiceStep3Page</div>;
+// }
+
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useNavigate, useLocation } from "react-router-dom";
+// import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { serviceStepStore, TserviceStep } from "@store/serviceStepStore";
 import { serviceDefaultDataStore } from "@store/serviceDefaultDataStore";
-import { serviceData } from "@data/service/serviceData";
 import { IloadingModal } from "@components/common/ui/Modal/LoadingModal";
 import LoadingModal from "@components/common/ui/Modal/LoadingModal";
-import {
-  depth1KeyText,
-  TallDepth1Keys,
-  Tdepth1KeyTextArr,
-} from "@data/service/depth1/common";
+import { depth1KeyText, Tdepth1KeyTextArr } from "@data/service/depth1/common";
 import { Tboard2depthKey } from "@data/service/depth2/board";
-import { T2depth, Tall2depthKeys } from "@data/service/depth2/common";
+import { T2depth } from "@data/service/depth2/common";
 import { TmyPage2depthKey } from "@data/service/depth2/mypage";
 import { Ibutton } from "@components/common/button/Button";
 import Button from "@components/common/button/Button";
 import MenuConstructBox from "@components/service/menuConstructBox/MenuConstructBox";
-import { IselectableDepth2 } from "@components/service/button/ButtonAddDepth2";
 import { TserviceDataType } from "@data/service/serviceData";
 import { Tproduct2depthKey } from "@data/service/depth2/product";
 import { TcompanyIntro2depthKey } from "@data/service/depth2/companyIntro";
@@ -26,6 +26,9 @@ import { TcustomerService2depthKey } from "@data/service/depth2/customerService"
 import { Tmain2depthKey } from "@data/service/depth2/main";
 import { Tservice2depthKey } from "@data/service/depth2/service";
 import { Tutility2depthKey } from "@data/service/depth2/utility";
+import useIsProduction from "@hooks/useIsProduction";
+import useNavigation from "@hooks/useNavigation";
+import useLocationControl from "@hooks/useLocationControl";
 
 interface IselectableDepth2DataForm {
   [key: string]: {
@@ -35,32 +38,40 @@ interface IselectableDepth2DataForm {
 }
 
 export default function ServiceStep3Page() {
-  const { steps, setSteps } = serviceStepStore();
-  const { serviceDefaultData } = serviceDefaultDataStore();
-  const service =
-    serviceDefaultData.service !== ""
-      ? serviceDefaultData.service
-      : "shoppingMall";
+  const { handleNavigation } = useNavigation();
+  const { currentLocation } = useLocationControl();
 
-  const [formData, setFormData] = useState<TserviceDataType<typeof service>>(
-    serviceData[service] as TserviceDataType<typeof service>
-  );
+  const totalStep = 5;
+  const { steps, setSteps } = serviceStepStore();
+  const [currentStep, setCurrentStep] = useState<number>(2);
+
+  const { serviceDefaultData } = serviceDefaultDataStore();
+  const service = serviceDefaultData.service || 1;
+
+  const [formData, setFormData] = useState<any>(null);
+  // const [formData, setFormData] = useState<TserviceDataType<typeof service>>(
+  //   serviceData[service] as TserviceDataType<typeof service>
+  // );
+
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  console.log(serviceData);
+  useEffect(() => {
+    if (checkAllOptionSelected(formData)) {
+      setSteps({
+        ...steps,
+        step3: true,
+      });
+    } else {
+      setSteps({
+        ...steps,
+        step3: false,
+      });
+    }
+  }, [formData]);
 
-  const loadingModal: IloadingModal = {
-    isOpen: isModalOpen,
-    content: {
-      title:
-        serviceDefaultData.serviceTitle === ""
-          ? "프로젝트"
-          : serviceDefaultData.serviceTitle,
-      desc: ["화면을 구성중이에요!", <br key="1" />, "잠시만 기다려주세요"],
-    },
-    onLoad: () => {},
-    onComplete: () => {},
-  };
+  useEffect(() => {
+    setCurrentStep(parseInt(currentLocation.slice(-1)));
+  }, [currentLocation]);
 
   function handleAddMenu(
     updatedDepth2Data: T2depth[],
@@ -284,60 +295,9 @@ export default function ServiceStep3Page() {
     });
   }
 
-  const totalStep = 5;
-  const [currentStep, setCurrentStep] = useState<number>(2);
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  function handleNavigation(path: string) {
-    navigate(path);
-  }
-
-  function isDisabled(steps: TserviceStep, currentStep: number): boolean {
-    switch (currentStep) {
-      case 1:
-        return !steps.step1;
-      case 2:
-        return !steps.step2;
-      case 3:
-        return !steps.step3;
-      case 4:
-        return !steps.step4;
-      case 5:
-        return !steps.step5;
-      default:
-        return false;
-    }
-  }
-
   function saveDataInStore(formData: IselectableDepth2DataForm) {
     //어떻게 저장할건지 송이님과 논의해서 결정해야할듯
   }
-
-  const prevButtonData: Ibutton = {
-    size: "XL",
-    bg: "white",
-    text: "이전 페이지",
-    onClick: () => {
-      handleNavigation(`/service/step${currentStep - 1}`);
-    },
-    disabled: false,
-  };
-  const nextButtonData: Ibutton = {
-    size: "XL",
-    bg: "gradient",
-    text: "다음으로 넘어가기",
-    onClick: () => {
-      setIsModalOpen(true);
-      // saveDataInStore(formData);
-      // handleNavigation(`/service/step${currentStep + 1}`);
-    },
-    disabled: isDisabled(steps, currentStep),
-  };
-
-  useEffect(() => {
-    setCurrentStep(parseInt(location.pathname.slice(-1)));
-  }, [location.pathname]);
 
   function checkAllOptionSelected(
     formData: TserviceDataType<typeof service>
@@ -357,19 +317,40 @@ export default function ServiceStep3Page() {
     });
   }
 
-  useEffect(() => {
-    if (checkAllOptionSelected(formData)) {
-      setSteps({
-        ...steps,
-        step3: true,
-      });
-    } else {
-      setSteps({
-        ...steps,
-        step3: false,
-      });
-    }
-  }, [formData]);
+  const prevButtonData: Ibutton = {
+    size: "XL",
+    bg: "white",
+    text: "이전 페이지",
+    onClick: () => {
+      handleNavigation(`/service/step${currentStep - 1}`);
+    },
+    disabled: false,
+  };
+
+  const nextButtonData: Ibutton = {
+    size: "XL",
+    bg: "gradient",
+    text: "다음으로 넘어가기",
+    onClick: () => {
+      setIsModalOpen(true);
+      // saveDataInStore(formData);
+      // handleNavigation(`/service/step${currentStep + 1}`);
+    },
+    disabled: !steps.step3,
+  };
+
+  const loadingModal: IloadingModal = {
+    isOpen: isModalOpen,
+    content: {
+      title:
+        serviceDefaultData.serviceTitle === ""
+          ? "프로젝트"
+          : serviceDefaultData.serviceTitle,
+      desc: ["화면을 구성중이에요!", <br key="1" />, "잠시만 기다려주세요"],
+    },
+    onLoad: () => {},
+    onComplete: () => {},
+  };
 
   return (
     <>

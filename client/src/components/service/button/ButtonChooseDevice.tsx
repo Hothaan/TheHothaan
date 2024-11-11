@@ -5,34 +5,35 @@ import { ReactComponent as Tablet } from "@svgs/service/tablet.svg";
 import { ReactComponent as Mobile } from "@svgs/service/mobile.svg";
 
 export interface IbuttonChooseDevice {
+  id: number;
+  name: string;
   isSelected: boolean;
-  device: Tdevice;
   onClick?: () => void;
 }
 
 export default function ButtonChooseDevice(props: IbuttonChooseDevice) {
-  const { isSelected, device, onClick } = props;
+  const { id, name, isSelected, onClick } = props;
 
-  function makeText(device: Tdevice) {
-    switch (device) {
-      case "pc":
-        return "PC";
-      case "tablet":
-        return "테블릿(Tablet)";
-      case "mobile":
-        return "모바일(Mobile)";
-      default:
-        return "PC";
-    }
-  }
+  // function makeText(device: Tdevice) {
+  //   switch (device) {
+  //     case "pc":
+  //       return "PC";
+  //     case "tablet":
+  //       return "테블릿(Tablet)";
+  //     case "mobile":
+  //       return "모바일(Mobile)";
+  //     default:
+  //       return "PC";
+  //   }
+  // }
 
-  function makeIcon(device: Tdevice) {
-    switch (device) {
-      case "pc":
+  function makeIcon(id: number) {
+    switch (id) {
+      case 1:
         return <Pc />;
-      case "tablet":
+      case 2:
         return <Tablet />;
-      case "mobile":
+      case 3:
         return <Mobile />;
       default:
         return <Pc />;
@@ -44,8 +45,8 @@ export default function ButtonChooseDevice(props: IbuttonChooseDevice) {
       css={[choose_device, choose_device_color(isSelected)]}
       onClick={onClick}
     >
-      {makeIcon(device)}
-      <p>{makeText(device)}</p>
+      {makeIcon(id)}
+      <p>{name}</p>
     </button>
   );
 }

@@ -13,7 +13,7 @@ import PlanIntroPage from "@pages/user/PlanIntroPage/PlanIntroPage";
 import ServiceLayout from "./ServiceLayout";
 import ServiceStep1Page from "@pages/user/ServicePage/ServiceStep1Page";
 import ServiceStep2Page from "@pages/user/ServicePage/ServiceStep2Page";
-import ServiceStep3Page from "@pages/user/ServicePage/ServiceStep3Page";
+// import ServiceStep3Page from "@pages/user/ServicePage/ServiceStep3Page";
 import ServiceStep4Page from "@pages/user/ServicePage/ServiceStep4Page";
 import ServiceStep5Page from "@pages/user/ServicePage/ServiceStep5Page";
 import ServicePreviewPage from "@pages/user/ServicePage/ServicePreviewPage";
@@ -33,7 +33,7 @@ export default function UserLayout() {
           <Route path="/service" element={<ServiceLayout />}>
             <Route path="step1" element={<ServiceStep1Page />} />
             <Route path="step2" element={<ServiceStep2Page />} />
-            <Route path="step3" element={<ServiceStep3Page />} />
+            {/* <Route path="step3" element={<ServiceStep3Page />} /> */}
             <Route path="step4" element={<ServiceStep4Page />} />
             <Route path="step5" element={<ServiceStep5Page />} />
             <Route path="preview" element={<ServicePreviewPage />} />

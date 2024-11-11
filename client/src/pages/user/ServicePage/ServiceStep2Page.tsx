@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { IbuttonChooseDevice } from "@components/service/button/ButtonChooseDevice";
 import ButtonChooseDevice from "@components/service/button/ButtonChooseDevice";
@@ -11,50 +10,100 @@ import { serviceDefaultDataStore } from "@store/serviceDefaultDataStore";
 import { Ibutton } from "@components/common/button/Button";
 import Button from "@components/common/button/Button";
 import useIsProduction from "@hooks/useIsProduction";
-import { getServiceTypes } from "@api/service/serviceTypes";
+import useNavigation from "@hooks/useNavigation";
+import useLocationControl from "@hooks/useLocationControl";
+import { getServiceTypes, IserviceData } from "@api/service/serviceTypes";
+import { getDeviceOptions, IdeviceOptions } from "@api/service/deviceOptions";
 
 interface IformData {
-  device: Tdevice | "";
-  service: Tservice | "";
+  device: number | null;
+  service: number | null;
 }
 
 export default function ServiceStep2Page() {
+  const { handleNavigation } = useNavigation();
+  const { currentLocation } = useLocationControl();
+
+  const totalStep: number = 5;
   const { steps, setSteps } = serviceStepStore();
-  const { serviceDefaultData, setServiceDefaultData } =
-    serviceDefaultDataStore();
+  const [currentStep, setCurrentStep] = useState<number>(2);
+
+  const { isProduction } = useIsProduction();
+  const [loading, setLoading] = useState(false);
+
+  const { serviceDefaultData } = serviceDefaultDataStore();
   const initialFormData = {
     device: serviceDefaultData.device,
     service: serviceDefaultData.service,
   };
-  const totalStep = 5;
-  const [currentStep, setCurrentStep] = useState<number>(2);
   const [formData, setFormData] = useState<IformData>(initialFormData);
-  const navigate = useNavigate();
-  const location = useLocation();
 
-  function handleNavigation(path: string) {
-    navigate(path);
-  }
+  const [serviceTypes, setServiceTypes] = useState<IserviceData[] | null>(null);
+  const [deviceOptions, setDeviceOptions] = useState<IdeviceOptions[] | null>(
+    null
+  );
 
-  function isDisabled(steps: TserviceStep, currentStep: number): boolean {
-    switch (currentStep) {
-      case 1:
-        return !steps.step1;
-      case 2:
-        return !steps.step2;
-      case 3:
-        return !steps.step3;
-      case 4:
-        return !steps.step4;
-      case 5:
-        return !steps.step5;
-      default:
-        return false;
+  async function fetchServiceTypes() {
+    if (!loading) {
+      setLoading(true);
+      try {
+        const response = await getServiceTypes(isProduction);
+        if (response.status === 200) {
+          setServiceTypes(response.data);
+        } else {
+          console.error("API 요청 실패");
+        }
+      } catch (error) {
+        console.error("API 요청 실패:", error);
+      } finally {
+        setLoading(false);
+      }
     }
   }
 
+  async function fetchDeviceOptions() {
+    if (!loading) {
+      setLoading(true);
+      try {
+        const response = await getDeviceOptions(isProduction);
+        if (response.status === 200) {
+          setDeviceOptions(response.data);
+        } else {
+          console.error("API 요청 실패");
+        }
+      } catch (error) {
+        console.error("API 요청 실패:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+  }
+
+  useEffect(() => {
+    fetchServiceTypes();
+    fetchDeviceOptions();
+  }, []);
+
+  useEffect(() => {
+    if (formData.device && formData.service) {
+      setSteps({
+        ...steps,
+        step2: true,
+      });
+    } else {
+      setSteps({
+        ...steps,
+        step2: false,
+      });
+    }
+  }, [formData]);
+
+  useEffect(() => {
+    setCurrentStep(parseInt(currentLocation.slice(-1)));
+  }, [currentLocation]);
+
   function saveDataInStore(formData: IformData) {
-    if (formData.device !== "" && formData.service !== "") {
+    if (formData.device && formData.service) {
       const { serviceDefaultData, setServiceDefaultData } =
         serviceDefaultDataStore.getState();
       setServiceDefaultData({
@@ -74,6 +123,7 @@ export default function ServiceStep2Page() {
     },
     disabled: false,
   };
+
   const nextButtonData: Ibutton = {
     size: "XL",
     bg: "gradient",
@@ -82,105 +132,94 @@ export default function ServiceStep2Page() {
       saveDataInStore(formData);
       handleNavigation(`/service/step${currentStep + 1}`);
     },
-    disabled: isDisabled(steps, currentStep),
+    disabled: !steps.step2,
   };
 
-  useEffect(() => {
-    setCurrentStep(parseInt(location.pathname.slice(-1)));
-  }, [location.pathname]);
-
   const pc: IbuttonChooseDevice = {
-    isSelected: formData.device === "pc",
-    device: "pc",
+    id: 1,
+    name: deviceOptions?.filter((item) => item.id === 1)[0].name || "PC",
+    isSelected: formData.device === 1,
     onClick: () => {
-      setFormData((prev) => ({ ...prev, device: "pc" }));
+      setFormData((prev) => ({ ...prev, device: 1 }));
     },
   };
   const tablet: IbuttonChooseDevice = {
-    isSelected: formData.device === "tablet",
-    device: "tablet",
+    id: 2,
+    name: deviceOptions?.filter((item) => item.id === 2)[0].name || "Tablet",
+    isSelected: formData.device === 2,
     onClick: () => {
-      setFormData((prev) => ({ ...prev, device: "tablet" }));
+      setFormData((prev) => ({ ...prev, device: 2 }));
     },
   };
   const mobile: IbuttonChooseDevice = {
-    isSelected: formData.device === "mobile",
-    device: "mobile",
+    id: 3,
+    name: deviceOptions?.filter((item) => item.id === 3)[0].name || "Mobile",
+    isSelected: formData.device === 3,
     onClick: () => {
-      setFormData((prev) => ({ ...prev, device: "mobile" }));
+      setFormData((prev) => ({ ...prev, device: 3 }));
     },
   };
 
   const shoppingMall: IbuttonChooseService = {
-    isSelected: formData.service === "shoppingMall",
-    service: "shoppingMall",
+    id: 1,
+    name: serviceTypes?.filter((item) => item.id === 1)[0].name || "쇼핑몰",
+    description:
+      serviceTypes?.filter((item) => item.id === 1)[0].description ||
+      "상품을 등록하고 판매해요",
+    isSelected: formData.service === 1,
     onClick: () => {
-      setFormData((prev) => ({ ...prev, service: "shoppingMall" }));
+      setFormData((prev) => ({ ...prev, service: 1 }));
     },
   };
   const communitySns: IbuttonChooseService = {
-    isSelected: formData.service === "communitySns",
-    service: "communitySns",
+    id: 2,
+    name:
+      serviceTypes?.filter((item) => item.id === 2)[0].name || "커뮤니티·sns",
+    description:
+      serviceTypes?.filter((item) => item.id === 2)[0].description ||
+      "게시판을 통해 소통해요",
+    isSelected: formData.service === 2,
     onClick: () => {
-      setFormData((prev) => ({ ...prev, service: "communitySns" }));
+      setFormData((prev) => ({ ...prev, service: 2 }));
     },
   };
   const intermediaryMatch: IbuttonChooseService = {
-    isSelected: formData.service === "intermediaryMatch",
-    service: "intermediaryMatch",
+    id: 3,
+    name: serviceTypes?.filter((item) => item.id === 3)[0].name || "중개·매칭",
+    description:
+      serviceTypes?.filter((item) => item.id === 3)[0].description ||
+      "플랫폼을 제작해요",
+    isSelected: formData.service === 3,
+
     onClick: () => {
-      setFormData((prev) => ({ ...prev, service: "intermediaryMatch" }));
+      setFormData((prev) => ({ ...prev, service: 3 }));
     },
   };
   const homepageBoard: IbuttonChooseService = {
-    isSelected: formData.service === "homepageBoard",
-    service: "homepageBoard",
+    id: 4,
+    name:
+      serviceTypes?.filter((item) => item.id === 4)[0].name ||
+      "홈페이지·게시판",
+    description:
+      serviceTypes?.filter((item) => item.id === 4)[0].description ||
+      "회사를 소개해요",
+    isSelected: formData.service === 4,
+
     onClick: () => {
-      setFormData((prev) => ({ ...prev, service: "homepageBoard" }));
+      setFormData((prev) => ({ ...prev, service: 4 }));
     },
   };
   const landingIntroduce: IbuttonChooseService = {
-    isSelected: formData.service === "landingIntroduce",
-    service: "landingIntroduce",
+    id: 5,
+    name: serviceTypes?.filter((item) => item.id === 5)[0].name || "랜딩·소개",
+    description:
+      serviceTypes?.filter((item) => item.id === 5)[0].description ||
+      "제품을 소개해요",
+    isSelected: formData.service === 5,
     onClick: () => {
-      setFormData((prev) => ({ ...prev, service: "landingIntroduce" }));
+      setFormData((prev) => ({ ...prev, service: 5 }));
     },
   };
-
-  useEffect(() => {
-    if (formData.device && formData.service) {
-      setSteps({
-        ...steps,
-        step2: true,
-      });
-    } else {
-      setSteps({
-        ...steps,
-        step2: false,
-      });
-    }
-  }, [formData]);
-
-  const { isProduction } = useIsProduction();
-  const [loading, setLoading] = useState(false);
-
-  async function fetchData() {
-    if (!loading) {
-      setLoading(true);
-      try {
-        const response = await getServiceTypes(isProduction);
-        console.log(response);
-      } catch (error) {
-        console.error("API 요청 실패:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-  }
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   return (
     <>
@@ -276,15 +315,6 @@ const select_container = css`
   gap: 14px;
   align-self: stretch;
   flex-wrap: wrap;
-`;
-
-const guide_text = css`
-  color: var(--747474, #747474);
-  font-family: Pretendard;
-  font-size: 17px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
 `;
 
 const require_text = css`

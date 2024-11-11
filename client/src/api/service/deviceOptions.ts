@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export interface IserviceData {
+export interface IdeviceOptions {
   id: number;
   name: string;
   description: string;
@@ -8,12 +8,12 @@ export interface IserviceData {
   updated_at: string;
 }
 
-export const getServiceTypes = async (isProduction: boolean) => {
+export const getDeviceOptions = async (isProduction: boolean) => {
   try {
     const response = await axios.get(
       `http://${
         isProduction ? "dolllpitoxic3.mycafe24.com" : "localhost:5001"
-      }/api/service/service-types`
+      }/api/service/device-options`
     );
     return response;
   } catch (error) {

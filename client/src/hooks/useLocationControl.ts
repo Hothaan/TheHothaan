@@ -10,5 +10,5 @@ export default function useLocationControl() {
   const checkLocation = (pathArr: string[]) =>
     pathArr.some((path: string) => location.pathname === path);
 
-  return { includeLocation, checkLocation };
+  return { includeLocation, checkLocation, currentLocation };
 }
