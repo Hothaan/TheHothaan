@@ -43,6 +43,10 @@ const projectController = require('../controllers/projectController');
  *                       type: string
  *                       description: 선택 항목의 값
  *                       example: "메인"
+ *                     option:
+ *                       type: string
+ *                       description: 선택 항목의 옵션 (추가 정보)
+ *                       example: "옵션 정보"
  *                 example: [
  *                   { "type": "device", "value": "PC" },
  *                   { "type": "service", "value": "쇼핑몰" },
@@ -51,16 +55,8 @@ const projectController = require('../controllers/projectController');
  *                   { "type": "menu", "value": "상품" },
  *                   { "type": "feature", "value": "상품 목록" },
  *                   { "type": "feature", "value": "상품 상세" },
- *                   { "type": "menu", "value": "고객센터" },
- *                   { "type": "feature", "value": "공지사항" },
- *                   { "type": "menu", "value": "마이페이지" },
- *                   { "type": "feature", "value": "주문 목록" },
- *                   { "type": "feature", "value": "장바구니" },
  *                   { "type": "menu", "value": "유틸리티" },
- *                   { "type": "feature", "value": "로그인" },
- *                   { "type": "feature", "value": "회원가입" },
- *                   { "type": "feature", "value": "아이디 찾기" },
- *                   { "type": "feature", "value": "비밀번호 찾기" }
+ *                   { "type": "feature", "value": "로그인", "option": "소셜 로그인" }
  *                 ]
  *     responses:
  *       201:

@@ -13,7 +13,7 @@ exports.createProject = async (req, res) => {
 
         // 2. 선택된 값들 저장
         for (const selection of selections) {
-            await projectModel.addProjectSelection(projectId, selection.type, selection.value);
+            await projectModel.addProjectSelection(projectId, selection.type, selection.value, selection.option);
         }
 
         res.status(201).json({ message: "Project created successfully", projectId });
@@ -43,7 +43,6 @@ exports.generateProjectText = async (req, res) => {
         if (selections.length === 0) {
             return res.status(404).json({ error: "선택된 항목이 없습니다." });
         }
-        // console.log("selections", selections);
 
         const serviceDevice = selections.find(sel => sel.selection_type === 'device')?.selection_value || '';
         const serviceType = selections.find(sel => sel.selection_type === 'service')?.selection_value || '';
@@ -54,22 +53,24 @@ exports.generateProjectText = async (req, res) => {
             } else if (selection.selection_type === 'feature') {
                 const lastMenu = acc[acc.length - 1];
                 if (lastMenu) {
-                    lastMenu.features.push(selection.selection_value);
+                    lastMenu.features.push({
+                        feature: selection.selection_value,
+                        option: selection.selection_option || null // Add option only for features
+                    });
                 }
             }
             return acc;
         }, []);
-        console.log("groupedSelections", groupedSelections);
-
+        
         const responses = [];
 
         // 각 메뉴와 그에 해당하는 feature에 대해서만 OpenAI API 호출
         for (const group of groupedSelections) {
             const { menu, features } = group;
-            console.log("features", features);
 
             // 각 feature에 대해 OpenAI API 호출
-            for (const feature of features) {
+            for (const featureObj of features) {
+                const { feature, option: featureOption } = featureObj;
                 const featureDetails = await componentModel.getComponentDetails(menu, feature);
 
                 if (!featureDetails || featureDetails.length === 0) {
@@ -81,13 +82,29 @@ exports.generateProjectText = async (req, res) => {
 
                 // OpenAI API 호출하여 feature에 대한 텍스트 생성
                 const featureResponseData = await generateOpenAiText('feature', serviceTitle, serviceDesc, depth1, depth2, feature, structure);
-                responses.push({ menu, feature, content: featureResponseData });
+                
+                // Include featureOption only for features
+                const responseItem = {
+                    menu,
+                    feature,
+                    content: featureResponseData
+                };
+                if (featureOption) {
+                    responseItem.featureOption = featureOption;
+                }
+                
+                responses.push(responseItem);
             }
         }
 
         logger.info("프로젝트 텍스트 생성 성공", { projectId, responses });
         res.status(200).json({
-            projectId, project_name: serviceTitle, project_description: serviceDesc, project_device: serviceDevice, project_type: serviceType, responses
+            projectId,
+            project_name: serviceTitle,
+            project_description: serviceDesc,
+            project_device: serviceDevice,
+            project_type: serviceType,
+            responses
         });
     } catch (error) {
         logger.error("프로젝트 텍스트 생성 오류", error);

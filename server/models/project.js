@@ -13,11 +13,11 @@ exports.createProject = async (user_email, project_name, project_description) =>
 };
 
 // 선택 항목 저장
-exports.addProjectSelection = async (project_id, selection_type, selection_value) => {
+exports.addProjectSelection = async (project_id, selection_type, selection_value, selection_option) => {
     await pool.query(
-        `INSERT INTO project_selections (project_id, selection_type, selection_value, created_at, updated_at)
-         VALUES (?, ?, ?, NOW(), NOW())`,
-        [project_id, selection_type, selection_value]
+        `INSERT INTO project_selections (project_id, selection_type, selection_value, selection_option, created_at, updated_at)
+         VALUES (?, ?, ?, ?, NOW(), NOW())`,
+        [project_id, selection_type, selection_value, selection_option]
     );
 };
 
@@ -36,7 +36,7 @@ exports.getProjectById = async (projectId) => {
 // 특정 프로젝트의 선택값들 가져오기
 exports.getProjectSelections = async (projectId) => {
     const result = await pool.query(
-        `SELECT selection_type, selection_value FROM project_selections WHERE project_id = ?`,
+        `SELECT selection_type, selection_value, selection_option FROM project_selections WHERE project_id = ?`,
         [projectId]
     );
     const selections = Array.isArray(result) ? result : [result];
