@@ -12,7 +12,7 @@ import Button from "@components/common/button/Button";
 import useIsProduction from "@hooks/useIsProduction";
 import useNavigation from "@hooks/useNavigation";
 import useLocationControl from "@hooks/useLocationControl";
-import { getServiceTypes, IserviceData } from "@api/service/serviceTypes";
+import { getServiceTypes, IserviceTypes } from "@api/service/serviceTypes";
 import { getDeviceOptions, IdeviceOptions } from "@api/service/deviceOptions";
 
 interface IformData {
@@ -32,16 +32,33 @@ export default function ServiceStep2Page() {
   const [loading, setLoading] = useState(false);
 
   const { serviceDefaultData } = serviceDefaultDataStore();
-  const initialFormData = {
-    device: serviceDefaultData.device,
-    service: serviceDefaultData.service,
-  };
-  const [formData, setFormData] = useState<IformData>(initialFormData);
+  // const initialFormData = {
+  //   device: serviceDefaultData.device,
+  //   service: serviceDefaultData.serviceType,
+  // };
+  const [formData, setFormData] = useState<IformData>({
+    device: null,
+    service: null,
+  });
 
-  const [serviceTypes, setServiceTypes] = useState<IserviceData[] | null>(null);
+  const [serviceTypes, setServiceTypes] = useState<IserviceTypes[] | null>(
+    null
+  );
   const [deviceOptions, setDeviceOptions] = useState<IdeviceOptions[] | null>(
     null
   );
+
+  useEffect(() => {
+    if (window.sessionStorage.getItem("serviceData") !== null) {
+      let sessionData = JSON.parse(
+        window.sessionStorage.getItem("serviceData") as string
+      );
+      setFormData({
+        device: sessionData.device,
+        service: sessionData.serviceType,
+      });
+    }
+  }, []);
 
   async function fetchServiceTypes() {
     if (!loading) {
@@ -109,8 +126,16 @@ export default function ServiceStep2Page() {
       setServiceDefaultData({
         ...serviceDefaultData,
         device: formData.device,
-        service: formData.service,
+        serviceType: formData.service,
       });
+      sessionStorage.setItem(
+        "serviceData",
+        JSON.stringify({
+          ...serviceDefaultData,
+          device: formData.device,
+          serviceType: formData.service,
+        })
+      );
     }
   }
 

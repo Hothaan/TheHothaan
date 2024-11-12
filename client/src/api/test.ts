@@ -11,8 +11,6 @@ export const makeComponentTextTest = async (
       componentData
     );
 
-    console.log(response);
-
     return response.data;
   } catch (error) {
     console.error("서버 요청 중 오류가 발생했습니다: ", error);
@@ -31,8 +29,6 @@ export const makeComponentTextTestWithUrl = async (
       }/api/openai`,
       componentData
     );
-
-    console.log(response);
 
     return response.data;
   } catch (error) {

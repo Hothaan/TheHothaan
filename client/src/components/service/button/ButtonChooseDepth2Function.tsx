@@ -1,49 +1,39 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { IserviceModal } from "@components/service/modal/ServiceModal";
 import ServiceModal from "@components/service/modal/ServiceModal";
 import { IbuttonClose } from "@components/common/button/ButtonClose";
 import ButtonClose from "@components/common/button/ButtonClose";
 import ButtonAdd, { IbuttonAdd } from "@components/service/button/ButtonAdd";
 import RadioButton from "@components/common/form/RadioButton";
+import { TmenuItem, ToptionItem } from "@api/service/serviceTypeMenu";
 
 export interface IbuttonChooseDepth2Function {
-  isDefault: boolean;
-  info: string;
-  depth1Kor: string;
-  depth1Eng: string;
-  depth2: { eng: string; kor: string };
-  options?: T2depthOption[];
+  menu_id: number;
+  data: TmenuItem;
   onSelectOption: (
-    depth1Eng: string,
-    depth2Eng: string,
-    optionKor: string
+    item_name: string,
+    option_type: string,
+    menu_id: number
   ) => void;
-  onDelete: (depth1prop: string, depth2prop: string) => void;
+  onDelete: (item_name: string) => void;
 }
 
 export default function ButtonChooseDepth2Function(
   prop: IbuttonChooseDepth2Function
 ) {
-  const {
-    isDefault,
-    depth1Eng,
-    depth1Kor,
-    depth2,
-    options,
-    info,
-    onSelectOption,
-    onDelete,
-  } = prop;
+  const { menu_id, data, onSelectOption, onDelete } = prop;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showDeletedButton, setShowDeletedButton] = useState(false);
-  const [selectedValue, setSelectedValue] = useState<string>("");
+  const [selectedValue, setSelectedValue] = useState<string>(
+    data.options?.filter((item) => item.is_selected)[0].option_type || ""
+  );
   const optionRef = useRef<HTMLDivElement | null>(null);
 
   const serviceModal: IserviceModal = {
     isOpen: isModalOpen,
-    title: depth2.kor,
+    title: data.item_name,
     onClick: () => {
       setIsModalOpen(false);
     },
@@ -62,7 +52,7 @@ export default function ButtonChooseDepth2Function(
         bg: "gradient",
         text: "저장",
         onClick: () => {
-          onSelectOption(depth1Eng, depth2.eng, selectedValue);
+          onSelectOption(data.item_name, selectedValue, menu_id);
           setIsModalOpen(!isModalOpen);
         },
       },
@@ -75,7 +65,7 @@ export default function ButtonChooseDepth2Function(
 
   const closeButton: IbuttonClose = {
     onDelete: () => {
-      onDelete(depth1Eng, depth2.eng);
+      onDelete(data.item_name);
     },
     top: "-3px",
     right: "-6px",
@@ -88,7 +78,7 @@ export default function ButtonChooseDepth2Function(
 
   return (
     <div
-      css={wrap(options)}
+      css={wrap(data.options)}
       onMouseEnter={() => {
         setShowDeletedButton(true);
       }}
@@ -98,14 +88,14 @@ export default function ButtonChooseDepth2Function(
     >
       <div
         css={[
-          choose_function(selectedValue, options),
+          choose_function(selectedValue, data.options),
           choose_function_color(selectedValue),
         ]}
         onClick={() => {
           setIsModalOpen(!isModalOpen);
         }}
       >
-        <p css={[function_text]}>{depth2.kor}</p>
+        <p css={[function_text]}>{data.item_name}</p>
         {selectedValue && (
           <p css={selectedValue_text_container}>
             <span>{`(`}</span>
@@ -114,29 +104,31 @@ export default function ButtonChooseDepth2Function(
           </p>
         )}
       </div>
-      {options && selectedValue === "" && <ButtonAdd {...addButton} />}
-      {!isDefault && showDeletedButton && <ButtonClose {...closeButton} />}
-      {options && (
+      {data.options && selectedValue === "" && <ButtonAdd {...addButton} />}
+      {!data.is_default && showDeletedButton && (
+        <ButtonClose {...closeButton} />
+      )}
+      {data.options && (
         <ServiceModal {...serviceModal}>
-          <p css={info_text}>{info}</p>
+          <p css={info_text}>유형 선택</p>
           <div ref={optionRef} onClick={(e) => e.stopPropagation()}>
             <ul css={options_container}>
-              {options.map((option) => {
+              {data.options.map((option, idx) => {
                 const option_radio = {
-                  id: option.kor,
-                  name: depth2.eng,
-                  value: option.kor,
-                  label: option.kor,
-                  checked: selectedValue === option.kor,
+                  id: option.option_type,
+                  name: option.option_type,
+                  value: option.option_type,
+                  label: option.option_type,
+                  checked: selectedValue === option.option_type,
                   onChange: handleChange,
                   required: true,
                 };
                 return (
                   <li
-                    key={option.kor}
+                    key={idx}
                     css={[
                       option_style,
-                      option_style_color(selectedValue, option.kor),
+                      option_style_color(selectedValue, option.option_type),
                     ]}
                   >
                     <RadioButton {...option_radio} />
@@ -162,7 +154,7 @@ const info_text = css`
   line-height: 150%; /* 22.5px */
 `;
 
-const wrap = (options: T2depthOption[] | undefined) => css`
+const wrap = (options: ToptionItem[] | undefined) => css`
   cursor: ${options !== undefined ? "pointer" : "default"};
   width: 188px;
   position: relative;
@@ -186,7 +178,7 @@ const choose_function_color = (selectedValue: string | null) => {
 
 const choose_function = (
   selectedValue: string | null,
-  options: T2depthOption[] | undefined
+  options: ToptionItem[] | undefined
 ) => css`
   cursor: ${options !== undefined ? "pointer" : "default"};
   position: relative;

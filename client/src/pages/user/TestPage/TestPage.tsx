@@ -234,7 +234,6 @@ export default function TestPage() {
             request,
             isProduction
           );
-          console.log(response);
           setData(response);
         } catch (error) {
           console.error("API 요청 실패:", error);

@@ -7,12 +7,19 @@ import ServiceModal from "@components/service/modal/ServiceModal";
 import { IradioButtonAccordion } from "@components/service/accordion/RadioButtonAccordion";
 import RadioButtonAccordion from "@components/service/accordion/RadioButtonAccordion";
 import { ReactComponent as Add } from "@svgs/add.svg";
+import { IserviceTypeMenuItem, TmenuItem } from "@api/service/serviceTypeMenu";
+
+// export interface IbuttonAddDepth2 {
+//   depth1Kor: string;
+//   depth1Eng: string;
+//   selectableDepth2: T2depth[];
+//   onAddMenu: (updatedDepth2Data: T2depth[], depth1prop: string) => void;
+//   onCancel: () => void;
+// }
 
 export interface IbuttonAddDepth2 {
-  depth1Kor: string;
-  depth1Eng: string;
-  selectableDepth2: T2depth[];
-  onAddMenu: (updatedDepth2Data: T2depth[], depth1prop: string) => void;
+  data: IserviceTypeMenuItem;
+  onAddMenu: (updatedMenuItems: TmenuItem[]) => void;
   onCancel: () => void;
 }
 
@@ -25,16 +32,16 @@ export interface IselectableDepth2 {
 }
 
 export default function ButtonAddDepth2(prop: IbuttonAddDepth2) {
-  const { depth1Eng, depth1Kor, selectableDepth2, onAddMenu, onCancel } = prop;
+  const { data, onAddMenu, onCancel } = prop;
   const [showDeletedButton, setShowDeletedButton] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [selectedValue, setSelectedValue] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [updateDepth2, setUpdateDepth2] = useState<T2depth[]>(selectableDepth2);
+  const [updateDepth2, setUpdateDepth2] = useState<TmenuItem[]>(data.items);
 
   useEffect(() => {
-    setUpdateDepth2(selectableDepth2);
-  }, [selectableDepth2]);
+    setUpdateDepth2(data.items);
+  }, [data.items]);
 
   const serviceModal: IserviceModal = {
     isOpen: isModalOpen,
@@ -48,7 +55,7 @@ export default function ButtonAddDepth2(prop: IbuttonAddDepth2) {
         bg: "gray",
         text: "취소",
         onClick: () => {
-          setUpdateDepth2(selectableDepth2);
+          setUpdateDepth2(data.items);
           setIsModalOpen(!isModalOpen);
         },
       },
@@ -57,39 +64,59 @@ export default function ButtonAddDepth2(prop: IbuttonAddDepth2) {
         bg: "gradient",
         text: "저장",
         onClick: () => {
-          onAddMenu(updateDepth2, depth1Kor);
+          onAddMenu(updateDepth2);
           setIsModalOpen(!isModalOpen);
         },
       },
     ],
   };
 
-  function handleCheckboxChange(id: string, checked: boolean) {
+  // function handleCheckboxChange(id: string, checked: boolean) {
+  //   setUpdateDepth2((prevState) =>
+  //     prevState.map((item) =>
+  //       item.depth2.eng === id ? { ...item, isSelected: checked } : item
+  //     )
+  //   );
+  // }
+
+  function handleCheckboxChange(item_name: string, checked: boolean) {
     setUpdateDepth2((prevState) =>
       prevState.map((item) =>
-        item.depth2.eng === id ? { ...item, isSelected: checked } : item
+        item.item_name === item_name ? { ...item, is_selected: checked } : item
       )
     );
   }
 
+  // const options = updateDepth2.map((item) => {
+  //   return {
+  //     id: item.depth2.eng,
+  //     name: item.depth2.eng,
+  //     label: item.depth2.kor,
+  //     checked: item.isSelected,
+  //     onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+  //       handleCheckboxChange(item.depth2.eng, event.target.checked);
+  //     },
+  //   };
+  // });
+
   const options = updateDepth2.map((item) => {
     return {
-      id: item.depth2.eng,
-      name: item.depth2.eng,
-      label: item.depth2.kor,
-      checked: item.isSelected,
+      id: item.item_name,
+      name: item.item_name,
+      label: item.item_name,
+      checked: item.is_selected,
       onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
-        handleCheckboxChange(item.depth2.eng, event.target.checked);
+        handleCheckboxChange(item.item_name, event.target.checked);
       },
     };
   });
 
   const addDepth2: IradioButtonAccordion = {
     radioButton: {
-      id: depth1Kor,
-      name: depth1Kor,
-      value: depth1Kor,
-      label: depth1Kor,
+      id: data.menu_name,
+      name: data.menu_name,
+      value: data.menu_name,
+      label: data.menu_name,
       checked: true,
       onChange: () => {},
     },

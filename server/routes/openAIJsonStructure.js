@@ -24,8 +24,6 @@ router.post("/", async (req, res) => {
     component,
   } = req.body;
 
-  console.log(apiKey);
-
   try {
     const response = await axios.post(
       "https://api.openai.com/v1/chat/completions",
@@ -51,8 +49,6 @@ router.post("/", async (req, res) => {
         },
       }
     );
-
-    console.log(response.data);
 
     // JSON 파싱 및 Zod 검증
     try {

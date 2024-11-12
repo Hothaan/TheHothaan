@@ -1,19 +1,16 @@
+import { IsendData } from "@pages/user/ServicePage/ServiceStep3Page";
 import axios from "axios";
 
-export interface IserviceTypes {
-  id: number;
-  name: string;
-  description: string;
-  created_at: string;
-  updated_at: string;
-}
-
-export const getServiceTypes = async (isProduction: boolean) => {
+export const createProject = async (
+  isProduction: boolean,
+  sendData: IsendData
+) => {
   try {
-    const response = await axios.get(
+    const response = await axios.post(
       `http://${
         isProduction ? "dolllpitoxic3.mycafe24.com" : "localhost:5001"
-      }/api/service/service-types`
+      }/api/project/create`,
+      sendData
     );
     return response;
   } catch (error) {

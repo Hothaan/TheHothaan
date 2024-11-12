@@ -11,6 +11,5 @@
     "concurrently": "^9.0.1",
     "dotenv": "^16.4.5"
   },
-  "devDependencies": {},
   "proxy": "http://localhost:5001"
 }

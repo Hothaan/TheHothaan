@@ -20,16 +20,27 @@ export default function ServiceStep1Page() {
   const { steps, setSteps } = serviceStepStore();
   const { serviceDefaultData, setServiceDefaultData } =
     serviceDefaultDataStore();
-  const initialFormData = {
-    serviceTitle: serviceDefaultData.serviceTitle,
-    serviceDesc: serviceDefaultData.serviceDesc,
-  };
-  const [formData, setFormData] = useState<IformData>(initialFormData);
+  const [formData, setFormData] = useState<IformData>({
+    serviceTitle: "",
+    serviceDesc: "",
+  });
 
   const navigate = useNavigate();
   const location = useLocation();
   const totalStep = 5;
   const [currentStep, setCurrentStep] = useState<number>(1);
+
+  useEffect(() => {
+    if (window.sessionStorage.getItem("serviceData") !== null) {
+      let sessionData = JSON.parse(
+        window.sessionStorage.getItem("serviceData") as string
+      );
+      setFormData({
+        serviceTitle: sessionData.serviceTitle,
+        serviceDesc: sessionData.serviceDesc,
+      });
+    }
+  }, []);
 
   function handleNavigation(path: string) {
     navigate(path);
@@ -60,6 +71,14 @@ export default function ServiceStep1Page() {
       serviceTitle: formData.serviceTitle,
       serviceDesc: formData.serviceDesc,
     });
+    sessionStorage.setItem(
+      "serviceData",
+      JSON.stringify({
+        ...serviceDefaultData,
+        serviceTitle: formData.serviceTitle,
+        serviceDesc: formData.serviceDesc,
+      })
+    );
   }
 
   const prevButtonData: Ibutton = {
@@ -90,7 +109,7 @@ export default function ServiceStep1Page() {
     size: "normal",
     label: "serviceTitle",
     id: "serviceTitle",
-    placeholder: "내용입력",
+    placeholder: "ex) 스킨케어 코스메틱 브랜드 쇼핑몰 홈페이지를 제작건",
     value: formData.serviceTitle,
     disabled: false,
     onChange: (e) =>
@@ -100,7 +119,8 @@ export default function ServiceStep1Page() {
   const textAreaDefault: ItextArea = {
     label: "serviceDesc",
     id: "serviceDesc",
-    placeholder: "내용입력",
+    placeholder:
+      "ex) 스킨케어 코스메틱 브랜드 쇼핑몰 홈페이지이며 메인 페이지와 브랜드 소개 페이지가 들어가 있어야 하며, 상품 카테고리가 나올 수 있는 상품 리스트 페이지와 상품 뷰 페이지가 필요합니다. 게시판은 공지사항과 후기가 필요하며, 결제 기능이 추가되어야 합니다.",
     value: formData.serviceDesc,
     disabled: false,
     onChange: (e) =>
