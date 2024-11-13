@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, SerializedStyles } from "@emotion/react";
-import { ReactComponent as Close } from "@svgs/close.svg";
+import { ReactComponent as Close } from "@svgs/service/close.svg";
 
 export interface IbuttonClose {
   top: string;

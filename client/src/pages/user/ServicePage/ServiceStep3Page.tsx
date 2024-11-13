@@ -18,6 +18,7 @@ import {
   TserviceTypeMenu,
 } from "@api/service/serviceTypeMenu";
 import { createProject } from "@api/project/createProject";
+import { generateText } from "@api/project/generateText";
 
 export type TselectionItem = {
   type: "device" | "service" | "menu" | "feature";
@@ -73,14 +74,14 @@ export default function ServiceStep3Page() {
   }
 
   useEffect(() => {
-    const sessionData = window.sessionStorage.getItem("projectData");
+    const sessionData = window.sessionStorage.getItem("projectData(formData)");
     if (sessionData) {
       const parsedData = JSON.parse(sessionData);
       setFormData(parsedData);
+    } else {
+      fetchServiceTypeMenu();
     }
   }, []);
-
-  console.log(formData);
 
   useEffect(() => {
     if (checkAllOptionSelected(formData)) {
@@ -239,19 +240,38 @@ export default function ServiceStep3Page() {
         const response = await createProject(isProduction, sendData);
         if (response.statusText === "Created") {
           sessionStorage.setItem("projectId", response.data.projectId);
-          sessionStorage.setItem("projectData", JSON.stringify(formData));
+          sessionStorage.setItem(
+            "projectData(formData)",
+            JSON.stringify(formData)
+          );
+          sessionStorage.setItem(
+            "projectData(sendData)",
+            JSON.stringify(sendData)
+          );
+        }
+      } catch (error) {
+        console.error("API 요청 실패:", error);
+      } finally {
+        fetchGeneratedText();
+      }
+    }
+  }
+
+  async function fetchGeneratedText() {
+    const projectId = sessionStorage.getItem("projectId");
+    if (!loading && projectId) {
+      setLoading(true);
+      try {
+        const response = await generateText(isProduction, parseInt(projectId));
+        if (response.statusText === "OK") {
+          console.log(response);
         }
       } catch (error) {
         console.error("API 요청 실패:", error);
       } finally {
         setLoading(false);
         setIsModalOpen(false);
-        const timer = setTimeout(() => {
-          handleNavigation(`/service/step${currentStep + 1}`);
-        }, 1000);
-        return () => {
-          clearTimeout(timer);
-        };
+        handleNavigation(`/service/step${currentStep + 1}`);
       }
     }
   }
@@ -365,9 +385,9 @@ export default function ServiceStep3Page() {
           </div>
           <div css={select_container}>
             {formData &&
-              formData.map((item: IserviceTypeMenuItem, idx) => {
+              formData.map((menu: IserviceTypeMenuItem, idx) => {
                 const data = {
-                  data: item,
+                  data: menu,
                   onAddMenu: handleAddMenu,
                   onSelectOption: handleSelectOption,
                   onDelete: handleDeleteMenu,

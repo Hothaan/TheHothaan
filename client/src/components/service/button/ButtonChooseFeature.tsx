@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { IserviceModal } from "@components/service/modal/ServiceModal";
 import ServiceModal from "@components/service/modal/ServiceModal";
 import { IbuttonClose } from "@components/common/button/ButtonClose";
@@ -20,16 +20,25 @@ export interface IbuttonChooseDepth2Function {
   onDelete: (item_name: string) => void;
 }
 
-export default function ButtonChooseDepth2Function(
-  prop: IbuttonChooseDepth2Function
-) {
+export default function ButtonChooseFeature(prop: IbuttonChooseDepth2Function) {
   const { menu_id, data, onSelectOption, onDelete } = prop;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showDeletedButton, setShowDeletedButton] = useState(false);
-  const [selectedValue, setSelectedValue] = useState<string>(
-    data.options?.filter((item) => item.is_selected)[0].option_type || ""
-  );
+  const [selectedValue, setSelectedValue] = useState<string>("");
   const optionRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (data.is_option === true && data.options !== undefined) {
+      const option = data.options.filter((item) => {
+        if (item.is_selected === true) {
+          return item.option_type;
+        }
+      });
+      if (option[0] !== undefined) {
+        setSelectedValue(option[0].option_type);
+      }
+    }
+  }, [data]);
 
   const serviceModal: IserviceModal = {
     isOpen: isModalOpen,
@@ -104,16 +113,18 @@ export default function ButtonChooseDepth2Function(
           </p>
         )}
       </div>
-      {data.options && selectedValue === "" && <ButtonAdd {...addButton} />}
-      {!data.is_default && showDeletedButton && (
+      {data?.options !== undefined && selectedValue === "" && (
+        <ButtonAdd {...addButton} />
+      )}
+      {!data?.is_default && showDeletedButton && (
         <ButtonClose {...closeButton} />
       )}
-      {data.options && (
+      {data?.options !== undefined && (
         <ServiceModal {...serviceModal}>
           <p css={info_text}>유형 선택</p>
           <div ref={optionRef} onClick={(e) => e.stopPropagation()}>
             <ul css={options_container}>
-              {data.options.map((option, idx) => {
+              {data?.options.map((option, idx) => {
                 const option_radio = {
                   id: option.option_type,
                   name: option.option_type,

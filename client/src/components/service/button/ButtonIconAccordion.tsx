@@ -2,8 +2,8 @@
 import { css } from "@emotion/react";
 import { useState, ReactElement } from "react";
 import { TbtnSize } from "@components/common/button/Button";
-import { ReactComponent as ArrowUp } from "@svgs/arrowUp.svg";
-import { ReactComponent as ArrowDown } from "@svgs/arrowDown.svg";
+import { ReactComponent as ArrowUp } from "@svgs/common/arrowUp.svg";
+import { ReactComponent as ArrowDown } from "@svgs/common/arrowDown.svg";
 
 export type TbuttonIconAccordionOption = {
   text: string;

@@ -2,38 +2,20 @@
 import { css } from "@emotion/react";
 import { useState, useEffect } from "react";
 import { IserviceModal } from "@components/service/modal/ServiceModal";
-import { T2depth } from "@data/service/depth2/common";
 import ServiceModal from "@components/service/modal/ServiceModal";
 import { IradioButtonAccordion } from "@components/service/accordion/RadioButtonAccordion";
 import RadioButtonAccordion from "@components/service/accordion/RadioButtonAccordion";
-import { ReactComponent as Add } from "@svgs/add.svg";
+import { ReactComponent as Add } from "@svgs/service/add.svg";
 import { IserviceTypeMenuItem, TmenuItem } from "@api/service/serviceTypeMenu";
 
-// export interface IbuttonAddDepth2 {
-//   depth1Kor: string;
-//   depth1Eng: string;
-//   selectableDepth2: T2depth[];
-//   onAddMenu: (updatedDepth2Data: T2depth[], depth1prop: string) => void;
-//   onCancel: () => void;
-// }
-
-export interface IbuttonAddDepth2 {
+export interface IbuttonAddFeature {
   data: IserviceTypeMenuItem;
   onAddMenu: (updatedMenuItems: TmenuItem[]) => void;
   onCancel: () => void;
 }
 
-export interface IselectableDepth2 {
-  depth2: { eng: string; kor: string };
-  isDefault: boolean;
-  isSelected: boolean;
-  structure?: string;
-  options?: T2depthOption[];
-}
-
-export default function ButtonAddDepth2(prop: IbuttonAddDepth2) {
+export default function ButtonAddFeature(prop: IbuttonAddFeature) {
   const { data, onAddMenu, onCancel } = prop;
-  const [showDeletedButton, setShowDeletedButton] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [selectedValue, setSelectedValue] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -71,14 +53,6 @@ export default function ButtonAddDepth2(prop: IbuttonAddDepth2) {
     ],
   };
 
-  // function handleCheckboxChange(id: string, checked: boolean) {
-  //   setUpdateDepth2((prevState) =>
-  //     prevState.map((item) =>
-  //       item.depth2.eng === id ? { ...item, isSelected: checked } : item
-  //     )
-  //   );
-  // }
-
   function handleCheckboxChange(item_name: string, checked: boolean) {
     setUpdateDepth2((prevState) =>
       prevState.map((item) =>
@@ -86,18 +60,6 @@ export default function ButtonAddDepth2(prop: IbuttonAddDepth2) {
       )
     );
   }
-
-  // const options = updateDepth2.map((item) => {
-  //   return {
-  //     id: item.depth2.eng,
-  //     name: item.depth2.eng,
-  //     label: item.depth2.kor,
-  //     checked: item.isSelected,
-  //     onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
-  //       handleCheckboxChange(item.depth2.eng, event.target.checked);
-  //     },
-  //   };
-  // });
 
   const options = updateDepth2.map((item) => {
     return {
@@ -126,12 +88,6 @@ export default function ButtonAddDepth2(prop: IbuttonAddDepth2) {
   return (
     <div
       css={wrap}
-      onMouseEnter={() => {
-        setShowDeletedButton(true);
-      }}
-      onMouseLeave={() => {
-        setShowDeletedButton(false);
-      }}
       onClick={() => {
         setIsModalOpen(true);
       }}

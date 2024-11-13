@@ -2,8 +2,8 @@
 import { css } from "@emotion/react";
 import { useState, useEffect } from "react";
 import ToastPopup from "@components/common/ui/ToastPopup/ToastPopup";
-import { ReactComponent as LogoLight } from "@svgs/logoLight.svg";
-import { ReactComponent as Minimize } from "@svgs/buttonMinimizePage.svg";
+import { ReactComponent as LogoLight } from "@svgs//common/logoLight.svg";
+import { ReactComponent as Minimize } from "@svgs//common/buttonMinimizePage.svg";
 
 interface IFullPageModal {
   onClick: (isModalOpen: boolean) => void;

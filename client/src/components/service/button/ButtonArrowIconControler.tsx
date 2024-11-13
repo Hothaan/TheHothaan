@@ -1,9 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { ReactComponent as ArrowLeft } from "@svgs/buttonArrowLeft.svg";
-import { ReactComponent as ArrowRight } from "@svgs/buttonArrowRight.svg";
-import { ReactComponent as ArrowUp } from "@svgs/buttonArrowTop.svg";
-import { ReactComponent as ArrowDown } from "@svgs/buttonArrowBottom.svg";
+import { ReactComponent as ArrowLeft } from "@svgs/common/buttonArrowLeft.svg";
+import { ReactComponent as ArrowRight } from "@svgs/common/buttonArrowRight.svg";
+import { ReactComponent as ArrowUp } from "@svgs/common/buttonArrowTop.svg";
+import { ReactComponent as ArrowDown } from "@svgs/common/buttonArrowBottom.svg";
 
 export interface IbuttonArrowControler {
   currentIdx: number;

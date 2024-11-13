@@ -17,13 +17,13 @@ import { IdropDown } from "./DropDown";
 import DropDown from "./DropDown";
 import { IcolorPicker } from "./ColorPicker";
 import ColorPicker from "./ColorPicker";
-import { ReactComponent as UnderLine } from "@svgs/underLine.svg";
-import { ReactComponent as CancleLine } from "@svgs/cancleLine.svg";
-import { ReactComponent as Bold } from "@svgs/bold.svg";
-import { ReactComponent as Italic } from "@svgs/italic.svg";
-import { ReactComponent as TextAlignCenter } from "@svgs/textAlignCenter.svg";
-import { ReactComponent as TextAlignLeft } from "@svgs/textAlignLeft.svg";
-import { ReactComponent as TextAlignRight } from "@svgs/textAlignRight.svg";
+import { ReactComponent as UnderLine } from "@svgs/textEditor/underLine.svg";
+import { ReactComponent as CancleLine } from "@svgs/textEditor/cancleLine.svg";
+import { ReactComponent as Bold } from "@svgs/textEditor/bold.svg";
+import { ReactComponent as Italic } from "@svgs/textEditor/italic.svg";
+import { ReactComponent as TextAlignCenter } from "@svgs/textEditor/textAlignCenter.svg";
+import { ReactComponent as TextAlignLeft } from "@svgs/textEditor/textAlignLeft.svg";
+import { ReactComponent as TextAlignRight } from "@svgs/textEditor/textAlignRight.svg";
 
 interface Istyles {
   color: TselectableColor;

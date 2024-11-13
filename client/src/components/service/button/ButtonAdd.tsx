@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, SerializedStyles } from "@emotion/react";
-import { ReactComponent as Add } from "@svgs/close.svg";
+import { ReactComponent as Add } from "@svgs/service/close.svg";
 
 export interface IbuttonAdd {
   top: string;

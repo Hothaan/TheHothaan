@@ -1,9 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { useState } from "react";
-import { ReactComponent as Prev } from "@svgs/arrowLeft.svg";
-import { ReactComponent as Next } from "@svgs/arrowRight.svg";
-import EditableText from "../editableText/EditableText";
+import { ReactComponent as Prev } from "@svgs/template/arrowLeft.svg";
+import { ReactComponent as Next } from "@svgs/template/arrowRight.svg";
 
 interface ItemplateBox {
   children?: React.ReactNode;

@@ -193,6 +193,7 @@ export default function ServicePreviewPage() {
                   onClick={handleSelectItem}
                   onDoubleClick={handleOpenFullPageModalEditable}
                   data-idx={idx}
+                  key={idx}
                 >
                   <div css={image_container}></div>
                   <div

@@ -5,8 +5,8 @@ import { IloadingModal } from "@components/common/ui/Modal/LoadingModal";
 import LoadingModal from "@components/common/ui/Modal/LoadingModal";
 import { serviceDefaultDataStore } from "@store/serviceDefaultDataStore";
 import ToastPopup from "@components/common/ui/ToastPopup/ToastPopup";
-import { ReactComponent as LogoLight } from "@svgs/logoLight.svg";
-import { ReactComponent as Minimize } from "@svgs/buttonMinimizePage.svg";
+import { ReactComponent as LogoLight } from "@svgs//common/logoLight.svg";
+import { ReactComponent as Minimize } from "@svgs//common/buttonMinimizePage.svg";
 import Button, { Ibutton } from "@components/common/button/Button";
 import NavigationUnEditable, {
   INavigationUnEditable,

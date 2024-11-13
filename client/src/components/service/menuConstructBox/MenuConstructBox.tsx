@@ -1,15 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { MAX_NUM } from "@data/maxNum";
-import { T2depth } from "@data/service/depth2/common";
-import ButtonDepth1 from "../button/ButtonDepth1";
-import { IbuttonChooseDepth2Function } from "../button/ButtonChooseDepth2Function";
-import ButtonChooseDepth2Function from "../button/ButtonChooseDepth2Function";
-import { IbuttonAddDepth2 } from "../button/ButtonAddDepth2";
-import ButtonAddDepth2 from "../button/ButtonAddDepth2";
-import { IbuttonDepth1 } from "../button/ButtonDepth1";
-import { IselectableDepth2 } from "../button/ButtonAddDepth2";
+import ButtonMenuItem from "../button/ButtonMenuItem";
+import { IbuttonChooseDepth2Function } from "../button/ButtonChooseFeature";
+import ButtonChooseFeature from "../button/ButtonChooseFeature";
+import ButtonAddFeature from "../button/ButtonAddFeature";
 import { IserviceTypeMenuItem, TmenuItem } from "@api/service/serviceTypeMenu";
 
 export interface ImenuConstructBox {
@@ -25,24 +21,20 @@ export interface ImenuConstructBox {
 
 export default function MenuConstructBox(prop: ImenuConstructBox) {
   const { data, onAddMenu, onSelectOption, onDelete } = prop;
-
-  const initialSelectableDepth2 = useMemo(() => {
-    return data.items;
-  }, [data]);
-  const [selectableDepth2, setSelectableDepth2] = useState<TmenuItem[]>(
-    initialSelectableDepth2
+  const [selectableFeature, setSelectableFeature] = useState<TmenuItem[]>(
+    data.items
   );
 
-  const filteredSelectedDepth2 = selectableDepth2.filter(
-    (item: TmenuItem) => item.is_selected
+  const filteredSelectedFeature = selectableFeature.filter(
+    (menuItem: TmenuItem) => menuItem.is_selected
   );
-  const canAddMoreDepth2 =
-    filteredSelectedDepth2.length < MAX_NUM &&
-    filteredSelectedDepth2.length < selectableDepth2.length - 1;
+  const canAddMoreDepth2: boolean =
+    filteredSelectedFeature.length < MAX_NUM &&
+    filteredSelectedFeature.length < selectableFeature.length - 1;
 
   function handleAddMenu(updatedMenuItems: TmenuItem[]) {
     onAddMenu(updatedMenuItems, data.menu_id);
-    setSelectableDepth2(updatedMenuItems);
+    setSelectableFeature(updatedMenuItems);
   }
 
   const [addDepth2, setAddDepth2] = useState({
@@ -52,7 +44,7 @@ export default function MenuConstructBox(prop: ImenuConstructBox) {
   });
 
   function handleDelete(item_name: string): void {
-    setSelectableDepth2((prevDepths) =>
+    setSelectableFeature((prevDepths) =>
       prevDepths.map((item) =>
         item.item_name === item_name ? { ...item, is_selected: false } : item
       )
@@ -63,23 +55,23 @@ export default function MenuConstructBox(prop: ImenuConstructBox) {
   useEffect(() => {
     setAddDepth2((prev) => ({
       ...prev,
-      selectableDepth2: selectableDepth2,
+      selectableFeature: selectableFeature,
     }));
-  }, [selectableDepth2]);
+  }, [selectableFeature]);
 
   return (
     <div css={wrap}>
-      <ButtonDepth1 menu_name={data.menu_name} />
-      {filteredSelectedDepth2.map((item, idx) => {
+      <ButtonMenuItem menu_name={data.menu_name} />
+      {filteredSelectedFeature.map((item, idx) => {
         const chooseDepth2: IbuttonChooseDepth2Function = {
           menu_id: data.menu_id,
           data: item,
           onSelectOption: onSelectOption,
           onDelete: handleDelete,
         };
-        return <ButtonChooseDepth2Function {...chooseDepth2} key={idx} />;
+        return <ButtonChooseFeature {...chooseDepth2} key={idx} />;
       })}
-      {canAddMoreDepth2 && <ButtonAddDepth2 {...addDepth2} />}
+      {canAddMoreDepth2 && <ButtonAddFeature {...addDepth2} />}
     </div>
   );
 }

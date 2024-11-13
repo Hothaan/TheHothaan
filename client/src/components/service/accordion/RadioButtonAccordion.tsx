@@ -5,8 +5,8 @@ import { IradioButton } from "@components/common/form/RadioButton";
 import RadioButton from "@components/common/form/RadioButton";
 import { Icheckbox } from "@components/common/form/Checkbox";
 import Checkbox from "@components/common/form/Checkbox";
-import { ReactComponent as ArrowUp } from "@svgs/arrowUp.svg";
-import { ReactComponent as ArrowDown } from "@svgs/arrowDown.svg";
+import { ReactComponent as ArrowUp } from "@svgs/common/arrowUp.svg";
+import { ReactComponent as ArrowDown } from "@svgs/common/arrowDown.svg";
 
 export interface IradioButtonAccordion {
   radioButton: IradioButton;

@@ -18,11 +18,11 @@ export default function ComponentGuidePage() {
 // import Button from "@components/common/button/Button";
 // import { Ibutton } from "@components/common/button/Button";
 
-// import { ReactComponent as Doc } from "@svgs/doc.svg";
+// import { ReactComponent as Doc } from "@svgs//service/doc.svg";
 // import { IbuttonIcon } from "@components/service/button/ButtonIcon";
 // import ButtonIcon from "@components/service/button/ButtonIcon";
 
-// import { ReactComponent as Download } from "@svgs/download.svg";
+// import { ReactComponent as Download } from "@svgs//common/download.svg";
 // import { IbuttonIconAccordion } from "@components/service/button/ButtonIconAccordion";
 // import ButtonIconAccordion from "@components/service/button/ButtonIconAccordion";
 
@@ -33,10 +33,10 @@ export default function ComponentGuidePage() {
 // import { IbuttonStep } from "@components/service/button/ButtonStep";
 // import ButtonStep from "@components/service/button/ButtonStep";
 
-// import { IbuttonChooseDevice } from "@components/service/button/ButtonChooseDevice";
-// import ButtonChooseDevice from "@components/service/button/ButtonChooseDevice";
-// import { IbuttonChooseService } from "@components/service/button/ButtonChooseService";
-// import ButtonChooseService from "@components/service/button/ButtonChooseService";
+// import { IbuttonChooseDevice } from "@components/service/button/ButtonChooseDeviceOption";
+// import ButtonChooseDeviceOption from "@components/service/button/ButtonChooseDeviceOption";
+// import { IbuttonChooseServiceType } from "@components/service/button/ButtonChooseServiceType";
+// import ButtonChooseServiceType from "@components/service/button/ButtonChooseServiceType";
 
 // export default function ComponentGuidePage() {
 //   return (
@@ -482,47 +482,47 @@ export default function ComponentGuidePage() {
 //       <h5>choose device</h5>
 //       <div css={container}>
 //         <p css={title}>choose device pc</p>
-//         <ButtonChooseDevice {...pc} />
+//         <ButtonChooseDeviceOption {...pc} />
 //       </div>
 //       <div css={container}>
 //         <p css={title}>choose device tablet</p>
-//         <ButtonChooseDevice {...tablet} />
+//         <ButtonChooseDeviceOption {...tablet} />
 //       </div>
 //       <div css={container}>
 //         <p css={title}>choose device mobile</p>
-//         <ButtonChooseDevice {...mobile} />
+//         <ButtonChooseDeviceOption {...mobile} />
 //       </div>
 //     </div>
 //   );
 // }
 
 // function ChooseServiceSection() {
-//   const shoppingMall: IbuttonChooseService = {
+//   const shoppingMall: IbuttonChooseServiceType = {
 //     id: 1,
 //     isSelected: true,
 //     service: "shoppingMall",
 //   };
-//   const communitySns: IbuttonChooseService = {
+//   const communitySns: IbuttonChooseServiceType = {
 //     id: 2,
 //     isSelected: false,
 //     service: "communitySns",
 //   };
-//   // const dashboardStats: IbuttonChooseService = {
+//   // const dashboardStats: IbuttonChooseServiceType = {
 //   //   id: 3,
 //   //   isSelected: false,
 //   //   service: "shoppingMall",
 //   // };
-//   const intermediaryMatch: IbuttonChooseService = {
+//   const intermediaryMatch: IbuttonChooseServiceType = {
 //     id: 3,
 //     isSelected: false,
 //     service: "intermediaryMatch",
 //   };
-//   const homepageBoard: IbuttonChooseService = {
+//   const homepageBoard: IbuttonChooseServiceType = {
 //     id: 4,
 //     isSelected: false,
 //     service: "homepageBoard",
 //   };
-//   const landingIntroduce: IbuttonChooseService = {
+//   const landingIntroduce: IbuttonChooseServiceType = {
 //     id: 5,
 //     isSelected: false,
 //     service: "landingIntroduce",
@@ -532,27 +532,27 @@ export default function ComponentGuidePage() {
 //       <h5>choose service</h5>
 //       <div css={container}>
 //         <p css={title}>choose service pc</p>
-//         <ButtonChooseService {...shoppingMall} />
+//         <ButtonChooseServiceType {...shoppingMall} />
 //       </div>
 //       <div css={container}>
 //         <p css={title}>choose service tablet</p>
-//         <ButtonChooseService {...communitySns} />
+//         <ButtonChooseServiceType {...communitySns} />
 //       </div>
 //       {/* <div css={container}>
 //         <p css={title}>choose service mobile</p>
-//         <ButtonChooseService {...dashboardStats} />
+//         <ButtonChooseServiceType {...dashboardStats} />
 //       </div> */}
 //       <div css={container}>
 //         <p css={title}>choose service mobile</p>
-//         <ButtonChooseService {...intermediaryMatch} />
+//         <ButtonChooseServiceType {...intermediaryMatch} />
 //       </div>
 //       <div css={container}>
 //         <p css={title}>choose service mobile</p>
-//         <ButtonChooseService {...homepageBoard} />
+//         <ButtonChooseServiceType {...homepageBoard} />
 //       </div>
 //       <div css={container}>
 //         <p css={title}>choose service mobile</p>
-//         <ButtonChooseService {...landingIntroduce} />
+//         <ButtonChooseServiceType {...landingIntroduce} />
 //       </div>
 //     </div>
 //   );

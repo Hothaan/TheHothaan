@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { ReactComponent as Check } from "@svgs/check.svg";
+import { ReactComponent as Check } from "@svgs//common/check.svg";
 
 export interface Icheckbox {
   id: string;

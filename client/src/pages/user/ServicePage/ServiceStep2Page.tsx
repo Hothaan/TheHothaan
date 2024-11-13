@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { useState, useEffect } from "react";
-import { IbuttonChooseDevice } from "@components/service/button/ButtonChooseDevice";
-import ButtonChooseDevice from "@components/service/button/ButtonChooseDevice";
-import { IbuttonChooseService } from "@components/service/button/ButtonChooseService";
-import ButtonChooseService from "@components/service/button/ButtonChooseService";
+import { IbuttonChooseDeviceOption } from "@components/service/button/ButtonChooseDeviceOption";
+import ButtonChooseDeviceOption from "@components/service/button/ButtonChooseDeviceOption";
+import { IbuttonChooseServiceType } from "@components/service/button/ButtonChooseServiceType";
+import ButtonChooseServiceType from "@components/service/button/ButtonChooseServiceType";
 import { serviceStepStore, TserviceStep } from "@store/serviceStepStore";
 import { serviceDefaultDataStore } from "@store/serviceDefaultDataStore";
 import { Ibutton } from "@components/common/button/Button";
@@ -30,12 +30,6 @@ export default function ServiceStep2Page() {
 
   const { isProduction } = useIsProduction();
   const [loading, setLoading] = useState(false);
-
-  const { serviceDefaultData } = serviceDefaultDataStore();
-  // const initialFormData = {
-  //   device: serviceDefaultData.device,
-  //   service: serviceDefaultData.serviceType,
-  // };
   const [formData, setFormData] = useState<IformData>({
     device: null,
     service: null,
@@ -160,7 +154,7 @@ export default function ServiceStep2Page() {
     disabled: !steps.step2,
   };
 
-  const pc: IbuttonChooseDevice = {
+  const pc: IbuttonChooseDeviceOption = {
     id: 1,
     name: deviceOptions?.filter((item) => item.id === 1)[0].name || "PC",
     isSelected: formData.device === 1,
@@ -168,7 +162,7 @@ export default function ServiceStep2Page() {
       setFormData((prev) => ({ ...prev, device: 1 }));
     },
   };
-  const tablet: IbuttonChooseDevice = {
+  const tablet: IbuttonChooseDeviceOption = {
     id: 2,
     name: deviceOptions?.filter((item) => item.id === 2)[0].name || "Tablet",
     isSelected: formData.device === 2,
@@ -176,7 +170,7 @@ export default function ServiceStep2Page() {
       setFormData((prev) => ({ ...prev, device: 2 }));
     },
   };
-  const mobile: IbuttonChooseDevice = {
+  const mobile: IbuttonChooseDeviceOption = {
     id: 3,
     name: deviceOptions?.filter((item) => item.id === 3)[0].name || "Mobile",
     isSelected: formData.device === 3,
@@ -185,7 +179,7 @@ export default function ServiceStep2Page() {
     },
   };
 
-  const shoppingMall: IbuttonChooseService = {
+  const shoppingMall: IbuttonChooseServiceType = {
     id: 1,
     name: serviceTypes?.filter((item) => item.id === 1)[0].name || "쇼핑몰",
     description:
@@ -196,7 +190,7 @@ export default function ServiceStep2Page() {
       setFormData((prev) => ({ ...prev, service: 1 }));
     },
   };
-  const communitySns: IbuttonChooseService = {
+  const communitySns: IbuttonChooseServiceType = {
     id: 2,
     name:
       serviceTypes?.filter((item) => item.id === 2)[0].name || "커뮤니티·sns",
@@ -208,7 +202,7 @@ export default function ServiceStep2Page() {
       setFormData((prev) => ({ ...prev, service: 2 }));
     },
   };
-  const intermediaryMatch: IbuttonChooseService = {
+  const intermediaryMatch: IbuttonChooseServiceType = {
     id: 3,
     name: serviceTypes?.filter((item) => item.id === 3)[0].name || "중개·매칭",
     description:
@@ -220,7 +214,7 @@ export default function ServiceStep2Page() {
       setFormData((prev) => ({ ...prev, service: 3 }));
     },
   };
-  const homepageBoard: IbuttonChooseService = {
+  const homepageBoard: IbuttonChooseServiceType = {
     id: 4,
     name:
       serviceTypes?.filter((item) => item.id === 4)[0].name ||
@@ -234,7 +228,7 @@ export default function ServiceStep2Page() {
       setFormData((prev) => ({ ...prev, service: 4 }));
     },
   };
-  const landingIntroduce: IbuttonChooseService = {
+  const landingIntroduce: IbuttonChooseServiceType = {
     id: 5,
     name: serviceTypes?.filter((item) => item.id === 5)[0].name || "랜딩·소개",
     description:
@@ -258,9 +252,9 @@ export default function ServiceStep2Page() {
             </p>
           </div>
           <div css={select_container}>
-            <ButtonChooseDevice {...pc} />
-            <ButtonChooseDevice {...tablet} />
-            <ButtonChooseDevice {...mobile} />
+            <ButtonChooseDeviceOption {...pc} />
+            <ButtonChooseDeviceOption {...tablet} />
+            <ButtonChooseDeviceOption {...mobile} />
           </div>
         </div>
         <div css={input_container}>
@@ -272,11 +266,11 @@ export default function ServiceStep2Page() {
             </p>
           </div>
           <div css={select_container}>
-            <ButtonChooseService {...shoppingMall} />
-            <ButtonChooseService {...communitySns} />
-            <ButtonChooseService {...intermediaryMatch} />
-            <ButtonChooseService {...homepageBoard} />
-            <ButtonChooseService {...landingIntroduce} />
+            <ButtonChooseServiceType {...shoppingMall} />
+            <ButtonChooseServiceType {...communitySns} />
+            <ButtonChooseServiceType {...intermediaryMatch} />
+            <ButtonChooseServiceType {...homepageBoard} />
+            <ButtonChooseServiceType {...landingIntroduce} />
           </div>
         </div>
       </div>

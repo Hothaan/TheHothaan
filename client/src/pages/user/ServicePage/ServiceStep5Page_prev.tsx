@@ -2,12 +2,12 @@
 import { css } from "@emotion/react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { ReactComponent as Doc } from "@svgs/doc.svg";
-import { ReactComponent as Preview } from "@svgs/preview.svg";
+import { ReactComponent as Doc } from "@svgs//service/doc.svg";
+import { ReactComponent as Preview } from "@svgs/service/preview.svg";
 import { IbuttonIcon } from "@components/service/button/ButtonIcon";
 import ButtonIcon from "@components/service/button/ButtonIcon";
 import TemplateSlide from "@components/service/templateSlide/TemplateSlide";
-import { ReactComponent as Download } from "@svgs/download.svg";
+import { ReactComponent as Download } from "@svgs//common/download.svg";
 import { IbuttonIconAccordion } from "@components/service/button/ButtonIconAccordion";
 import ButtonIconAccordion from "@components/service/button/ButtonIconAccordion";
 

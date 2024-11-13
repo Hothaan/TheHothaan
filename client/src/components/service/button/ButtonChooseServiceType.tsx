@@ -1,57 +1,23 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { TserviceDataKey } from "@data/service/serviceData";
 import { ReactComponent as ShoppingMall } from "@svgs/service/shoppingMall.svg";
 import { ReactComponent as CommunitySns } from "@svgs/service/communitySns.svg";
 import { ReactComponent as IntermediaryMatch } from "@svgs/service/intermediaryMatch.svg";
 import { ReactComponent as HomepageBoard } from "@svgs/service/homepageBoard.svg";
 import { ReactComponent as LandingIntroduce } from "@svgs/service/landingIntroduce.svg";
 
-export interface IbuttonChooseService {
+export interface IbuttonChooseServiceType {
   id: number;
   name: string;
   description: string;
   isSelected: boolean;
-  // service: Tservice;
   onClick?: () => void;
 }
 
-export default function ButtonChooseService(props: IbuttonChooseService) {
+export default function ButtonChooseServiceType(
+  props: IbuttonChooseServiceType
+) {
   const { id, name, description, isSelected, onClick } = props;
-
-  // function makeTitle(id: number) {
-  //   switch (id) {
-  //     case "shoppingMall":
-  //       return "쇼핑몰";
-  //     case "communitySns":
-  //       return "커뮤니티‧sns";
-  //     case "intermediaryMatch":
-  //       return "중개‧매칭";
-  //     case "homepageBoard":
-  //       return "홈페이지‧게시판";
-  //     case "landingIntroduce":
-  //       return "랜딩‧소개";
-  //     default:
-  //       return "";
-  //   }
-  // }
-
-  // function makeDesc(service: TserviceDataKey) {
-  //   switch (service) {
-  //     case "shoppingMall":
-  //       return "상품을 등록하고 판매해요";
-  //     case "communitySns":
-  //       return "게시판을 통해 소통해요";
-  //     case "intermediaryMatch":
-  //       return "플랫폼을 제작해요";
-  //     case "homepageBoard":
-  //       return "회사를 소개해요";
-  //     case "landingIntroduce":
-  //       return "제품을 소개해요";
-  //     default:
-  //       return "";
-  //   }
-  // }
 
   function makeIcon(id: number) {
     switch (id) {

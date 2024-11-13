@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css, Theme, useTheme } from "@emotion/react";
-import { ReactComponent as CrownWhite } from "@svgs/crownWhite.svg";
-import { ReactComponent as CrownGradient } from "@svgs/crownGradient.svg";
+import { ReactComponent as CrownWhite } from "@svgs/common/crownWhite.svg";
+import { ReactComponent as CrownGradient } from "@svgs/common/crownGradient.svg";
 
 export default function PlanBadge(prop: TuserInfo) {
   const { plan, term } = prop;

@@ -18,8 +18,6 @@ interface IformData {
 
 export default function ServiceStep1Page() {
   const { steps, setSteps } = serviceStepStore();
-  const { serviceDefaultData, setServiceDefaultData } =
-    serviceDefaultDataStore();
   const [formData, setFormData] = useState<IformData>({
     serviceTitle: "",
     serviceDesc: "",

@@ -1,53 +1,18 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useState } from "react";
-import { T2depth } from "@data/service/depth2/common";
-import { IselectableDepth2 } from "./ButtonAddDepth2";
-import { IbuttonClose } from "@components/common/button/ButtonClose";
-
-// export interface IbuttonDepth1 {
-//   depth1: { kor: string; eng: string };
-//   data: any;
-//   onAddMenu: (updatedDepth2Data: T2depth[], depth1prop: string) => void;
-//   onSelectOption: (
-//     depth1Eng: string,
-//     depth2Eng: string,
-//     optionKor: string
-//   ) => void;
-//   onDelete: (depth1prop: string, depth2prop: string) => void;
-// }
 
 export interface IbuttonDepth1 {
   menu_name: string;
 }
 
-export default function ButtonDepth1(prop: IbuttonDepth1) {
+export default function ButtonMenuItem(prop: IbuttonDepth1) {
   const { menu_name } = prop;
-  // const [showDeletedButton, setShowDeletedButton] = useState(false);
-
-  // const closeButton: IbuttonClose = {
-  //   onDelete: () => {
-  //     // onDelete();
-  //   },
-  //   top: "-3px",
-  //   right: "-6px",
-  //   color: "blue",
-  // };
 
   return (
-    <div
-      css={wrap}
-      // onMouseEnter={() => {
-      //   setShowDeletedButton(true);
-      // }}
-      // onMouseLeave={() => {
-      //   setShowDeletedButton(false);
-      // }}
-    >
+    <div css={wrap}>
       <div css={[choose_function]}>
         <p css={[function_text]}>{menu_name}</p>
       </div>
-      {/* {showDeletedButton && <ButtonClose {...closeButton} />} */}
     </div>
   );
 }

@@ -3,7 +3,7 @@ import { css } from "@emotion/react";
 import React from "react";
 import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { ReactComponent as ChevRight } from "@svgs/chevRight.svg";
+import { ReactComponent as ChevRight } from "@svgs//service/chevRight.svg";
 import { IbuttonStep } from "@components/service/button/ButtonStep";
 import ButtonStep from "@components/service/button/ButtonStep";
 import { serviceDefaultDataStore } from "@store/serviceDefaultDataStore";
@@ -51,7 +51,6 @@ export default function TitleNstepSection() {
       if (step.step === 4) {
         step.title = [
           <span css={gradient_text}>
-            {" "}
             {serviceDefaultData.serviceTitle !== ""
               ? serviceDefaultData.serviceTitle
               : "프로젝트"}
@@ -86,18 +85,14 @@ export default function TitleNstepSection() {
     <section css={wrap}>
       <h2 css={title}>{activeStep?.title || activeStep?.text}</h2>
       <div css={step_container}>
-        {stepData.map((item, idx) => {
-          if (idx === stepData.length - 1) {
-            return <ButtonStep {...item} key={item.step} />;
-          } else {
-            return (
-              <React.Fragment key={item.step}>
-                <ButtonStep {...item} />
-                <ChevRight />
-              </React.Fragment>
-            );
-          }
-        })}
+        {stepData.map((item, idx) => (
+          <React.Fragment key={item.text + idx}>
+            <ButtonStep {...item} />
+            {idx !== stepData.length - 1 && (
+              <ChevRight key={`chev-${item.text}-${idx}`} />
+            )}
+          </React.Fragment>
+        ))}
       </div>
     </section>
   );

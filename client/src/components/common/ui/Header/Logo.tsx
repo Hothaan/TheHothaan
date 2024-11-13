@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { Link } from "react-router-dom";
-import { ReactComponent as LogoDark } from "@svgs/logoDark.svg";
+import { ReactComponent as LogoDark } from "@svgs/common/logoDark.svg";
 
 export default function Logo() {
   return (

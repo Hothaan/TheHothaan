@@ -1,9 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css, Theme, useTheme } from "@emotion/react";
 import { Link } from "react-router-dom";
-import { ReactComponent as Instagram } from "@svgs/instagram.svg";
-import { ReactComponent as Facebook } from "@svgs/facebook.svg";
-import { ReactComponent as Youtube } from "@svgs/youtube.svg";
+import { ReactComponent as Instagram } from "@svgs/common/instagram.svg";
+import { ReactComponent as Facebook } from "@svgs/common/facebook.svg";
+import { ReactComponent as Youtube } from "@svgs/common/youtube.svg";
 import { ReactElement } from "react";
 
 interface IsnsBtnItem {

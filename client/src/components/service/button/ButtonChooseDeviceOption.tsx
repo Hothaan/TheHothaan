@@ -4,28 +4,17 @@ import { ReactComponent as Pc } from "@svgs/service/pc.svg";
 import { ReactComponent as Tablet } from "@svgs/service/tablet.svg";
 import { ReactComponent as Mobile } from "@svgs/service/mobile.svg";
 
-export interface IbuttonChooseDevice {
+export interface IbuttonChooseDeviceOption {
   id: number;
   name: string;
   isSelected: boolean;
   onClick?: () => void;
 }
 
-export default function ButtonChooseDevice(props: IbuttonChooseDevice) {
+export default function ButtonChooseDeviceOption(
+  props: IbuttonChooseDeviceOption
+) {
   const { id, name, isSelected, onClick } = props;
-
-  // function makeText(device: Tdevice) {
-  //   switch (device) {
-  //     case "pc":
-  //       return "PC";
-  //     case "tablet":
-  //       return "테블릿(Tablet)";
-  //     case "mobile":
-  //       return "모바일(Mobile)";
-  //     default:
-  //       return "PC";
-  //   }
-  // }
 
   function makeIcon(id: number) {
     switch (id) {

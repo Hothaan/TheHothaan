@@ -4,11 +4,11 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ButtonArrowIcon from "@components/service/button/ButtonArrowIcon";
 import { IbuttonArrow } from "@components/service/button/ButtonArrowIcon";
-import { ReactComponent as Doc } from "@svgs/doc.svg";
-import { ReactComponent as Preview } from "@svgs/previewGradient.svg";
+import { ReactComponent as Doc } from "@svgs//service/doc.svg";
+import { ReactComponent as Preview } from "@svgs/service/previewGradient.svg";
 import { IbuttonIcon } from "@components/service/button/ButtonIcon";
 import ButtonIcon from "@components/service/button/ButtonIcon";
-import { ReactComponent as Download } from "@svgs/download.svg";
+import { ReactComponent as Download } from "@svgs//common/download.svg";
 import ButtonFullPage, {
   IbuttonFullPage,
 } from "@components/service/button/ButtonFullPage";

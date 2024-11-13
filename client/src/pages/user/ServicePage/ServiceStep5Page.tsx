@@ -2,13 +2,13 @@
 import { css } from "@emotion/react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { ReactComponent as Doc } from "@svgs/doc.svg";
+import { ReactComponent as Doc } from "@svgs//service/doc.svg";
 import { ReactComponent as BannerIcon1 } from "@svgs/service/bannerIcon1.svg";
 import { ReactComponent as BannerIcon2 } from "@svgs/service/bannerIcon2.svg";
 import { ReactComponent as BannerIcon3 } from "@svgs/service/bannerIcon3.svg";
-import { ReactComponent as ArrowRight } from "@svgs/arrowRight.svg";
+import { ReactComponent as ArrowRight } from "@svgs/template/arrowRight.svg";
 import { ReactComponent as PreviewGray } from "@svgs/service/previewGray.svg";
-import { ReactComponent as Download } from "@svgs/download.svg";
+import { ReactComponent as Download } from "@svgs//common/download.svg";
 import { IbuttonIcon } from "@components/service/button/ButtonIcon";
 import ButtonIcon from "@components/service/button/ButtonIcon";
 import FullPageModalUneditable from "@components/service/modal/FullPageModalUneditable";

@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { ReactComponent as FullPage } from "@svgs/buttonFullPage.svg";
+import { ReactComponent as FullPage } from "@svgs//service/buttonFullPage.svg";
 
 export interface IbuttonFullPage {
   onClick: () => void;
