@@ -112,7 +112,7 @@ const bg_color = (bg: TbtnBg, disabled?: boolean) => {
         return css`
           color: #383838;
           background-color: #ffffff;
-          box-shadow: 0 0 0 2px #747474 inset;
+          box-shadow: 0 0 0 2px #dedede inset;
         `;
       default:
         return css`

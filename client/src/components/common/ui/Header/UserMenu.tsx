@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, Theme } from "@emotion/react";
+import { useTheme } from "@emotion/react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import PlanBadge from "@components/common/ui/Header/PlanBadge";
@@ -7,13 +8,19 @@ import { useUserInfoStore } from "@store/userInfoStore";
 import useLocationControl from "@hooks/useLocationControl";
 import { ReactComponent as ChevDown } from "@svgs//common/chevDown.svg";
 
+export interface IuserMenu {
+  isMain: boolean;
+}
+
 export interface IuserMenuItem {
   text: string;
   link?: string;
   onClick?: () => void;
 }
 
-export default function UserMenu() {
+export default function UserMenu(prop: IuserMenu) {
+  const { isMain } = prop;
+  const theme = useTheme();
   const { removeUserInfo } = useUserInfoStore();
   const { includeLocation } = useLocationControl();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -36,11 +43,14 @@ export default function UserMenu() {
     return (
       <div css={user_member}>
         <div css={user_menu_wrapper}>
-          <button css={user_menu_btn} onClick={handleDropdownOpen}>
+          <button
+            css={user_menu_btn(theme, isMain)}
+            onClick={handleDropdownOpen}
+          >
             <p>
               <span className="user_name">{userInfo.name}</span>님
             </p>
-            <ChevDown />
+            <ChevDown css={chevIcon(theme, isMain)} />
           </button>
           {isDropdownOpen && (
             <ul css={user_menu_layer}>
@@ -80,7 +90,7 @@ export default function UserMenu() {
     );
   } else {
     return (
-      <div css={user_not_memeber}>
+      <div css={user_not_memeber(theme, isMain)}>
         <Link to="/">로그인</Link>
         <Link to="/">회원가입</Link>
       </div>
@@ -104,7 +114,7 @@ const user_menu_wrapper = css`
   position: relative;
 `;
 
-const user_menu_btn = (theme: Theme) => css`
+const user_menu_btn = (theme: Theme, isMain: boolean) => css`
   display: flex;
   align-items: center;
   gap: 5px;
@@ -114,18 +124,23 @@ const user_menu_btn = (theme: Theme) => css`
     font-style: normal;
     font-weight: 600;
     line-height: normal;
-    color: ${theme.colors.text.dark};
+    color: ${isMain ? "#fff" : theme.colors.text.dark};
     .user_name {
       color: ${theme.colors.text.blue};
     }
   }
 `;
+const chevIcon = (theme: Theme, isMain: boolean) => css`
+  path {
+    fill: ${isMain ? "#fff" : theme.colors.text.dark};
+  }
+`;
 
-const user_not_memeber = (theme: Theme) => css`
+const user_not_memeber = (theme: Theme, isMain: boolean) => css`
   display: flex;
   gap: 30px;
   a {
-    color: ${theme.colors.mono.gray4};
+    color: ${isMain ? "#fff" : theme.colors.mono.gray4};
     font-size: 15px;
     font-style: normal;
     font-weight: 500;

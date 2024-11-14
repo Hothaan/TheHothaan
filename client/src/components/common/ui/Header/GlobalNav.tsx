@@ -4,6 +4,10 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import useLocationControl from "@hooks/useLocationControl";
 
+export interface IGlobalNav {
+  isMain: boolean;
+}
+
 export interface ImenuItem {
   kor: string;
   eng: string;
@@ -41,7 +45,8 @@ export const menu: ImenuItem[] = [
   },
 ];
 
-export default function GlobalNav() {
+export default function GlobalNav(prop: IGlobalNav) {
+  const { isMain } = prop;
   const theme = useTheme();
   const { includeLocation } = useLocationControl();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -64,7 +69,7 @@ export default function GlobalNav() {
           >
             <Link
               to={item.link}
-              css={depth1_btn(theme)}
+              css={depth1_btn(theme, isMain)}
               className={
                 includeLocation(item.include ? item.include : item.link)
                   ? "selected"
@@ -110,7 +115,7 @@ const hover = css`
   position: relative;
 `;
 
-const depth1_btn = (theme: Theme) => css`
+const depth1_btn = (theme: Theme, isMain: boolean) => css`
   display: flex;
   padding: 10px 20px;
   justify-content: center;
@@ -129,7 +134,7 @@ const depth1_btn = (theme: Theme) => css`
   }
 
   > .link {
-    color: ${theme.colors.text.dark};
+    color: ${isMain ? "#fff" : theme.colors.text.dark};
   }
   &.selected {
     background-color: ${theme.colors.blue.bg};
