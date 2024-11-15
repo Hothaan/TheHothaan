@@ -3,7 +3,7 @@ const pool = require('../config/dbConfig');
 // components 테이블에서 component 구조 정보 가져오기
 exports.getComponentDetails = async (menuName, featureName) => {
     const [rows] = await pool.query(
-        `SELECT c.depth1, c.depth2, c.structure 
+        `SELECT c.structure, c.content, c.feature_name as depth2, s.name as depth1, c.cnt
          FROM components c
          INNER JOIN sections s ON c.section_id = s.section_id
          WHERE s.name = ? AND c.feature_name = ?`,

@@ -123,11 +123,11 @@ exports.generateProjectText = async (req, res) => {
                     continue;
                 }
 
-                const { depth1, depth2, structure } = featureDetails;
+                const { depth1, depth2, structure, content, cnt } = featureDetails;
                 // console.log(`Component details for feature '${feature}':`, { depth1, depth2, structure });
 
                 // OpenAI API 호출하여 feature에 대한 텍스트 생성
-                const featureResponseData = await generateOpenAiText('feature', serviceTitle, serviceDesc, depth1, depth2, feature, structure);
+                const featureResponseData = await generateOpenAiText(serviceType, serviceTitle, serviceDesc, depth1, depth2, feature, structure, content, cnt);
 
                 // Include featureOption only for features
                 const responseItem = {
