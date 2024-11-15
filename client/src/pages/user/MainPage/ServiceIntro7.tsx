@@ -1,8 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import React from "react";
 import MainPageSectionContainer from "./MainPageSectionContainer";
 import { Title } from "./Title";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, FreeMode } from "swiper/modules";
 
 interface IserviceIntro7Card {
   image: string;
@@ -48,7 +49,7 @@ export default function ServiceIntro7() {
     { image: "card1" },
   ];
   return (
-    <MainPageSectionContainer>
+    <MainPageSectionContainer bgColor="#F6F8FF">
       <div css={title_container}>
         <Title
           title="사전 구축된 1,500개 이상의 템플릿"
@@ -56,11 +57,55 @@ export default function ServiceIntro7() {
           color="black"
         />
       </div>
-      <div css={card_slide_wrap}></div>
-      <div css={card_container}>
-        {cardDatas.map((item, idx) => (
-          <ServiceIntro7Card {...item} key={idx} />
-        ))}
+      <div css={card_slide_wrap}>
+        <div css={card_container}>
+          <Swiper
+            loop={true}
+            slidesPerView={7}
+            spaceBetween={30}
+            centeredSlides={true}
+            autoplay={{
+              delay: 2500,
+              disableOnInteraction: false,
+            }}
+            pagination={{
+              clickable: true,
+            }}
+            navigation={true}
+            modules={[Autoplay, FreeMode]}
+            className="mySwiper"
+          >
+            {cardDatas.map((item, idx) => (
+              <SwiperSlide key={idx}>
+                <ServiceIntro7Card {...item} />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+        <div css={card_container}>
+          <Swiper
+            loop={true}
+            slidesPerView={7}
+            spaceBetween={30}
+            centeredSlides={true}
+            autoplay={{
+              delay: 2500,
+              disableOnInteraction: false,
+            }}
+            pagination={{
+              clickable: true,
+            }}
+            dir="rtl"
+            modules={[Autoplay]}
+            className="mySwiper"
+          >
+            {cardDatas.map((item, idx) => (
+              <SwiperSlide key={idx}>
+                <ServiceIntro7Card {...item} />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
       </div>
     </MainPageSectionContainer>
   );
@@ -70,11 +115,12 @@ const title_container = css`
   margin-bottom: 50px;
 `;
 
-const card_slide_wrap = css``;
+const card_slide_wrap = css`
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+`;
 
 const card_container = css`
-  display: flex;
   width: 100vw;
-  align-items: flex-start;
-  gap: 30px;
 `;

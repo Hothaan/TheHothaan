@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
 import { Link } from "react-router-dom";
 import MainBanner from "./MainBanner";
 import ServiceIntro1 from "./ServiceIntro1";
@@ -9,6 +8,8 @@ import ServiceIntro4 from "./ServiceIntro4";
 import ServiceIntro5 from "./ServiceIntro5";
 import ServiceIntro6 from "./ServiceIntro6";
 import ServiceIntro7 from "./ServiceIntro7";
+import ServiceIntro8 from "./ServiceIntro8";
+import ServiceIntro9 from "./ServiceIntro9";
 
 function DevelopeLink() {
   return (
@@ -39,6 +40,8 @@ export default function MainPage() {
       <ServiceIntro5 />
       <ServiceIntro6 />
       <ServiceIntro7 />
+      <ServiceIntro8 />
+      <ServiceIntro9 />
     </>
   );
 }

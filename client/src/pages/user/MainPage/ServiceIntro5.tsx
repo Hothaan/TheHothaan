@@ -4,6 +4,7 @@ import { useState } from "react";
 import MainPageSectionContainer from "./MainPageSectionContainer";
 import { Title } from "./Title";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay } from "swiper/modules";
 import "swiper/css";
 // import "./styles.css";
 
@@ -220,7 +221,11 @@ export default function ServiceIntro5() {
             slidesPerView={4.2}
             spaceBetween={0}
             centeredSlides={true}
+            modules={[Autoplay]}
             className="mySwiper"
+            autoplay={{
+              delay: 1000,
+            }}
           >
             {cardDatas.map((item, idx) => (
               <SwiperSlide key={idx}>
