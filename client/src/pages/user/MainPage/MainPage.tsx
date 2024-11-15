@@ -6,6 +6,9 @@ import ServiceIntro1 from "./ServiceIntro1";
 import ServiceIntro2 from "./ServiceIntro2";
 import ServiceIntro3 from "./ServiceIntro3";
 import ServiceIntro4 from "./ServiceIntro4";
+import ServiceIntro5 from "./ServiceIntro5";
+import ServiceIntro6 from "./ServiceIntro6";
+import ServiceIntro7 from "./ServiceIntro7";
 
 function DevelopeLink() {
   return (
@@ -33,6 +36,9 @@ export default function MainPage() {
       <ServiceIntro2 />
       <ServiceIntro3 />
       <ServiceIntro4 />
+      <ServiceIntro5 />
+      <ServiceIntro6 />
+      <ServiceIntro7 />
     </>
   );
 }

@@ -6,6 +6,7 @@ import { TitleGradient, Title } from "./Title";
 
 interface IserviceIntro4Card {
   title: string;
+  hightLight: string;
   subTitle: string;
   desc: string[];
   icon: string;
@@ -13,7 +14,7 @@ interface IserviceIntro4Card {
 }
 
 function ServiceIntro4Card(prop: IserviceIntro4Card) {
-  const { title, subTitle, desc, icon, bgColor } = prop;
+  const { title, hightLight, subTitle, desc, icon, bgColor } = prop;
 
   const card_wrap = css`
     display: flex;
@@ -23,6 +24,16 @@ function ServiceIntro4Card(prop: IserviceIntro4Card) {
 
     border-radius: 30px;
     background: var(--FFF, #fff);
+
+    transition: 0.4s ease-in-out;
+
+    &:hover {
+      box-shadow: 0px 0px 24px 0px rgba(17, 156, 212, 0.5);
+
+      .icon_container {
+        transform: rotate(90deg);
+      }
+    }
   `;
 
   const icon_container = (bgColor: string) => css`
@@ -36,6 +47,8 @@ function ServiceIntro4Card(prop: IserviceIntro4Card) {
 
     border-radius: 50%;
     background-color: ${bgColor};
+
+    transition: 0.3s ease;
   `;
 
   const text_container = css`
@@ -95,14 +108,39 @@ function ServiceIntro4Card(prop: IserviceIntro4Card) {
     }
   `;
 
+  const highLight_style = css`
+    background: linear-gradient(90deg, #56c0fe -1.67%, #6d0ee6 25.54%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  `;
+
+  const parts = title.split(hightLight);
+
   return (
     <div css={card_wrap}>
-      <div css={icon_container(bgColor)}>
+      <div css={icon_container(bgColor)} className="icon_container">
         <img src={`/assets/images/serviceIntro4/${icon}.png`} alt={icon} />
       </div>
       <div css={text_container}>
-        <p css={title_style}>{title}</p>
-        <p css={subTitle_style}>{subTitle}</p>
+        <p css={title_style}>
+          {parts.map((item, idx) => (
+            <React.Fragment key={idx}>
+              {item}
+              {idx < parts.length - 1 && (
+                <span css={highLight_style}>{hightLight}</span>
+              )}
+            </React.Fragment>
+          ))}
+        </p>
+        <p css={subTitle_style}>
+          {subTitle.split("\n").map((line, index) => (
+            <React.Fragment key={index}>
+              {line}
+              <br />
+            </React.Fragment>
+          ))}
+        </p>
         <ul css={desc_style}>
           {desc.map((item, idx) => (
             <li css={desc_item_style} key={idx}>
@@ -119,8 +157,9 @@ export default function ServiceIntro4() {
   const cardDatas: IserviceIntro4Card[] = [
     {
       title: "더핫한을 활용하여 기획안에 창의적인 아이디어를 더하세요.",
+      hightLight: "창의적인 아이디어",
       subTitle:
-        "더핫한은 인공지능 기반의 기획안 작성 플랫폼으로, 당신의 기획안에 새로운 시각과 독창적인 아이디어를 더하는 데 도움을 줄 수 있습니다.",
+        "더핫한은 인공지능 기반의 기획안 작성 플랫폼으로, 당신의 기획안에 새로운 시각과 \n 독창적인 아이디어를 더하는 데 도움을 줄 수 있습니다.",
       desc: [
         "기획안의 제목이나 슬로건을 생성",
         "핵심 메시지와 주요 내용을 간결하고 명확하게 정리",
@@ -129,6 +168,18 @@ export default function ServiceIntro4() {
       ],
       icon: "card1",
       bgColor: "#383838",
+    },
+    {
+      title: "ChatGPT 활용 팁",
+      hightLight: "ChatGPT",
+      subTitle: "더핫한을 효과적으로 활용하려면 다음과 같은 팁을 참고하세요.",
+      desc: [
+        "명확하고 구체적인 질문을 입력",
+        "원하는 결과에 대한 예시를 제공",
+        "다양한 옵션을 선택하고 최적의 결과를 제공",
+      ],
+      icon: "card2",
+      bgColor: "#6100F3",
     },
   ];
   return (
@@ -150,6 +201,7 @@ export default function ServiceIntro4() {
 }
 
 const title_container = css`
+  margin-bottom: 50px;
   display: flex;
   flex-direction: column;
   align-items: center;

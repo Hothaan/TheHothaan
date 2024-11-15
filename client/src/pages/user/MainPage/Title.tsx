@@ -1,4 +1,5 @@
 /** @jsxImportSource @emotion/react */
+import React from "react";
 import { css } from "@emotion/react";
 
 export interface ItitleGradient {
@@ -15,11 +16,36 @@ type TtitleColor = "white" | "black";
 export interface Ititle {
   title: string;
   color: TtitleColor;
+  highLight?: string;
 }
 
 export function Title(prop: Ititle) {
-  const { title, color } = prop;
-  return <p css={title_style(color)}>{title}</p>;
+  const { title, color, highLight } = prop;
+  if (highLight !== undefined) {
+    const parts = title.split(highLight);
+
+    const highLight_style = css`
+      background: linear-gradient(90deg, #56c0fe 30%, #6d0ee6 70.54%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    `;
+
+    return (
+      <p css={title_style(color)}>
+        {parts.map((item, idx) => (
+          <React.Fragment key={idx}>
+            {item}
+            {idx < parts.length - 1 && (
+              <span css={highLight_style}>{highLight}</span>
+            )}
+          </React.Fragment>
+        ))}
+      </p>
+    );
+  } else {
+    return <p css={title_style(color)}>{title}</p>;
+  }
 }
 
 const title_gradient = css`
