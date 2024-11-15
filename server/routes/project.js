@@ -31,13 +31,13 @@ const projectController = require('../controllers/projectController');
  *                 example: "AI가 생성한 쇼핑몰 템플릿입니다."
  *               selections:
  *                 type: array
- *                 description: 사용자가 선택한 항목들
+ *                 description: 사용자가 선택한 항목들 (menu와 연결된 feature 항목 포함)
  *                 items:
  *                   type: object
  *                   properties:
  *                     type:
  *                       type: string
- *                       description: 선택 항목의 유형 (device, service, menu, feature)
+ *                       description: 선택 항목의 유형 (device, service, menu)
  *                       example: "menu"
  *                     value:
  *                       type: string
@@ -47,16 +47,45 @@ const projectController = require('../controllers/projectController');
  *                       type: string
  *                       description: 선택 항목의 옵션 (추가 정보)
  *                       example: "옵션 정보"
+ *                     features:
+ *                       type: array
+ *                       description: menu에 연결된 feature 항목들
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           value:
+ *                             type: string
+ *                             description: feature의 값
+ *                             example: "로그인"
+ *                           option:
+ *                             type: string
+ *                             description: feature의 옵션 (추가 정보)
+ *                             example: "소셜 로그인"
  *                 example: [
  *                   { "type": "device", "value": "PC" },
  *                   { "type": "service", "value": "쇼핑몰" },
- *                   { "type": "menu", "value": "메인" },
- *                   { "type": "feature", "value": "메인" },
- *                   { "type": "menu", "value": "상품" },
- *                   { "type": "feature", "value": "상품 목록" },
- *                   { "type": "feature", "value": "상품 상세" },
- *                   { "type": "menu", "value": "유틸리티" },
- *                   { "type": "feature", "value": "로그인", "option": "소셜 로그인" }
+ *                   { 
+ *                     "type": "menu", 
+ *                     "value": "메인", 
+ *                     "features": [
+ *                       { "value": "메인" }
+ *                     ]
+ *                   },
+ *                   { 
+ *                     "type": "menu", 
+ *                     "value": "상품", 
+ *                     "features": [
+ *                       { "value": "상품 목록" },
+ *                       { "value": "상품 상세" }
+ *                     ]
+ *                   },
+ *                   { 
+ *                     "type": "menu", 
+ *                     "value": "유틸리티", 
+ *                     "features": [
+ *                       { "value": "로그인", "option": "소셜 로그인" }
+ *                     ]
+ *                   }
  *                 ]
  *     responses:
  *       201:
