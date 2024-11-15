@@ -18,7 +18,6 @@ jobs:
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-    # 서버의 호스트 키를 known_hosts에 추가
     - name: Add server to known_hosts
       run: ssh-keyscan -H 172.234.80.216 >> ~/.ssh/known_hosts
 
@@ -26,7 +25,6 @@ jobs:
       run: |
         echo "REACT_APP_API_KEY_DEV=${{ secrets.REACT_APP_API_KEY_DEV }}" >> client/.env
 
-    # 서버에 최신 코드 가져오고, 빌드 및 PM2로 재시작
     - name: Pull latest code, build client, and restart server
       run: |
         ssh -o StrictHostKeyChecking=no root@172.234.80.216 '
@@ -35,10 +33,12 @@ jobs:
           git clean -fd &&
           git pull origin main &&
           cd client &&
-          npm install &&
+          rm -rf node_modules &&
+          npm install || { echo "npm install failed in client"; exit 1; } &&
           CI=false npm run build &&
           cd ../server &&
-          npm install &&
+          rm -rf node_modules &&
+          npm install || { echo "npm install failed in server"; exit 1; } &&
           cd .. &&
           pm2 restart all
         '
