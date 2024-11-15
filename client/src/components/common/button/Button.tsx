@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-export type TbtnSize = "XL" | "M" | "S" | "full";
+export type TbtnSize = "XL" | "L" | "M" | "S" | "full";
 export type TbtnBg = "gradient" | "blue" | "gray" | "white";
 export interface Ibutton {
   size: TbtnSize;
@@ -47,6 +47,14 @@ const btn_size = (size: TbtnSize) => {
         padding: 0px 24px;
         font-size: 17px;
         font-weight: 600;
+      `;
+    case "L":
+      return css`
+        width: 190px;
+        height: 50px;
+        padding: 0px 14px;
+        font-size: 17px;
+        font-weight: 500;
       `;
     case "XL":
       return css`

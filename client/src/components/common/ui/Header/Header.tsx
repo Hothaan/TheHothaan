@@ -1,14 +1,39 @@
 /** @jsxImportSource @emotion/react */
-import { css, Theme, useTheme } from "@emotion/react";
+import { css } from "@emotion/react";
 import Logo from "./Logo";
 import GlobalNav from "./GlobalNav";
 import UserMenu from "./UserMenu";
 import useLocationControl from "@hooks/useLocationControl";
+import { useEffect, useState } from "react";
 
 export default function Header() {
-  const theme = useTheme();
   const { currentLocation } = useLocationControl();
-  const isMain: boolean = currentLocation === "/";
+  const [isMain, setIsMain] = useState(currentLocation === "/");
+
+  const [isScrolledPast, setIsScrolledPast] = useState(false);
+
+  const handleScroll = () => {
+    const scrollY = window.scrollY;
+
+    setIsScrolledPast(scrollY > 880);
+  };
+
+  console.log(isScrolledPast);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isScrolledPast) {
+      setIsMain(false);
+    } else {
+      setIsMain(true);
+    }
+  }, [isScrolledPast]);
 
   return (
     <header css={header(isMain)}>

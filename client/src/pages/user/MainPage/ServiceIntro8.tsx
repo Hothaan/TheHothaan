@@ -47,6 +47,7 @@ function ServiceIntro8Card(prop: IserviceIntro8Card) {
   `;
 
   const card_top = css`
+    position: relative;
     display: flex;
     padding: 50px;
     flex-direction: column;
@@ -76,13 +77,11 @@ function ServiceIntro8Card(prop: IserviceIntro8Card) {
   `;
 
   const plan_style = css`
-    width: 100%;
     color: var(--383838, #383838);
     font-family: Pretendard;
     font-size: 24px;
     font-style: normal;
     font-weight: 700;
-    line-height: normal;
   `;
 
   const price_container = css`
@@ -150,6 +149,32 @@ function ServiceIntro8Card(prop: IserviceIntro8Card) {
     line-height: 150%; /* 25.5px */
   `;
 
+  const peroid_button_container = css`
+    display: flex;
+
+    border-radius: 8px;
+    border: 1px solid var(--DEDEDE, #dedede);
+    overflow: hidden;
+  `;
+  const period_button = (isSelected: boolean) => css`
+    display: flex;
+    width: 60px;
+    height: 40px;
+    padding: 0px 14px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    background: ${isSelected ? "#383838" : "#F6F8FF"};
+
+    color: ${isSelected ? "#fff" : "383838"};
+    font-family: Pretendard;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+  `;
+
   const button: Ibutton = {
     size: "full",
     bg: "white",
@@ -165,24 +190,56 @@ function ServiceIntro8Card(prop: IserviceIntro8Card) {
     },
   };
 
+  const button_plan_container = css`
+    width: 100%;
+    height: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  `;
+
   return (
     <div css={card_wrap}>
       <div css={card_top}>
-        <p css={plan_style}>{plan}</p>
+        <div css={button_plan_container}>
+          <p css={plan_style}>{plan}</p>
+          {periodState !== "none" && (
+            <div css={peroid_button_container}>
+              <button
+                type="button"
+                css={period_button(periodState === "month")}
+                onClick={() => {
+                  setPeriodState("month");
+                }}
+              >
+                월간
+              </button>
+              <button
+                type="button"
+                css={period_button(periodState === "year")}
+                onClick={() => {
+                  setPeriodState("year");
+                }}
+              >
+                연간
+              </button>
+            </div>
+          )}
+        </div>
         <div css={price_container}>
-          {period === "month" ? (
+          {periodState === "month" ? (
             <>
               <p css={price_style}>
                 {priceMonth.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원
               </p>
               <p css={price_period}>/ {period}</p>
             </>
-          ) : period === "year" ? (
+          ) : periodState === "year" ? (
             <>
               <p css={price_style}>
                 {priceYear.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원
               </p>
-              <p css={price_period}>/ {period}</p>
+              <p css={price_period}>/ {periodState}</p>
             </>
           ) : (
             <>

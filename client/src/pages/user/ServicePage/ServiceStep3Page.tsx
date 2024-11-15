@@ -221,29 +221,7 @@ export default function ServiceStep3Page() {
         return { type: "menu", value: menu.menu_name, features: featureData };
       });
 
-      // const featureData = formData.map((menu) => {
-      //   return menu.items
-      //     .filter((item) => item.is_selected)
-      //     .map((item) => {
-      //       if (item.is_option === true) {
-      //         return {
-      //           type: "feature",
-      //           value: menu.menu_name,
-      //           option: item.options?.filter(
-      //             (option) => option.is_selected === true
-      //           )[0].option_type,
-      //         };
-      //       } else {
-      //         return {
-      //           type: "feature",
-      //           value: menu.menu_name,
-      //         };
-      //       }
-      //     });
-      // });
-
       data.selections.push(...menuData);
-      // data.selections.push(...featureData.flat());
 
       setSendData(data as IsendData);
     }
