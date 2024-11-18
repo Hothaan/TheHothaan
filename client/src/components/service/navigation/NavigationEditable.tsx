@@ -14,27 +14,22 @@ interface IlistItem {
 }
 
 export interface INavigationEditable {
-  listData: IlistItem[];
-  isOpen: boolean;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  listData: string[];
+  selectedItem: string;
+  setSelectedItem: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export default function NavigationEditable() {
-  const listData: IlistItem[] = [
-    { title: "메인" },
-    { title: "상품" },
-    { title: "공지사항" },
-    { title: "FAQ" },
-  ];
+export default function NavigationEditable(prop: INavigationEditable) {
+  const { listData, selectedItem, setSelectedItem } = prop;
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [currentIdx, setCurrentIdx] = useState<number>(0);
-  const [selectedItem, setSelectedItem] = useState<string>(listData[0].title);
 
   function handleSelectItem(e: React.MouseEvent<HTMLLIElement>) {
     const idx = parseInt(e.currentTarget.dataset.idx || "0");
     if (idx !== null) {
-      setSelectedItem(listData[idx].title);
+      setSelectedItem(listData[idx]);
+      setSelectedItem(listData[idx]);
     }
   }
 
@@ -42,7 +37,7 @@ export default function NavigationEditable() {
     if (currentIdx === 0) {
       return;
     } else {
-      setSelectedItem(listData[currentIdx - 1].title);
+      setSelectedItem(listData[currentIdx - 1]);
       setCurrentIdx(currentIdx - 1);
     }
   }
@@ -51,7 +46,7 @@ export default function NavigationEditable() {
     if (currentIdx === listData.length - 1) {
       return;
     } else {
-      setSelectedItem(listData[currentIdx + 1].title);
+      setSelectedItem(listData[currentIdx + 1]);
       setCurrentIdx(currentIdx + 1);
     }
   }
@@ -90,14 +85,15 @@ export default function NavigationEditable() {
       <ul css={list}>
         {listData.map((item, idx) => (
           <li
-            css={[list_item, list_item_color(selectedItem === item.title)]}
+            css={[list_item, list_item_color(selectedItem === item)]}
             onClick={handleSelectItem}
             data-idx={idx}
+            key={idx}
           >
             <div css={image_container}></div>
-            <div css={list_item_info_container(selectedItem === item.title)}>
-              <p css={list_item_title}>{item.title}</p>
-              {selectedItem === item.title && <Edit />}
+            <div css={list_item_info_container(selectedItem === item)}>
+              <p css={list_item_title}>{item}</p>
+              {selectedItem === item && <Edit />}
             </div>
           </li>
         ))}
@@ -105,7 +101,7 @@ export default function NavigationEditable() {
       <div css={aside_controler}>
         <ButtonArrowIconControler {...buttonSelectPrevItemAside} />
         <p css={pagination}>
-          {listData.findIndex((item) => item.title === selectedItem) + 1}/
+          {listData.findIndex((item) => item === selectedItem) + 1}/
           {listData.length}
         </p>
         <ButtonArrowIconControler {...buttonSelectNextItemAside} />

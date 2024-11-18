@@ -9,24 +9,62 @@ import { ReactComponent as LogoLight } from "@svgs//common/logoLight.svg";
 import { ReactComponent as Minimize } from "@svgs//common/buttonMinimizePage.svg";
 import Button, { Ibutton } from "@components/common/button/Button";
 import NavigationEditable from "../navigation/NavigationEditable";
-import { INavigationEditable } from "../navigation/NavigationEditable";
 import EditableText from "../editableText/EditableText";
+import { templateMap } from "@components/template/templateMapping";
+
+/* 수정 예정 */
+// interface IgeneratedText {
+//   menu: string;
+//   feature: string;
+//   content: { [key: string]: string };
+// }
+
+/* 임시 */
+export interface IgeneratedText {
+  menu: string;
+  feature: string;
+  content: {
+    menu: string;
+    feature: string;
+    content: { [key: string]: string };
+  };
+}
 
 interface IFullPageModal {
+  projectType: string;
+  data: IgeneratedText[] | null;
+  listData: string[];
+  selectedItem: string;
   onClick: (isModalOpen: boolean) => void;
+  setSelectedItem: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export default function FullPageModalEditable(prop: IFullPageModal) {
-  const { onClick } = prop;
+  const {
+    projectType,
+    data,
+    listData,
+    selectedItem,
+    onClick,
+    setSelectedItem,
+  } = prop;
   const [isToast, setIsToast] = useState(true);
   const { serviceDefaultData } = serviceDefaultDataStore();
   const [isLoadingModalOpen, setIsLoadingModalOpen] = useState(false);
+  const [templateKey, setTemplateKey] = useState<string>(
+    `${projectType}-${selectedItem}`
+  );
+  const TemplateToRender = templateMap[templateKey];
 
   const toast = {
     text: "✅ ESC를 누르거나 상단 우측 축소 버튼을 눌러 풀화면 화면 종료할 수 있어요.",
     isToast: isToast,
     setIsToast: setIsToast,
   };
+
+  useEffect(() => {
+    setTemplateKey(`${projectType}-${selectedItem}`);
+  }, [selectedItem]);
 
   const buttonSave: Ibutton = {
     size: "full",
@@ -54,9 +92,15 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
     onComplete: () => {},
   };
 
+  const navigationEditable = {
+    listData: listData,
+    selectedItem: selectedItem,
+    setSelectedItem: setSelectedItem,
+  };
+
   return (
     <>
-      <NavigationEditable />
+      <NavigationEditable {...navigationEditable} />
       <div css={wrap}>
         <div css={title_bar}>
           <LogoLight />
@@ -78,7 +122,8 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
         <div css={content_container}>
           <div css={content}>
             <div css={scroll_item}>
-              <EditableText />
+              {TemplateToRender && <TemplateToRender data={data} />}
+              {/* <EditableText /> */}
             </div>
           </div>
         </div>
@@ -151,9 +196,9 @@ const content = css`
 const scroll_item = css`
   width: 100%;
   border-radius: 20px;
-  background: #ededed;
+  background: #fff;
   height: 2000px;
 
   /* 임시 */
-  padding: 100px;
+  // padding: 100px;
 `;

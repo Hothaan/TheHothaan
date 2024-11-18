@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Dispatch } from "react";
 import { useNavigate } from "react-router-dom";
 import { serviceDefaultDataStore } from "@store/serviceDefaultDataStore";
 import ButtonArrowIcon from "@components/service/button/ButtonArrowIcon";
@@ -15,12 +15,14 @@ import ButtonFullPage, {
 import { Ibutton } from "@components/common/button/Button";
 import Button from "@components/common/button/Button";
 import FullPageModalEditable from "@components/service/modal/FullPageModalEditable";
-// import FullPageModal from "@components/service/modal/FullPageModal";
 import ButtonArrowIconControler, {
   IbuttonArrowControler,
 } from "@components/service/button/ButtonArrowIconControler";
+import { IgeneratedText } from "@components/service/modal/FullPageModalEditable";
+import { generatedTextDataStore } from "@store/generatedTextDataStore";
 
 export default function ServicePreviewPage() {
+  const { generatedTextData } = generatedTextDataStore();
   const { serviceDefaultData } = serviceDefaultDataStore();
   const [isFullpageModalOpen, setIsFullpageModalOpen] = useState(false);
   const [isLoadingModalOpen, setIsLoadingModalOpen] = useState(false);
@@ -59,25 +61,53 @@ export default function ServicePreviewPage() {
     onComplete: () => {},
   };
 
-  interface IlistItem {
-    title: string;
-    image?: React.ReactElement;
+  const [projectType, setProjectType] = useState<string>("");
+
+  function getProjectType() {
+    const data = sessionStorage.getItem("projectData(defaultData)");
+    if (data && data !== undefined) {
+      return JSON.parse(data).projectType as string;
+    }
+    return null;
   }
 
-  const listData: IlistItem[] = [
-    { title: "메인" },
-    { title: "상품" },
-    { title: "공지사항" },
-    { title: "FAQ" },
-  ];
+  useEffect(() => {
+    const type = getProjectType();
+    if (type) {
+      setProjectType(type);
+    }
+  }, []);
+
+  function makeListData() {
+    if (generatedTextData) {
+      return generatedTextData.map((item: IgeneratedText) => {
+        return item.feature;
+      });
+    }
+  }
+
+  const [listData, setListData] = useState<string[]>([]);
+
+  useEffect(() => {
+    const data = makeListData();
+    if (data) {
+      setListData(data);
+    }
+  }, []);
 
   const [currentIdx, setCurrentIdx] = useState<number>(0);
-  const [selectedItem, setSelectedItem] = useState<string>(listData[0].title);
+  const [selectedItem, setSelectedItem] = useState<string>(listData[0]);
+
+  useEffect(() => {
+    if (listData) {
+      setSelectedItem(listData[0]);
+    }
+  }, [listData]);
 
   function handleSelectItem(e: React.MouseEvent<HTMLLIElement>) {
     const idx = parseInt(e.currentTarget.dataset.idx || "0");
     if (idx !== null) {
-      setSelectedItem(listData[idx].title);
+      setSelectedItem(listData[idx]);
     }
   }
 
@@ -85,7 +115,7 @@ export default function ServicePreviewPage() {
     if (currentIdx === 0) {
       return;
     } else {
-      setSelectedItem(listData[currentIdx - 1].title);
+      setSelectedItem(listData[currentIdx - 1]);
       setCurrentIdx(currentIdx - 1);
     }
   }
@@ -94,7 +124,7 @@ export default function ServicePreviewPage() {
     if (currentIdx === listData.length - 1) {
       return;
     } else {
-      setSelectedItem(listData[currentIdx + 1].title);
+      setSelectedItem(listData[currentIdx + 1]);
       setCurrentIdx(currentIdx + 1);
     }
   }
@@ -145,12 +175,18 @@ export default function ServicePreviewPage() {
     setIsFullpageModalOpen(isFullpageModalOpen);
   }
 
-  function handleOpenFullPageModalEditable() {
+  function handleOpenFullPageModalEditable(feature: string) {
     setIsFullpageModalOpen(true);
+    setSelectedItem(feature);
   }
 
   const fullPageModal = {
+    projectType: projectType,
+    data: generatedTextData,
+    listData: listData,
+    selectedItem: selectedItem,
     onClick: handleChangeisFullpageModalOpen,
+    setSelectedItem: setSelectedItem,
   };
 
   useEffect(() => {
@@ -186,21 +222,18 @@ export default function ServicePreviewPage() {
             <ul css={list}>
               {listData.map((item, idx) => (
                 <li
-                  css={[
-                    list_item,
-                    list_item_color(selectedItem === item.title),
-                  ]}
+                  css={[list_item, list_item_color(selectedItem === item)]}
                   onClick={handleSelectItem}
-                  onDoubleClick={handleOpenFullPageModalEditable}
+                  onDoubleClick={() => {
+                    handleOpenFullPageModalEditable(item);
+                  }}
                   data-idx={idx}
                   key={idx}
                 >
                   <div css={image_container}></div>
-                  <div
-                    css={list_item_info_container(selectedItem === item.title)}
-                  >
-                    <p css={list_item_title}>{item.title}</p>
-                    {selectedItem === item.title && <Edit />}
+                  <div css={list_item_info_container(selectedItem === item)}>
+                    <p css={list_item_title}>{item}</p>
+                    {selectedItem === item && <Edit />}
                   </div>
                 </li>
               ))}
@@ -208,7 +241,7 @@ export default function ServicePreviewPage() {
             <div css={aside_controler}>
               <ButtonArrowIconControler {...buttonSelectPrevItemAside} />
               <p css={pagination}>
-                {listData.findIndex((item) => item.title === selectedItem) + 1}/
+                {listData.findIndex((item) => item === selectedItem) + 1}/
                 {listData.length}
               </p>
               <ButtonArrowIconControler {...buttonSelectNextItemAside} />
@@ -223,7 +256,7 @@ export default function ServicePreviewPage() {
             <div css={controller}>
               <ButtonArrowIconControler {...buttonSelectPrevItem} />
               <p css={pagination}>
-                {listData.findIndex((item) => item.title === selectedItem) + 1}/
+                {listData.findIndex((item) => item === selectedItem) + 1}/
                 {listData.length}
               </p>
               <ButtonArrowIconControler {...buttonSelectNextItem} />

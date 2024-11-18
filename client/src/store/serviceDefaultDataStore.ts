@@ -1,12 +1,4 @@
 import { create } from "zustand";
-import { TserviceDataKey } from "@data/service/serviceData";
-
-// type TserviceDefaultData = {
-//   serviceTitle: string;
-//   serviceDesc: string;
-//   device: Tdevice | "";
-//   service: TserviceDataKey | "";
-// };
 
 type TserviceDefaultData = {
   serviceTitle: string;

@@ -7,7 +7,7 @@ import TemplateBadge from "../commonComponent/TemplateBadge";
 import TemplateButton from "../commonComponent/TemplateButton";
 import TemplateAccordion from "../commonComponent/TemplateAccordion";
 import Pagination from "../commonComponent/Pagination";
-import { ProductListItemMain } from "../main/ProductList";
+import { ProductListItemMain } from "../main/ProductListMain";
 import NavItem from "../commonComponent/NavItem";
 import { ReactComponent as Heart } from "@svgs/template/heart.svg";
 import { ReactComponent as Bag } from "@svgs/template/bag.svg";

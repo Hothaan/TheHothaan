@@ -2,7 +2,7 @@
 import { css } from "@emotion/react";
 import Mainbanner from "@components/template/main/Mainbanner";
 import Header from "@components/template/common/header/Header";
-import ProductListMain from "@components/template/main/ProductList";
+import ProductListMain from "@components/template/main/ProductListMain";
 import ProductList from "@components/template/product/ProductList";
 import ProductDetail from "@components/template/product/ProductDetail";
 import Review from "@components/template/product/Review";

@@ -5,22 +5,14 @@ import { makeComponentTextTestWithUrl } from "@api/test";
 import { IapiRequest } from "@pages/user/TestPage/TestPage";
 import { TserviceDataKey } from "@data/service/serviceData";
 import Loading from "@components/common/ui/Loading/loading";
+import useIsProduction from "@hooks/useIsProduction";
 
 export default function GenerateComponent(prop: IapiRequest<TserviceDataKey>) {
+  const { isProduction } = useIsProduction();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const ComponentToRender = componentMap[prop.component];
-
-  function getIsProcduction(): boolean {
-    if (window.location.host === "localhost:3000") {
-      return false;
-    } else if (window.location.host === "dolllpitoxic3.mycafe24.com") {
-      return true;
-    } else {
-      return false;
-    }
-  }
 
   async function fetchData(request: IapiRequest<TserviceDataKey>) {
     if (!loading) {
@@ -35,11 +27,7 @@ export default function GenerateComponent(prop: IapiRequest<TserviceDataKey>) {
       ) {
         setLoading(true);
         setError(null);
-
-        const isProduction: boolean = getIsProcduction();
-
         try {
-          // const response = await makeComponentTextTest(prop);
           const response = await makeComponentTextTestWithUrl(
             prop,
             isProduction

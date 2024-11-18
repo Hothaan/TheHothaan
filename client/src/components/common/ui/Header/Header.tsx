@@ -14,11 +14,8 @@ export default function Header() {
 
   const handleScroll = () => {
     const scrollY = window.scrollY;
-
     setIsScrolledPast(scrollY > 880);
   };
-
-  console.log(isScrolledPast);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
@@ -28,12 +25,14 @@ export default function Header() {
   }, []);
 
   useEffect(() => {
-    if (isScrolledPast) {
-      setIsMain(false);
-    } else {
-      setIsMain(true);
+    if (isMain) {
+      if (isScrolledPast) {
+        setIsMain(false);
+      } else {
+        setIsMain(true);
+      }
     }
-  }, [isScrolledPast]);
+  }, [isMain, isScrolledPast]);
 
   return (
     <header css={header(isMain)}>

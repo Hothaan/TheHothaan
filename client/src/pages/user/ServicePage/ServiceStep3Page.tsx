@@ -19,6 +19,7 @@ import {
 } from "@api/service/serviceTypeMenu";
 import { createProject } from "@api/project/createProject";
 import { generateText } from "@api/project/generateText";
+import { generatedTextDataStore } from "@store/generatedTextDataStore";
 
 export type TselectionItem = {
   type: "device" | "service" | "menu" | "feature";
@@ -34,6 +35,7 @@ export interface IsendData {
 }
 
 export default function ServiceStep3Page() {
+  const { setGeneratedTextData } = generatedTextDataStore();
   const { handleNavigation } = useNavigation();
   const { currentLocation } = useLocationControl();
   const totalStep = 5;
@@ -258,7 +260,21 @@ export default function ServiceStep3Page() {
       try {
         const response = await generateText(isProduction, parseInt(projectId));
         if (response.statusText === "OK") {
-          console.log(response);
+          // sessionStorage.setItem(
+          //   "projectData(generatedText)",
+          //   JSON.stringify(response.data.responses)
+          // );
+          setGeneratedTextData(response.data.responses);
+          sessionStorage.setItem(
+            "projectData(defaultData)",
+            JSON.stringify({
+              projectId: response.data.projectId,
+              projectName: response.data.project_name,
+              projectDescription: response.data.project_description,
+              projectDevice: response.data.project_device,
+              projectType: response.data.project_type,
+            })
+          );
         }
       } catch (error) {
         console.error("API 요청 실패:", error);
