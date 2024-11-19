@@ -2,16 +2,18 @@
 import { css } from "@emotion/react";
 import { OuterWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
-import { ReactComponent as Image } from "@svgs/template/imageTemplate.svg";
 import TemplateButton from "../commonComponent/TemplateButton";
+import EditableText from "@components/service/editableText/EditableText";
+import { CSSProperties } from "react";
 
 export interface ImainBanner {
+  isEditable?: boolean;
   title: string;
   desc: string;
 }
 
 export default function Mainbanner(prop: ImainBanner) {
-  const { title, desc } = prop;
+  const { isEditable, title, desc } = prop;
 
   return (
     <OuterWrap padding="0">
@@ -27,7 +29,12 @@ export default function Mainbanner(prop: ImainBanner) {
           }}
         />
         <div css={container}>
-          <p css={h1}>{title}</p>
+          {isEditable ? (
+            <EditableText text={title} defaultCss={pass_h1} />
+          ) : (
+            <p css={h1}>{title}</p>
+          )}
+
           <p css={desc_style}>{desc}</p>
           <TemplateButton type="default" text="button" />
         </div>
@@ -57,17 +64,30 @@ const container = css`
   justify-content: start;
 `;
 
-const h1 = css`
-  margin-bottom: 30px;
+const pass_h1: Record<string, string> = {
+  marginBottom: "30px",
+  color: "#486284",
+  fontFamily: "Inter",
+  fontSize: "96px",
+  fontStyle: "normal",
+  fontWeight: "900",
+  lineHeight: "150%",
+  textTransform: "capitalize",
+};
 
-  color: #486284;
-  font-family: Inter;
-  font-size: 96px;
-  font-style: normal;
-  font-weight: 900;
-  line-height: 150%; /* 144px */
-  text-transform: capitalize;
-`;
+const h1 = css(JSON.stringify(pass_h1));
+
+// const h1 = css`
+//   margin-bottom: 30px;
+
+//   color: #486284;
+//   font-family: Inter;
+//   font-size: 96px;
+//   font-style: normal;
+//   font-weight: 900;
+//   line-height: 150%;
+//   text-transform: capitalize;
+// `;
 
 const desc_style = css`
   word-break: keep-all;

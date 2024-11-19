@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useState, Dispatch } from "react";
+import { useState, Dispatch, useEffect } from "react";
 import { ReactComponent as Edit } from "@svgs/service/edit.svg";
 import { ReactComponent as Preview } from "@svgs/service/previewGray.svg";
 import { ReactComponent as Button } from "@svgs/service/navigationButton.svg";
@@ -73,6 +73,12 @@ export default function NavigationEditable(prop: INavigationEditable) {
     setIsOpen(!isOpen);
   }
 
+  useEffect(() => {
+    if (window.innerWidth > 1920) {
+      setIsOpen(true);
+    }
+  }, []);
+
   return (
     <aside css={side_nav(isOpen)}>
       <button type="button" css={aside_button} onClick={handleIsOpenChange}>
@@ -116,7 +122,7 @@ export default function NavigationEditable(prop: INavigationEditable) {
 const side_nav = (isOpen: boolean) => css`
   position: fixed;
   z-index: 11;
-  top: 64px;
+  top: 70px;
   transform: ${isOpen ? "translateX(0)" : "translateX(-100%)"};
   transition: transform 0.3s ease-out;
   left: 0;

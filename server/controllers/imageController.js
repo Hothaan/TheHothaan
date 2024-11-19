@@ -1,7 +1,7 @@
 const puppeteer = require("puppeteer");
 const fs = require("fs");
 const path = require("path");
-require('dotenv').config();
+require("dotenv").config();
 
 const saveImageFromURL = async (req, res) => {
   const { url } = req.body;
@@ -12,7 +12,7 @@ const saveImageFromURL = async (req, res) => {
 
   try {
     const browser = await puppeteer.launch({
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
     const page = await browser.newPage();
 
@@ -21,7 +21,9 @@ const saveImageFromURL = async (req, res) => {
     await page.goto(url, { waitUntil: "networkidle0" });
 
     // 폰트 깨짐 방지
-    await page.addStyleTag({ content: 'body { font-family: "Noto Sans KR", sans-serif; }' });
+    await page.addStyleTag({
+      content: 'body { font-family: "Noto Sans KR", sans-serif; }',
+    });
 
     // 전체 페이지를 캡처
     const imageBuffer = await page.screenshot({ fullPage: true });
@@ -41,13 +43,16 @@ const saveImageFromURL = async (req, res) => {
     // 이미지가 저장된 서버 URL 생성
     const imageUrl = `http://dolllpitoxic3.mycafe24.com/images/${imageName}`;
 
-    res.status(200).json({ message: "Image saved successfully", path: imagePath, url: imageUrl });
+    res.status(200).json({
+      message: "Image saved successfully",
+      path: imagePath,
+      url: imageUrl,
+    });
   } catch (error) {
     console.error("Error generating image from URL:", error);
     res.status(500).json({ message: "Error generating image from URL" });
   }
 };
-
 
 // const saveImageFromHTML = async (req, res) => {
 //     const { htmlContent } = req.body;

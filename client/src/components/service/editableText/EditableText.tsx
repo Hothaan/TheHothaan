@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
-import { useState, useRef, useLayoutEffect } from "react";
+import { css, SerializedStyles } from "@emotion/react";
+import { useState, useRef, useLayoutEffect, CSSProperties } from "react";
 import {
   TselectableColor,
   TfontFamily,
@@ -35,20 +35,21 @@ interface Istyles {
   fontWeight: TfontWeight;
 }
 
-export default function EditableText() {
+interface IeditableText {
+  text: string;
+  // defaultCss: CSSProperties;
+  defaultCss: Record<string, string>;
+}
+
+export default function EditableText(prop: IeditableText) {
+  const { text, defaultCss } = prop;
   const divRef = useRef<HTMLDivElement>(null);
   const toolbarRef = useRef<HTMLDivElement>(null);
   const [toolbarPosition, setToolbarPosition] = useState({ top: 0, left: 0 });
   const [isEditing, setIsEditing] = useState(false);
-  const [textContent, setTextContent] = useState("편집 가능한 텍스트");
-  const [styles, setStyles] = useState<Istyles>({
-    color: "#383838",
-    fontFamily: "Pretendard",
-    fontSize: "16px",
-    fontStyle: "normal",
-    textDecoration: "none",
-    textAlign: "left",
-    fontWeight: "regular",
+  const [textContent, setTextContent] = useState(text);
+  const [styles, setStyles] = useState<Record<string, string>>({
+    ...defaultCss,
   });
 
   useLayoutEffect(() => {
@@ -231,7 +232,7 @@ export default function EditableText() {
   );
 
   return (
-    <div style={{ position: "relative" }} ref={divRef}>
+    <div style={{ position: "relative", width: "100%" }} ref={divRef}>
       {isEditing && (
         <div
           ref={toolbarRef}
@@ -244,7 +245,7 @@ export default function EditableText() {
           <Toolbar />
         </div>
       )}
-      <input
+      <textarea
         css={css`
           color: ${styles.color};
           font-family: ${styles.fontFamily};
@@ -255,7 +256,7 @@ export default function EditableText() {
           font-weight: ${styles.fontWeight === "bold" ? "bold" : "normal"};
           cursor: ${isEditing ? "text" : "pointer"};
           border: none;
-          box-shadow: ${isEditing ? "0 0 0 1px #ededed" : "none"};
+          box-shadow: ${isEditing ? "0 0 0 1px #486284" : "none"};
           outline: none;
           width: 100%;
           background: transparent;
@@ -278,15 +279,6 @@ const deco_container = css`
   display: flex;
   align-items: center;
   gap: 14px;
-`;
-
-const color = css`
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-
-  background-color: #3e3e3e;
-  border: 1px solid #dedede;
 `;
 
 const align_container = css`
@@ -313,11 +305,7 @@ const button = css`
 `;
 
 const toolbar = css`
-  // position: absolute;
   z-index: 10;
-  // top: -24px;
-  // left: 0;
-  // transform: translate(-25%, -100%);
   gap: 14px;
   display: flex;
   align-items: center;

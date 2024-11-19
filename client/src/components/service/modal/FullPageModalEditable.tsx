@@ -5,8 +5,7 @@ import { IloadingModal } from "@components/common/ui/Modal/LoadingModal";
 import LoadingModal from "@components/common/ui/Modal/LoadingModal";
 import { serviceDefaultDataStore } from "@store/serviceDefaultDataStore";
 import ToastPopup from "@components/common/ui/ToastPopup/ToastPopup";
-import { ReactComponent as LogoLight } from "@svgs//common/logoLight.svg";
-import { ReactComponent as Minimize } from "@svgs//common/buttonMinimizePage.svg";
+import { ReactComponent as LogoLight } from "@svgs/common/logoLight.svg";
 import Button, { Ibutton } from "@components/common/button/Button";
 import NavigationEditable from "../navigation/NavigationEditable";
 import EditableText from "../editableText/EditableText";
@@ -106,24 +105,34 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
           <LogoLight />
           <p css={title}>편집 가능한 전체화면 모달</p>
           <div css={button_wrap}>
+            <div css={button_container}>
+              <Button {...buttonSave} />
+            </div>
             <button
               type="button"
+              css={close_icon_container}
               onClick={() => {
                 onClick(false);
               }}
             >
-              <Minimize />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 384 512"
+                css={close_icon}
+              >
+                <path d="M376.6 84.5c11.3-13.6 9.5-33.8-4.1-45.1s-33.8-9.5-45.1 4.1L192 206 56.6 43.5C45.3 29.9 25.1 28.1 11.5 39.4S-3.9 70.9 7.4 84.5L150.3 256 7.4 427.5c-11.3 13.6-9.5 33.8 4.1 45.1s33.8 9.5 45.1-4.1L192 306 327.4 468.5c11.3 13.6 31.5 15.4 45.1 4.1s15.4-31.5 4.1-45.1L233.7 256 376.6 84.5z" />
+              </svg>
+              {/* <Minimize /> */}
             </button>
-            <div css={button_container}>
-              <Button {...buttonSave} />
-            </div>
           </div>
         </div>
-        <div css={content_container}>
-          <div css={content}>
-            <div css={scroll_item}>
-              {TemplateToRender && <TemplateToRender data={data} />}
-              {/* <EditableText /> */}
+        <div css={content_wrap}>
+          <div css={content_container}>
+            <div css={content}>
+              <div css={scroll_item}>
+                {TemplateToRender && <TemplateToRender data={data} />}
+                {/* <EditableText /> */}
+              </div>
             </div>
           </div>
         </div>
@@ -180,10 +189,36 @@ const button_container = css`
   gap: 20px;
 `;
 
+const close_icon_container = css`
+  padding: 4px;
+  border-radius: 8px;
+  background-color: #383838;
+`;
+
+const close_icon = css`
+  width: 24px;
+  height: 16px;
+
+  * {
+    fill: #fff;
+  }
+`;
+
+const content_wrap = css`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+
+  @media (min-width: 1921px) {
+    padding-left: 220px;
+  }
+`;
+
 const content_container = css`
   width: 100%;
   height: 100%;
   padding: 20px 0;
+  max-width: 1920px;
 `;
 
 const content = css`

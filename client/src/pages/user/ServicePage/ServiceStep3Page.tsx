@@ -20,6 +20,9 @@ import {
 import { createProject } from "@api/project/createProject";
 import { generateText } from "@api/project/generateText";
 import { generatedTextDataStore } from "@store/generatedTextDataStore";
+import { IgeneratedText } from "@components/service/modal/FullPageModalEditable";
+import { ImageSaveUrlStore } from "@store/imageSaveUrlStore";
+import { saveImage } from "@api/image/saveImage";
 
 export type TselectionItem = {
   type: "device" | "service" | "menu" | "feature";
@@ -35,7 +38,7 @@ export interface IsendData {
 }
 
 export default function ServiceStep3Page() {
-  const { setGeneratedTextData } = generatedTextDataStore();
+  const { generatedTextData, setGeneratedTextData } = generatedTextDataStore();
   const { handleNavigation } = useNavigation();
   const { currentLocation } = useLocationControl();
   const totalStep = 5;
@@ -44,7 +47,7 @@ export default function ServiceStep3Page() {
   const { isProduction } = useIsProduction();
   const [loading, setLoading] = useState(false);
   const { serviceDefaultData } = serviceDefaultDataStore();
-  const serviceType = serviceDefaultData.serviceType || 1;
+  const serviceType = serviceDefaultData.serviceType.number || 1;
   const [formData, setFormData] = useState<TserviceTypeMenu | null>(null);
   const [sendData, setSendData] = useState<IsendData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -193,11 +196,11 @@ export default function ServiceStep3Page() {
       selections: [
         {
           type: "device",
-          value: makeDeviceText(serviceDefaultData.device),
+          value: serviceDefaultData.device.text,
         },
         {
           type: "service",
-          value: makeServiceTypeText(serviceDefaultData.serviceType),
+          value: serviceDefaultData.serviceType.text,
         },
       ],
     };
@@ -260,30 +263,54 @@ export default function ServiceStep3Page() {
       try {
         const response = await generateText(isProduction, parseInt(projectId));
         if (response.statusText === "OK") {
-          // sessionStorage.setItem(
-          //   "projectData(generatedText)",
-          //   JSON.stringify(response.data.responses)
-          // );
           setGeneratedTextData(response.data.responses);
           sessionStorage.setItem(
-            "projectData(defaultData)",
-            JSON.stringify({
-              projectId: response.data.projectId,
-              projectName: response.data.project_name,
-              projectDescription: response.data.project_description,
-              projectDevice: response.data.project_device,
-              projectType: response.data.project_type,
-            })
+            "generatedTextData",
+            JSON.stringify(response.data.responses)
           );
         }
       } catch (error) {
         console.error("API 요청 실패:", error);
       } finally {
-        setLoading(false);
-        setIsModalOpen(false);
-        handleNavigation(`/service/step${currentStep + 1}`);
+        saveImages();
       }
     }
+  }
+
+  // 템플릿이 렌더링됐는지를 확인하고나서 요청을 보내야할것같다
+  // 렌더링 됐는지 상태값을 넘길 방법?
+  // 캡쳐 요청을 보내는 위치를 template 페이지로 변경해야....?하나?
+  // 요청을 두번 보내야 제대로 작동하는 이유가 뭘까?
+  // 값을 컨트롤하는 로직을 store로 하던지 session으로 하던지 하나로 통일해야할것같은데
+
+  async function saveImages() {
+    setLoading(true);
+    try {
+      const projectType = serviceDefaultData.serviceType.text as string;
+      const listData = generatedTextData.map((item: IgeneratedText) => {
+        return item.feature;
+      });
+      const parameterArr = listData.map((item) => `${projectType}-${item}`);
+      const responses = await Promise.all(
+        parameterArr.map(async (item) => {
+          return await saveImage(isProduction, item);
+        })
+      );
+      if (responses.every((response) => response.statusText === "OK")) {
+        const pathArr = responses.map((response) => response.data.path);
+        const urlArr = responses.map((response) => response.data.url);
+        console.log(pathArr, urlArr);
+      } else {
+        console.error("Some images failed to save.");
+      }
+    } catch (error) {
+      console.error("API 요청 실패:", error);
+    } finally {
+      setLoading(false);
+      setIsModalOpen(false);
+      handleNavigation(`/service/step${currentStep + 1}`);
+    }
+    // }
   }
 
   useEffect(() => {
@@ -291,36 +318,6 @@ export default function ServiceStep3Page() {
       saveData();
     }
   }, [sendData]);
-
-  function makeDeviceText(device_options: number | null) {
-    switch (device_options) {
-      case 1:
-        return "PC";
-      case 2:
-        return "Tablet";
-      case 3:
-        return "Mobile";
-      default:
-        return "PC";
-    }
-  }
-
-  function makeServiceTypeText(service_types: number | null) {
-    switch (service_types) {
-      case 1:
-        return "쇼핑몰";
-      case 2:
-        return "커뮤니티·sns";
-      case 3:
-        return "중개·매칭";
-      case 4:
-        return "홈페이지·게시판";
-      case 5:
-        return "랜딩·소개";
-      default:
-        return "PC";
-    }
-  }
 
   function checkAllOptionSelected(formData: TserviceTypeMenu | null): boolean {
     if (!formData) return false;

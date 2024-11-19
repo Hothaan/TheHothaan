@@ -16,8 +16,8 @@ import { getServiceTypes, IserviceTypes } from "@api/service/serviceTypes";
 import { getDeviceOptions, IdeviceOptions } from "@api/service/deviceOptions";
 
 interface IformData {
-  device: number | null;
-  service: number | null;
+  device: { number: number | null; text: string | null };
+  service: { number: number | null; text: string | null };
 }
 
 export default function ServiceStep2Page() {
@@ -30,9 +30,10 @@ export default function ServiceStep2Page() {
 
   const { isProduction } = useIsProduction();
   const [loading, setLoading] = useState(false);
+  const { serviceDefaultData } = serviceDefaultDataStore();
   const [formData, setFormData] = useState<IformData>({
-    device: null,
-    service: null,
+    device: { number: null, text: null },
+    service: { number: null, text: null },
   });
 
   const [serviceTypes, setServiceTypes] = useState<IserviceTypes[] | null>(
@@ -52,7 +53,26 @@ export default function ServiceStep2Page() {
         service: sessionData.serviceType,
       });
     }
+    if (
+      serviceDefaultData.device.number &&
+      serviceDefaultData.device.text &&
+      serviceDefaultData.serviceType.number &&
+      serviceDefaultData.serviceType.text
+    ) {
+      setFormData({
+        device: {
+          number: serviceDefaultData.device.number,
+          text: serviceDefaultData.device.text,
+        },
+        service: {
+          number: serviceDefaultData.serviceType.number,
+          text: serviceDefaultData.serviceType.text,
+        },
+      });
+    }
   }, []);
+
+  console.log(serviceDefaultData);
 
   async function fetchServiceTypes() {
     if (!loading) {
@@ -96,7 +116,12 @@ export default function ServiceStep2Page() {
   }, []);
 
   useEffect(() => {
-    if (formData.device && formData.service) {
+    if (
+      formData.device.number &&
+      formData.device.text &&
+      formData.service.text &&
+      formData.service.number
+    ) {
       setSteps({
         ...steps,
         step2: true,
@@ -157,25 +182,31 @@ export default function ServiceStep2Page() {
   const pc: IbuttonChooseDeviceOption = {
     id: 1,
     name: deviceOptions?.filter((item) => item.id === 1)[0].name || "PC",
-    isSelected: formData.device === 1,
+    isSelected: formData.device.number === 1,
     onClick: () => {
-      setFormData((prev) => ({ ...prev, device: 1 }));
+      setFormData((prev) => ({ ...prev, device: { number: 1, text: "PC" } }));
     },
   };
   const tablet: IbuttonChooseDeviceOption = {
     id: 2,
     name: deviceOptions?.filter((item) => item.id === 2)[0].name || "Tablet",
-    isSelected: formData.device === 2,
+    isSelected: formData.device.number === 2,
     onClick: () => {
-      setFormData((prev) => ({ ...prev, device: 2 }));
+      setFormData((prev) => ({
+        ...prev,
+        device: { number: 2, text: "Tablet" },
+      }));
     },
   };
   const mobile: IbuttonChooseDeviceOption = {
     id: 3,
     name: deviceOptions?.filter((item) => item.id === 3)[0].name || "Mobile",
-    isSelected: formData.device === 3,
+    isSelected: formData.device.number === 3,
     onClick: () => {
-      setFormData((prev) => ({ ...prev, device: 3 }));
+      setFormData((prev) => ({
+        ...prev,
+        device: { number: 3, text: "Mobile" },
+      }));
     },
   };
 
@@ -185,9 +216,12 @@ export default function ServiceStep2Page() {
     description:
       serviceTypes?.filter((item) => item.id === 1)[0].description ||
       "상품을 등록하고 판매해요",
-    isSelected: formData.service === 1,
+    isSelected: formData.service.number === 1,
     onClick: () => {
-      setFormData((prev) => ({ ...prev, service: 1 }));
+      setFormData((prev) => ({
+        ...prev,
+        service: { number: 1, text: "쇼핑몰" },
+      }));
     },
   };
   const communitySns: IbuttonChooseServiceType = {
@@ -197,9 +231,12 @@ export default function ServiceStep2Page() {
     description:
       serviceTypes?.filter((item) => item.id === 2)[0].description ||
       "게시판을 통해 소통해요",
-    isSelected: formData.service === 2,
+    isSelected: formData.service.number === 2,
     onClick: () => {
-      setFormData((prev) => ({ ...prev, service: 2 }));
+      setFormData((prev) => ({
+        ...prev,
+        service: { number: 2, text: "커뮤니티·sns" },
+      }));
     },
   };
   const intermediaryMatch: IbuttonChooseServiceType = {
@@ -208,10 +245,13 @@ export default function ServiceStep2Page() {
     description:
       serviceTypes?.filter((item) => item.id === 3)[0].description ||
       "플랫폼을 제작해요",
-    isSelected: formData.service === 3,
+    isSelected: formData.service.number === 3,
 
     onClick: () => {
-      setFormData((prev) => ({ ...prev, service: 3 }));
+      setFormData((prev) => ({
+        ...prev,
+        service: { number: 3, text: "중개·매칭" },
+      }));
     },
   };
   const homepageBoard: IbuttonChooseServiceType = {
@@ -222,10 +262,13 @@ export default function ServiceStep2Page() {
     description:
       serviceTypes?.filter((item) => item.id === 4)[0].description ||
       "회사를 소개해요",
-    isSelected: formData.service === 4,
+    isSelected: formData.service.number === 4,
 
     onClick: () => {
-      setFormData((prev) => ({ ...prev, service: 4 }));
+      setFormData((prev) => ({
+        ...prev,
+        service: { number: 4, text: "홈페이지·게시판" },
+      }));
     },
   };
   const landingIntroduce: IbuttonChooseServiceType = {
@@ -234,9 +277,12 @@ export default function ServiceStep2Page() {
     description:
       serviceTypes?.filter((item) => item.id === 5)[0].description ||
       "제품을 소개해요",
-    isSelected: formData.service === 5,
+    isSelected: formData.service.number === 5,
     onClick: () => {
-      setFormData((prev) => ({ ...prev, service: 5 }));
+      setFormData((prev) => ({
+        ...prev,
+        service: { number: 4, text: "랜딩·소개" },
+      }));
     },
   };
 

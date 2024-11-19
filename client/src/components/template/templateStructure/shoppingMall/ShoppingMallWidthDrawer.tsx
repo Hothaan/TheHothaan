@@ -1,25 +1,19 @@
 import { useState, useEffect } from "react";
 import Header from "@components/template/common/header/Header";
 import Footer from "@components/template/common/footer/Footer";
-import Mainbanner from "@components/template/main/Mainbanner";
-import ProductListMain from "@components/template/main/ProductListMain";
-import Review from "@components/template/product/Review";
-import ServiceIntroduction from "@components/template/service/ServiceIntroduction";
-import ServiceContact from "@components/template/service/ServiceContact";
 import { IgeneratedText } from "@components/service/modal/FullPageModalEditable";
-import { generatedTextDataStore } from "@store/generatedTextDataStore";
+import WithDrawer from "@components/template/mypage/WithDrawer";
 
-export default function ShoppingMallMain() {
+export default function ShoppingMallWidthDrawer() {
   const sessionData = sessionStorage.getItem("generatedTextData");
   const generatedTextData = sessionData ? JSON.parse(sessionData) : null;
-  const feature = "메인";
+  const feature = "회원탈퇴";
   const [generatedText, setGeneratedText] = useState<IgeneratedText | null>(
     null
   );
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log(generatedTextData);
     if (generatedTextData) {
       setLoading(false);
     }
@@ -48,22 +42,8 @@ export default function ShoppingMallMain() {
   return (
     <div className="templateImage">
       <Header />
-      <Mainbanner
-        isEditable={true}
-        title={generatedText?.content?.content?.title}
-        desc={generatedText?.content?.content?.desc}
-      />
-      <ProductListMain option="main" />
-      <Review />
-      <ServiceIntroduction />
-      <ProductListMain option="list" />
-      <ServiceContact />
+      <WithDrawer />
       <Footer />
     </div>
   );
 }
-/*
-1.
-구조를 feature 마다 미리 저장해두고
-구조에 맞는 컴포넌트마다 text를 넘겨줘서 렌더링
-*/

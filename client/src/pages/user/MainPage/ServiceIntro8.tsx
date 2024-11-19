@@ -347,6 +347,7 @@ const title_container = css`
 
 const card_container = css`
   display: flex;
+  justify-content: center;
   width: 100%;
   gap: 40px;
 `;

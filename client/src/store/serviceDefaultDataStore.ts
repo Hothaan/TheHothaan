@@ -1,10 +1,23 @@
 import { create } from "zustand";
 
+// type TserviceDefaultData = {
+//   serviceTitle: string;
+//   serviceDesc: string;
+//   device: number | null;
+//   serviceType: number | null;
+// };
+
 type TserviceDefaultData = {
   serviceTitle: string;
   serviceDesc: string;
-  device: number | null;
-  serviceType: number | null;
+  device: {
+    number: number | null;
+    text: string | null;
+  };
+  serviceType: {
+    number: number | null;
+    text: string | null;
+  };
 };
 
 declare interface IserviceDefaultDataStore {
@@ -17,8 +30,8 @@ export const serviceDefaultDataStore = create<IserviceDefaultDataStore>()(
     serviceDefaultData: {
       serviceTitle: "",
       serviceDesc: "",
-      device: null,
-      serviceType: null,
+      device: { number: null, text: null },
+      serviceType: { number: null, text: null },
     },
     setServiceDefaultData: (newData: TserviceDefaultData) =>
       set({ serviceDefaultData: newData }),

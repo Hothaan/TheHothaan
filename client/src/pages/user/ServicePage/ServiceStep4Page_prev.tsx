@@ -52,9 +52,7 @@ export default function ServiceStep4Page() {
     <>
       <LoadingModal {...loadingModal} />
       <div>
-        <TemplateSlide>
-          <EditableText />
-        </TemplateSlide>
+        <TemplateSlide>{/* <EditableText /> */}</TemplateSlide>
       </div>
       <div css={button_wrap}>
         <div css={button_container}>

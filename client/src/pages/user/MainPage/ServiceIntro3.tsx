@@ -23,6 +23,8 @@ function ServiceIntro3Card(prop: IserviceIntro3Card) {
     display: flex;
     flex-direction: column;
     gap: 30px;
+
+    // flex: 0 0 calc(50%);
   `;
 
   const lottie_container = css`
@@ -124,25 +126,37 @@ export default function ServiceIntro3() {
 
   return (
     <div css={wrap}>
-      {" "}
-      <MainPageSectionContainer>
-        <div css={title_container}>
-          <TitleGradient title="The hothaan 프로세스" />
-          <Title title="기획안 작성을 위한 더핫한 프로세스" color="black" />
-        </div>
-        <div css={card_container}>
-          {cardDatas.map((item, idx) => (
-            <ServiceIntro3Card {...item} key={idx} />
-          ))}
-        </div>
-      </MainPageSectionContainer>
+      <div css={container}>
+        <MainPageSectionContainer>
+          <div css={title_container}>
+            <TitleGradient title="The hothaan 프로세스" />
+            <Title title="기획안 작성을 위한 더핫한 프로세스" color="black" />
+          </div>
+          <div css={card_container}>
+            {cardDatas.map((item, idx) => (
+              <ServiceIntro3Card {...item} key={idx} />
+            ))}
+          </div>
+        </MainPageSectionContainer>
+      </div>
     </div>
   );
 }
 
 const wrap = css`
+  display: flex;
+  justify-content: center;
+
   width: 100%;
   padding: 30px 0;
+  margin: 0 auto;
+`;
+
+const container = css`
+  width: 100%;
+  @media (min-width: 1921px) {
+    max-width: calc(1200px + 720px);
+  }
 `;
 
 const title_container = css`
@@ -159,7 +173,8 @@ const title_container = css`
 
 const card_container = css`
   width: 100%;
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 50px;
-  flex-wrap: wrap;
+  // flex-wrap: wrap;
 `;

@@ -132,6 +132,7 @@ export const selectableFontSizeArr = [
   "36px",
   "40px",
   "48px",
+  "96px",
 ] as const;
 export type TselectableFontSize = (typeof selectableFontSizeArr)[number];
 
@@ -153,6 +154,7 @@ export const fontWeightArr = ["bold", "regular"] as const;
 export type TfontWeight = (typeof fontWeightArr)[number];
 
 export const fontFamilyArr = [
+  "inter",
   "Pretendard",
   "SUITE Variable",
   "Preahvihear",

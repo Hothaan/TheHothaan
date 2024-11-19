@@ -83,6 +83,8 @@ const rotate = keyframes`
   }`;
 
 const wrap = css`
+  display: flex;
+  justify-content: center;
   width: 100%;
   padding: 80px 360px 0;
   height: 960px;
@@ -97,6 +99,7 @@ const container = css`
   display: flex;
   justify-content: center;
   align-items: center;
+  max-width: 1200px;
 `;
 
 const text_container = css`

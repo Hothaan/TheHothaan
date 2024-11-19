@@ -9,7 +9,6 @@ import { useEffect, useState } from "react";
 export default function Header() {
   const { currentLocation } = useLocationControl();
   const [isMain, setIsMain] = useState(currentLocation === "/");
-
   const [isScrolledPast, setIsScrolledPast] = useState(false);
 
   const handleScroll = () => {

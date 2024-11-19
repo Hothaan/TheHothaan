@@ -211,6 +211,7 @@ const title_container = css`
 const card_container = css`
   display: flex;
   width: 100%;
+  max-width: 1200px;
   flex-direction: column;
   gap: 30px;
 `;

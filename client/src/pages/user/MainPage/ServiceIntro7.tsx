@@ -13,6 +13,7 @@ function ServiceIntro7Card(prop: IserviceIntro7Card) {
   const { image } = prop;
 
   const card_wrap = css`
+    width: 250px;
     border-radius: 20px;
     border: 1px solid var(--DEDEDE, #dedede);
     position: relative;

@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-
+import useLocationControl from "@hooks/useLocationControl";
 import { Routes, Route } from "react-router-dom";
 import Header from "@components/common/ui/Header/Header";
 import Footer from "@components/common/ui/Footer/Footer";
@@ -21,9 +21,11 @@ import LoginPage from "@pages/user/LoginPage/LoginPage";
 import JoinPage from "@pages/user/JoinPage/JoinPage";
 
 export default function UserLayout() {
+  const { includeLocation } = useLocationControl();
+
   return (
     <>
-      <Header />
+      {!includeLocation("template") && <Header />}
       <main css={full_height}>
         <Routes>
           <Route path="/" element={<MainPage />} />
@@ -56,7 +58,7 @@ export default function UserLayout() {
           />
         </Routes>
       </main>
-      <Footer />
+      {!includeLocation("template") && <Footer />}
     </>
   );
 }

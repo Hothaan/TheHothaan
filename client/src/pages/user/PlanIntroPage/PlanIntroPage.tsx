@@ -1,5 +1,9 @@
-import React from "react";
+import ServiceIntro8 from "../MainPage/ServiceIntro8";
 
 export default function PlanIntroPage() {
-  return <div>PlanIntroPage</div>;
+  return (
+    <div>
+      <ServiceIntro8 />
+    </div>
+  );
 }

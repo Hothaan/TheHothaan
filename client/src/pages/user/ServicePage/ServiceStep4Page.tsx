@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useState, useEffect, Dispatch } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { serviceDefaultDataStore } from "@store/serviceDefaultDataStore";
 import ButtonArrowIcon from "@components/service/button/ButtonArrowIcon";
@@ -20,10 +20,12 @@ import ButtonArrowIconControler, {
 } from "@components/service/button/ButtonArrowIconControler";
 import { IgeneratedText } from "@components/service/modal/FullPageModalEditable";
 import { generatedTextDataStore } from "@store/generatedTextDataStore";
+import { ImageSaveUrlStore } from "@store/imageSaveUrlStore";
 
 export default function ServicePreviewPage() {
   const { generatedTextData } = generatedTextDataStore();
   const { serviceDefaultData } = serviceDefaultDataStore();
+  const { imageSaveUrl, setImageSaveUrl } = ImageSaveUrlStore();
   const [isFullpageModalOpen, setIsFullpageModalOpen] = useState(false);
   const [isLoadingModalOpen, setIsLoadingModalOpen] = useState(false);
   const navigate = useNavigate();
@@ -61,23 +63,6 @@ export default function ServicePreviewPage() {
     onComplete: () => {},
   };
 
-  const [projectType, setProjectType] = useState<string>("");
-
-  function getProjectType() {
-    const data = sessionStorage.getItem("projectData(defaultData)");
-    if (data && data !== undefined) {
-      return JSON.parse(data).projectType as string;
-    }
-    return null;
-  }
-
-  useEffect(() => {
-    const type = getProjectType();
-    if (type) {
-      setProjectType(type);
-    }
-  }, []);
-
   function makeListData() {
     if (generatedTextData) {
       return generatedTextData.map((item: IgeneratedText) => {
@@ -94,6 +79,21 @@ export default function ServicePreviewPage() {
       setListData(data);
     }
   }, []);
+
+  function makeImageSaveUrlArr(projectType: string, listData: string[]) {
+    return listData.map((item) => `${projectType}-${item}`);
+  }
+
+  useEffect(() => {
+    if (listData.length > 0) {
+      setImageSaveUrl(
+        makeImageSaveUrlArr(
+          serviceDefaultData.serviceType.text as string,
+          listData
+        )
+      );
+    }
+  }, [listData]);
 
   const [currentIdx, setCurrentIdx] = useState<number>(0);
   const [selectedItem, setSelectedItem] = useState<string>(listData[0]);
@@ -181,7 +181,7 @@ export default function ServicePreviewPage() {
   }
 
   const fullPageModal = {
-    projectType: projectType,
+    projectType: serviceDefaultData.serviceType.text as string,
     data: generatedTextData,
     listData: listData,
     selectedItem: selectedItem,
