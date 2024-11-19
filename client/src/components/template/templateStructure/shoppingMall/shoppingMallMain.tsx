@@ -7,23 +7,21 @@ import Review from "@components/template/product/Review";
 import ServiceIntroduction from "@components/template/service/ServiceIntroduction";
 import ServiceContact from "@components/template/service/ServiceContact";
 import { IgeneratedText } from "@components/service/modal/FullPageModalEditable";
-import { generatedTextDataStore } from "@store/generatedTextDataStore";
 
 export default function ShoppingMallMain() {
-  const sessionData = sessionStorage.getItem("generatedTextData");
-  const generatedTextData = sessionData ? JSON.parse(sessionData) : null;
+  const localData = localStorage.getItem("generatedTextData");
+  const generatedTextData = localData ? JSON.parse(localData) : null;
   const feature = "메인";
   const [generatedText, setGeneratedText] = useState<IgeneratedText | null>(
     null
   );
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    console.log(generatedTextData);
-    if (generatedTextData) {
-      setLoading(false);
-    }
-  }, [generatedTextData]);
+  // console.log(localData);
+  // 대체 여기의 어느부분에서 계속 업데이트가 일어나는걸까
+
+  // 그리고 캡쳐는 왜 또 안될까,...^^ 왜 렌더링 인식을 못하니
+  // 파라미터가 띄어쓰기 되어있으면 인식을 못하나?
 
   function getGeneratedText(
     generatedTextData: IgeneratedText[]
@@ -34,6 +32,7 @@ export default function ShoppingMallMain() {
 
   useEffect(() => {
     if (generatedTextData && generatedTextData.length > 0) {
+      setLoading(false);
       const data = getGeneratedText(generatedTextData);
       if (data) {
         setGeneratedText(data);

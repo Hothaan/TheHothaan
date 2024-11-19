@@ -20,10 +20,14 @@ const saveImageFromURL = async (req, res) => {
     await page.setViewport({ width: 1920, height: 1080 });
     await page.goto(url, { waitUntil: "networkidle0" });
 
-    // 폰트 깨짐 방지
-    await page.addStyleTag({
-      content: 'body { font-family: "Noto Sans KR", sans-serif; }',
-    });
+    // 템플릿 URL로 이동
+    console.log(`Navigating to ${url}`);
+    await page.goto(url, { waitUntil: "networkidle2" });
+
+    // 렌더링 확인
+    console.log("Waiting for template to render...");
+    await page.waitForSelector(".templateImage", { visible: true });
+    console.log(`Template has been rendered.`);
 
     // 전체 페이지를 캡처
     const imageBuffer = await page.screenshot({ fullPage: true });

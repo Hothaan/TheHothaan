@@ -21,7 +21,6 @@ import { createProject } from "@api/project/createProject";
 import { generateText } from "@api/project/generateText";
 import { generatedTextDataStore } from "@store/generatedTextDataStore";
 import { IgeneratedText } from "@components/service/modal/FullPageModalEditable";
-import { ImageSaveUrlStore } from "@store/imageSaveUrlStore";
 import { saveImage } from "@api/image/saveImage";
 
 export type TselectionItem = {
@@ -263,27 +262,54 @@ export default function ServiceStep3Page() {
       try {
         const response = await generateText(isProduction, parseInt(projectId));
         if (response.statusText === "OK") {
+          // 상태 업데이트 후 saveImages 실행
           setGeneratedTextData(response.data.responses);
           sessionStorage.setItem(
             "generatedTextData",
             JSON.stringify(response.data.responses)
           );
+          localStorage.setItem(
+            "generatedTextData",
+            JSON.stringify(response.data.responses)
+          );
+          console.log("Generated text data set, calling saveImages...");
+          // 상태 업데이트 후 호출
         }
       } catch (error) {
         console.error("API 요청 실패:", error);
       } finally {
-        saveImages();
+        setLoading(false);
       }
     }
   }
 
+  useEffect(() => {
+    if (generatedTextData.length > 0) {
+      saveImages();
+    }
+  }, [generatedTextData]);
+
   // 템플릿이 렌더링됐는지를 확인하고나서 요청을 보내야할것같다
   // 렌더링 됐는지 상태값을 넘길 방법?
   // 캡쳐 요청을 보내는 위치를 template 페이지로 변경해야....?하나?
-  // 요청을 두번 보내야 제대로 작동하는 이유가 뭘까?
+
+  // 요청을 각 템플릿에 담아두고 각 요청이 완료됐는지를 전역변수로 관리
+  // 요청을 실행할 타이밍은 generateTextData가 생성되었을 때로 컨트롤?
+
+  // sessionStorage 는 탭간 공유가 안됨
+  // 전역변수도 탭간 공유 안됨
+
+  // 내일 아래 2개 방법 테스트 해보기
+  // 1. localStorage는 탭간 공유 가능
+  // 2. 혹은 쿼리 파라미터 또는 url로 전달하는 방법 사용 가능 -> 생각해보니 이건 api를 수정해야 하네
+
+  // 요청을 두번 보내야 제대로 작동하는 이유가 뭘까? -> 해결
+
   // 값을 컨트롤하는 로직을 store로 하던지 session으로 하던지 하나로 통일해야할것같은데
+  // 자꾸 step2의 값이 null로 리셋되는 현상이 발생, 상태 관리가 꼬인 것 같다. -> 해결
 
   async function saveImages() {
+    console.log("Saving images...");
     setLoading(true);
     try {
       const projectType = serviceDefaultData.serviceType.text as string;
@@ -310,7 +336,6 @@ export default function ServiceStep3Page() {
       setIsModalOpen(false);
       handleNavigation(`/service/step${currentStep + 1}`);
     }
-    // }
   }
 
   useEffect(() => {

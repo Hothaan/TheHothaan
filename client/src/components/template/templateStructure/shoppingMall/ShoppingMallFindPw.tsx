@@ -5,8 +5,8 @@ import { IgeneratedText } from "@components/service/modal/FullPageModalEditable"
 import FindPw from "@components/template/utility/FindPw";
 
 export default function ShoppingMallFindPw() {
-  const sessionData = sessionStorage.getItem("generatedTextData");
-  const generatedTextData = sessionData ? JSON.parse(sessionData) : null;
+  const localData = localStorage.getItem("generatedTextData");
+  const generatedTextData = localData ? JSON.parse(localData) : null;
   const feature = "비밀번호 찾기";
   const [generatedText, setGeneratedText] = useState<IgeneratedText | null>(
     null

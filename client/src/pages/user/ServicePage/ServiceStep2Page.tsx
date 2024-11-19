@@ -5,7 +5,7 @@ import { IbuttonChooseDeviceOption } from "@components/service/button/ButtonChoo
 import ButtonChooseDeviceOption from "@components/service/button/ButtonChooseDeviceOption";
 import { IbuttonChooseServiceType } from "@components/service/button/ButtonChooseServiceType";
 import ButtonChooseServiceType from "@components/service/button/ButtonChooseServiceType";
-import { serviceStepStore, TserviceStep } from "@store/serviceStepStore";
+import { serviceStepStore } from "@store/serviceStepStore";
 import { serviceDefaultDataStore } from "@store/serviceDefaultDataStore";
 import { Ibutton } from "@components/common/button/Button";
 import Button from "@components/common/button/Button";
@@ -32,8 +32,14 @@ export default function ServiceStep2Page() {
   const [loading, setLoading] = useState(false);
   const { serviceDefaultData } = serviceDefaultDataStore();
   const [formData, setFormData] = useState<IformData>({
-    device: { number: null, text: null },
-    service: { number: null, text: null },
+    device: {
+      number: serviceDefaultData.device.number,
+      text: serviceDefaultData.device.text,
+    },
+    service: {
+      number: serviceDefaultData.serviceType.number,
+      text: serviceDefaultData.serviceType.text,
+    },
   });
 
   const [serviceTypes, setServiceTypes] = useState<IserviceTypes[] | null>(
@@ -43,36 +49,36 @@ export default function ServiceStep2Page() {
     null
   );
 
-  useEffect(() => {
-    if (window.sessionStorage.getItem("serviceData") !== null) {
-      let sessionData = JSON.parse(
-        window.sessionStorage.getItem("serviceData") as string
-      );
-      setFormData({
-        device: sessionData.device,
-        service: sessionData.serviceType,
-      });
-    }
-    if (
-      serviceDefaultData.device.number &&
-      serviceDefaultData.device.text &&
-      serviceDefaultData.serviceType.number &&
-      serviceDefaultData.serviceType.text
-    ) {
-      setFormData({
-        device: {
-          number: serviceDefaultData.device.number,
-          text: serviceDefaultData.device.text,
-        },
-        service: {
-          number: serviceDefaultData.serviceType.number,
-          text: serviceDefaultData.serviceType.text,
-        },
-      });
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (window.sessionStorage.getItem("serviceData") !== null) {
+  //     let sessionData = JSON.parse(
+  //       window.sessionStorage.getItem("serviceData") as string
+  //     );
+  //     setFormData({
+  //       device: sessionData.device,
+  //       service: sessionData.serviceType,
+  //     });
+  //   }
+  //   if (
+  //     serviceDefaultData.device.number &&
+  //     serviceDefaultData.device.text &&
+  //     serviceDefaultData.serviceType.number &&
+  //     serviceDefaultData.serviceType.text
+  //   ) {
+  //     setFormData({
+  //       device: {
+  //         number: serviceDefaultData.device.number,
+  //         text: serviceDefaultData.device.text,
+  //       },
+  //       service: {
+  //         number: serviceDefaultData.serviceType.number,
+  //         text: serviceDefaultData.serviceType.text,
+  //       },
+  //     });
+  //   }
+  // }, []);
 
-  console.log(serviceDefaultData);
+  // console.log(serviceDefaultData);
 
   async function fetchServiceTypes() {
     if (!loading) {

@@ -5,8 +5,8 @@ import { IgeneratedText } from "@components/service/modal/FullPageModalEditable"
 import WithDrawer from "@components/template/mypage/WithDrawer";
 
 export default function ShoppingMallWidthDrawer() {
-  const sessionData = sessionStorage.getItem("generatedTextData");
-  const generatedTextData = sessionData ? JSON.parse(sessionData) : null;
+  const localData = localStorage.getItem("generatedTextData");
+  const generatedTextData = localData ? JSON.parse(localData) : null;
   const feature = "회원탈퇴";
   const [generatedText, setGeneratedText] = useState<IgeneratedText | null>(
     null

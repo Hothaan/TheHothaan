@@ -9,7 +9,7 @@ export const saveImage = async (isProduction: boolean, url: string) => {
       {
         url: `http://${
           isProduction ? "dolllpitoxic3.mycafe24.com" : "localhost:3000"
-        }/template/${url})`,
+        }/template/${url}`,
       }
     );
 

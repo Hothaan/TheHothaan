@@ -5,8 +5,8 @@ import { IgeneratedText } from "@components/service/modal/FullPageModalEditable"
 import Cart from "@components/template/mypage/Cart";
 
 export default function ShoppingMallCart() {
-  const sessionData = sessionStorage.getItem("generatedTextData");
-  const generatedTextData = sessionData ? JSON.parse(sessionData) : null;
+  const localData = localStorage.getItem("generatedTextData");
+  const generatedTextData = localData ? JSON.parse(localData) : null;
   const feature = "장바구니";
   const [generatedText, setGeneratedText] = useState<IgeneratedText | null>(
     null

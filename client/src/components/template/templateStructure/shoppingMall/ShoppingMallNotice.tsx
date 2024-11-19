@@ -5,8 +5,8 @@ import { IgeneratedText } from "@components/service/modal/FullPageModalEditable"
 import Notice from "@components/template/customerService/Notice";
 
 export default function ShoppingMallNotice() {
-  const sessionData = sessionStorage.getItem("generatedTextData");
-  const generatedTextData = sessionData ? JSON.parse(sessionData) : null;
+  const localData = localStorage.getItem("generatedTextData");
+  const generatedTextData = localData ? JSON.parse(localData) : null;
   const feature = "공지사항";
   const [generatedText, setGeneratedText] = useState<IgeneratedText | null>(
     null

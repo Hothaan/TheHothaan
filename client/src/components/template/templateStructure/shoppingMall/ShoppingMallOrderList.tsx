@@ -5,8 +5,8 @@ import { IgeneratedText } from "@components/service/modal/FullPageModalEditable"
 import OrderList from "@components/template/mypage/OrderList";
 
 export default function ShoppingMallOrderList() {
-  const sessionData = sessionStorage.getItem("generatedTextData");
-  const generatedTextData = sessionData ? JSON.parse(sessionData) : null;
+  const localData = localStorage.getItem("generatedTextData");
+  const generatedTextData = localData ? JSON.parse(localData) : null;
   const feature = "주문 목록";
   const [generatedText, setGeneratedText] = useState<IgeneratedText | null>(
     null
