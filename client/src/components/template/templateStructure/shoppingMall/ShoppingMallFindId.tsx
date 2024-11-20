@@ -1,3 +1,4 @@
+import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Header from "@components/template/common/header/Header";
 import Footer from "@components/template/common/footer/Footer";
@@ -5,38 +6,40 @@ import { IgeneratedText } from "@components/service/modal/FullPageModalEditable"
 import FindId from "@components/template/utility/FindId";
 
 export default function ShoppingMallFindId() {
-  const localData = localStorage.getItem("generatedTextData");
-  const generatedTextData = localData ? JSON.parse(localData) : null;
-  const feature = "아이디 찾기";
-  const [generatedText, setGeneratedText] = useState<IgeneratedText | null>(
-    null
-  );
-  const [loading, setLoading] = useState(true);
+  const { data } = useParams();
+  const decodedData = data ? JSON.parse(decodeURIComponent(data)) : null;
+  // const feature = "아이디찾기";
+  // const [generatedText, setGeneratedText] = useState<IgeneratedText | null>(
+  //   null
+  // );
+  // const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    console.log(generatedTextData);
-    if (generatedTextData) {
-      setLoading(false);
-    }
-  }, [generatedTextData]);
+  // useEffect(() => {
+  //   const localData = localStorage.getItem("generatedTextData");
+  //   if (localData) {
+  //     const parsedData = JSON.parse(localData);
+  //     setGeneratedTextData(parsedData);
+  //   }
+  // }, []);
 
-  function getGeneratedText(
-    generatedTextData: IgeneratedText[]
-  ): IgeneratedText | undefined {
-    const data = generatedTextData.find((item) => item.feature === feature);
-    return data;
-  }
+  // function getGeneratedText(
+  //   generatedTextData: IgeneratedText[]
+  // ): IgeneratedText | undefined {
+  //   const data = generatedTextData.find((item) => item.feature === feature);
+  //   return data;
+  // }
 
-  useEffect(() => {
-    if (generatedTextData && generatedTextData.length > 0) {
-      const data = getGeneratedText(generatedTextData);
-      if (data) {
-        setGeneratedText(data);
-      }
-    }
-  }, [generatedTextData]);
+  // useEffect(() => {
+  //   if (generatedTextData && generatedTextData.length > 0 && !generatedText) {
+  //     const data = getGeneratedText(generatedTextData);
+  //     if (data) {
+  //       setGeneratedText(data);
+  //       setLoading(false);
+  //     }
+  //   }
+  // }, [generatedTextData, generatedText]);
 
-  if (loading || !generatedText) {
+  if (!decodedData) {
     return <div>Loading...</div>;
   }
 

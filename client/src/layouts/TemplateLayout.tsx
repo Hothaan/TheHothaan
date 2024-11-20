@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useParams } from "react-router-dom";
 import TemplateGeneratePage from "@pages/user/TemplateGeneratePage/TemplateGeneratePage";
 
 export default function TemplateLayout() {
@@ -8,7 +8,10 @@ export default function TemplateLayout() {
     <>
       <main css={full_height}>
         <Routes>
-          <Route path="/:templateName" element={<TemplateGeneratePage />} />
+          <Route
+            path="/:templateName/:data"
+            element={<TemplateGeneratePage />}
+          />
         </Routes>
       </main>
     </>

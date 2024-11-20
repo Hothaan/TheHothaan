@@ -25,19 +25,35 @@ export default function Header() {
 
   useEffect(() => {
     if (isMain) {
-      if (isScrolledPast) {
-        setIsMain(false);
-      } else {
-        setIsMain(true);
-      }
+      setIsMain(true);
+    } else {
+      setIsMain(false);
     }
-  }, [isMain, isScrolledPast]);
+  }, [isMain]);
+
+  useEffect(() => {
+    if (currentLocation === "/") {
+      setIsMain(true);
+    } else {
+      setIsMain(false);
+    }
+  }, [currentLocation]);
+
+  if (isMain) {
+    return (
+      <header css={header(!isScrolledPast)}>
+        <Logo isMain={!isScrolledPast} />
+        <GlobalNav isMain={!isScrolledPast} />
+        <UserMenu isMain={!isScrolledPast} />
+      </header>
+    );
+  }
 
   return (
-    <header css={header(isMain)}>
-      <Logo isMain={isMain} />
-      <GlobalNav isMain={isMain} />
-      <UserMenu isMain={isMain} />
+    <header css={header(false)}>
+      <Logo isMain={false} />
+      <GlobalNav isMain={false} />
+      <UserMenu isMain={false} />
     </header>
   );
 }

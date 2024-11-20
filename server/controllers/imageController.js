@@ -12,6 +12,7 @@ const saveImageFromURL = async (req, res) => {
 
   try {
     const browser = await puppeteer.launch({
+      // headless: false,
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
     const page = await browser.newPage();
@@ -21,14 +22,37 @@ const saveImageFromURL = async (req, res) => {
     await page.goto(url, { waitUntil: "networkidle0" });
 
     // 템플릿 URL로 이동
-    console.log(`Navigating to ${url}`);
+    console.log("Waiting for 5 seconds before navigation...");
+    // 1. URL 이동 전에 5초 대기
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+    console.log(`Navigating to ${url}...`);
     await page.goto(url, { waitUntil: "networkidle2" });
 
-    // 렌더링 확인
-    console.log("Waiting for template to render...");
-    await page.waitForSelector(".templateImage", { visible: true });
-    console.log(`Template has been rendered.`);
+    console.log("Checking for .templateImage...");
+    let elementFound = false;
+    let retries = 0;
 
+    // 2. 발견될 때까지 반복 확인 (최대 5번 시도, 각 시도 후 5초 대기)
+    while (!elementFound && retries < 5) {
+      elementFound = await page.evaluate(() => {
+        const element = document.querySelector(".templateImage");
+        return element !== null;
+      });
+
+      if (!elementFound) {
+        retries++;
+        console.log(`.templateImage not found, retrying... (${retries}/5)`);
+        await new Promise((resolve) => setTimeout(resolve, 5000)); // 5초 대기
+      }
+    }
+
+    if (!elementFound) {
+      throw new Error(".templateImage not found after multiple retries.");
+    }
+
+    console.log(".templateImage found! Proceeding to capture...");
+
+    // 3. 캡처 진행
     // 전체 페이지를 캡처
     const imageBuffer = await page.screenshot({ fullPage: true });
 
@@ -41,6 +65,8 @@ const saveImageFromURL = async (req, res) => {
     }
 
     fs.writeFileSync(imagePath, imageBuffer);
+
+    console.log(`${imageName} Screenshot saved`);
 
     await browser.close();
 

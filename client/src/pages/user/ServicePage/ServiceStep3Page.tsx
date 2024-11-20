@@ -264,14 +264,13 @@ export default function ServiceStep3Page() {
         if (response.statusText === "OK") {
           // 상태 업데이트 후 saveImages 실행
           setGeneratedTextData(response.data.responses);
-          sessionStorage.setItem(
-            "generatedTextData",
-            JSON.stringify(response.data.responses)
-          );
-          localStorage.setItem(
-            "generatedTextData",
-            JSON.stringify(response.data.responses)
-          );
+          const data = response.data.responses.map((item: IgeneratedText) => {
+            return (item = {
+              ...item,
+              feature: item.feature.split(" ").join(""),
+            });
+          });
+          localStorage.setItem("generatedTextData", JSON.stringify(data));
           console.log("Generated text data set, calling saveImages...");
           // 상태 업데이트 후 호출
         }
@@ -300,8 +299,8 @@ export default function ServiceStep3Page() {
   // 전역변수도 탭간 공유 안됨
 
   // 내일 아래 2개 방법 테스트 해보기
-  // 1. localStorage는 탭간 공유 가능
-  // 2. 혹은 쿼리 파라미터 또는 url로 전달하는 방법 사용 가능 -> 생각해보니 이건 api를 수정해야 하네
+  // 1. localStorage는 탭간 공유 가능 -> 서버에서 못읽어와서 실패
+  // 2. 혹은 쿼리 파라미터 또는 url로 전달하는 방법 사용 가능 -> 이 방법으로 다시 시도
 
   // 요청을 두번 보내야 제대로 작동하는 이유가 뭘까? -> 해결
 
@@ -314,12 +313,17 @@ export default function ServiceStep3Page() {
     try {
       const projectType = serviceDefaultData.serviceType.text as string;
       const listData = generatedTextData.map((item: IgeneratedText) => {
-        return item.feature;
+        return item.feature.split(" ").join("");
       });
+      console.log(listData);
       const parameterArr = listData.map((item) => `${projectType}-${item}`);
+      const dataArr = generatedTextData.map((item) =>
+        encodeURIComponent(JSON.stringify(item.content.content))
+      );
+      console.log(dataArr);
       const responses = await Promise.all(
-        parameterArr.map(async (item) => {
-          return await saveImage(isProduction, item);
+        parameterArr.map(async (item, idx) => {
+          return await saveImage(isProduction, item, dataArr[idx]);
         })
       );
       if (responses.every((response) => response.statusText === "OK")) {

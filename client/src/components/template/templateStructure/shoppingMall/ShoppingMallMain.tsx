@@ -2,13 +2,20 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Header from "@components/template/common/header/Header";
 import Footer from "@components/template/common/footer/Footer";
+import Mainbanner from "@components/template/main/Mainbanner";
+import ProductListMain from "@components/template/main/ProductListMain";
+import Review from "@components/template/product/Review";
+import ServiceIntroduction from "@components/template/service/ServiceIntroduction";
+import ServiceContact from "@components/template/service/ServiceContact";
 import { IgeneratedText } from "@components/service/modal/FullPageModalEditable";
-import OrderList from "@components/template/mypage/OrderList";
 
-export default function ShoppingMallOrderList() {
+export default function ShoppingMallMain() {
   const { data } = useParams();
   const decodedData = data ? JSON.parse(decodeURIComponent(data)) : null;
-  // const feature = "주문목록";
+  // const [generatedTextData, setGeneratedTextData] = useState<
+  //   IgeneratedText[] | null
+  // >(null);
+  // const feature = "메인";
   // const [generatedText, setGeneratedText] = useState<IgeneratedText | null>(
   //   null
   // );
@@ -37,7 +44,7 @@ export default function ShoppingMallOrderList() {
   //       setLoading(false);
   //     }
   //   }
-  // }, [generatedTextData, generatedText]);
+  // }, [decodedData]);
 
   if (!decodedData) {
     return <div>Loading...</div>;
@@ -46,8 +53,22 @@ export default function ShoppingMallOrderList() {
   return (
     <div className="templateImage">
       <Header />
-      <OrderList />
+      <Mainbanner
+        isEditable={true}
+        title={decodedData?.title}
+        desc={decodedData?.desc}
+      />
+      <ProductListMain option="main" />
+      <Review />
+      <ServiceIntroduction />
+      <ProductListMain option="list" />
+      <ServiceContact />
       <Footer />
     </div>
   );
 }
+/*
+1.
+구조를 feature 마다 미리 저장해두고
+구조에 맞는 컴포넌트마다 text를 넘겨줘서 렌더링
+*/

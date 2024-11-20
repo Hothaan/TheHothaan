@@ -33,12 +33,12 @@ export default function ServiceStep2Page() {
   const { serviceDefaultData } = serviceDefaultDataStore();
   const [formData, setFormData] = useState<IformData>({
     device: {
-      number: serviceDefaultData.device.number,
-      text: serviceDefaultData.device.text,
+      number: null,
+      text: null,
     },
     service: {
-      number: serviceDefaultData.serviceType.number,
-      text: serviceDefaultData.serviceType.text,
+      number: null,
+      text: null,
     },
   });
 
@@ -49,36 +49,34 @@ export default function ServiceStep2Page() {
     null
   );
 
-  // useEffect(() => {
-  //   if (window.sessionStorage.getItem("serviceData") !== null) {
-  //     let sessionData = JSON.parse(
-  //       window.sessionStorage.getItem("serviceData") as string
-  //     );
-  //     setFormData({
-  //       device: sessionData.device,
-  //       service: sessionData.serviceType,
-  //     });
-  //   }
-  //   if (
-  //     serviceDefaultData.device.number &&
-  //     serviceDefaultData.device.text &&
-  //     serviceDefaultData.serviceType.number &&
-  //     serviceDefaultData.serviceType.text
-  //   ) {
-  //     setFormData({
-  //       device: {
-  //         number: serviceDefaultData.device.number,
-  //         text: serviceDefaultData.device.text,
-  //       },
-  //       service: {
-  //         number: serviceDefaultData.serviceType.number,
-  //         text: serviceDefaultData.serviceType.text,
-  //       },
-  //     });
-  //   }
-  // }, []);
-
-  // console.log(serviceDefaultData);
+  useEffect(() => {
+    if (window.sessionStorage.getItem("serviceData") !== null) {
+      const sessionData = JSON.parse(
+        window.sessionStorage.getItem("serviceData") as string
+      );
+      setFormData({
+        device: sessionData.device,
+        service: sessionData.serviceType,
+      });
+    }
+    // if (
+    //   serviceDefaultData.device.number &&
+    //   serviceDefaultData.device.text &&
+    //   serviceDefaultData.serviceType.number &&
+    //   serviceDefaultData.serviceType.text
+    // ) {
+    //   setFormData({
+    //     device: {
+    //       number: serviceDefaultData.device.number,
+    //       text: serviceDefaultData.device.text,
+    //     },
+    //     service: {
+    //       number: serviceDefaultData.serviceType.number,
+    //       text: serviceDefaultData.serviceType.text,
+    //     },
+    //   });
+    // }
+  }, []);
 
   async function fetchServiceTypes() {
     if (!loading) {
