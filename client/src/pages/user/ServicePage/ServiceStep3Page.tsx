@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { serviceStepStore } from "@store/serviceStepStore";
 import { serviceDefaultDataStore } from "@store/serviceDefaultDataStore";
 import { IloadingModal } from "@components/common/ui/Modal/LoadingModal";
@@ -38,6 +38,8 @@ export interface IsendData {
 
 export default function ServiceStep3Page() {
   const { generatedTextData, setGeneratedTextData } = generatedTextDataStore();
+  const prevGeneratedTextData = useRef<IgeneratedText[]>([]);
+
   const { handleNavigation } = useNavigation();
   const { currentLocation } = useLocationControl();
   const totalStep = 5;
@@ -86,6 +88,21 @@ export default function ServiceStep3Page() {
       fetchServiceTypeMenu();
     }
   }, []);
+
+  useEffect(() => {
+    // 새롭게 값이 변경된 경우에만 실행
+    if (
+      generatedTextData.length > 0 &&
+      JSON.stringify(prevGeneratedTextData.current) !==
+        JSON.stringify(generatedTextData)
+    ) {
+      console.log("Generated text data has changed, calling saveImages...");
+      saveImages();
+    }
+
+    // 현재 값을 ref에 저장하여 다음 렌더링에서 비교
+    prevGeneratedTextData.current = generatedTextData;
+  }, [generatedTextData]);
 
   useEffect(() => {
     if (checkAllOptionSelected(formData)) {
@@ -232,8 +249,7 @@ export default function ServiceStep3Page() {
   }
 
   async function saveData() {
-    if (!loading && sendData) {
-      setLoading(true);
+    if (sendData) {
       try {
         const response = await createProject(isProduction, sendData);
         if (response.statusText === "Created") {
@@ -257,8 +273,7 @@ export default function ServiceStep3Page() {
 
   async function fetchGeneratedText() {
     const projectId = sessionStorage.getItem("projectId");
-    if (!loading && projectId) {
-      setLoading(true);
+    if (projectId) {
       try {
         const response = await generateText(isProduction, parseInt(projectId));
         if (response.statusText === "OK") {
@@ -271,74 +286,60 @@ export default function ServiceStep3Page() {
             });
           });
           localStorage.setItem("generatedTextData", JSON.stringify(data));
-          console.log("Generated text data set, calling saveImages...");
-          // 상태 업데이트 후 호출
         }
       } catch (error) {
         console.error("API 요청 실패:", error);
       } finally {
-        setLoading(false);
+        console.log("generatedTextData done");
       }
     }
   }
 
-  useEffect(() => {
-    if (generatedTextData.length > 0) {
-      saveImages();
-    }
-  }, [generatedTextData]);
-
-  // 템플릿이 렌더링됐는지를 확인하고나서 요청을 보내야할것같다
-  // 렌더링 됐는지 상태값을 넘길 방법?
-  // 캡쳐 요청을 보내는 위치를 template 페이지로 변경해야....?하나?
-
-  // 요청을 각 템플릿에 담아두고 각 요청이 완료됐는지를 전역변수로 관리
-  // 요청을 실행할 타이밍은 generateTextData가 생성되었을 때로 컨트롤?
-
-  // sessionStorage 는 탭간 공유가 안됨
-  // 전역변수도 탭간 공유 안됨
-
-  // 내일 아래 2개 방법 테스트 해보기
-  // 1. localStorage는 탭간 공유 가능 -> 서버에서 못읽어와서 실패
-  // 2. 혹은 쿼리 파라미터 또는 url로 전달하는 방법 사용 가능 -> 이 방법으로 다시 시도
-
-  // 요청을 두번 보내야 제대로 작동하는 이유가 뭘까? -> 해결
-
-  // 값을 컨트롤하는 로직을 store로 하던지 session으로 하던지 하나로 통일해야할것같은데
-  // 자꾸 step2의 값이 null로 리셋되는 현상이 발생, 상태 관리가 꼬인 것 같다. -> 해결
+  // useEffect(() => {
+  //   if (generatedTextData.length > 0) {
+  //     saveImages();
+  //   }
+  // }, [generatedTextData]);
 
   async function saveImages() {
-    console.log("Saving images...");
-    setLoading(true);
-    try {
-      const projectType = serviceDefaultData.serviceType.text as string;
-      const listData = generatedTextData.map((item: IgeneratedText) => {
-        return item.feature.split(" ").join("");
-      });
-      console.log(listData);
-      const parameterArr = listData.map((item) => `${projectType}-${item}`);
-      const dataArr = generatedTextData.map((item) =>
-        encodeURIComponent(JSON.stringify(item.content.content))
-      );
-      console.log(dataArr);
-      const responses = await Promise.all(
-        parameterArr.map(async (item, idx) => {
-          return await saveImage(isProduction, item, dataArr[idx]);
-        })
-      );
-      if (responses.every((response) => response.statusText === "OK")) {
-        const pathArr = responses.map((response) => response.data.path);
-        const urlArr = responses.map((response) => response.data.url);
-        console.log(pathArr, urlArr);
-      } else {
-        console.error("Some images failed to save.");
+    if (generatedTextData.length > 0) {
+      setLoading(true);
+      try {
+        const projectType = serviceDefaultData.serviceType.text as string;
+        const listData = generatedTextData.map((item: IgeneratedText) => {
+          return item.feature.split(" ").join("");
+        });
+        const parameterArr = listData.map((item) => `${projectType}-${item}`);
+        const dataArr = generatedTextData.map((item) =>
+          encodeURIComponent(JSON.stringify(item.content.content))
+        );
+        const responses = await Promise.all(
+          parameterArr.map(async (item, idx) => {
+            return await saveImage(isProduction, item, dataArr[idx]);
+          })
+        );
+        if (responses.every((response) => response.statusText === "OK")) {
+          const imageNameArr = responses.map(
+            (response) => response.data.imageName
+          );
+          const imageNameMapping = imageNameArr.map((item, idx) => {
+            return {
+              imageName: item,
+              parameter: parameterArr[idx],
+            };
+          });
+          localStorage.setItem("imageName", JSON.stringify(imageNameMapping));
+        } else {
+          console.error("Some images failed to save.");
+        }
+      } catch (error) {
+        console.error("API 요청 실패:", error);
+      } finally {
+        console.log(`Navigating to /service/step${currentStep + 1}`);
+        setIsModalOpen(false);
+        handleNavigation(`/service/step${currentStep + 1}`);
+        // setTimeout(() => handleNavigation(`/service/step${currentStep + 1}`), 0);
       }
-    } catch (error) {
-      console.error("API 요청 실패:", error);
-    } finally {
-      setLoading(false);
-      setIsModalOpen(false);
-      handleNavigation(`/service/step${currentStep + 1}`);
     }
   }
 

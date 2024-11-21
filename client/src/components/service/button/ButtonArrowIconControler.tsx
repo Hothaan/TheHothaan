@@ -39,6 +39,8 @@ const container = css`
   border-radius: 70px;
   border: 1px solid var(--DEDEDE, #dedede);
 
+  background-color: #fff;
+
   svg * {
     fill: #747474;
   }

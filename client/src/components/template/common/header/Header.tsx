@@ -6,7 +6,12 @@ import { ReactComponent as Bag } from "@svgs/template/bagTemplate.svg";
 import { ReactComponent as Search } from "@svgs/template/searchTemplate.svg";
 import NavItem from "@components/template/commonComponent/NavItem";
 
-export default function Header() {
+export interface Iheader {
+  categories?: string[];
+}
+
+export default function Header(prop: Iheader) {
+  const { categories } = prop;
   return (
     <div css={wrap}>
       <div css={logo_wrap}>
@@ -16,12 +21,20 @@ export default function Header() {
         <p css={logo_text}>logo</p>
       </div>
       <ul css={nav_container}>
-        <NavItem isOption={true} />
-        <NavItem isOption={true} />
-        <NavItem isOption={false} />
-        <NavItem isOption={false} />
-        <NavItem isOption={false} />
-        <NavItem isOption={false} />
+        {categories ? (
+          categories.map((category, idx) => (
+            <NavItem key={idx} isOption={false} category={category} />
+          ))
+        ) : (
+          <>
+            <NavItem isOption={true} />
+            <NavItem isOption={true} />
+            <NavItem isOption={false} />
+            <NavItem isOption={false} />
+            <NavItem isOption={false} />
+            <NavItem isOption={false} />
+          </>
+        )}
       </ul>
       <div css={user_container}>
         <User />
@@ -31,7 +44,6 @@ export default function Header() {
             <p css={badge_text}>10</p>
           </div>
         </div>
-
         <Search />
       </div>
     </div>

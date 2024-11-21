@@ -3,15 +3,12 @@ import { useParams } from "react-router-dom";
 import Header from "@components/template/common/header/Header";
 import Footer from "@components/template/common/footer/Footer";
 import { IgeneratedText } from "@components/service/modal/FullPageModalEditable";
-import Cart from "@components/template/mypage/Cart";
+import ProductDetail from "@components/template/product/ProductDetail";
 
-export default function ShoppingMallCart() {
+export default function ShoppingMallProductDetail() {
   const { data } = useParams();
   const decodedData = data ? JSON.parse(decodeURIComponent(data)) : null;
-  // const [generatedTextData, setGeneratedTextData] = useState<
-  //   IgeneratedText[] | null
-  // >(null);
-  // const feature = "장바구니";
+  // const feature = "상품상세";
   // const [generatedText, setGeneratedText] = useState<IgeneratedText | null>(
   //   null
   // );
@@ -49,7 +46,7 @@ export default function ShoppingMallCart() {
   return (
     <div className="templateImage">
       <Header />
-      <Cart />
+      <ProductDetail data={decodedData.content.content} />
       <Footer />
     </div>
   );

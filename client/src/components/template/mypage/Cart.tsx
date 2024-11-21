@@ -11,6 +11,10 @@ import { ReactComponent as Caption } from "@svgs/template/productCaption.svg";
 import Tabs from "../commonComponent/Tabs";
 import ImageBox from "../commonComponent/ImageBox";
 
+export interface ItemplateData {
+  data: { [key: string]: string };
+}
+
 function CartTitle() {
   const container = css`
     width: 100%;
@@ -57,7 +61,8 @@ function CartTitle() {
   );
 }
 
-function CartOrder() {
+function CartOrder(prop: ItemplateData) {
+  const { data } = prop;
   const container = css`
     display: flex;
     gap: 50px;
@@ -359,7 +364,7 @@ function CartOrder() {
                   borderRadius="0"
                 />
                 <div css={product_info_container}>
-                  <p css={text_style}>제품 이름입니다</p>
+                  <p css={text_style}>{data.title || "제품 이름입니다"}</p>
                   <p css={text_style}>￦5,600,000</p>
                 </div>
               </div>
@@ -593,7 +598,8 @@ function CartInfo() {
   );
 }
 
-export default function Cart() {
+export default function Cart(prop: ItemplateData) {
+  const { data } = prop;
   const container = css`
     width: 100%;
   `;
@@ -602,7 +608,7 @@ export default function Cart() {
       <ContentsWrap>
         <div css={container}>
           <CartTitle />
-          <CartOrder />
+          <CartOrder data={data} />
           <CartInfo />
         </div>
       </ContentsWrap>

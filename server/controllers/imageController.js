@@ -77,6 +77,7 @@ const saveImageFromURL = async (req, res) => {
       message: "Image saved successfully",
       path: imagePath,
       url: imageUrl,
+      imageName: imageName,
     });
   } catch (error) {
     console.error("Error generating image from URL:", error);

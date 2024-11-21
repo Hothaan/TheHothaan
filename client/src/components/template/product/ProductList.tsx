@@ -7,6 +7,10 @@ import NavItem from "../commonComponent/NavItem";
 import { ReactComponent as Heart } from "@svgs/template/heart.svg";
 import { ReactComponent as Bag } from "@svgs/template/bag.svg";
 
+export interface IproductList {
+  categories?: string[];
+}
+
 function ProductListItem() {
   const slide_item = css`
     width: 100%;
@@ -126,7 +130,8 @@ function ProductListItem() {
   );
 }
 
-export default function ProductList() {
+export default function ProductList(prop: IproductList) {
+  const { categories } = prop;
   const item_rows_container = css`
     display: flex;
     flex-direction: column;
@@ -160,12 +165,20 @@ export default function ProductList() {
           <div css={title_wrap}>
             <Title title="category" transform="uppercase" marginBottom={57} />
             <ul css={category_wrap}>
-              <NavItem isOption={true} />
-              <NavItem isOption={true} />
-              <NavItem isOption={false} />
-              <NavItem isOption={false} />
-              <NavItem isOption={false} />
-              <NavItem isOption={false} />
+              {categories ? (
+                categories.map((category, idx) => (
+                  <NavItem key={idx} isOption={false} category={category} />
+                ))
+              ) : (
+                <>
+                  <NavItem isOption={true} />
+                  <NavItem isOption={true} />
+                  <NavItem isOption={false} />
+                  <NavItem isOption={false} />
+                  <NavItem isOption={false} />
+                  <NavItem isOption={false} />
+                </>
+              )}
             </ul>
           </div>
           <div css={item_rows_container}>

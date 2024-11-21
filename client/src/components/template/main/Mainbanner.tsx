@@ -29,12 +29,12 @@ export default function Mainbanner(prop: ImainBanner) {
           }}
         />
         <div css={container}>
-          {isEditable ? (
+          {/* {isEditable ? (
             <EditableText text={title} defaultCss={pass_h1} />
           ) : (
-            <p css={h1}>{title}</p>
-          )}
-
+           
+          )} */}
+          <p css={pass_h1}>{title}</p>
           <p css={desc_style}>{desc}</p>
           <TemplateButton type="default" text="button" />
         </div>
@@ -74,20 +74,6 @@ const pass_h1: Record<string, string> = {
   lineHeight: "150%",
   textTransform: "capitalize",
 };
-
-const h1 = css(JSON.stringify(pass_h1));
-
-// const h1 = css`
-//   margin-bottom: 30px;
-
-//   color: #486284;
-//   font-family: Inter;
-//   font-size: 96px;
-//   font-style: normal;
-//   font-weight: 900;
-//   line-height: 150%;
-//   text-transform: capitalize;
-// `;
 
 const desc_style = css`
   word-break: keep-all;

@@ -14,7 +14,12 @@ import { ReactComponent as Bag } from "@svgs/template/bag.svg";
 import { ReactComponent as Plus } from "@svgs/template/productAmountPlus.svg";
 import { ReactComponent as Minus } from "@svgs/template/productAmountMinus.svg";
 
-function ProductDetailInfo() {
+export interface IproductDetail {
+  data: { [key: string]: string };
+}
+
+function ProductDetailInfo(prop: IproductDetail) {
+  const { data } = prop;
   const top_container = css`
     width: 100%;
     display: flex;
@@ -89,7 +94,7 @@ function ProductDetailInfo() {
 
   const product_desc = css`
     color: #999;
-    text-align: center;
+    text-align: left;
 
     /* 15 */
     font-family: Inter;
@@ -209,16 +214,16 @@ function ProductDetailInfo() {
         </div>
         <div css={prodcut_info_container}>
           <TemplateBadge text="카테고리" />
-          <p css={product_name}>상품제목입니다</p>
+          <p css={product_name}>{data.title || "상품제목입니다"}</p>
           <div css={product_price_container}>
             <p css={product_price}>32,000원</p>
             <p css={product_price_sale}>32,000원</p>
           </div>
-          <p css={product_desc}>상품 설명 내용입니다. 상품 설명 내용입니다.</p>
+          <p css={product_desc}>{data.desc || "상품 설명 내용입니다."}</p>
         </div>
         <div css={product_amount_container}>
           <div css={product_amount_controller_container}>
-            <p css={product_amount_name}>상품제목입니다 상품제목입니다</p>
+            <p css={product_amount_name}>{data.title || "상품제목입니다"}</p>
             <div css={product_amount_controller}>
               <div css={icon_container}>
                 <Minus />
@@ -290,7 +295,8 @@ function ProductDetailReview() {
   );
 }
 
-export default function ProductDetail() {
+export default function ProductDetail(prop: IproductDetail) {
+  const { data } = prop;
   const container = css`
     display: flex;
     flex-direction: column;
@@ -302,7 +308,7 @@ export default function ProductDetail() {
     <OuterWrap padding="200px 0">
       <ContentsWrap>
         <div css={container}>
-          <ProductDetailInfo />
+          <ProductDetailInfo data={data} />
           <ProductDetailAccordion />
           <ProductDetailList />
           <ProductDetailReview />

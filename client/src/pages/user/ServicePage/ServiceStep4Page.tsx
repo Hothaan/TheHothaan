@@ -2,7 +2,10 @@
 import { css } from "@emotion/react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { serviceDefaultDataStore } from "@store/serviceDefaultDataStore";
+import {
+  serviceDefaultDataStore,
+  TserviceDefaultData,
+} from "@store/serviceDefaultDataStore";
 import ButtonArrowIcon from "@components/service/button/ButtonArrowIcon";
 import { IbuttonArrow } from "@components/service/button/ButtonArrowIcon";
 import { ReactComponent as Edit } from "@svgs/service/edit.svg";
@@ -19,16 +22,39 @@ import ButtonArrowIconControler, {
   IbuttonArrowControler,
 } from "@components/service/button/ButtonArrowIconControler";
 import { IgeneratedText } from "@components/service/modal/FullPageModalEditable";
-import { generatedTextDataStore } from "@store/generatedTextDataStore";
-import { ImageSaveUrlStore } from "@store/imageSaveUrlStore";
+import Loading from "@components/common/ui/Loading/loading";
+
+export type TimageName = {
+  imageName: string;
+  parameter: string;
+};
 
 export default function ServicePreviewPage() {
-  const { generatedTextData } = generatedTextDataStore();
-  const { serviceDefaultData } = serviceDefaultDataStore();
-  const { imageSaveUrl, setImageSaveUrl } = ImageSaveUrlStore();
+  const [generatedTextData, setGeneratedTextData] = useState<
+    IgeneratedText[] | null
+  >(null);
+  // const { serviceDefaultData } = serviceDefaultDataStore();
+  const [serviceDefaultData, setServiceDefaultData] =
+    useState<TserviceDefaultData | null>(null);
   const [isFullpageModalOpen, setIsFullpageModalOpen] = useState(false);
   const [isLoadingModalOpen, setIsLoadingModalOpen] = useState(false);
   const navigate = useNavigate();
+  const [imageNameArr, setImageNameArr] = useState<TimageName[] | null>(null);
+
+  useEffect(() => {
+    const sessionData = sessionStorage.getItem("serviceData");
+    if (sessionData) {
+      setServiceDefaultData(JSON.parse(sessionData));
+    }
+  }, []);
+
+  useEffect(() => {
+    const localData = localStorage.getItem("generatedTextData");
+    if (localData) {
+      setGeneratedTextData(JSON.parse(localData));
+    }
+  }, []);
+
   const buttonPrevPage: IbuttonArrow = {
     direction: "left",
     onClick: () => {
@@ -50,9 +76,7 @@ export default function ServicePreviewPage() {
     isOpen: isLoadingModalOpen,
     content: {
       title:
-        serviceDefaultData.serviceTitle === ""
-          ? "프로젝트"
-          : serviceDefaultData.serviceTitle,
+        (serviceDefaultData && serviceDefaultData.serviceTitle) || "프로젝트",
       desc: [
         "기획안 파일을 생성 중이예요!",
         <br key="1" />,
@@ -78,22 +102,10 @@ export default function ServicePreviewPage() {
     if (data) {
       setListData(data);
     }
-  }, []);
+  }, [generatedTextData]);
 
-  function makeImageSaveUrlArr(projectType: string, listData: string[]) {
-    return listData.map((item) => `${projectType}-${item}`);
-  }
-
-  useEffect(() => {
-    if (listData.length > 0) {
-      setImageSaveUrl(
-        makeImageSaveUrlArr(
-          serviceDefaultData.serviceType.text as string,
-          listData
-        )
-      );
-    }
-  }, [listData]);
+  console.log(imageNameArr);
+  console.log(listData);
 
   const [currentIdx, setCurrentIdx] = useState<number>(0);
   const [selectedItem, setSelectedItem] = useState<string>(listData[0]);
@@ -103,6 +115,13 @@ export default function ServicePreviewPage() {
       setSelectedItem(listData[0]);
     }
   }, [listData]);
+
+  useEffect(() => {
+    const localData = localStorage.getItem("imageName");
+    if (localData) {
+      setImageNameArr(JSON.parse(localData));
+    }
+  }, [selectedItem]);
 
   function handleSelectItem(e: React.MouseEvent<HTMLLIElement>) {
     const idx = parseInt(e.currentTarget.dataset.idx || "0");
@@ -181,7 +200,9 @@ export default function ServicePreviewPage() {
   }
 
   const fullPageModal = {
-    projectType: serviceDefaultData.serviceType.text as string,
+    imageNameArr: imageNameArr,
+    projectType:
+      (serviceDefaultData && serviceDefaultData.serviceType.text) || "쇼핑몰",
     data: generatedTextData,
     listData: listData,
     selectedItem: selectedItem,
@@ -200,6 +221,14 @@ export default function ServicePreviewPage() {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
+
+  if (!imageNameArr) {
+    return (
+      <>
+        <Loading />
+      </>
+    );
+  }
 
   return (
     <>
@@ -220,23 +249,31 @@ export default function ServicePreviewPage() {
               <p css={list_title}>모든화면</p>
             </div>
             <ul css={list}>
-              {listData.map((item, idx) => (
-                <li
-                  css={[list_item, list_item_color(selectedItem === item)]}
-                  onClick={handleSelectItem}
-                  onDoubleClick={() => {
-                    handleOpenFullPageModalEditable(item);
-                  }}
-                  data-idx={idx}
-                  key={idx}
-                >
-                  <div css={image_container}></div>
-                  <div css={list_item_info_container(selectedItem === item)}>
-                    <p css={list_item_title}>{item}</p>
-                    {selectedItem === item && <Edit />}
-                  </div>
-                </li>
-              ))}
+              {imageNameArr &&
+                listData.length > 0 &&
+                listData.map((item, idx) => (
+                  <li
+                    css={[list_item, list_item_color(selectedItem === item)]}
+                    onClick={handleSelectItem}
+                    onDoubleClick={() => {
+                      handleOpenFullPageModalEditable(item);
+                    }}
+                    data-idx={idx}
+                    key={idx}
+                  >
+                    <div css={image_container}>
+                      <img
+                        src={`/images/${imageNameArr[idx].imageName}`}
+                        alt="template thumbnail"
+                        css={image_style}
+                      />
+                    </div>
+                    <div css={list_item_info_container(selectedItem === item)}>
+                      <p css={list_item_title}>{item}</p>
+                      {selectedItem === item && <Edit />}
+                    </div>
+                  </li>
+                ))}
             </ul>
             <div css={aside_controler}>
               <ButtonArrowIconControler {...buttonSelectPrevItemAside} />
@@ -252,7 +289,21 @@ export default function ServicePreviewPage() {
             </p>
           </aside>
           <div css={preview_container}>
-            <div css={preview}></div>
+            {imageNameArr && listData.length > 0 ? (
+              <div css={preview}>
+                <img
+                  src={`/images/${
+                    imageNameArr[
+                      listData.findIndex((item) => item === selectedItem)
+                    ]?.imageName || ""
+                  }`}
+                  alt="template thumbnail"
+                  css={preview_style}
+                />
+              </div>
+            ) : (
+              <Loading />
+            )}
             <div css={controller}>
               <ButtonArrowIconControler {...buttonSelectPrevItem} />
               <p css={pagination}>
@@ -344,10 +395,11 @@ const list_item = css`
   flex-direction: column;
   justify-content: space-between;
 
-  border-radius: 10px;
+  border-radius: 12px;
   position: relative;
   border: 2px solid transparent;
   background: var(--FFF, #fff);
+  overflow: hidden;
 
   &:before {
     content: "";
@@ -386,6 +438,7 @@ const list_item_info_container = (isSelected: boolean) => css`
   flex-shrink: 0;
   align-self: stretch;
   border-radius: 0 0 8px 8px;
+
   background: ${isSelected
     ? "linear-gradient(to right, #3b82f6, #a855f7)"
     : "rgba(0, 0, 0, 0.70)"};
@@ -409,6 +462,12 @@ const image_container = css`
   align-self: stretch;
   flex-wrap: wrap;
   background-color: #f6f6f6;
+  overflow: hidden;
+`;
+
+const image_style = css`
+  object-fit: cover;
+  width: 100%;
 `;
 const preview_container = css`
   display: flex;
@@ -419,14 +478,18 @@ const preview_container = css`
 const preview = css`
   width: 100%;
   display: flex;
-  height: 3806px;
-  padding: 20px;
+  overflow: hidden;
   align-items: flex-start;
   gap: 14px;
-
   border-radius: 20px;
   border: 1px solid var(--DEDEDE, #dedede);
   background: url(<path-to-image>) lightgray 50% / cover no-repeat, #f6f6f6;
+`;
+
+const preview_style = css`
+  width: 100%;
+  object-fit: cover;
+  border-radius: 20px;
 `;
 const controller = css`
   position: fixed;

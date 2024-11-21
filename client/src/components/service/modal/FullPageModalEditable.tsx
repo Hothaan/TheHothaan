@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { IloadingModal } from "@components/common/ui/Modal/LoadingModal";
 import LoadingModal from "@components/common/ui/Modal/LoadingModal";
 import { serviceDefaultDataStore } from "@store/serviceDefaultDataStore";
@@ -9,8 +9,10 @@ import { ReactComponent as LogoLight } from "@svgs/common/logoLight.svg";
 import Button, { Ibutton } from "@components/common/button/Button";
 import NavigationEditable from "../navigation/NavigationEditable";
 import EditableText from "../editableText/EditableText";
-import { templateMap } from "@components/template/templateMapping";
-
+import { templateMapForCapture } from "@components/template/templateForCaptureMapping";
+import { TimageName } from "@pages/user/ServicePage/ServiceStep4Page";
+import { TserviceDefaultData } from "@store/serviceDefaultDataStore";
+import { templateMapForRender } from "@components/template/templateForRenderMapping";
 /* 수정 예정 */
 // interface IgeneratedText {
 //   menu: string;
@@ -25,11 +27,12 @@ export interface IgeneratedText {
   content: {
     menu: string;
     feature: string;
-    content: { [key: string]: string };
+    content: { [key: string]: any };
   };
 }
 
 interface IFullPageModal {
+  imageNameArr: TimageName[] | null;
   projectType: string;
   data: IgeneratedText[] | null;
   listData: string[];
@@ -40,6 +43,7 @@ interface IFullPageModal {
 
 export default function FullPageModalEditable(prop: IFullPageModal) {
   const {
+    imageNameArr,
     projectType,
     data,
     listData,
@@ -47,13 +51,17 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
     onClick,
     setSelectedItem,
   } = prop;
+
   const [isToast, setIsToast] = useState(true);
-  const { serviceDefaultData } = serviceDefaultDataStore();
+
+  // const { serviceDefaultData } = serviceDefaultDataStore();
+  const [serviceDefaultData, setServiceDefaultData] =
+    useState<TserviceDefaultData | null>(null);
   const [isLoadingModalOpen, setIsLoadingModalOpen] = useState(false);
   const [templateKey, setTemplateKey] = useState<string>(
     `${projectType}-${selectedItem}`
   );
-  const TemplateToRender = templateMap[templateKey];
+  const TemplateToRender = templateMapForRender[templateKey];
 
   const toast = {
     text: "✅ ESC를 누르거나 상단 우측 축소 버튼을 눌러 풀화면 화면 종료할 수 있어요.",
@@ -62,8 +70,17 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
   };
 
   useEffect(() => {
+    const sessionData = sessionStorage.getItem("serviceData");
+    if (sessionData) {
+      setServiceDefaultData(JSON.parse(sessionData));
+    }
+  }, []);
+
+  useEffect(() => {
     setTemplateKey(`${projectType}-${selectedItem}`);
   }, [selectedItem]);
+
+  console.log(templateKey);
 
   const buttonSave: Ibutton = {
     size: "full",
@@ -78,9 +95,7 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
     isOpen: isLoadingModalOpen,
     content: {
       title:
-        serviceDefaultData.serviceTitle === ""
-          ? "프로젝트"
-          : serviceDefaultData.serviceTitle,
+        (serviceDefaultData && serviceDefaultData.serviceTitle) || "프로젝트",
       desc: [
         "기획안 파일을 수정 중이예요!",
         <br key="1" />,
@@ -92,6 +107,7 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
   };
 
   const navigationEditable = {
+    imageNameArr: imageNameArr,
     listData: listData,
     selectedItem: selectedItem,
     setSelectedItem: setSelectedItem,
@@ -128,7 +144,7 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
         </div>
         <div css={content_wrap}>
           <div css={content_container}>
-            <div css={content}>
+            <div css={content} className="content">
               <div css={scroll_item}>
                 {TemplateToRender && <TemplateToRender data={data} />}
                 {/* <EditableText /> */}
@@ -217,22 +233,22 @@ const content_wrap = css`
 const content_container = css`
   width: 100%;
   height: 100%;
-  padding: 20px 0;
+  // padding: 20px 0;
   max-width: 1920px;
 `;
 
 const content = css`
   width: 100%;
-  height: calc(100% - 40px);
-  border-radius: 20px;
+  height: 100%;
+  // border-radius: 20px;
   overflow-y: auto;
 `;
 
 const scroll_item = css`
   width: 100%;
-  border-radius: 20px;
+  // border-radius: 20px;
   background: #fff;
-  height: 2000px;
+  height: 1000px;
 
   /* 임시 */
   // padding: 100px;

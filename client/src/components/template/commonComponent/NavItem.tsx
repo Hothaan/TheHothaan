@@ -3,14 +3,15 @@ import { css } from "@emotion/react";
 import { ReactComponent as ChevDown } from "@svgs/template/chevDownTemplate.svg";
 
 export interface InavItem {
+  category?: string;
   isOption: boolean;
 }
 
 export default function NavItem(prop: InavItem) {
-  const { isOption } = prop;
+  const { category, isOption } = prop;
   return (
     <li css={nav_item}>
-      <p css={nav_text}>category</p>
+      <p css={nav_text}>{category || "category"}</p>
       {isOption && <ChevDown />}
     </li>
   );

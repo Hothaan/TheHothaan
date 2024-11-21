@@ -54,7 +54,7 @@ export default function ShoppingMallMain() {
     <div className="templateImage">
       <Header />
       <Mainbanner
-        isEditable={true}
+        isEditable={false}
         title={decodedData?.title}
         desc={decodedData?.desc}
       />
@@ -67,8 +67,3 @@ export default function ShoppingMallMain() {
     </div>
   );
 }
-/*
-1.
-구조를 feature 마다 미리 저장해두고
-구조에 맞는 컴포넌트마다 text를 넘겨줘서 렌더링
-*/

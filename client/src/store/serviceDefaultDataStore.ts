@@ -7,7 +7,7 @@ import { create } from "zustand";
 //   serviceType: number | null;
 // };
 
-type TserviceDefaultData = {
+export type TserviceDefaultData = {
   serviceTitle: string;
   serviceDesc: string;
   device: {

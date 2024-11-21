@@ -7,20 +7,18 @@ import { ReactComponent as Button } from "@svgs/service/navigationButton.svg";
 import ButtonArrowIconControler, {
   IbuttonArrowControler,
 } from "../button/ButtonArrowIconControler";
-
-interface IlistItem {
-  title: string;
-  image?: React.ReactElement;
-}
+import { TimageName } from "@pages/user/ServicePage/ServiceStep4Page";
+import Loading from "@components/common/ui/Loading/loading";
 
 export interface INavigationEditable {
+  imageNameArr: TimageName[] | null;
   listData: string[];
   selectedItem: string;
   setSelectedItem: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export default function NavigationEditable(prop: INavigationEditable) {
-  const { listData, selectedItem, setSelectedItem } = prop;
+  const { imageNameArr, listData, selectedItem, setSelectedItem } = prop;
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [currentIdx, setCurrentIdx] = useState<number>(0);
@@ -30,6 +28,7 @@ export default function NavigationEditable(prop: INavigationEditable) {
     if (idx !== null) {
       setSelectedItem(listData[idx]);
       setSelectedItem(listData[idx]);
+      setIsOpen(false);
     }
   }
 
@@ -79,6 +78,14 @@ export default function NavigationEditable(prop: INavigationEditable) {
     }
   }, []);
 
+  if (!imageNameArr) {
+    return (
+      <>
+        <Loading />
+      </>
+    );
+  }
+
   return (
     <aside css={side_nav(isOpen)}>
       <button type="button" css={aside_button} onClick={handleIsOpenChange}>
@@ -89,20 +96,28 @@ export default function NavigationEditable(prop: INavigationEditable) {
         <p css={list_title}>모든화면</p>
       </div>
       <ul css={list}>
-        {listData.map((item, idx) => (
-          <li
-            css={[list_item, list_item_color(selectedItem === item)]}
-            onClick={handleSelectItem}
-            data-idx={idx}
-            key={idx}
-          >
-            <div css={image_container}></div>
-            <div css={list_item_info_container(selectedItem === item)}>
-              <p css={list_item_title}>{item}</p>
-              {selectedItem === item && <Edit />}
-            </div>
-          </li>
-        ))}
+        {imageNameArr &&
+          listData.length > 0 &&
+          listData.map((item, idx) => (
+            <li
+              css={[list_item, list_item_color(selectedItem === item)]}
+              onClick={handleSelectItem}
+              data-idx={idx}
+              key={idx}
+            >
+              <div css={image_container}>
+                <img
+                  src={`/images/${imageNameArr[idx]?.imageName}`}
+                  alt="template thumbnail"
+                  css={image_style}
+                />
+              </div>
+              <div css={list_item_info_container(selectedItem === item)}>
+                <p css={list_item_title}>{item}</p>
+                {selectedItem === item && <Edit />}
+              </div>
+            </li>
+          ))}
       </ul>
       <div css={aside_controler}>
         <ButtonArrowIconControler {...buttonSelectPrevItemAside} />
@@ -135,6 +150,8 @@ const side_nav = (isOpen: boolean) => css`
   gap: 14px;
   padding: 20px;
   background-color: #fff;
+
+  box-shadow: 0px 4px 24px 0px rgba(0, 0, 0, 0.25);
 `;
 
 const aside_button = css`
@@ -187,7 +204,8 @@ const list_item = css`
   flex-direction: column;
   justify-content: space-between;
 
-  border-radius: 10px;
+  border-radius: 12px;
+  overflow: hidden;
   position: relative;
   border: 2px solid transparent;
   background: var(--FFF, #fff);
@@ -252,7 +270,15 @@ const image_container = css`
   align-self: stretch;
   flex-wrap: wrap;
   background-color: #f6f6f6;
+
+  overflow: hidden;
 `;
+
+const image_style = css`
+  object-fit: cover;
+  width: 100%;
+`;
+
 const preview_container = css`
   display: flex;
   flex-direction: column;
