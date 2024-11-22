@@ -125,6 +125,13 @@ export default function ServicePreviewPage() {
     }
   }, [selectedItem]);
 
+  useEffect(() => {
+    const localData = localStorage.getItem("imageUrl");
+    if (localData) {
+      setImageUrlArr(JSON.parse(localData));
+    }
+  }, [selectedItem]);
+
   function handleSelectItem(e: React.MouseEvent<HTMLLIElement>) {
     const idx = parseInt(e.currentTarget.dataset.idx || "0");
     if (idx !== null) {
@@ -225,12 +232,13 @@ export default function ServicePreviewPage() {
     };
   }, []);
 
-  if (!imageNameArr) {
-    return (
-      <>
-        <Loading />
-      </>
-    );
+  console.log(imageUrlArr);
+
+  if (isProduction && !imageUrlArr) {
+    return <Loading />;
+  }
+  if (!isProduction && !imageNameArr) {
+    return <Loading />;
   }
 
   return (
