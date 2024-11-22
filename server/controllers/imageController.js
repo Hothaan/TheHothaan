@@ -24,7 +24,7 @@ const saveImageFromURL = async (req, res) => {
     // 템플릿 URL로 이동
     console.log("Waiting for 5 seconds before navigation...");
     // 1. URL 이동 전에 5초 대기
-    await new Promise((resolve) => setTimeout(resolve, 5000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     console.log(`Navigating to ${url}...`);
     await page.goto(url, { waitUntil: "networkidle2" });
 
@@ -32,7 +32,7 @@ const saveImageFromURL = async (req, res) => {
     let elementFound = false;
     let retries = 0;
 
-    // 2. 발견될 때까지 반복 확인 (최대 5번 시도, 각 시도 후 5초 대기)
+    // 2. 발견될 때까지 반복 확인 (최대 5번 시도, 각 시도 후 1초 대기)
     while (!elementFound && retries < 5) {
       elementFound = await page.evaluate(() => {
         const element = document.querySelector(".templateImage");
@@ -42,7 +42,7 @@ const saveImageFromURL = async (req, res) => {
       if (!elementFound) {
         retries++;
         console.log(`.templateImage not found, retrying... (${retries}/5)`);
-        await new Promise((resolve) => setTimeout(resolve, 5000)); // 5초 대기
+        await new Promise((resolve) => setTimeout(resolve, 1000)); // 1초 대기
       }
     }
 

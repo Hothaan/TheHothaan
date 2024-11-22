@@ -20,13 +20,20 @@ import ButtonArrowIconControler, {
 } from "@components/service/button/ButtonArrowIconControler";
 import { IgeneratedText } from "@components/service/modal/FullPageModalEditable";
 import Loading from "@components/common/ui/Loading/loading";
+import useIsProduction from "@hooks/useIsProduction";
 
 export type TimageName = {
   imageName: string;
   parameter: string;
 };
 
+export type TimageUrl = {
+  imageUrl: string;
+  parameter: string;
+};
+
 export default function ServicePreviewPage() {
+  const { isProduction } = useIsProduction();
   const [generatedTextData, setGeneratedTextData] = useState<
     IgeneratedText[] | null
   >(null);
@@ -37,6 +44,7 @@ export default function ServicePreviewPage() {
   const [isLoadingModalOpen, setIsLoadingModalOpen] = useState(false);
   const navigate = useNavigate();
   const [imageNameArr, setImageNameArr] = useState<TimageName[] | null>(null);
+  const [imageUrlArr, setImageUrlArr] = useState<TimageUrl[] | null>(null);
 
   useEffect(() => {
     const sessionData = sessionStorage.getItem("serviceData");
@@ -194,6 +202,7 @@ export default function ServicePreviewPage() {
   }
 
   const fullPageModal = {
+    imageUrlArr: imageUrlArr,
     imageNameArr: imageNameArr,
     projectType:
       (serviceDefaultData && serviceDefaultData.serviceType.text) || "쇼핑몰",
@@ -243,7 +252,34 @@ export default function ServicePreviewPage() {
               <p css={list_title}>모든화면</p>
             </div>
             <ul css={list}>
-              {imageNameArr &&
+              {isProduction === true &&
+                imageUrlArr &&
+                listData.length > 0 &&
+                listData.map((item, idx) => (
+                  <li
+                    css={[list_item, list_item_color(selectedItem === item)]}
+                    onClick={handleSelectItem}
+                    onDoubleClick={() => {
+                      handleOpenFullPageModalEditable(item);
+                    }}
+                    data-idx={idx}
+                    key={idx}
+                  >
+                    <div css={image_container}>
+                      <img
+                        src={imageUrlArr[idx].imageUrl}
+                        alt="template thumbnail"
+                        css={image_style}
+                      />
+                    </div>
+                    <div css={list_item_info_container(selectedItem === item)}>
+                      <p css={list_item_title}>{item}</p>
+                      {selectedItem === item && <Edit />}
+                    </div>
+                  </li>
+                ))}
+              {isProduction === false &&
+                imageNameArr &&
                 listData.length > 0 &&
                 listData.map((item, idx) => (
                   <li
@@ -283,7 +319,22 @@ export default function ServicePreviewPage() {
             </p>
           </aside>
           <div css={preview_container}>
-            {imageNameArr && listData.length > 0 ? (
+            {isProduction === true && imageUrlArr && listData.length > 0 ? (
+              <div css={preview}>
+                <img
+                  src={
+                    imageUrlArr[
+                      listData.findIndex((item) => item === selectedItem)
+                    ]?.imageUrl || ""
+                  }
+                  alt="template thumbnail"
+                  css={preview_style}
+                />
+              </div>
+            ) : (
+              <Loading />
+            )}
+            {isProduction === false && imageNameArr && listData.length > 0 ? (
               <div css={preview}>
                 <img
                   src={`/images/${
@@ -298,6 +349,7 @@ export default function ServicePreviewPage() {
             ) : (
               <Loading />
             )}
+
             <div css={controller}>
               <ButtonArrowIconControler {...buttonSelectPrevItem} />
               <p css={pagination}>

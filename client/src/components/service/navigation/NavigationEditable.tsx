@@ -7,10 +7,15 @@ import { ReactComponent as Button } from "@svgs/service/navigationButton.svg";
 import ButtonArrowIconControler, {
   IbuttonArrowControler,
 } from "../button/ButtonArrowIconControler";
-import { TimageName } from "@pages/user/ServicePage/ServiceStep4Page";
+import {
+  TimageName,
+  TimageUrl,
+} from "@pages/user/ServicePage/ServiceStep4Page";
 import Loading from "@components/common/ui/Loading/loading";
+import useIsProduction from "@hooks/useIsProduction";
 
 export interface INavigationEditable {
+  imageUrlArr: TimageUrl[] | null;
   imageNameArr: TimageName[] | null;
   listData: string[];
   selectedItem: string;
@@ -18,7 +23,10 @@ export interface INavigationEditable {
 }
 
 export default function NavigationEditable(prop: INavigationEditable) {
-  const { imageNameArr, listData, selectedItem, setSelectedItem } = prop;
+  const { imageUrlArr, imageNameArr, listData, selectedItem, setSelectedItem } =
+    prop;
+
+  const { isProduction } = useIsProduction();
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [currentIdx, setCurrentIdx] = useState<number>(0);
@@ -78,12 +86,10 @@ export default function NavigationEditable(prop: INavigationEditable) {
     }
   }, []);
 
-  if (!imageNameArr) {
-    return (
-      <>
-        <Loading />
-      </>
-    );
+  if (isProduction && !imageUrlArr) {
+    return <Loading />;
+  } else if (!isProduction && !imageNameArr) {
+    return <Loading />;
   }
 
   return (
@@ -96,7 +102,31 @@ export default function NavigationEditable(prop: INavigationEditable) {
         <p css={list_title}>모든화면</p>
       </div>
       <ul css={list}>
-        {imageNameArr &&
+        {isProduction === true &&
+          imageUrlArr &&
+          listData.length > 0 &&
+          listData.map((item, idx) => (
+            <li
+              css={[list_item, list_item_color(selectedItem === item)]}
+              onClick={handleSelectItem}
+              data-idx={idx}
+              key={idx}
+            >
+              <div css={image_container}>
+                <img
+                  src={imageUrlArr[idx]?.imageUrl}
+                  alt="template thumbnail"
+                  css={image_style}
+                />
+              </div>
+              <div css={list_item_info_container(selectedItem === item)}>
+                <p css={list_item_title}>{item}</p>
+                {selectedItem === item && <Edit />}
+              </div>
+            </li>
+          ))}
+        {isProduction === false &&
+          imageNameArr &&
           listData.length > 0 &&
           listData.map((item, idx) => (
             <li

@@ -383,7 +383,15 @@ export default function ServiceStep3Page() {
               parameter: parameterArr[idx],
             };
           });
+          const imageUrlArr = responses.map((response) => response.data.url);
+          const imageUrlMapping = imageUrlArr.map((item, idx) => {
+            return {
+              url: item,
+              parameter: parameterArr[idx],
+            };
+          });
           localStorage.setItem("imageName", JSON.stringify(imageNameMapping));
+          localStorage.setItem("imageUrl", JSON.stringify(imageUrlMapping));
         } else {
           console.error("Some images failed to save.");
         }

@@ -10,7 +10,10 @@ import Button, { Ibutton } from "@components/common/button/Button";
 import NavigationEditable from "../navigation/NavigationEditable";
 import EditableText from "../editableText/EditableText";
 // import { templateMapForCapture } from "@components/template/templateForCaptureMapping";
-import { TimageName } from "@pages/user/ServicePage/ServiceStep4Page";
+import {
+  TimageName,
+  TimageUrl,
+} from "@pages/user/ServicePage/ServiceStep4Page";
 import { TserviceDefaultData } from "@store/serviceDefaultDataStore";
 import { templateMapForCapture } from "@components/template/templateForCaptureMapping";
 /* 수정 예정 */
@@ -32,6 +35,7 @@ export interface IgeneratedText {
 }
 
 interface IFullPageModal {
+  imageUrlArr: TimageUrl[] | null;
   imageNameArr: TimageName[] | null;
   projectType: string;
   data: IgeneratedText[] | null;
@@ -43,6 +47,7 @@ interface IFullPageModal {
 
 export default function FullPageModalEditable(prop: IFullPageModal) {
   const {
+    imageUrlArr,
     imageNameArr,
     projectType,
     data,
@@ -54,7 +59,6 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
 
   const [isToast, setIsToast] = useState(true);
 
-  // const { serviceDefaultData } = serviceDefaultDataStore();
   const [serviceDefaultData, setServiceDefaultData] =
     useState<TserviceDefaultData | null>(null);
   const [isLoadingModalOpen, setIsLoadingModalOpen] = useState(false);
@@ -105,6 +109,7 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
   };
 
   const navigationEditable = {
+    imageUrlArr: imageUrlArr,
     imageNameArr: imageNameArr,
     listData: listData,
     selectedItem: selectedItem,
