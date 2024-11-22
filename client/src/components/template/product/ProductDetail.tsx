@@ -116,6 +116,7 @@ function ProductDetailInfo(prop: IproductDetail) {
     display: flex;
     padding: 10px 0px;
     align-items: center;
+    justify-content: space-between;
     gap: 20px;
     align-self: stretch;
     border-bottom: 1px solid #486284;
@@ -125,8 +126,6 @@ function ProductDetailInfo(prop: IproductDetail) {
     align-self: stretch;
     width: 100%;
     color: #486284;
-    leading-trim: both;
-    text-edge: cap;
 
     /* 13 */
     font-family: Inter;
