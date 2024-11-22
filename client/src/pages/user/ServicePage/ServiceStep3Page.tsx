@@ -2,7 +2,7 @@
 import { css } from "@emotion/react";
 import { useState, useEffect, useRef } from "react";
 import { serviceStepStore } from "@store/serviceStepStore";
-import { serviceDefaultDataStore } from "@store/serviceDefaultDataStore";
+import { TserviceDefaultData } from "@store/serviceDefaultDataStore";
 import { IloadingModal } from "@components/common/ui/Modal/LoadingModal";
 import LoadingModal from "@components/common/ui/Modal/LoadingModal";
 import { Ibutton } from "@components/common/button/Button";
@@ -19,9 +19,9 @@ import {
 } from "@api/service/serviceTypeMenu";
 import { createProject } from "@api/project/createProject";
 import { generateText } from "@api/project/generateText";
-import { generatedTextDataStore } from "@store/generatedTextDataStore";
 import { IgeneratedText } from "@components/service/modal/FullPageModalEditable";
 import { saveImage } from "@api/image/saveImage";
+import Loading from "@components/common/ui/Loading/loading";
 
 export type TselectionItem = {
   type: "device" | "service" | "menu" | "feature";
@@ -37,9 +37,9 @@ export interface IsendData {
 }
 
 export default function ServiceStep3Page() {
-  const { generatedTextData, setGeneratedTextData } = generatedTextDataStore();
-  const prevGeneratedTextData = useRef<IgeneratedText[]>([]);
-
+  const [generatedTextData, setGeneratedTextData] = useState<
+    IgeneratedText[] | null
+  >(null);
   const { handleNavigation } = useNavigation();
   const { currentLocation } = useLocationControl();
   const totalStep = 5;
@@ -47,17 +47,39 @@ export default function ServiceStep3Page() {
   const [currentStep, setCurrentStep] = useState<number>(2);
   const { isProduction } = useIsProduction();
   const [loading, setLoading] = useState(false);
-  const { serviceDefaultData } = serviceDefaultDataStore();
-  const serviceType = serviceDefaultData.serviceType.number || 1;
+  const [serviceDefaultData, setServiceDefaultData] =
+    useState<TserviceDefaultData | null>(null);
   const [formData, setFormData] = useState<TserviceTypeMenu | null>(null);
   const [sendData, setSendData] = useState<IsendData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isReady, setIsReady] = useState<boolean>(false);
+
+  useEffect(() => {
+    const sessionData = sessionStorage.getItem("serviceData");
+    if (sessionData) {
+      setServiceDefaultData(JSON.parse(sessionData));
+    }
+  }, []);
+
+  useEffect(() => {
+    const localData = localStorage.getItem("generatedTextData");
+    if (localData) {
+      setGeneratedTextData(JSON.parse(localData));
+    }
+  }, []);
 
   async function fetchServiceTypeMenu() {
-    if (!loading) {
+    if (
+      !loading &&
+      serviceDefaultData &&
+      serviceDefaultData.serviceType.number
+    ) {
       setLoading(true);
       try {
-        const response = await getServiceTypeMenu(isProduction, serviceType);
+        const response = await getServiceTypeMenu(
+          isProduction,
+          serviceDefaultData.serviceType.number
+        );
         if (response.status === 200) {
           setFormData(
             response.data.map((serviceTypeMenuItem: IserviceTypeMenuItem) => ({
@@ -80,29 +102,25 @@ export default function ServiceStep3Page() {
   }
 
   useEffect(() => {
-    const sessionData = window.sessionStorage.getItem("projectData(formData)");
-    if (sessionData) {
-      const parsedData = JSON.parse(sessionData);
-      setFormData(parsedData);
-    } else {
-      fetchServiceTypeMenu();
+    if (serviceDefaultData) {
+      const sessionData = sessionStorage.getItem("projectData(formData)");
+      if (sessionData) {
+        const parsedData = JSON.parse(sessionData);
+        setFormData(parsedData);
+      } else {
+        fetchServiceTypeMenu();
+      }
     }
-  }, []);
+  }, [serviceDefaultData]);
 
   useEffect(() => {
-    // 새롭게 값이 변경된 경우에만 실행
-    if (
-      generatedTextData.length > 0 &&
-      JSON.stringify(prevGeneratedTextData.current) !==
-        JSON.stringify(generatedTextData)
-    ) {
-      console.log("Generated text data has changed, calling saveImages...");
-      saveImages();
+    if (isReady) {
+      if (generatedTextData && generatedTextData.length > 0) {
+        console.log("Generated text data has changed, calling saveImages...");
+        saveImages();
+      }
     }
-
-    // 현재 값을 ref에 저장하여 다음 렌더링에서 비교
-    prevGeneratedTextData.current = generatedTextData;
-  }, [generatedTextData]);
+  }, [isReady]);
 
   useEffect(() => {
     if (checkAllOptionSelected(formData)) {
@@ -205,46 +223,48 @@ export default function ServiceStep3Page() {
   }
 
   function makeSendData(formData: TserviceTypeMenu | null): void {
-    const data = {
-      user_email: "test@test.com",
-      project_name: serviceDefaultData.serviceTitle,
-      project_description: serviceDefaultData.serviceDesc,
-      selections: [
-        {
-          type: "device",
-          value: serviceDefaultData.device.text,
-        },
-        {
-          type: "service",
-          value: serviceDefaultData.serviceType.text,
-        },
-      ],
-    };
+    if (serviceDefaultData) {
+      const data = {
+        user_email: "test@test.com",
+        project_name: serviceDefaultData.serviceTitle,
+        project_description: serviceDefaultData.serviceDesc,
+        selections: [
+          {
+            type: "device",
+            value: serviceDefaultData.device.text,
+          },
+          {
+            type: "service",
+            value: serviceDefaultData.serviceType.text,
+          },
+        ],
+      };
 
-    if (formData) {
-      const menuData = formData.map((menu) => {
-        const featureData = menu.items
-          .filter((item) => item.is_selected)
-          .map((item) => {
-            if (item.is_option === true) {
-              return {
-                value: item.item_name,
-                option: item.options?.filter(
-                  (option) => option.is_selected === true
-                )[0].option_type,
-              };
-            } else {
-              return {
-                value: item.item_name,
-              };
-            }
-          });
-        return { type: "menu", value: menu.menu_name, features: featureData };
-      });
+      if (formData) {
+        const menuData = formData.map((menu) => {
+          const featureData = menu.items
+            .filter((item) => item.is_selected)
+            .map((item) => {
+              if (item.is_option === true) {
+                return {
+                  value: item.item_name,
+                  option: item.options?.filter(
+                    (option) => option.is_selected === true
+                  )[0].option_type,
+                };
+              } else {
+                return {
+                  value: item.item_name,
+                };
+              }
+            });
+          return { type: "menu", value: menu.menu_name, features: featureData };
+        });
 
-      data.selections.push(...menuData);
+        data.selections.push(...menuData);
 
-      setSendData(data as IsendData);
+        setSendData(data as IsendData);
+      }
     }
   }
 
@@ -271,13 +291,20 @@ export default function ServiceStep3Page() {
     }
   }
 
+  /*
+    // 1. 헤더, 푸터에 로고 및 메뉴적용 
+    // 2. 캡쳐 이미지 오류 확인
+    // 3. 캡쳐 이미지에도 동일하게 데이터 반영 적용(메인처럼)
+    4. prod 환경 개발
+    // 5. 재실행시 4단계 안넘어가지는 원인 파악 및 해결 -> 원인은 모르겠는데 하다보니 해결..
+  */
+
   async function fetchGeneratedText() {
     const projectId = sessionStorage.getItem("projectId");
     if (projectId) {
       try {
         const response = await generateText(isProduction, parseInt(projectId));
         if (response.statusText === "OK") {
-          // 상태 업데이트 후 saveImages 실행
           setGeneratedTextData(response.data.responses);
           const data = response.data.responses.map((item: IgeneratedText) => {
             return (item = {
@@ -285,24 +312,38 @@ export default function ServiceStep3Page() {
               feature: item.feature.split(" ").join(""),
             });
           });
+          const headerArr = response.data.responses.map(
+            (item: IgeneratedText) => {
+              return item.menu;
+            }
+          );
+          const headerData = {
+            categories: [...new Set(headerArr)],
+            logo: serviceDefaultData?.serviceTitle,
+          };
           localStorage.setItem("generatedTextData", JSON.stringify(data));
+          localStorage.setItem("headerData", JSON.stringify(headerData));
         }
       } catch (error) {
         console.error("API 요청 실패:", error);
       } finally {
         console.log("generatedTextData done");
+        setIsReady(true);
       }
     }
   }
 
-  // useEffect(() => {
-  //   if (generatedTextData.length > 0) {
-  //     saveImages();
-  //   }
-  // }, [generatedTextData]);
+  function alreadyGotImages() {
+    setIsModalOpen(false);
+    handleNavigation(`/service/step${currentStep + 1}`);
+  }
 
   async function saveImages() {
-    if (generatedTextData.length > 0) {
+    if (
+      generatedTextData &&
+      generatedTextData.length > 0 &&
+      serviceDefaultData
+    ) {
       setLoading(true);
       try {
         const projectType = serviceDefaultData.serviceType.text as string;
@@ -313,9 +354,23 @@ export default function ServiceStep3Page() {
         const dataArr = generatedTextData.map((item) =>
           encodeURIComponent(JSON.stringify(item.content.content))
         );
+        const headerArr = generatedTextData.map((item: IgeneratedText) => {
+          return item.menu;
+        });
+        const headerData = encodeURIComponent(
+          JSON.stringify({
+            categories: [...new Set(headerArr)],
+            logo: serviceDefaultData?.serviceTitle,
+          })
+        );
         const responses = await Promise.all(
           parameterArr.map(async (item, idx) => {
-            return await saveImage(isProduction, item, dataArr[idx]);
+            return await saveImage(
+              isProduction,
+              item,
+              dataArr[idx],
+              headerData
+            );
           })
         );
         if (responses.every((response) => response.statusText === "OK")) {
@@ -335,10 +390,8 @@ export default function ServiceStep3Page() {
       } catch (error) {
         console.error("API 요청 실패:", error);
       } finally {
-        console.log(`Navigating to /service/step${currentStep + 1}`);
         setIsModalOpen(false);
         handleNavigation(`/service/step${currentStep + 1}`);
-        // setTimeout(() => handleNavigation(`/service/step${currentStep + 1}`), 0);
       }
     }
   }
@@ -388,15 +441,16 @@ export default function ServiceStep3Page() {
   const loadingModal: IloadingModal = {
     isOpen: isModalOpen,
     content: {
-      title:
-        serviceDefaultData.serviceTitle === ""
-          ? "프로젝트"
-          : serviceDefaultData.serviceTitle,
+      title: serviceDefaultData?.serviceTitle || "프로젝트",
       desc: ["화면을 구성중이에요!", <br key="1" />, "잠시만 기다려주세요"],
     },
     onLoad: () => {},
     onComplete: () => {},
   };
+
+  if (!formData) {
+    return <Loading />;
+  }
 
   return (
     <>

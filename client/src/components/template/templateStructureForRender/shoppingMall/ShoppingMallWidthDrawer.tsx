@@ -7,8 +7,6 @@ import WithDrawer from "@components/template/mypage/WithDrawer";
 import Loading from "@components/common/ui/Loading/loading";
 
 export default function ShoppingMallWidthDrawer() {
-  // const { data } = useParams();
-  // const decodedData = data ? JSON.parse(decodeURIComponent(data)) : null;
   const [generatedTextData, setGeneratedTextData] = useState<
     IgeneratedText[] | null
   >(null);
@@ -16,13 +14,6 @@ export default function ShoppingMallWidthDrawer() {
   const [generatedText, setGeneratedText] = useState<IgeneratedText | null>(
     null
   );
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (generatedTextData) {
-      setLoading(false);
-    }
-  }, [generatedTextData]);
 
   function getGeneratedText(
     generatedTextData: IgeneratedText[]
@@ -36,7 +27,6 @@ export default function ShoppingMallWidthDrawer() {
       const data = getGeneratedText(generatedTextData);
       if (data) {
         setGeneratedText(data);
-        setLoading(false);
       }
     }
   }, [generatedTextData]);

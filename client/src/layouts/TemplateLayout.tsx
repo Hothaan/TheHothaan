@@ -9,7 +9,7 @@ export default function TemplateLayout() {
       <main css={full_height}>
         <Routes>
           <Route
-            path="/:templateName/:data"
+            path="/:templateName/:data/:header"
             element={<TemplateGeneratePage />}
           />
         </Routes>

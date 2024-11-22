@@ -7,8 +7,6 @@ import OrderList from "@components/template/mypage/OrderList";
 import Loading from "@components/common/ui/Loading/loading";
 
 export default function ShoppingMallOrderList() {
-  // const { data } = useParams();
-  // const decodedData = data ? JSON.parse(decodeURIComponent(data)) : null;
   const feature = "주문목록";
   const [generatedTextData, setGeneratedTextData] = useState<
     IgeneratedText[] | null
@@ -16,7 +14,6 @@ export default function ShoppingMallOrderList() {
   const [generatedText, setGeneratedText] = useState<IgeneratedText | null>(
     null
   );
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const localData = localStorage.getItem("generatedTextData");
@@ -38,7 +35,6 @@ export default function ShoppingMallOrderList() {
       const data = getGeneratedText(generatedTextData);
       if (data) {
         setGeneratedText(data);
-        setLoading(false);
       }
     }
   }, [generatedTextData]);

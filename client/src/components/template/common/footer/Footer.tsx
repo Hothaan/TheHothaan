@@ -3,19 +3,25 @@ import { css } from "@emotion/react";
 import { ReactComponent as Image } from "@svgs/template/imageTemplate.svg";
 import { ReactComponent as GotoBottom } from "@svgs/template/footerGotoBottom.svg";
 
-export default function Footer() {
+export interface Ifooter {
+  logo?: string;
+}
+export default function Footer(prop: Ifooter) {
+  const { logo } = prop;
   return (
     <div css={wrap}>
       <div css={[text_wrap, margin_right_62]}>
         <div css={[text_container, gap_16]}>
           <div css={logo_wrap}>
             <div css={logo_container}>
-              <Image css={logo} />
+              <Image css={logo_style} />
             </div>
-            <p css={logo_text}>logo</p>
+            <p css={logo_text}>{logo || "logo"}</p>
           </div>
           <div css={captions}>
-            <p css={[caption, noto_sans_kr]}>회사명 : 회사명입니다</p>
+            <p css={[caption, noto_sans_kr]}>
+              회사명 : {logo || "회사명입니다"}
+            </p>
             <p css={[caption, noto_sans_kr]}>대표자 : 홍길동</p>
             <p css={[caption, noto_sans_kr]}>
               주소 : 서울특별시 강남구 000번길 00 00타워
@@ -140,7 +146,7 @@ const logo_container = css`
   background-color: #e2e8ef;
 `;
 
-const logo = css`
+const logo_style = css`
   width: 14px;
   height: 14px;
 `;

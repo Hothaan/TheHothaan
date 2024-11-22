@@ -15,7 +15,6 @@ export default function ShoppingMallProductList() {
   const [generatedText, setGeneratedText] = useState<IgeneratedText | null>(
     null
   );
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const localData = localStorage.getItem("generatedTextData");
@@ -37,7 +36,6 @@ export default function ShoppingMallProductList() {
       const data = getGeneratedText(generatedTextData);
       if (data) {
         setGeneratedText(data);
-        setLoading(false);
       }
     }
   }, [generatedTextData]);
@@ -45,8 +43,6 @@ export default function ShoppingMallProductList() {
   if (!generatedText) {
     return <Loading />;
   }
-
-  console.log(generatedText.content.content.categories);
 
   return (
     <div className="templateImage">

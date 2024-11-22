@@ -7,8 +7,6 @@ import Login from "@components/template/utility/Login";
 import Loading from "@components/common/ui/Loading/loading";
 
 export default function ShoppingMallLogin() {
-  // const { data } = useParams();
-  // const decodedData = data ? JSON.parse(decodeURIComponent(data)) : null;
   const [generatedTextData, setGeneratedTextData] = useState<
     IgeneratedText[] | null
   >(null);

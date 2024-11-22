@@ -7,8 +7,6 @@ import Join from "@components/template/utility/Join";
 import Loading from "@components/common/ui/Loading/loading";
 
 export default function ShoppingMallJoin() {
-  // const { data } = useParams();
-  // const decodedData = data ? JSON.parse(decodeURIComponent(data)) : null;
   const [generatedTextData, setGeneratedTextData] = useState<
     IgeneratedText[] | null
   >(null);
@@ -16,7 +14,6 @@ export default function ShoppingMallJoin() {
   const [generatedText, setGeneratedText] = useState<IgeneratedText | null>(
     null
   );
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const localData = localStorage.getItem("generatedTextData");
@@ -38,7 +35,6 @@ export default function ShoppingMallJoin() {
       const data = getGeneratedText(generatedTextData);
       if (data) {
         setGeneratedText(data);
-        setLoading(false);
       }
     }
   }, [generatedTextData]);

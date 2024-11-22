@@ -10,17 +10,42 @@ import ShoppingMallJoin from "./templateStructureForCapture/shoppingMall/Shoppin
 import ShoppingMallLogin from "./templateStructureForCapture/shoppingMall/ShoppingMallLogin";
 import ShoppingMallNotice from "./templateStructureForCapture/shoppingMall/ShoppingMallNotice";
 import ShoppingMallWidthDrawer from "./templateStructureForCapture/shoppingMall/ShoppingMallWidthDrawer";
+import { TtemplateMode } from "./types";
 
-export const templateMapForCapture: { [key: string]: React.FC<any> } = {
-  "쇼핑몰-메인": ShoppingMallMain,
-  "쇼핑몰-상품목록": ShoppingMallProductList,
-  "쇼핑몰-상품상세": ShoppingMallProductDetail,
-  "쇼핑몰-주문목록": ShoppingMallOrderList,
-  "쇼핑몰-장바구니": ShoppingMallCart,
-  "쇼핑몰-공지사항": ShoppingMallNotice,
-  "쇼핑몰-로그인": ShoppingMallLogin,
-  "쇼핑몰-회원가입": ShoppingMallJoin,
-  "쇼핑몰-회원탈퇴": ShoppingMallWidthDrawer,
-  "쇼핑몰-아이디찾기": ShoppingMallFindId,
-  "쇼핑몰-비밀번호찾기": ShoppingMallFindPw,
+export const templateMapForCapture: {
+  [key: string]: React.FC<{ templateMode: TtemplateMode }>;
+} = {
+  "쇼핑몰-메인": (props) => (
+    <ShoppingMallMain templateMode={props.templateMode} />
+  ),
+  "쇼핑몰-상품목록": (props) => (
+    <ShoppingMallProductList templateMode={props.templateMode} />
+  ),
+  "쇼핑몰-상품상세": (props) => (
+    <ShoppingMallProductDetail templateMode={props.templateMode} />
+  ),
+  "쇼핑몰-주문목록": (props) => (
+    <ShoppingMallOrderList templateMode={props.templateMode} />
+  ),
+  "쇼핑몰-장바구니": (props) => (
+    <ShoppingMallCart templateMode={props.templateMode} />
+  ),
+  "쇼핑몰-공지사항": (props) => (
+    <ShoppingMallNotice templateMode={props.templateMode} />
+  ),
+  "쇼핑몰-로그인": (props) => (
+    <ShoppingMallLogin templateMode={props.templateMode} />
+  ),
+  "쇼핑몰-회원가입": (props) => (
+    <ShoppingMallJoin templateMode={props.templateMode} />
+  ),
+  "쇼핑몰-회원탈퇴": (props) => (
+    <ShoppingMallWidthDrawer templateMode={props.templateMode} />
+  ),
+  "쇼핑몰-아이디찾기": (props) => (
+    <ShoppingMallFindId templateMode={props.templateMode} />
+  ),
+  "쇼핑몰-비밀번호찾기": (props) => (
+    <ShoppingMallFindPw templateMode={props.templateMode} />
+  ),
 };

@@ -16,7 +16,6 @@ export default function ShoppingMallFindPw() {
   const [generatedText, setGeneratedText] = useState<IgeneratedText | null>(
     null
   );
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const localData = localStorage.getItem("generatedTextData");
@@ -38,7 +37,6 @@ export default function ShoppingMallFindPw() {
       const data = getGeneratedText(generatedTextData);
       if (data) {
         setGeneratedText(data);
-        setLoading(false);
       }
     }
   }, [generatedTextData]);

@@ -7,8 +7,6 @@ import Notice from "@components/template/customerService/Notice";
 import Loading from "@components/common/ui/Loading/loading";
 
 export default function ShoppingMallNotice() {
-  // const { data } = useParams();
-  // const decodedData = data ? JSON.parse(decodeURIComponent(data)) : null;
   const feature = "공지사항";
   const [generatedTextData, setGeneratedTextData] = useState<
     IgeneratedText[] | null
@@ -16,7 +14,6 @@ export default function ShoppingMallNotice() {
   const [generatedText, setGeneratedText] = useState<IgeneratedText | null>(
     null
   );
-  const [loading, setLoading] = useState(true);
 
   /* 나중에 옵션 받는 부분 추가 */
 
@@ -40,7 +37,6 @@ export default function ShoppingMallNotice() {
       const data = getGeneratedText(generatedTextData);
       if (data) {
         setGeneratedText(data);
-        setLoading(false);
       }
     }
   }, [generatedTextData]);

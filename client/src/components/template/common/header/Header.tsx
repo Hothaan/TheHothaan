@@ -7,18 +7,19 @@ import { ReactComponent as Search } from "@svgs/template/searchTemplate.svg";
 import NavItem from "@components/template/commonComponent/NavItem";
 
 export interface Iheader {
+  logo?: string;
   categories?: string[];
 }
 
 export default function Header(prop: Iheader) {
-  const { categories } = prop;
+  const { logo, categories } = prop;
   return (
     <div css={wrap}>
       <div css={logo_wrap}>
         <div css={logo_container}>
           <Image css={logo} />
         </div>
-        <p css={logo_text}>logo</p>
+        <p css={logo_text}>{logo || "logo"}</p>
       </div>
       <ul css={nav_container}>
         {categories ? (

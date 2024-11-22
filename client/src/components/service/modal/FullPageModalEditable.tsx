@@ -9,10 +9,10 @@ import { ReactComponent as LogoLight } from "@svgs/common/logoLight.svg";
 import Button, { Ibutton } from "@components/common/button/Button";
 import NavigationEditable from "../navigation/NavigationEditable";
 import EditableText from "../editableText/EditableText";
-import { templateMapForCapture } from "@components/template/templateForCaptureMapping";
+// import { templateMapForCapture } from "@components/template/templateForCaptureMapping";
 import { TimageName } from "@pages/user/ServicePage/ServiceStep4Page";
 import { TserviceDefaultData } from "@store/serviceDefaultDataStore";
-import { templateMapForRender } from "@components/template/templateForRenderMapping";
+import { templateMapForCapture } from "@components/template/templateForCaptureMapping";
 /* 수정 예정 */
 // interface IgeneratedText {
 //   menu: string;
@@ -61,7 +61,7 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
   const [templateKey, setTemplateKey] = useState<string>(
     `${projectType}-${selectedItem}`
   );
-  const TemplateToRender = templateMapForRender[templateKey];
+  const TemplateToRender = templateMapForCapture[templateKey];
 
   const toast = {
     text: "✅ ESC를 누르거나 상단 우측 축소 버튼을 눌러 풀화면 화면 종료할 수 있어요.",
@@ -79,8 +79,6 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
   useEffect(() => {
     setTemplateKey(`${projectType}-${selectedItem}`);
   }, [selectedItem]);
-
-  console.log(templateKey);
 
   const buttonSave: Ibutton = {
     size: "full",
@@ -119,7 +117,7 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
       <div css={wrap}>
         <div css={title_bar}>
           <LogoLight />
-          <p css={title}>편집 가능한 전체화면 모달</p>
+          <p css={title}>{serviceDefaultData?.serviceTitle || "프로젝트"}</p>
           <div css={button_wrap}>
             <div css={button_container}>
               <Button {...buttonSave} />
@@ -138,17 +136,13 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
               >
                 <path d="M376.6 84.5c11.3-13.6 9.5-33.8-4.1-45.1s-33.8-9.5-45.1 4.1L192 206 56.6 43.5C45.3 29.9 25.1 28.1 11.5 39.4S-3.9 70.9 7.4 84.5L150.3 256 7.4 427.5c-11.3 13.6-9.5 33.8 4.1 45.1s33.8 9.5 45.1-4.1L192 306 327.4 468.5c11.3 13.6 31.5 15.4 45.1 4.1s15.4-31.5 4.1-45.1L233.7 256 376.6 84.5z" />
               </svg>
-              {/* <Minimize /> */}
             </button>
           </div>
         </div>
         <div css={content_wrap}>
           <div css={content_container}>
             <div css={content} className="content">
-              <div css={scroll_item}>
-                {TemplateToRender && <TemplateToRender data={data} />}
-                {/* <EditableText /> */}
-              </div>
+              {TemplateToRender && <TemplateToRender templateMode="render" />}
             </div>
           </div>
         </div>
@@ -232,24 +226,13 @@ const content_wrap = css`
 
 const content_container = css`
   width: 100%;
-  height: 100%;
-  // padding: 20px 0;
+  height: calc(100vh - 70px);
   max-width: 1920px;
 `;
 
 const content = css`
   width: 100%;
   height: 100%;
-  // border-radius: 20px;
   overflow-y: auto;
-`;
-
-const scroll_item = css`
-  width: 100%;
-  // border-radius: 20px;
   background: #fff;
-  height: 1000px;
-
-  /* 임시 */
-  // padding: 100px;
 `;

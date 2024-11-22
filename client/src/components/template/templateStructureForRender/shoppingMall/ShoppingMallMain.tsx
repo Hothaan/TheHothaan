@@ -9,7 +9,7 @@ import ServiceContact from "@components/template/service/ServiceContact";
 import { IgeneratedText } from "@components/service/modal/FullPageModalEditable";
 import Loading from "@components/common/ui/Loading/loading";
 
-const ShoppingMallMain = forwardRef<HTMLDivElement>((props, ref) => {
+export default function ShoppingMallMain() {
   const [generatedTextData, setGeneratedTextData] = useState<
     IgeneratedText[] | null
   >(null);
@@ -17,7 +17,6 @@ const ShoppingMallMain = forwardRef<HTMLDivElement>((props, ref) => {
   const [generatedText, setGeneratedText] = useState<IgeneratedText | null>(
     null
   );
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const localData = localStorage.getItem("generatedTextData");
@@ -39,7 +38,6 @@ const ShoppingMallMain = forwardRef<HTMLDivElement>((props, ref) => {
       const data = getGeneratedText(generatedTextData);
       if (data) {
         setGeneratedText(data);
-        setLoading(false);
       }
     }
   }, [generatedTextData]);
@@ -49,7 +47,7 @@ const ShoppingMallMain = forwardRef<HTMLDivElement>((props, ref) => {
   }
 
   return (
-    <div className="templateImage" ref={ref}>
+    <div className="templateImage">
       <Header />
       <Mainbanner
         isEditable={false}
@@ -64,6 +62,4 @@ const ShoppingMallMain = forwardRef<HTMLDivElement>((props, ref) => {
       <Footer />
     </div>
   );
-});
-
-export default ShoppingMallMain;
+}

@@ -2,10 +2,7 @@
 import { css } from "@emotion/react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  serviceDefaultDataStore,
-  TserviceDefaultData,
-} from "@store/serviceDefaultDataStore";
+import { TserviceDefaultData } from "@store/serviceDefaultDataStore";
 import ButtonArrowIcon from "@components/service/button/ButtonArrowIcon";
 import { IbuttonArrow } from "@components/service/button/ButtonArrowIcon";
 import { ReactComponent as Edit } from "@svgs/service/edit.svg";
@@ -103,9 +100,6 @@ export default function ServicePreviewPage() {
       setListData(data);
     }
   }, [generatedTextData]);
-
-  console.log(imageNameArr);
-  console.log(listData);
 
   const [currentIdx, setCurrentIdx] = useState<number>(0);
   const [selectedItem, setSelectedItem] = useState<string>(listData[0]);

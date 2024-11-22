@@ -7,8 +7,6 @@ import FindId from "@components/template/utility/FindId";
 import Loading from "@components/common/ui/Loading/loading";
 
 export default function ShoppingMallFindId() {
-  // const { data } = useParams();
-  // const decodedData = data ? JSON.parse(decodeURIComponent(data)) : null;
   const feature = "아이디찾기";
   const [generatedTextData, setGeneratedTextData] = useState<
     IgeneratedText[] | null
@@ -16,7 +14,6 @@ export default function ShoppingMallFindId() {
   const [generatedText, setGeneratedText] = useState<IgeneratedText | null>(
     null
   );
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const localData = localStorage.getItem("generatedTextData");
@@ -38,7 +35,6 @@ export default function ShoppingMallFindId() {
       const data = getGeneratedText(generatedTextData);
       if (data) {
         setGeneratedText(data);
-        setLoading(false);
       }
     }
   }, [generatedTextData]);

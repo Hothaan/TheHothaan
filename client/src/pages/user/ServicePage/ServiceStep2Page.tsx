@@ -6,7 +6,10 @@ import ButtonChooseDeviceOption from "@components/service/button/ButtonChooseDev
 import { IbuttonChooseServiceType } from "@components/service/button/ButtonChooseServiceType";
 import ButtonChooseServiceType from "@components/service/button/ButtonChooseServiceType";
 import { serviceStepStore } from "@store/serviceStepStore";
-import { serviceDefaultDataStore } from "@store/serviceDefaultDataStore";
+import {
+  serviceDefaultDataStore,
+  TserviceDefaultData,
+} from "@store/serviceDefaultDataStore";
 import { Ibutton } from "@components/common/button/Button";
 import Button from "@components/common/button/Button";
 import useIsProduction from "@hooks/useIsProduction";
@@ -21,6 +24,9 @@ interface IformData {
 }
 
 export default function ServiceStep2Page() {
+  const [serviceData, setServiceData] = useState<TserviceDefaultData | null>(
+    null
+  );
   const { handleNavigation } = useNavigation();
   const { currentLocation } = useLocationControl();
 
@@ -30,7 +36,7 @@ export default function ServiceStep2Page() {
 
   const { isProduction } = useIsProduction();
   const [loading, setLoading] = useState(false);
-  const { serviceDefaultData } = serviceDefaultDataStore();
+  // const { serviceDefaultData } = serviceDefaultDataStore();
   const [formData, setFormData] = useState<IformData>({
     device: {
       number: null,
@@ -50,32 +56,14 @@ export default function ServiceStep2Page() {
   );
 
   useEffect(() => {
-    if (window.sessionStorage.getItem("serviceData") !== null) {
-      const sessionData = JSON.parse(
-        window.sessionStorage.getItem("serviceData") as string
-      );
+    const sessionData = sessionStorage.getItem("serviceData");
+    if (sessionData) {
+      setServiceData(JSON.parse(sessionData));
       setFormData({
-        device: sessionData.device,
-        service: sessionData.serviceType,
+        device: JSON.parse(sessionData).device,
+        service: JSON.parse(sessionData).serviceType,
       });
     }
-    // if (
-    //   serviceDefaultData.device.number &&
-    //   serviceDefaultData.device.text &&
-    //   serviceDefaultData.serviceType.number &&
-    //   serviceDefaultData.serviceType.text
-    // ) {
-    //   setFormData({
-    //     device: {
-    //       number: serviceDefaultData.device.number,
-    //       text: serviceDefaultData.device.text,
-    //     },
-    //     service: {
-    //       number: serviceDefaultData.serviceType.number,
-    //       text: serviceDefaultData.serviceType.text,
-    //     },
-    //   });
-    // }
   }, []);
 
   async function fetchServiceTypes() {

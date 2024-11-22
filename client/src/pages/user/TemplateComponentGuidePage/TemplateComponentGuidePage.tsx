@@ -1,7 +1,12 @@
 import React from "react";
+import BrandIntroduce from "@components/template/brandIntroduce/BrandIntroduce";
 
 export default function TemplateComponentGuidePage() {
-  return <div>TemplateComponentGuidePage</div>;
+  return (
+    <div>
+      <BrandIntroduce />
+    </div>
+  );
 }
 
 // /** @jsxImportSource @emotion/react */

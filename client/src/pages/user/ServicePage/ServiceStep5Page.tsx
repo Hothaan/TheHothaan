@@ -46,17 +46,13 @@ export default function ServiceStep5Page() {
     size: "XL",
     icon: <Download />,
     text: "PNG 다운로드",
-    onClick: () => {
-      // console.log("견적요청 페이지로 이동");
-    },
+    onClick: () => {},
   };
   const buttonDonwnloadJpg: IbuttonIcon = {
     size: "XL",
     icon: <Download />,
     text: "JPG 다운로드",
-    onClick: () => {
-      // console.log("견적요청 페이지로 이동");
-    },
+    onClick: () => {},
   };
 
   useEffect(() => {

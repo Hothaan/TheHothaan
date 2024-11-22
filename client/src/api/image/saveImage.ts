@@ -3,7 +3,8 @@ import axios from "axios";
 export const saveImage = async (
   isProduction: boolean,
   url: string,
-  data: string
+  data: string,
+  headerData: string
 ) => {
   try {
     const response = await axios.post(
@@ -13,7 +14,7 @@ export const saveImage = async (
       {
         url: `http://${
           isProduction ? "dolllpitoxic3.mycafe24.com" : "localhost:3000"
-        }/template/${url}/${data}`,
+        }/template/${url}/${data}/${headerData}`,
       }
     );
 

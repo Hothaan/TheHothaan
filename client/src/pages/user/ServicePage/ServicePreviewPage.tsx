@@ -29,9 +29,7 @@ export default function ServicePreviewPage() {
     size: "M",
     icon: <Doc />,
     text: "견적요청",
-    onClick: () => {
-      console.log("견적요청 페이지로 이동");
-    },
+    onClick: () => {},
   };
 
   const buttonDownload: IbuttonIconAccordion = {
