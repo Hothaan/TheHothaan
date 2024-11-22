@@ -247,7 +247,7 @@ export default function ServicePreviewPage() {
         <div css={title_section}>
           <div css={title_container}>
             <ButtonArrowIcon {...buttonPrevPage} />
-            <p css={title}>프로젝트명</p>
+            <p css={title}>{serviceDefaultData?.serviceTitle}</p>
           </div>
           <div css={button_container}>
             <Button {...nextButtonData} />

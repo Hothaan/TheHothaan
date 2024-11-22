@@ -46,6 +46,7 @@ export default function ServiceStep3Page() {
   const { steps, setSteps } = serviceStepStore();
   const [currentStep, setCurrentStep] = useState<number>(2);
   const { isProduction } = useIsProduction();
+  // const isProduction = true;
   const [loading, setLoading] = useState(false);
   const [serviceDefaultData, setServiceDefaultData] =
     useState<TserviceDefaultData | null>(null);
@@ -333,11 +334,6 @@ export default function ServiceStep3Page() {
     }
   }
 
-  function alreadyGotImages() {
-    setIsModalOpen(false);
-    handleNavigation(`/service/step${currentStep + 1}`);
-  }
-
   async function saveImages() {
     if (
       generatedTextData &&
@@ -386,7 +382,7 @@ export default function ServiceStep3Page() {
           const imageUrlArr = responses.map((response) => response.data.url);
           const imageUrlMapping = imageUrlArr.map((item, idx) => {
             return {
-              url: item,
+              imageUrl: item as string,
               parameter: parameterArr[idx],
             };
           });

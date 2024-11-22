@@ -58,10 +58,12 @@ export default function ServiceStep2Page() {
   useEffect(() => {
     const sessionData = sessionStorage.getItem("serviceData");
     if (sessionData) {
-      setServiceData(JSON.parse(sessionData));
+      const sessionData = JSON.parse(
+        window.sessionStorage.getItem("serviceData") as string
+      );
       setFormData({
-        device: JSON.parse(sessionData).device,
-        service: JSON.parse(sessionData).serviceType,
+        device: sessionData.device,
+        service: sessionData.serviceType,
       });
     }
   }, []);
