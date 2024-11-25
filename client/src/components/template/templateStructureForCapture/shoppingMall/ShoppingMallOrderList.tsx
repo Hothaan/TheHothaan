@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Header, { Iheader } from "@components/template/common/header/Header";
 import Footer from "@components/template/common/footer/Footer";
-import { IgeneratedText } from "@components/service/modal/FullPageModalEditable";
+import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
 import OrderList from "@components/template/mypage/OrderList";
 import Loading from "@components/common/ui/Loading/loading";
 import { ItemplateMode } from "@components/template/types";
@@ -76,7 +76,8 @@ export default function ShoppingMallOrderList(prop: ItemplateMode) {
     );
   } else {
     /* render */
-    if (!generatedText || !headerData) {
+    // if (!generatedText || !headerData) {
+    if (!headerData) {
       return <Loading />;
     }
     return (

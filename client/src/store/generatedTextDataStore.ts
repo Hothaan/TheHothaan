@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { IgeneratedText } from "@components/service/modal/FullPageModalEditable";
+import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
 
 interface IgeneratedTextDataStore {
   generatedTextData: IgeneratedText[];

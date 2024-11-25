@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import { Link } from "react-router-dom";
 import MainBanner from "./MainBanner";
 import ServiceIntro1 from "./ServiceIntro1";
 import ServiceIntro2 from "./ServiceIntro2";
@@ -11,27 +10,9 @@ import ServiceIntro7 from "./ServiceIntro7";
 import ServiceIntro8 from "./ServiceIntro8";
 import ServiceIntro9 from "./ServiceIntro9";
 
-function DevelopeLink() {
-  return (
-    <ul>
-      <li>update check (10.25)</li>
-      <li>
-        <Link to="/test">api 테스트하기</Link>
-      </li>
-      <li>
-        <Link to="/componentGuide">컴포넌트 가이드 보기</Link>
-      </li>
-      <li>
-        <Link to="/templateComponentGuide">템플릿 컴포넌트 가이드 보기</Link>
-      </li>
-    </ul>
-  );
-}
-
 export default function MainPage() {
   return (
     <>
-      {/* <DevelopeLink /> */}
       <MainBanner />
       <ServiceIntro1 />
       <ServiceIntro2 />

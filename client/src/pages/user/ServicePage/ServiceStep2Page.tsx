@@ -6,10 +6,7 @@ import ButtonChooseDeviceOption from "@components/service/button/ButtonChooseDev
 import { IbuttonChooseServiceType } from "@components/service/button/ButtonChooseServiceType";
 import ButtonChooseServiceType from "@components/service/button/ButtonChooseServiceType";
 import { serviceStepStore } from "@store/serviceStepStore";
-import {
-  serviceDefaultDataStore,
-  TserviceDefaultData,
-} from "@store/serviceDefaultDataStore";
+import { TserviceDefaultData } from "@store/serviceDefaultDataStore";
 import { Ibutton } from "@components/common/button/Button";
 import Button from "@components/common/button/Button";
 import useIsProduction from "@hooks/useIsProduction";
@@ -17,6 +14,17 @@ import useNavigation from "@hooks/useNavigation";
 import useLocationControl from "@hooks/useLocationControl";
 import { getServiceTypes, IserviceTypes } from "@api/service/serviceTypes";
 import { getDeviceOptions, IdeviceOptions } from "@api/service/deviceOptions";
+
+export interface IserviceData {
+  device: {
+    number: number | null;
+    text: string | null;
+  };
+  serviceType: {
+    number: number | null;
+    text: string | null;
+  };
+}
 
 interface IformData {
   device: { number: number | null; text: string | null };
@@ -36,7 +44,6 @@ export default function ServiceStep2Page() {
 
   const { isProduction } = useIsProduction();
   const [loading, setLoading] = useState(false);
-  // const { serviceDefaultData } = serviceDefaultDataStore();
   const [formData, setFormData] = useState<IformData>({
     device: {
       number: null,
@@ -65,6 +72,7 @@ export default function ServiceStep2Page() {
         device: sessionData.device,
         service: sessionData.serviceType,
       });
+      setServiceData(sessionData);
     }
   }, []);
 
@@ -111,6 +119,7 @@ export default function ServiceStep2Page() {
 
   useEffect(() => {
     if (
+      formData &&
       formData.device.number &&
       formData.device.text &&
       formData.service.text &&
@@ -134,17 +143,10 @@ export default function ServiceStep2Page() {
 
   function saveDataInStore(formData: IformData) {
     if (formData.device && formData.service) {
-      const { serviceDefaultData, setServiceDefaultData } =
-        serviceDefaultDataStore.getState();
-      setServiceDefaultData({
-        ...serviceDefaultData,
-        device: formData.device,
-        serviceType: formData.service,
-      });
       sessionStorage.setItem(
         "serviceData",
         JSON.stringify({
-          ...serviceDefaultData,
+          ...serviceData,
           device: formData.device,
           serviceType: formData.service,
         })

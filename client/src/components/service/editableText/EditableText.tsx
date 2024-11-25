@@ -37,12 +37,12 @@ interface Istyles {
 
 interface IeditableText {
   text: string;
-  // defaultCss: CSSProperties;
+  isTextArea: boolean;
   defaultCss: Record<string, string>;
 }
 
 export default function EditableText(prop: IeditableText) {
-  const { text, defaultCss } = prop;
+  const { text, isTextArea, defaultCss } = prop;
   const divRef = useRef<HTMLDivElement>(null);
   const toolbarRef = useRef<HTMLDivElement>(null);
   const [toolbarPosition, setToolbarPosition] = useState({ top: 0, left: 0 });
@@ -245,29 +245,35 @@ export default function EditableText(prop: IeditableText) {
           <Toolbar />
         </div>
       )}
-      <textarea
-        css={css`
-          color: ${styles.color};
-          font-family: ${styles.fontFamily};
-          font-size: ${styles.fontSize};
-          font-style: ${styles.fontStyle};
-          text-decoration: ${styles.textDecoration};
-          text-align: ${styles.textAlign};
-          font-weight: ${styles.fontWeight === "bold" ? "bold" : "normal"};
-          cursor: ${isEditing ? "text" : "pointer"};
-          border: none;
-          box-shadow: ${isEditing ? "0 0 0 1px #486284" : "none"};
-          outline: none;
-          width: 100%;
-          background: transparent;
-        `}
-        value={textContent}
-        onClick={() => setIsEditing(!isEditing)}
-        onChange={(e) => setTextContent(e.target.value)}
-      />
+      {isTextArea ? (
+        <textarea
+          css={[styles, input_style(isEditing)]}
+          value={textContent}
+          onClick={() => setIsEditing(!isEditing)}
+          onChange={(e) => setTextContent(e.target.value)}
+        />
+      ) : (
+        <input
+          type="text"
+          css={[styles, input_style(isEditing)]}
+          value={textContent}
+          onClick={() => setIsEditing(!isEditing)}
+          onChange={(e) => setTextContent(e.target.value)}
+        />
+      )}
     </div>
   );
 }
+
+const input_style = (isEditing: boolean) => css`
+  cursor: ${isEditing ? "text" : "pointer"};
+  border: none;
+  box-shadow: ${isEditing ? "0 0 0 1px #486284" : "none"};
+  outline: none;
+  width: 100%;
+  background: transparent;
+  padding: 0;
+`;
 
 const font_container = css`
   display: flex;

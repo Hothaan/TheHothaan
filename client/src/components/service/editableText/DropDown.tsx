@@ -65,6 +65,8 @@ const dropdown_container = (size: TdropdownContainerSize) => css`
   position: relative;
   width: ${size};
   height: 40px;
+  cursor: pointer;
+  z-index: 10;
 `;
 const selected_container = (showFontFamilyOptions: boolean) => css`
   display: flex;

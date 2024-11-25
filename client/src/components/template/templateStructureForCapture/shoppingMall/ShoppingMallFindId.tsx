@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Header, { Iheader } from "@components/template/common/header/Header";
 import Footer from "@components/template/common/footer/Footer";
-import { IgeneratedText } from "@components/service/modal/FullPageModalEditable";
+import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
 import FindId from "@components/template/utility/FindId";
 import { ItemplateMode } from "@components/template/types";
 import Loading from "@components/common/ui/Loading/loading";
@@ -23,6 +23,8 @@ export default function ShoppingMallFindId(prop: ItemplateMode) {
   const [generatedText, setGeneratedText] = useState<IgeneratedText | null>(
     null
   );
+
+  console.log(decodedData);
 
   useEffect(() => {
     const localData = localStorage.getItem("generatedTextData");
@@ -60,7 +62,8 @@ export default function ShoppingMallFindId(prop: ItemplateMode) {
 
   /* capture */
   if (templateMode === "capture") {
-    if (!decodedData || !decodedHeader) {
+    // if (!decodedData || !decodedHeader) {
+    if (!decodedHeader) {
       return <Loading />;
     }
 

@@ -3,36 +3,17 @@ import { css } from "@emotion/react";
 import { useState, useEffect, useRef } from "react";
 import { IloadingModal } from "@components/common/ui/Modal/LoadingModal";
 import LoadingModal from "@components/common/ui/Modal/LoadingModal";
-import { serviceDefaultDataStore } from "@store/serviceDefaultDataStore";
 import ToastPopup from "@components/common/ui/ToastPopup/ToastPopup";
 import { ReactComponent as LogoLight } from "@svgs/common/logoLight.svg";
 import Button, { Ibutton } from "@components/common/button/Button";
 import NavigationEditable from "../navigation/NavigationEditable";
-import EditableText from "../editableText/EditableText";
-// import { templateMapForCapture } from "@components/template/templateForCaptureMapping";
 import {
   TimageName,
   TimageUrl,
 } from "@pages/user/ServicePage/ServiceStep4Page";
 import { TserviceDefaultData } from "@store/serviceDefaultDataStore";
 import { templateMapForCapture } from "@components/template/templateForCaptureMapping";
-/* 수정 예정 */
-// interface IgeneratedText {
-//   menu: string;
-//   feature: string;
-//   content: { [key: string]: string };
-// }
-
-/* 임시 */
-export interface IgeneratedText {
-  menu: string;
-  feature: string;
-  content: {
-    menu: string;
-    feature: string;
-    content: { [key: string]: any };
-  };
-}
+import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
 
 interface IFullPageModal {
   imageUrlArr: TimageUrl[] | null;

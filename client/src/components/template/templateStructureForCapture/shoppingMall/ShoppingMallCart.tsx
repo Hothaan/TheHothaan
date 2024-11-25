@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Header, { Iheader } from "@components/template/common/header/Header";
 import Footer from "@components/template/common/footer/Footer";
-import { IgeneratedText } from "@components/service/modal/FullPageModalEditable";
+import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
 import Cart from "@components/template/mypage/Cart";
 import { ItemplateMode } from "@components/template/types";
 import Loading from "@components/common/ui/Loading/loading";
@@ -83,7 +83,7 @@ export default function ShoppingMallCart(prop: ItemplateMode) {
     return (
       <div className="templateImage">
         <Header categories={headerData.categories} logo={headerData.logo} />
-        <Cart data={generatedText.content.content} />
+        <Cart data={generatedText.content} />
         <Footer logo={headerData.logo} />
       </div>
     );

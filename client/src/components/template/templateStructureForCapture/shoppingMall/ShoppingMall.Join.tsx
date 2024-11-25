@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Header, { Iheader } from "@components/template/common/header/Header";
 import Footer from "@components/template/common/footer/Footer";
-import { IgeneratedText } from "@components/service/modal/FullPageModalEditable";
+import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
 import Join from "@components/template/utility/Join";
 import { ItemplateMode } from "@components/template/types";
 import Loading from "@components/common/ui/Loading/loading";
@@ -14,6 +14,8 @@ export default function ShoppingMallJoin(prop: ItemplateMode) {
   const { data, header } = useParams();
   const decodedData = data ? JSON.parse(decodeURIComponent(data)) : null;
   const decodedHeader = header ? JSON.parse(decodeURIComponent(header)) : null;
+
+  console.log(decodedData);
 
   /* render */
   const [generatedTextData, setGeneratedTextData] = useState<
@@ -60,7 +62,8 @@ export default function ShoppingMallJoin(prop: ItemplateMode) {
 
   /* capture */
   if (templateMode === "capture") {
-    if (!decodedData || !decodedHeader) {
+    // if (!decodedData || !decodedHeader) {
+    if (!decodedHeader) {
       return <Loading />;
     }
 

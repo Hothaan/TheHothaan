@@ -2,7 +2,6 @@
 import { css } from "@emotion/react";
 import { useState, useEffect, useRef } from "react";
 import { serviceStepStore } from "@store/serviceStepStore";
-import { TserviceDefaultData } from "@store/serviceDefaultDataStore";
 import { IloadingModal } from "@components/common/ui/Modal/LoadingModal";
 import LoadingModal from "@components/common/ui/Modal/LoadingModal";
 import { Ibutton } from "@components/common/button/Button";
@@ -19,9 +18,21 @@ import {
 } from "@api/service/serviceTypeMenu";
 import { createProject } from "@api/project/createProject";
 import { generateText } from "@api/project/generateText";
-import { IgeneratedText } from "@components/service/modal/FullPageModalEditable";
 import { saveImage } from "@api/image/saveImage";
 import Loading from "@components/common/ui/Loading/loading";
+import { IserviceInfo } from "./ServiceStep1Page";
+import { IserviceData } from "./ServiceStep2Page";
+
+/* 임시 */
+export interface IgeneratedText {
+  menu: string;
+  feature: string;
+  // content: { [key: string]: any };
+  content: any;
+}
+export interface IfeatureResponseData {
+  featureResponseData: IgeneratedText;
+}
 
 export type TselectionItem = {
   type: "device" | "service" | "menu" | "feature";
@@ -48,8 +59,9 @@ export default function ServiceStep3Page() {
   const { isProduction } = useIsProduction();
   // const isProduction = true;
   const [loading, setLoading] = useState(false);
+  const [serviceInfo, setServiceInfo] = useState<IserviceInfo | null>(null);
   const [serviceDefaultData, setServiceDefaultData] =
-    useState<TserviceDefaultData | null>(null);
+    useState<IserviceData | null>(null);
   const [formData, setFormData] = useState<TserviceTypeMenu | null>(null);
   const [sendData, setSendData] = useState<IsendData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -59,6 +71,13 @@ export default function ServiceStep3Page() {
     const sessionData = sessionStorage.getItem("serviceData");
     if (sessionData) {
       setServiceDefaultData(JSON.parse(sessionData));
+    }
+  }, []);
+
+  useEffect(() => {
+    const sessionData = sessionStorage.getItem("serviceInfo");
+    if (sessionData) {
+      setServiceInfo(JSON.parse(sessionData));
     }
   }, []);
 
@@ -224,11 +243,11 @@ export default function ServiceStep3Page() {
   }
 
   function makeSendData(formData: TserviceTypeMenu | null): void {
-    if (serviceDefaultData) {
+    if (serviceDefaultData && serviceInfo) {
       const data = {
         user_email: "test@test.com",
-        project_name: serviceDefaultData.serviceTitle,
-        project_description: serviceDefaultData.serviceDesc,
+        project_name: serviceInfo.serviceTitle,
+        project_description: serviceInfo.serviceDesc,
         selections: [
           {
             type: "device",
@@ -292,35 +311,33 @@ export default function ServiceStep3Page() {
     }
   }
 
-  /*
-    // 1. 헤더, 푸터에 로고 및 메뉴적용 
-    // 2. 캡쳐 이미지 오류 확인
-    // 3. 캡쳐 이미지에도 동일하게 데이터 반영 적용(메인처럼)
-    4. prod 환경 개발
-    // 5. 재실행시 4단계 안넘어가지는 원인 파악 및 해결 -> 원인은 모르겠는데 하다보니 해결..
-  */
-
   async function fetchGeneratedText() {
     const projectId = sessionStorage.getItem("projectId");
     if (projectId) {
       try {
         const response = await generateText(isProduction, parseInt(projectId));
         if (response.statusText === "OK") {
-          setGeneratedTextData(response.data.responses);
-          const data = response.data.responses.map((item: IgeneratedText) => {
-            return (item = {
-              ...item,
-              feature: item.feature.split(" ").join(""),
-            });
-          });
+          const data = response.data.responses.map(
+            (item: IfeatureResponseData) => {
+              const { menu, feature, content } = item.featureResponseData;
+              const joinFeature = feature.split(" ").join("");
+              const need = {
+                menu: menu,
+                feature: joinFeature,
+                content: content,
+              };
+              return need;
+            }
+          );
+          setGeneratedTextData(data);
           const headerArr = response.data.responses.map(
-            (item: IgeneratedText) => {
-              return item.menu;
+            (item: IfeatureResponseData) => {
+              return item.featureResponseData.menu;
             }
           );
           const headerData = {
             categories: [...new Set(headerArr)],
-            logo: serviceDefaultData?.serviceTitle,
+            logo: serviceInfo?.serviceTitle,
           };
           localStorage.setItem("generatedTextData", JSON.stringify(data));
           localStorage.setItem("headerData", JSON.stringify(headerData));
@@ -347,16 +364,17 @@ export default function ServiceStep3Page() {
           return item.feature.split(" ").join("");
         });
         const parameterArr = listData.map((item) => `${projectType}-${item}`);
-        const dataArr = generatedTextData.map((item) =>
-          encodeURIComponent(JSON.stringify(item.content.content))
-        );
+        const dataArr = generatedTextData.map((item) => {
+          return encodeURIComponent(JSON.stringify(item.content));
+        });
+        console.log(dataArr);
         const headerArr = generatedTextData.map((item: IgeneratedText) => {
           return item.menu;
         });
         const headerData = encodeURIComponent(
           JSON.stringify({
             categories: [...new Set(headerArr)],
-            logo: serviceDefaultData?.serviceTitle,
+            logo: serviceInfo?.serviceTitle,
           })
         );
         const responses = await Promise.all(
@@ -445,7 +463,7 @@ export default function ServiceStep3Page() {
   const loadingModal: IloadingModal = {
     isOpen: isModalOpen,
     content: {
-      title: serviceDefaultData?.serviceTitle || "프로젝트",
+      title: serviceInfo?.serviceTitle || "프로젝트",
       desc: ["화면을 구성중이에요!", <br key="1" />, "잠시만 기다려주세요"],
     },
     onLoad: () => {},

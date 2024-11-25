@@ -29,13 +29,25 @@ export default function Mainbanner(prop: ImainBanner) {
           }}
         />
         <div css={container}>
-          {/* {isEditable ? (
-            <EditableText text={title} defaultCss={pass_h1} />
+          {isEditable ? (
+            <EditableText
+              text={title}
+              isTextArea={false}
+              defaultCss={pass_h1}
+            />
           ) : (
-           
-          )} */}
-          <p css={pass_h1}>{title}</p>
-          <p css={desc_style}>{desc}</p>
+            <p css={pass_h1}>{title}</p>
+          )}
+          {isEditable ? (
+            <EditableText
+              text={desc}
+              isTextArea={true}
+              defaultCss={pass_desc}
+            />
+          ) : (
+            <p css={pass_desc}>{desc}</p>
+          )}
+
           <TemplateButton type="default" text="button" />
         </div>
       </div>
@@ -73,6 +85,10 @@ const pass_h1: Record<string, string> = {
   fontWeight: "900",
   lineHeight: "150%",
   textTransform: "capitalize",
+  width: "100%",
+  overflow: "hidden" /* 넘치는 텍스트 숨김 */,
+  textOverflow: "ellipsis" /* 말줄임표 적용 */,
+  whiteSpace: "nowrap" /* 텍스트를 한 줄로 처리 */,
 };
 
 const desc_style = css`
@@ -84,6 +100,31 @@ const desc_style = css`
   font-weight: 400;
   line-height: normal;
   margin-bottom: 80px;
-
   max-width: 676px;
+
+  display: -webkit-box; /* Flex 기반 레이아웃 */
+  -webkit-box-orient: vertical; /* 박스를 수직 방향으로 정렬 */
+  overflow: hidden; /* 넘치는 텍스트 숨김 */
+  text-overflow: ellipsis; /* 말줄임표 적용 */
+  height: 100px;
+  -webkit-line-clamp: 2; /* 보여줄 줄 수 */
 `;
+
+const pass_desc: Record<string, string> = {
+  wordBreak: "keep-all",
+  color: "#486284",
+  fontFamily: "Inter",
+  fontSize: "32px",
+  fontStyle: "normal",
+  fontWeight: "400",
+  lineHeight: "normal",
+  marginBottom: "80px",
+  maxWidth: "676px",
+
+  display: "-webkit-box",
+  "-webkit-box-orient": "vertical",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  height: "100px",
+  "-webkit-line-clamp": "2",
+};

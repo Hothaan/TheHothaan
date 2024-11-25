@@ -96,9 +96,7 @@ export default function BrandIntroduce(prop: IbrandIntroduce) {
           }}
         />
         <div css={container}>
-          {/* <p css={pass_h1}>{title}</p> */}
           <p css={pass_h1}>{title || "headline h1"}</p>
-          {/* <p css={desc_style}>{desc}</p> */}
           <p css={desc_style}>
             {desc ||
               "lorem ipsum, quia dolor sit, amet,consectetur, adipisci velit, sed quia non"}

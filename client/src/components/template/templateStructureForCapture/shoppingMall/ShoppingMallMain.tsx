@@ -7,7 +7,7 @@ import ProductListMain from "@components/template/main/ProductListMain";
 import Review from "@components/template/product/Review";
 import ServiceIntroduction from "@components/template/service/ServiceIntroduction";
 import ServiceContact from "@components/template/service/ServiceContact";
-import { IgeneratedText } from "@components/service/modal/FullPageModalEditable";
+import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
 import { ItemplateMode } from "@components/template/types";
 import Loading from "@components/common/ui/Loading/loading";
 
@@ -97,9 +97,9 @@ export default function ShoppingMallMain(prop: ItemplateMode) {
       <div className="templateImage">
         <Header categories={headerData.categories} logo={headerData.logo} />
         <Mainbanner
-          isEditable={false}
-          title={generatedText?.content?.content?.title}
-          desc={generatedText?.content?.content?.desc}
+          isEditable={true}
+          title={generatedText?.content?.title}
+          desc={generatedText?.content?.desc}
         />
         <ProductListMain option="main" />
         <Review />

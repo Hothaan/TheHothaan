@@ -18,9 +18,11 @@ import FullPageModalEditable from "@components/service/modal/FullPageModalEditab
 import ButtonArrowIconControler, {
   IbuttonArrowControler,
 } from "@components/service/button/ButtonArrowIconControler";
-import { IgeneratedText } from "@components/service/modal/FullPageModalEditable";
+import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
 import Loading from "@components/common/ui/Loading/loading";
 import useIsProduction from "@hooks/useIsProduction";
+import { IserviceData } from "./ServiceStep2Page";
+import { IserviceInfo } from "./ServiceStep1Page";
 
 export type TimageName = {
   imageName: string;
@@ -37,14 +39,21 @@ export default function ServicePreviewPage() {
   const [generatedTextData, setGeneratedTextData] = useState<
     IgeneratedText[] | null
   >(null);
-  // const { serviceDefaultData } = serviceDefaultDataStore();
+  const [serviceInfo, setServiceInfo] = useState<IserviceInfo | null>(null);
   const [serviceDefaultData, setServiceDefaultData] =
-    useState<TserviceDefaultData | null>(null);
+    useState<IserviceData | null>(null);
   const [isFullpageModalOpen, setIsFullpageModalOpen] = useState(false);
   const [isLoadingModalOpen, setIsLoadingModalOpen] = useState(false);
   const navigate = useNavigate();
   const [imageNameArr, setImageNameArr] = useState<TimageName[] | null>(null);
   const [imageUrlArr, setImageUrlArr] = useState<TimageUrl[] | null>(null);
+
+  useEffect(() => {
+    const sessionData = sessionStorage.getItem("serviceInfo");
+    if (sessionData) {
+      setServiceInfo(JSON.parse(sessionData));
+    }
+  }, []);
 
   useEffect(() => {
     const sessionData = sessionStorage.getItem("serviceData");
@@ -80,8 +89,7 @@ export default function ServicePreviewPage() {
   const loadingModal: IloadingModal = {
     isOpen: isLoadingModalOpen,
     content: {
-      title:
-        (serviceDefaultData && serviceDefaultData.serviceTitle) || "프로젝트",
+      title: (serviceInfo && serviceInfo.serviceTitle) || "프로젝트",
       desc: [
         "기획안 파일을 생성 중이예요!",
         <br key="1" />,
@@ -247,7 +255,7 @@ export default function ServicePreviewPage() {
         <div css={title_section}>
           <div css={title_container}>
             <ButtonArrowIcon {...buttonPrevPage} />
-            <p css={title}>{serviceDefaultData?.serviceTitle}</p>
+            <p css={title}>{serviceInfo?.serviceTitle}</p>
           </div>
           <div css={button_container}>
             <Button {...nextButtonData} />

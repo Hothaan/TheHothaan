@@ -23,8 +23,6 @@ function ServiceIntro3Card(prop: IserviceIntro3Card) {
     display: flex;
     flex-direction: column;
     gap: 30px;
-
-    // flex: 0 0 calc(50%);
   `;
 
   const lottie_container = css`

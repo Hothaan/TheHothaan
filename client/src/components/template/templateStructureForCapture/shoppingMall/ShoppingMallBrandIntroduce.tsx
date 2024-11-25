@@ -2,12 +2,12 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Header, { Iheader } from "@components/template/common/header/Header";
 import Footer from "@components/template/common/footer/Footer";
+import BrandIntroduce from "@components/template/brandIntroduce/BrandIntroduce";
 import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
-import ProductList from "@components/template/product/ProductList";
 import { ItemplateMode } from "@components/template/types";
 import Loading from "@components/common/ui/Loading/loading";
 
-export default function ShoppingMallProductList(prop: ItemplateMode) {
+export default function ShoppingMallBrandIntroduce(prop: ItemplateMode) {
   const { templateMode } = prop;
 
   /* capture */
@@ -16,10 +16,10 @@ export default function ShoppingMallProductList(prop: ItemplateMode) {
   const decodedHeader = header ? JSON.parse(decodeURIComponent(header)) : null;
 
   /* render */
-  const feature = "상품목록";
   const [generatedTextData, setGeneratedTextData] = useState<
     IgeneratedText[] | null
   >(null);
+  const feature = "브랜드소개";
   const [generatedText, setGeneratedText] = useState<IgeneratedText | null>(
     null
   );
@@ -60,7 +60,8 @@ export default function ShoppingMallProductList(prop: ItemplateMode) {
 
   /* capture */
   if (templateMode === "capture") {
-    if (!decodedData || !decodedHeader) {
+    // if (!decodedData || !decodedHeader) {
+    if (!decodedHeader) {
       return <Loading />;
     }
 
@@ -70,11 +71,7 @@ export default function ShoppingMallProductList(prop: ItemplateMode) {
           categories={decodedHeader.categories}
           logo={decodedHeader.logo}
         />
-        {decodedData.categories && decodedData.categories.length > 0 ? (
-          <ProductList categories={decodedData.categories} />
-        ) : (
-          <ProductList />
-        )}
+        <BrandIntroduce />
         <Footer logo={decodedHeader.logo} />
       </div>
     );
@@ -87,12 +84,7 @@ export default function ShoppingMallProductList(prop: ItemplateMode) {
     return (
       <div className="templateImage">
         <Header categories={headerData.categories} logo={headerData.logo} />
-        {generatedText?.content?.categories &&
-        generatedText.content.categories.length > 0 ? (
-          <ProductList categories={generatedText.content.categories} />
-        ) : (
-          <ProductList />
-        )}
+        <BrandIntroduce />
         <Footer logo={headerData.logo} />
       </div>
     );
