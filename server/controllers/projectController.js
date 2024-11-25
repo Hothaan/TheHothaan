@@ -86,7 +86,7 @@ exports.generateProjectText = async (req, res) => {
         for (const selection of selections) {
             if (selection.selection_type === 'menu') {
                 // console.log("selection", selection);
-                
+
                 // 메뉴 정보 추가
                 const menuSelection = { menu: selection.selection_value, features: [] };
 
@@ -131,9 +131,7 @@ exports.generateProjectText = async (req, res) => {
 
                 // Include featureOption only for features
                 const responseItem = {
-                    menu,
-                    feature,
-                    content: featureResponseData
+                    featureResponseData
                 };
                 if (featureOption) {
                     responseItem.featureOption = featureOption;

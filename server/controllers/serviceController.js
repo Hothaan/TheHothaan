@@ -59,6 +59,7 @@ exports.getMenusWithItems = async (req, res) => {
                     const options = await ServiceItemOptions.getOptionsByItemName(item_name);
                     item.options = options.map(option => ({
                         option_type: option.option_type,
+                        is_default: !!option.is_default,
                         is_selected: !!option.is_selected,
                         structure: option.structure
                     }));
