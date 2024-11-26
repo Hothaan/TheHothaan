@@ -28,7 +28,6 @@ import { AxiosResponse } from "axios";
 export interface IgeneratedText {
   menu: string;
   feature: string;
-  // content: { [key: string]: any };
   content: any;
 }
 export interface IfeatureResponseData {
@@ -318,47 +317,51 @@ export default function ServiceStep3Page() {
       console.error("Invalid or missing projectId:", projectId);
       return;
     }
-  
+
     try {
       console.log(`Calling generateText API with projectId: ${projectId}`);
       const response = await generateText(isProduction, parseInt(projectId));
-  
+
       if (response.status === 200) {
-        const data = response.data.featureResponseData.map((item: IgeneratedText) => {
-          const { menu, feature, content } = item || {};
-          if (!menu || !feature || !content) {
-            console.error("Invalid featureResponseData:", item);
-            return null; // Skip invalid items
-          }
-          return { menu, feature: feature.split(" ").join(""), content };
-        }).filter(Boolean); // Remove null values
-  
+        const data = response.data.featureResponseData
+          .map((item: IgeneratedText) => {
+            const { menu, feature, content } = item || {};
+            if (!menu || !feature || !content) {
+              console.error("Invalid featureResponseData:", item);
+              return null; // Skip invalid items
+            }
+            return { menu, feature: feature.split(" ").join(""), content };
+          })
+          .filter(Boolean); // Remove null values
+
         console.log("Processed generateText data:", data);
-  
+
         if (data.length > 0) {
           setGeneratedTextData(data);
-  
-          const headerArr = data.map((item: { menu: any; }) => item.menu);
+
+          const headerArr = data.map((item: { menu: any }) => item.menu);
           const headerData = {
             categories: [...new Set(headerArr)],
             logo: serviceInfo?.serviceTitle || "",
           };
-  
+
           localStorage.setItem("generatedTextData", JSON.stringify(data));
           localStorage.setItem("headerData", JSON.stringify(headerData));
         } else {
           console.error("No valid data found in featureResponseData");
         }
       } else {
-        console.error("generateText API returned non-OK status:", response.status);
+        console.error(
+          "generateText API returned non-OK status:",
+          response.status
+        );
       }
     } catch (error) {
       console.error("Error fetching generated text:", error);
     } finally {
-      setIsReady(true);
+      setIsReady(true); // Always ensure this is called
     }
   }
-  
 
   async function saveImages() {
     if (

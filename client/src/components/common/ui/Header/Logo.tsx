@@ -29,6 +29,6 @@ const logo_container = css`
 `;
 
 const logo = css`
-  width: 130px;
+  width: 180px;
   height: auto;
 `;

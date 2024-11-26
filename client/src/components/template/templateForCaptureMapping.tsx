@@ -10,6 +10,7 @@ import ShoppingMallJoin from "./templateStructureForCapture/shoppingMall/Shoppin
 import ShoppingMallLogin from "./templateStructureForCapture/shoppingMall/ShoppingMallLogin";
 import ShoppingMallNotice from "./templateStructureForCapture/shoppingMall/ShoppingMallNotice";
 import ShoppingMallWidthDrawer from "./templateStructureForCapture/shoppingMall/ShoppingMallWidthDrawer";
+import ShoppingMallBrandIntroduce from "./templateStructureForCapture/shoppingMall/ShoppingMallBrandIntroduce";
 import { TtemplateMode } from "./types";
 
 export const templateMapForCapture: {
@@ -47,5 +48,8 @@ export const templateMapForCapture: {
   ),
   "쇼핑몰-비밀번호찾기": (props) => (
     <ShoppingMallFindPw templateMode={props.templateMode} />
+  ),
+  "쇼핑몰-브랜드소개": (props) => (
+    <ShoppingMallBrandIntroduce templateMode={props.templateMode} />
   ),
 };

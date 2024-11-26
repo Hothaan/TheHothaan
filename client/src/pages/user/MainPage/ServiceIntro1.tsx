@@ -6,7 +6,7 @@ export default function ServiceIntro1() {
   return (
     <MainPageSectionContainer>
       <p css={text}>
-        더핫한 자동 기획안 플랫폼은
+        더핫한 자동 기획안 플랫폼은&nbsp;
         <span css={text_gradient}>ChatGPT기술</span>
         을 활용하여
         <br /> 여러분의 아이디어를 빠르고 효율적으로 현실로 만들어 드립니다.
