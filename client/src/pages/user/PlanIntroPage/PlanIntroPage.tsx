@@ -1,13 +1,15 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import ServiceIntro8 from "../MainPage/ServiceIntro8";
+import Plan from "./Plan";
 import Title from "./Title";
+import Detail from "./Detail";
 
 export default function PlanIntroPage() {
   return (
     <div>
       <Title />
-      <ServiceIntro8 />
+      <Plan />
+      <Detail />
     </div>
   );
 }

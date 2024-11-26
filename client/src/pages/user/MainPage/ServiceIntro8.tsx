@@ -25,7 +25,7 @@ interface IserviceIntro8Card {
   template: string;
 }
 
-function ServiceIntro8Card(prop: IserviceIntro8Card) {
+export function ServiceIntro8Card(prop: IserviceIntro8Card) {
   const {
     isUsing,
     plan,
@@ -286,46 +286,47 @@ function ServiceIntro8Card(prop: IserviceIntro8Card) {
   );
 }
 
+export const cardDatas: IserviceIntro8Card[] = [
+  {
+    isUsing: true,
+    plan: "FREE",
+    period: "none",
+    priceMonth: 0,
+    priceYear: 0,
+    desc: "기본 자동 생성 기능, 기본 템플릿 이용, 데이터 분석 기능",
+    editProject: "1개",
+    projectBoard: "2개",
+    plugin: "제한",
+    template: "20개 제한",
+  },
+  {
+    isUsing: false,
+    plan: "Basic",
+    period: "month",
+    priceMonth: 10000,
+    priceYear: 120000,
+    desc: "ChatGPT 연동, 고급 템플릿 이용, 맞춤형 분석 기능",
+    editProject: "10개",
+    projectBoard: "20개",
+    plugin: "가능",
+    template: "가능",
+  },
+  {
+    isUsing: false,
+    plan: "Pro",
+    period: "month",
+    priceMonth: 20000,
+    priceYear: 240000,
+    desc: "ChatGPT 연동, 고급 템플릿 무제한 이용, 맞춤형 분석 기능",
+    editProject: "무제한",
+    projectBoard: "무제한",
+    plugin: "가능",
+    template: "가능",
+  },
+];
+
 export default function ServiceIntro8() {
   const userPlan: Tplan = "FREE";
-  const cardDatas: IserviceIntro8Card[] = [
-    {
-      isUsing: true,
-      plan: "FREE",
-      period: "none",
-      priceMonth: 0,
-      priceYear: 0,
-      desc: "기본 자동 생성 기능, 기본 템플릿 이용, 데이터 분석 기능",
-      editProject: "1개",
-      projectBoard: "2개",
-      plugin: "제한",
-      template: "20개 제한",
-    },
-    {
-      isUsing: false,
-      plan: "Basic",
-      period: "month",
-      priceMonth: 10000,
-      priceYear: 120000,
-      desc: "ChatGPT 연동, 고급 템플릿 이용, 맞춤형 분석 기능",
-      editProject: "10개",
-      projectBoard: "20개",
-      plugin: "가능",
-      template: "가능",
-    },
-    {
-      isUsing: false,
-      plan: "Pro",
-      period: "month",
-      priceMonth: 20000,
-      priceYear: 240000,
-      desc: "ChatGPT 연동, 고급 템플릿 무제한 이용, 맞춤형 분석 기능",
-      editProject: "무제한",
-      projectBoard: "무제한",
-      plugin: "가능",
-      template: "가능",
-    },
-  ];
 
   return (
     <MainPageSectionContainer>

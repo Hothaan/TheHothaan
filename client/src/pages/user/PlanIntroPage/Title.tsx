@@ -1,23 +1,26 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import ResponsiveContainer from "@components/common/ui/Container/ResponsiveContainer";
 
 export default function Title() {
   return (
     <div css={container}>
-      <div css={title_wrap}>
-        <div css={title_container}>
-          <p css={title}>맞춤형 기획서</p>
-          <img src="/assets/images/planIntro/title1.png" alt="title1" />
-          <p css={title}>작성을 위한</p>
+      <ResponsiveContainer>
+        <div css={title_wrap}>
+          <div css={title_container}>
+            <p css={title}>맞춤형 기획서</p>
+            <img src="/assets/images/planIntro/title1.png" alt="title1" />
+            <p css={title}>작성을 위한</p>
+          </div>
+          <div css={title_container}>
+            <p css={title_gradient}>더핫한 요금제</p>
+            <img src="/assets/images/planIntro/title2.png" alt="title2" />
+          </div>
         </div>
-        <div css={title_container}>
-          <p css={title_gradient}>더핫한 요금제</p>
-          <img src="/assets/images/planIntro/title2.png" alt="title2" />
-        </div>
-      </div>
-      <p css={desc}>
-        업무 환경에 맞게 도입할 수 있도록 다양한 상품을 제공합니다.
-      </p>
+        <p css={desc}>
+          업무 환경에 맞게 도입할 수 있도록 다양한 상품을 제공합니다.
+        </p>
+      </ResponsiveContainer>
     </div>
   );
 }

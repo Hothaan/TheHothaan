@@ -31,10 +31,10 @@ function NoticeTitle() {
   return (
     <div css={container}>
       <div css={breadCrumble_container}>
-        <BreadCrumble path1="홈" path2="LIST BOARD NAME" />
+        <BreadCrumble path1="홈" path2="공지사항" />
       </div>
       <Title
-        title="LIST BOARD NAME"
+        title="공지사항"
         weight="light"
         marginBottom={0}
         transform="uppercase"
