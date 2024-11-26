@@ -314,47 +314,43 @@ export default function ServiceStep3Page() {
 
   async function fetchGeneratedText() {
     const projectId = sessionStorage.getItem("projectId");
-    if (!projectId) {
-      console.error("Project ID is missing");
+    if (!projectId || isNaN(parseInt(projectId))) {
+      console.error("Invalid or missing projectId:", projectId);
       return;
     }
-
+  
     try {
       console.log(`Calling generateText API with projectId: ${projectId}`);
       const response = await generateText(isProduction, parseInt(projectId));
-      console.log("generateText response:", response);
-
-      if (response.statusText === "OK") {
-        const data = response.data.responses.map(
-          (item: IfeatureResponseData) => {
-            const { menu, feature, content } = item.featureResponseData || {};
-            if (!menu || !feature || !content) {
-              console.error(
-                "Invalid featureResponseData:",
-                item.featureResponseData
-              );
-            }
-            return { menu, feature: feature.split(" ").join(""), content };
+  
+      if (response.status === 200) {
+        const data = response.data.featureResponseData.map((item: IgeneratedText) => {
+          const { menu, feature, content } = item || {};
+          if (!menu || !feature || !content) {
+            console.error("Invalid featureResponseData:", item);
+            return null; // Skip invalid items
           }
-        );
+          return { menu, feature: feature.split(" ").join(""), content };
+        }).filter(Boolean); // Remove null values
+  
         console.log("Processed generateText data:", data);
-
-        setGeneratedTextData(data);
-
-        const headerArr = response.data.responses.map(
-          (item: IfeatureResponseData) => item.featureResponseData.menu
-        );
-        const headerData = {
-          categories: [...new Set(headerArr)],
-          logo: serviceInfo?.serviceTitle,
-        };
-        localStorage.setItem("generatedTextData", JSON.stringify(data));
-        localStorage.setItem("headerData", JSON.stringify(headerData));
+  
+        if (data.length > 0) {
+          setGeneratedTextData(data);
+  
+          const headerArr = data.map((item: { menu: any; }) => item.menu);
+          const headerData = {
+            categories: [...new Set(headerArr)],
+            logo: serviceInfo?.serviceTitle || "",
+          };
+  
+          localStorage.setItem("generatedTextData", JSON.stringify(data));
+          localStorage.setItem("headerData", JSON.stringify(headerData));
+        } else {
+          console.error("No valid data found in featureResponseData");
+        }
       } else {
-        console.error(
-          "generateText API returned non-OK status:",
-          response.status
-        );
+        console.error("generateText API returned non-OK status:", response.status);
       }
     } catch (error) {
       console.error("Error fetching generated text:", error);
@@ -362,6 +358,7 @@ export default function ServiceStep3Page() {
       setIsReady(true);
     }
   }
+  
 
   async function saveImages() {
     if (

@@ -73,7 +73,6 @@ exports.generateProjectText = async (req, res) => {
 
         // 프로젝트 선택값 불러오기
         const selections = await projectModel.getProjectSelections(projectId) || [];
-
         if (selections.length === 0) {
             return res.status(404).json({ error: "선택된 항목이 없습니다." });
         }
@@ -114,7 +113,6 @@ exports.generateProjectText = async (req, res) => {
                     const featureDetails = await componentModel.getComponentDetails(menu, feature);
 
                     if (!featureDetails || featureDetails.length === 0) {
-                        console.warn(`해당 피처의 컴포넌트 정보를 찾을 수 없습니다: feature, ${feature}`);
                         responses.push({
                             menu,
                             feature,
@@ -131,17 +129,10 @@ exports.generateProjectText = async (req, res) => {
                         serviceType, serviceTitle, serviceDesc, depth1, depth2, feature, structure, content, cnt
                     );
 
-                    // 요약 생성
-                    const summary = generateSummary(featureResponseData);
-
-                    // 로그에 요약 추가
-                    console.log(`Feature Summary - Menu: ${menu}, Feature: ${feature}, Summary: ${summary}`);
-
-                    // 성공한 featureResponseData 추가
                     responses.push({
                         menu,
                         feature,
-                        content: featureResponseData.content,
+                        content: featureResponseData.content, // 클라이언트가 기대하는 JSON 형식
                         success: true
                     });
 
@@ -149,7 +140,6 @@ exports.generateProjectText = async (req, res) => {
                 } catch (error) {
                     console.error(`Error processing feature '${feature}' in menu '${menu}':`, error);
 
-                    // 실패한 featureResponseData 추가
                     responses.push({
                         menu,
                         feature,
@@ -175,7 +165,7 @@ exports.generateProjectText = async (req, res) => {
             }))
         });
 
-        // 클라이언트 응답에는 summary 제외
+        // 최종 응답 데이터
         res.status(200).json({
             projectId,
             project_name: serviceTitle,
@@ -184,7 +174,7 @@ exports.generateProjectText = async (req, res) => {
             project_type: serviceType,
             successCount,
             failureCount,
-            responses
+            featureResponseData: responses
         });
     } catch (error) {
         logger.error("프로젝트 텍스트 생성 오류", error);
