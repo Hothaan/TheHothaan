@@ -320,14 +320,25 @@ export default function ServiceStep3Page() {
     }
 
     try {
+      console.log(`Calling generateText API with projectId: ${projectId}`);
       const response = await generateText(isProduction, parseInt(projectId));
+      console.log("generateText response:", response);
+
       if (response.statusText === "OK") {
         const data = response.data.responses.map(
           (item: IfeatureResponseData) => {
-            const { menu, feature, content } = item.featureResponseData;
+            const { menu, feature, content } = item.featureResponseData || {};
+            if (!menu || !feature || !content) {
+              console.error(
+                "Invalid featureResponseData:",
+                item.featureResponseData
+              );
+            }
             return { menu, feature: feature.split(" ").join(""), content };
           }
         );
+        console.log("Processed generateText data:", data);
+
         setGeneratedTextData(data);
 
         const headerArr = response.data.responses.map(
@@ -339,6 +350,11 @@ export default function ServiceStep3Page() {
         };
         localStorage.setItem("generatedTextData", JSON.stringify(data));
         localStorage.setItem("headerData", JSON.stringify(headerData));
+      } else {
+        console.error(
+          "generateText API returned non-OK status:",
+          response.status
+        );
       }
     } catch (error) {
       console.error("Error fetching generated text:", error);
