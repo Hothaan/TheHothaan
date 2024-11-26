@@ -7,6 +7,7 @@ import { IradioButtonAccordion } from "@components/service/accordion/RadioButton
 import RadioButtonAccordion from "@components/service/accordion/RadioButtonAccordion";
 import { ReactComponent as Add } from "@svgs/service/add.svg";
 import { IserviceTypeMenuItem, TmenuItem } from "@api/service/serviceTypeMenu";
+import { MAX_NUM } from "@data/maxNum";
 
 export interface IbuttonAddFeature {
   data: IserviceTypeMenuItem;
@@ -17,6 +18,9 @@ export interface IbuttonAddFeature {
 export default function ButtonAddFeature(prop: IbuttonAddFeature) {
   const { data, onAddMenu, onCancel } = prop;
   const [showOptions, setShowOptions] = useState(false);
+  const [selectedArr, setSelectedArr] = useState<number>(
+    data.items.filter((item) => item.is_selected === true).length
+  );
   const [selectedValue, setSelectedValue] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [updateDepth2, setUpdateDepth2] = useState<TmenuItem[]>(data.items);
@@ -53,13 +57,25 @@ export default function ButtonAddFeature(prop: IbuttonAddFeature) {
     ],
   };
 
-  function handleCheckboxChange(item_name: string, checked: boolean) {
-    setUpdateDepth2((prevState) =>
-      prevState.map((item) =>
-        item.item_name === item_name ? { ...item, is_selected: checked } : item
-      )
-    );
+  function handleCheckboxChange(
+    selectedArrAmt: number,
+    item_name: string,
+    checked: boolean
+  ) {
+    if (selectedArrAmt < MAX_NUM) {
+      setUpdateDepth2((prevState) =>
+        prevState.map((item) =>
+          item.item_name === item_name
+            ? { ...item, is_selected: checked }
+            : item
+        )
+      );
+    }
   }
+
+  useEffect(() => {
+    setSelectedArr(updateDepth2.filter((item) => item.is_selected).length);
+  }, [updateDepth2]);
 
   const options = updateDepth2.map((item) => {
     return {
@@ -68,7 +84,7 @@ export default function ButtonAddFeature(prop: IbuttonAddFeature) {
       label: item.item_name,
       checked: item.is_selected,
       onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
-        handleCheckboxChange(item.item_name, event.target.checked);
+        handleCheckboxChange(selectedArr, item.item_name, event.target.checked);
       },
     };
   });
@@ -84,6 +100,12 @@ export default function ButtonAddFeature(prop: IbuttonAddFeature) {
     },
     options: options,
   };
+
+  useEffect(() => {
+    if (isModalOpen) {
+      console.log(updateDepth2);
+    }
+  }, [isModalOpen]);
 
   return (
     <div

@@ -11,7 +11,7 @@ declare interface IuserInfoStore {
 
 export const useUserInfoStore = create<IuserInfoStore>()((set) => ({
   isLogin: true,
-  userInfo: { name: "홍길동", plan: "pro", term: "월간" },
+  userInfo: { name: "홍길동", plan: "free", term: "월간" },
   setUserInfo: (newUserInfo: any) => set({ userInfo: newUserInfo }),
   removeUserInfo: () =>
     set({ isLogin: false, userInfo: { name: null, plan: null, term: null } }),

@@ -22,7 +22,7 @@ import { saveImage } from "@api/image/saveImage";
 import Loading from "@components/common/ui/Loading/loading";
 import { IserviceInfo } from "./ServiceStep1Page";
 import { IserviceData } from "./ServiceStep2Page";
-import { AxiosResponse } from 'axios';
+import { AxiosResponse } from "axios";
 
 /* 임시 */
 export interface IgeneratedText {
@@ -312,61 +312,24 @@ export default function ServiceStep3Page() {
     }
   }
 
-  // async function fetchGeneratedText() {
-  //   const projectId = sessionStorage.getItem("projectId");
-  //   if (projectId) {
-  //     try {
-  //       const response = await generateText(isProduction, parseInt(projectId));
-  //       if (response.statusText === "OK") {
-  //         const data = response.data.responses.map(
-  //           (item: IfeatureResponseData) => {
-  //             const { menu, feature, content } = item.featureResponseData;
-  //             const joinFeature = feature.split(" ").join("");
-  //             const need = {
-  //               menu: menu,
-  //               feature: joinFeature,
-  //               content: content,
-  //             };
-  //             return need;
-  //           }
-  //         );
-  //         setGeneratedTextData(data);
-  //         const headerArr = response.data.responses.map(
-  //           (item: IfeatureResponseData) => {
-  //             return item.featureResponseData.menu;
-  //           }
-  //         );
-  //         const headerData = {
-  //           categories: [...new Set(headerArr)],
-  //           logo: serviceInfo?.serviceTitle,
-  //         };
-  //         localStorage.setItem("generatedTextData", JSON.stringify(data));
-  //         localStorage.setItem("headerData", JSON.stringify(headerData));
-  //       }
-  //     } catch (error) {
-  //       console.error("API 요청 실패:", error);
-  //     } finally {
-  //       console.log("generatedTextData done");
-  //       setIsReady(true);
-  //     }
-  //   }
-  // }
   async function fetchGeneratedText() {
     const projectId = sessionStorage.getItem("projectId");
     if (!projectId) {
       console.error("Project ID is missing");
       return;
     }
-  
+
     try {
       const response = await generateText(isProduction, parseInt(projectId));
       if (response.statusText === "OK") {
-        const data = response.data.responses.map((item: IfeatureResponseData) => {
-          const { menu, feature, content } = item.featureResponseData;
-          return { menu, feature: feature.split(" ").join(""), content };
-        });
+        const data = response.data.responses.map(
+          (item: IfeatureResponseData) => {
+            const { menu, feature, content } = item.featureResponseData;
+            return { menu, feature: feature.split(" ").join(""), content };
+          }
+        );
         setGeneratedTextData(data);
-  
+
         const headerArr = response.data.responses.map(
           (item: IfeatureResponseData) => item.featureResponseData.menu
         );
@@ -380,83 +343,20 @@ export default function ServiceStep3Page() {
     } catch (error) {
       console.error("Error fetching generated text:", error);
     } finally {
-      setIsReady(true); // Always ensure this is called
+      setIsReady(true);
     }
   }
 
-  // async function saveImages() {
-  //   if (
-  //     generatedTextData &&
-  //     generatedTextData.length > 0 &&
-  //     serviceDefaultData
-  //   ) {
-  //     setLoading(true);
-  //     try {
-  //       const projectType = serviceDefaultData.serviceType.text as string;
-  //       const listData = generatedTextData.map((item: IgeneratedText) => {
-  //         return item.feature.split(" ").join("");
-  //       });
-  //       const parameterArr = listData.map((item) => `${projectType}-${item}`);
-  //       const dataArr = generatedTextData.map((item) => {
-  //         return encodeURIComponent(JSON.stringify(item.content));
-  //       });
-  //       console.log(dataArr);
-  //       const headerArr = generatedTextData.map((item: IgeneratedText) => {
-  //         return item.menu;
-  //       });
-  //       const headerData = encodeURIComponent(
-  //         JSON.stringify({
-  //           categories: [...new Set(headerArr)],
-  //           logo: serviceInfo?.serviceTitle,
-  //         })
-  //       );
-  //       const responses = await Promise.all(
-  //         parameterArr.map(async (item, idx) => {
-  //           return await saveImage(
-  //             isProduction,
-  //             item,
-  //             dataArr[idx],
-  //             headerData
-  //           );
-  //         })
-  //       );
-  //       if (responses.every((response) => response.statusText === "OK")) {
-  //         const imageNameArr = responses.map(
-  //           (response) => response.data.imageName
-  //         );
-  //         const imageNameMapping = imageNameArr.map((item, idx) => {
-  //           return {
-  //             imageName: item,
-  //             parameter: parameterArr[idx],
-  //           };
-  //         });
-  //         const imageUrlArr = responses.map((response) => response.data.url);
-  //         const imageUrlMapping = imageUrlArr.map((item, idx) => {
-  //           return {
-  //             imageUrl: item as string,
-  //             parameter: parameterArr[idx],
-  //           };
-  //         });
-  //         localStorage.setItem("imageName", JSON.stringify(imageNameMapping));
-  //         localStorage.setItem("imageUrl", JSON.stringify(imageUrlMapping));
-  //       } else {
-  //         console.error("Some images failed to save.");
-  //       }
-  //     } catch (error) {
-  //       console.error("API 요청 실패:", error);
-  //     } finally {
-  //       setIsModalOpen(false);
-  //       handleNavigation(`/service/step${currentStep + 1}`);
-  //     }
-  //   }
-  // }
-
   async function saveImages() {
-    if (!generatedTextData || generatedTextData.length === 0 || !serviceDefaultData) {
+    if (
+      !generatedTextData ||
+      generatedTextData.length === 0 ||
+      !serviceDefaultData
+    ) {
       console.error("Missing required data for saveImages");
       return;
     }
-  
+
     setLoading(true);
     try {
       const projectType = serviceDefaultData.serviceType.text as string;
@@ -472,24 +372,24 @@ export default function ServiceStep3Page() {
           logo: serviceInfo?.serviceTitle,
         })
       );
-  
+
       const responses = await Promise.allSettled(
         parameterArr.map((param, idx) =>
           saveImage(isProduction, param, dataArr[idx], headerData)
         )
       );
-  
+
       // Filter fulfilled responses
       const fulfilledResponses = responses.filter(
         (res): res is PromiseFulfilledResult<AxiosResponse<any>> =>
           res.status === "fulfilled"
       );
-  
+
       // Filter rejected responses
       const rejectedResponses = responses.filter(
         (res): res is PromiseRejectedResult => res.status === "rejected"
       );
-  
+
       if (fulfilledResponses.length > 0) {
         const imageNameMapping = fulfilledResponses.map((res, idx) => ({
           imageName: res.value.data.imageName,
@@ -499,11 +399,11 @@ export default function ServiceStep3Page() {
           imageUrl: res.value.data.url,
           parameter: parameterArr[idx],
         }));
-  
+
         localStorage.setItem("imageName", JSON.stringify(imageNameMapping));
         localStorage.setItem("imageUrl", JSON.stringify(imageUrlMapping));
       }
-  
+
       if (rejectedResponses.length > 0) {
         console.error(
           "Some image save requests failed:",
@@ -518,7 +418,7 @@ export default function ServiceStep3Page() {
       handleNavigation(`/service/step${currentStep + 1}`);
     }
   }
-  
+
   useEffect(() => {
     if (sendData) {
       saveData();

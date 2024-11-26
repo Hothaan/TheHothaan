@@ -2,7 +2,6 @@
 import { css } from "@emotion/react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { TserviceDefaultData } from "@store/serviceDefaultDataStore";
 import ButtonArrowIcon from "@components/service/button/ButtonArrowIcon";
 import { IbuttonArrow } from "@components/service/button/ButtonArrowIcon";
 import { ReactComponent as Edit } from "@svgs/service/edit.svg";
@@ -339,7 +338,14 @@ export default function ServicePreviewPage() {
               <br /> <span css={text_blue}>썸네일을 더블클릭</span>하세요
             </p>
           </aside>
-          <div css={preview_container}>
+          <div
+            css={preview_container}
+            onClick={() => {
+              handleOpenFullPageModalEditable(
+                listData[listData.findIndex((item) => item === selectedItem)]
+              );
+            }}
+          >
             {isProduction === true ? (
               imageUrlArr && listData.length > 0 ? (
                 <div css={preview}>
@@ -542,6 +548,7 @@ const preview_container = css`
   flex-direction: column;
   gap: 20px;
   width: 100%;
+  cursor: pointer;
 `;
 const preview = css`
   width: 100%;
@@ -551,7 +558,32 @@ const preview = css`
   gap: 14px;
   border-radius: 20px;
   border: 1px solid var(--DEDEDE, #dedede);
-  background: url(<path-to-image>) lightgray 50% / cover no-repeat, #f6f6f6;
+
+  position: relative;
+
+  &:after {
+    position: absolute;
+    content: "";
+    display: block;
+
+    inset: 0px;
+    border-radius: 20px;
+    padding: 3px;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: destination-out;
+    mask-composite: exclude;
+    pointer-events: none;
+    background: linear-gradient(to right, transparent);
+  }
+
+  &:hover {
+    border: 1px solid transparent;
+    &:after {
+      background: linear-gradient(to right, #56c0fe -1.67%, #6d0ee6 98.33%);
+    }
+  }
 `;
 
 const preview_style = css`
