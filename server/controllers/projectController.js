@@ -58,197 +58,243 @@ exports.createProject = async (req, res) => {
 };
 
 // 프로젝트 선택값 기반으로 텍스트 생성
-// exports.generateProjectText = async (req, res) => {
-//     const { projectId } = req.params;
-
-//     try {
-//         // 프로젝트 기본 정보 가져오기
-//         const projectInfo = await projectModel.getProjectById(projectId);
-//         if (!projectInfo) {
-//             return res.status(404).json({ error: "해당 프로젝트를 찾을 수 없습니다." });
-//         }
-
-//         const serviceTitle = projectInfo.project_name;
-//         const serviceDesc = projectInfo.project_description;
-
-//         // 프로젝트 선택값 불러오기
-//         const selections = await projectModel.getProjectSelections(projectId) || [];
-
-//         if (selections.length === 0) {
-//             return res.status(404).json({ error: "선택된 항목이 없습니다." });
-//         }
-
-//         const serviceDevice = selections.find(sel => sel.selection_type === 'device')?.selection_value || '';
-//         const serviceType = selections.find(sel => sel.selection_type === 'service')?.selection_value || '';
-
-//         // 메뉴와 각 메뉴에 대한 features 정보를 가져오기
-//         const groupedSelections = [];
-//         for (const selection of selections) {
-//             if (selection.selection_type === 'menu') {
-//                 // console.log("selection", selection);
-
-//                 // 메뉴 정보 추가
-//                 const menuSelection = { menu: selection.selection_value, features: [] };
-
-//                 // 해당 메뉴에 연결된 feature 가져오기
-//                 const features = await projectModel.getProjectFeatures(selection.selection_id);
-//                 // console.log(`Features for menu '${selection.selection_value}':`, features);
-
-//                 for (const feature of features) {
-//                     menuSelection.features.push({
-//                         feature: feature.feature_name,
-//                         option: feature.feature_option || null
-//                     });
-//                 }
-
-//                 groupedSelections.push(menuSelection);
-//             }
-//         }
-
-//         const responses = [];
-
-//         // 각 메뉴와 그에 해당하는 feature에 대해 OpenAI API 호출
-//         for (const group of groupedSelections) {
-//             const { menu, features } = group;
-
-//             // 각 feature에 대해 OpenAI API 호출
-//             for (const featureObj of features) {
-//                 const { feature, option: featureOption } = featureObj;
-//                 // console.log(`Retrieving component details for menu '${menu}' and feature '${feature}'`);
-
-//                 const featureDetails = await componentModel.getComponentDetails(menu, feature);
-
-//                 if (!featureDetails || featureDetails.length === 0) {
-//                     console.warn(`해당 피처의 컴포넌트 정보를 찾을 수 없습니다: feature, ${feature}`);
-//                     continue;
-//                 }
-
-//                 const { depth1, depth2, structure, content, cnt } = featureDetails;
-//                 // console.log(`Component details for feature '${feature}':`, { depth1, depth2, structure });
-
-//                 // OpenAI API 호출하여 feature에 대한 텍스트 생성
-//                 const featureResponseData = await generateOpenAiText(serviceType, serviceTitle, serviceDesc, depth1, depth2, feature, structure, content, cnt);
-
-//                 // Include featureOption only for features
-//                 const responseItem = {
-//                     featureResponseData
-//                 };
-//                 if (featureOption) {
-//                     responseItem.featureOption = featureOption;
-//                 }
-
-//                 responses.push(responseItem);
-//             }
-//         }
-
-//         // console.log("Generated responses:", responses);
-//         logger.info("프로젝트 텍스트 생성 성공", { projectId, responses });
-//         res.status(200).json({
-//             projectId,
-//             project_name: serviceTitle,
-//             project_description: serviceDesc,
-//             project_device: serviceDevice,
-//             project_type: serviceType,
-//             responses
-//         });
-//     } catch (error) {
-//         logger.error("프로젝트 텍스트 생성 오류", error);
-//         res.status(500).json({ error: "텍스트 생성 실패" });
-//     }
-// };
-
 exports.generateProjectText = async (req, res) => {
     const { projectId } = req.params;
 
     try {
+        // 프로젝트 기본 정보 가져오기
         const projectInfo = await projectModel.getProjectById(projectId);
-        
-        if (!projectInfo || projectInfo.length === 0) {
+        if (!projectInfo) {
             return res.status(404).json({ error: "해당 프로젝트를 찾을 수 없습니다." });
         }
 
         const serviceTitle = projectInfo.project_name;
         const serviceDesc = projectInfo.project_description;
 
-        const selectionsWithFeatures = await projectModel.getProjectSelectionsWithFeatures(projectId);
-        if (!selectionsWithFeatures || selectionsWithFeatures.length === 0) {
+        // 프로젝트 선택값 불러오기
+        const selections = await projectModel.getProjectSelections(projectId) || [];
+
+        if (selections.length === 0) {
             return res.status(404).json({ error: "선택된 항목이 없습니다." });
         }
 
-        // 서비스 타입 추출
-        const serviceType = selectionsWithFeatures.find(
-            (sel) => sel.selection_type === 'service'
-        )?.menu_name || '';
+        const serviceDevice = selections.find(sel => sel.selection_type === 'device')?.selection_value || '';
+        const serviceType = selections.find(sel => sel.selection_type === 'service')?.selection_value || '';
 
-        const groupedSelections = selectionsWithFeatures.reduce((acc, item) => {
-            const existingMenu = acc.find((menu) => menu.menu === item.menu_name);
-            if (existingMenu) {
-                existingMenu.features.push({
-                    feature: item.feature_name,
-                    option: item.feature_option,
-                });
-            } else {
-                acc.push({
-                    menu: item.menu_name,
-                    features: item.feature_name
-                        ? [
-                              {
-                                  feature: item.feature_name,
-                                  option: item.feature_option,
-                              },
-                          ]
-                        : [],
-                });
+        // 메뉴와 각 메뉴에 대한 features 정보를 가져오기
+        const groupedSelections = [];
+        for (const selection of selections) {
+            if (selection.selection_type === 'menu') {
+                const menuSelection = { menu: selection.selection_value, features: [] };
+                const features = await projectModel.getProjectFeatures(selection.selection_id);
+
+                for (const feature of features) {
+                    menuSelection.features.push({
+                        feature: feature.feature_name,
+                        option: feature.feature_option || null
+                    });
+                }
+
+                groupedSelections.push(menuSelection);
             }
-            return acc;
-        }, []);
+        }
 
-        const responses = await Promise.all(
-            groupedSelections.map(async (group) => {
-                const { menu, features } = group;
+        const responses = [];
+        let successCount = 0;
+        let failureCount = 0;
 
-                return Promise.all(
-                    features.map(async (featureObj) => {
-                        const { feature, option: featureOption } = featureObj;
+        // 각 메뉴와 그에 해당하는 feature에 대해 OpenAI API 호출
+        for (const group of groupedSelections) {
+            const { menu, features } = group;
 
-                        const featureDetails = await componentModel.getComponentDetails(menu, feature);
+            for (const featureObj of features) {
+                const { feature, option: featureOption } = featureObj;
 
-                        if (!featureDetails || featureDetails.length === 0) {
-                            console.warn(`해당 피처의 컴포넌트 정보를 찾을 수 없습니다: feature, ${feature}`);
-                            return null;
-                        }
+                try {
+                    const featureDetails = await componentModel.getComponentDetails(menu, feature);
 
-                        const { depth1, depth2, structure, content, cnt } = featureDetails;
-
-                        const featureResponseData = await generateOpenAiText(
-                            serviceType,
-                            serviceTitle,
-                            serviceDesc,
-                            depth1,
-                            depth2,
+                    if (!featureDetails || featureDetails.length === 0) {
+                        console.warn(`해당 피처의 컴포넌트 정보를 찾을 수 없습니다: feature, ${feature}`);
+                        responses.push({
+                            menu,
                             feature,
-                            structure,
-                            content,
-                            cnt
-                        );
+                            content: null,
+                            success: false
+                        });
+                        failureCount++;
+                        continue;
+                    }
 
-                        return {
-                            featureResponseData,
-                            featureOption,
-                        };
-                    })
-                );
-            })
-        );
+                    const { depth1, depth2, structure, content, cnt } = featureDetails;
 
+                    const featureResponseData = await generateOpenAiText(
+                        serviceType, serviceTitle, serviceDesc, depth1, depth2, feature, structure, content, cnt
+                    );
+
+                    // 요약 생성
+                    const summary = generateSummary(featureResponseData);
+
+                    // 로그에 요약 추가
+                    console.log(`Feature Summary - Menu: ${menu}, Feature: ${feature}, Summary: ${summary}`);
+
+                    // 성공한 featureResponseData 추가
+                    responses.push({
+                        menu,
+                        feature,
+                        content: featureResponseData.content,
+                        success: true
+                    });
+
+                    successCount++;
+                } catch (error) {
+                    console.error(`Error processing feature '${feature}' in menu '${menu}':`, error);
+
+                    // 실패한 featureResponseData 추가
+                    responses.push({
+                        menu,
+                        feature,
+                        content: null,
+                        success: false
+                    });
+
+                    failureCount++;
+                }
+            }
+        }
+
+        // 최종 로그에 요약 정보 포함
+        logger.info("프로젝트 텍스트 생성 결과", {
+            projectId,
+            successCount,
+            failureCount,
+            responses: responses.map(r => ({
+                menu: r.menu,
+                feature: r.feature,
+                success: r.success,
+                summary: r.content ? generateSummary({ content: r.content }) : "No content available"
+            }))
+        });
+
+        // 클라이언트 응답에는 summary 제외
         res.status(200).json({
             projectId,
             project_name: serviceTitle,
             project_description: serviceDesc,
-            responses,
+            project_device: serviceDevice,
+            project_type: serviceType,
+            successCount,
+            failureCount,
+            responses
         });
     } catch (error) {
         logger.error("프로젝트 텍스트 생성 오류", error);
         res.status(500).json({ error: "텍스트 생성 실패" });
     }
 };
+
+// 요약 생성 함수
+function generateSummary(featureResponseData) {
+    if (!featureResponseData || !featureResponseData.content) {
+        return "No content available";
+    }
+    const { content } = featureResponseData;
+    return `${content.title || ""} ${content.desc || ""}`.trim();
+}
+
+
+
+// exports.generateProjectText = async (req, res) => {
+//     const { projectId } = req.params;
+
+//     try {
+//         const projectInfo = await projectModel.getProjectById(projectId);
+        
+//         if (!projectInfo || projectInfo.length === 0) {
+//             return res.status(404).json({ error: "해당 프로젝트를 찾을 수 없습니다." });
+//         }
+
+//         const serviceTitle = projectInfo.project_name;
+//         const serviceDesc = projectInfo.project_description;
+
+//         const selectionsWithFeatures = await projectModel.getProjectSelectionsWithFeatures(projectId);
+//         if (!selectionsWithFeatures || selectionsWithFeatures.length === 0) {
+//             return res.status(404).json({ error: "선택된 항목이 없습니다." });
+//         }
+
+//         // 서비스 타입 추출
+//         const serviceType = selectionsWithFeatures.find(
+//             (sel) => sel.selection_type === 'service'
+//         )?.menu_name || '';
+
+//         const groupedSelections = selectionsWithFeatures.reduce((acc, item) => {
+//             const existingMenu = acc.find((menu) => menu.menu === item.menu_name);
+//             if (existingMenu) {
+//                 existingMenu.features.push({
+//                     feature: item.feature_name,
+//                     option: item.feature_option,
+//                 });
+//             } else {
+//                 acc.push({
+//                     menu: item.menu_name,
+//                     features: item.feature_name
+//                         ? [
+//                               {
+//                                   feature: item.feature_name,
+//                                   option: item.feature_option,
+//                               },
+//                           ]
+//                         : [],
+//                 });
+//             }
+//             return acc;
+//         }, []);
+
+//         const responses = await Promise.all(
+//             groupedSelections.map(async (group) => {
+//                 const { menu, features } = group;
+
+//                 return Promise.all(
+//                     features.map(async (featureObj) => {
+//                         const { feature, option: featureOption } = featureObj;
+
+//                         const featureDetails = await componentModel.getComponentDetails(menu, feature);
+
+//                         if (!featureDetails || featureDetails.length === 0) {
+//                             console.warn(`해당 피처의 컴포넌트 정보를 찾을 수 없습니다: feature, ${feature}`);
+//                             return null;
+//                         }
+
+//                         const { depth1, depth2, structure, content, cnt } = featureDetails;
+
+//                         const featureResponseData = await generateOpenAiText(
+//                             serviceType,
+//                             serviceTitle,
+//                             serviceDesc,
+//                             depth1,
+//                             depth2,
+//                             feature,
+//                             structure,
+//                             content,
+//                             cnt
+//                         );
+
+//                         return {
+//                             featureResponseData,
+//                             featureOption,
+//                         };
+//                     })
+//                 );
+//             })
+//         );
+
+//         res.status(200).json({
+//             projectId,
+//             project_name: serviceTitle,
+//             project_description: serviceDesc,
+//             responses,
+//         });
+//     } catch (error) {
+//         logger.error("프로젝트 텍스트 생성 오류", error);
+//         res.status(500).json({ error: "텍스트 생성 실패" });
+//     }
+// };
