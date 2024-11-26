@@ -63,3 +63,27 @@ exports.getProjectFeatures = async (menuSelectionId) => {
     );
     return features;
 };
+
+exports.getProjectSelectionsWithFeatures = async (projectId) => {
+    const result = await pool.query(
+        `SELECT 
+            ps.selection_id AS menu_selection_id,
+            ps.selection_type,
+            ps.selection_value AS menu_name,
+            ps.project_id,
+            ps.created_at AS menu_created_at,
+            ps.updated_at AS menu_updated_at,
+            psf.feature_name,
+            psf.feature_option,
+            psf.created_at AS feature_created_at,
+            psf.updated_at AS feature_updated_at
+         FROM project_selections ps
+         LEFT JOIN project_selection_features psf
+         ON ps.selection_id = psf.menu_selection_id
+         WHERE ps.project_id = ?`,
+        [projectId]
+    );
+    const infos = Array.isArray(result) ? result : [result];
+    console.log("infos", infos);
+    return infos;
+};
