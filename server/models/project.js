@@ -31,6 +31,32 @@ exports.addProjectFeature = async (menu_selection_id, feature_name, feature_opti
     );
 };
 
+// feature content 업데이트
+exports.updateFeatureContent = async (featureId, content) => {
+    try {
+        const result = await pool.query(
+            `UPDATE project_selection_features SET content = ?, updated_at = NOW() WHERE feature_id = ?`,
+            [content, featureId]
+        );
+        // console.log("Update Result:", result);
+        return result;
+    } catch (error) {
+        console.error("DB Update Error:", error);
+        throw error;
+    }
+};
+
+// feature content 조회
+exports.getFeatureContent = async (featureId) => {
+    const [rows] = await pool.query(
+        `SELECT content 
+         FROM project_selection_features 
+         WHERE feature_id = ?`,
+        [featureId]
+    );
+    return rows.length > 0 ? JSON.parse(rows[0].content) : null;
+};
+
 // 프로젝트 기본 정보 가져오기
 exports.getProjectById = async (projectId) => {
     const [rows] = await pool.query(
@@ -56,7 +82,7 @@ exports.getProjectSelections = async (projectId) => {
 // 특정 menu의 feature 목록 가져오기
 exports.getProjectFeatures = async (menuSelectionId) => {
     const features = await pool.query(
-        `SELECT feature_name, feature_option 
+        `SELECT feature_id, feature_name, feature_option 
          FROM project_selection_features 
          WHERE menu_selection_id = ?`,
         [menuSelectionId]
@@ -64,26 +90,23 @@ exports.getProjectFeatures = async (menuSelectionId) => {
     return features;
 };
 
-exports.getProjectSelectionsWithFeatures = async (projectId) => {
-    const result = await pool.query(
-        `SELECT 
-            ps.selection_id AS menu_selection_id,
-            ps.selection_type,
-            ps.selection_value AS menu_name,
-            ps.project_id,
-            ps.created_at AS menu_created_at,
-            ps.updated_at AS menu_updated_at,
-            psf.feature_name,
-            psf.feature_option,
-            psf.created_at AS feature_created_at,
-            psf.updated_at AS feature_updated_at
-         FROM project_selections ps
-         LEFT JOIN project_selection_features psf
-         ON ps.selection_id = psf.menu_selection_id
-         WHERE ps.project_id = ?`,
-        [projectId]
-    );
-    const infos = Array.isArray(result) ? result : [result];
-    console.log("infos", infos);
-    return infos;
+// 특정 프로젝트의 모든 feature 정보 가져오기
+exports.getProjectFeaturesWithId = async (projectId) => {
+    const query = `
+        SELECT 
+            psf.feature_id, 
+            psf.menu_selection_id, 
+            psf.feature_name, 
+            psf.feature_option, 
+            psf.content AS content,
+            ps.selection_value AS menu
+        FROM project_selection_features psf
+        JOIN project_selections ps 
+        ON ps.selection_id = psf.menu_selection_id
+        WHERE ps.project_id = ?
+    `;
+    const rows = await pool.query(query, [projectId]);
+    const result = Array.isArray(rows) ? rows : [rows];
+    // console.log("Features from DB:", result);
+    return result;
 };
