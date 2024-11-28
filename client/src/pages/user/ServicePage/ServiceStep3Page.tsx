@@ -357,7 +357,7 @@ export default function ServiceStep3Page() {
     } catch (error) {
       console.error("Error fetching generated text:", error);
     } finally {
-      setIsReady(true); // Always ensure this is called
+      setIsReady(true);
     }
   }
 
@@ -368,7 +368,7 @@ export default function ServiceStep3Page() {
   useEffect(() => {
     const preventReload = (event: BeforeUnloadEvent) => {
       event.preventDefault();
-      event.returnValue = ""; // 브라우저 경고 표시
+      event.returnValue = "";
     };
     window.addEventListener("beforeunload", preventReload);
 
@@ -389,38 +389,15 @@ export default function ServiceStep3Page() {
       return;
     }
 
-    // setLoading(true);
-
     const projectType = serviceDefaultData.serviceType.text as string;
-    const filtered = generatedTextData.filter(
-      (item) => item.content !== "none"
-    );
-
-    // const parameterArr = generatedTextData.map(
-    //   (item) => `${projectType}-${item.feature.split(" ").join("")}`
-    // );
-    const parameterArr = filtered.map(
+    const parameterArr = generatedTextData.map(
       (item) => `${projectType}-${item.feature.split(" ").join("")}`
     );
 
-    // const dataArr = generatedTextData.map((item) =>
-    //   encodeURIComponent(JSON.stringify(item.content))
-    // );
-    // const dataArr = filtered.map((item) =>
-    //   encodeURIComponent(JSON.stringify(item.content))
-    // );
-    // const headerData = encodeURIComponent(
-    //   JSON.stringify({
-    //     categories: [...new Set(filtered.map((item) => item.menu))],
-    //     logo: serviceInfo?.serviceTitle,
-    //   })
-    // );
-
     try {
       const responses = await Promise.allSettled(
-        parameterArr.map(
-          (param, idx) => saveImage(isProduction, param, projectId)
-          // saveImage(isProduction, param, dataArr[idx], headerData)
+        parameterArr.map((param, idx) =>
+          saveImage(isProduction, param, projectId)
         )
       );
 
@@ -475,18 +452,17 @@ export default function ServiceStep3Page() {
     }
   }
 
-  // useEffect(() => {
-  //   if (isImageSaved) {
-  //     setLoading(false);
-  //     setIsModalOpen(false);
-
-  //     if (steps.step3 && currentStep < totalStep) {
-  //       handleNavigation(`/service/step${currentStep + 1}`);
-  //     } else {
-  //       console.error("Navigation aborted: invalid step conditions");
-  //     }
-  //   }
-  // }, [isImageSaved]);
+  useEffect(() => {
+    // if (isImageSaved) {
+    //   setLoading(false);
+    //   setIsModalOpen(false);
+    //   if (steps.step3 && currentStep < totalStep) {
+    //     handleNavigation(`/service/step${currentStep + 1}`);
+    //   } else {
+    //     console.error("Navigation aborted: invalid step conditions");
+    //   }
+    // }
+  }, [isImageSaved]);
 
   useEffect(() => {
     if (sendData) {
