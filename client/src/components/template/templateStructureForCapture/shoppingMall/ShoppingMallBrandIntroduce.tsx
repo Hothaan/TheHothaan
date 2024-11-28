@@ -6,7 +6,7 @@ import BrandIntroduce from "@components/template/brandIntroduce/BrandIntroduce";
 import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
 import Loading from "@components/common/ui/Loading/loading";
 import {
-  IfeatureResponseData,
+  IfetchedfeatureResponseData,
   ItemplateMode,
 } from "@components/template/types";
 import { getFeatureData } from "@api/project/getFeatureData";
@@ -14,21 +14,22 @@ import useIsProduction from "@hooks/useIsProduction";
 
 export default function ShoppingMallBrandIntroduce(prop: ItemplateMode) {
   const { templateMode } = prop;
-  const { isProduction } = useIsProduction();
+  const feature = "브랜드 소개";
 
   /* only projectId */
+  const { isProduction } = useIsProduction();
   const { projectId } = useParams();
+  const [projectIdValue, setProjectIdValue] = useState<string | null>(null);
   const [headerData, setHeaderData] = useState<Iheader | null>(null);
   const [generatedText, setGeneratedText] = useState<IgeneratedText | null>(
     null
   );
-  const feature = "브랜드 소개";
   async function fetchFeatureData(isProduction: boolean, projectId: string) {
     try {
       const response = await getFeatureData(isProduction, projectId);
       if (response.status === 200) {
         const categoryArr: string[] = response.data.featureResponseData.map(
-          (item: IfeatureResponseData) => item.menu
+          (item: IfetchedfeatureResponseData) => item.menu
         );
         setHeaderData({
           logo: response.data.projectName,
@@ -36,7 +37,7 @@ export default function ShoppingMallBrandIntroduce(prop: ItemplateMode) {
         });
         setGeneratedText(
           response.data.featureResponseData.find(
-            (item: IfeatureResponseData) => item.feature === feature
+            (item: IfetchedfeatureResponseData) => item.feature === feature
           )
         );
       } else {
@@ -48,18 +49,18 @@ export default function ShoppingMallBrandIntroduce(prop: ItemplateMode) {
   }
 
   useEffect(() => {
-    if (projectId) {
-      fetchFeatureData(isProduction, projectId);
+    if (projectId === undefined) {
+      setProjectIdValue(sessionStorage.getItem("projectId"));
+    } else {
+      setProjectIdValue(projectId);
     }
   }, [projectId]);
 
   useEffect(() => {
-    const localData = localStorage.getItem("headerData");
-    if (localData) {
-      const parsedData = JSON.parse(localData);
-      setHeaderData(parsedData);
+    if (projectIdValue) {
+      fetchFeatureData(isProduction, projectIdValue);
     }
-  }, []);
+  }, [projectIdValue]);
 
   // /* capture */
   // const { data, header } = useParams();

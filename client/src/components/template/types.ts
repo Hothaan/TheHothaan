@@ -4,7 +4,7 @@ export interface ItemplateMode {
   templateMode: TtemplateMode;
 }
 
-export interface IfeatureResponseData {
+export interface IfetchedfeatureResponseData {
   feature_id: number;
   menu: string;
   feature: string;

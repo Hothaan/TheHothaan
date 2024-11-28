@@ -5,7 +5,7 @@ import Footer from "@components/template/common/footer/Footer";
 import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
 import Cart from "@components/template/mypage/Cart";
 import {
-  IfeatureResponseData,
+  IfetchedfeatureResponseData,
   ItemplateMode,
 } from "@components/template/types";
 import Loading from "@components/common/ui/Loading/loading";
@@ -14,21 +14,22 @@ import useIsProduction from "@hooks/useIsProduction";
 
 export default function ShoppingMallCart(prop: ItemplateMode) {
   const { templateMode } = prop;
+  const feature = "메인";
 
   /* only projectId */
   const { isProduction } = useIsProduction();
   const { projectId } = useParams();
+  const [projectIdValue, setProjectIdValue] = useState<string | null>(null);
   const [headerData, setHeaderData] = useState<Iheader | null>(null);
   const [generatedText, setGeneratedText] = useState<IgeneratedText | null>(
     null
   );
-  const feature = "메인";
   async function fetchFeatureData(isProduction: boolean, projectId: string) {
     try {
       const response = await getFeatureData(isProduction, projectId);
       if (response.status === 200) {
         const categoryArr: string[] = response.data.featureResponseData.map(
-          (item: IfeatureResponseData) => item.menu
+          (item: IfetchedfeatureResponseData) => item.menu
         );
         setHeaderData({
           logo: response.data.projectName,
@@ -36,7 +37,7 @@ export default function ShoppingMallCart(prop: ItemplateMode) {
         });
         setGeneratedText(
           response.data.featureResponseData.find(
-            (item: IfeatureResponseData) => item.feature === feature
+            (item: IfetchedfeatureResponseData) => item.feature === feature
           )
         );
       } else {
@@ -48,10 +49,18 @@ export default function ShoppingMallCart(prop: ItemplateMode) {
   }
 
   useEffect(() => {
-    if (projectId) {
-      fetchFeatureData(isProduction, projectId);
+    if (projectId === undefined) {
+      setProjectIdValue(sessionStorage.getItem("projectId"));
+    } else {
+      setProjectIdValue(projectId);
     }
   }, [projectId]);
+
+  useEffect(() => {
+    if (projectIdValue) {
+      fetchFeatureData(isProduction, projectIdValue);
+    }
+  }, [projectIdValue]);
 
   // useEffect(() => {
   //   const localData = localStorage.getItem("headerData");

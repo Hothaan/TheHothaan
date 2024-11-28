@@ -3,13 +3,23 @@ import { css, keyframes } from "@emotion/react";
 
 export default function Loading() {
   return (
-    <div css={wrap}>
-      <span css={dot(1)}> </span>
-      <span css={dot(2)}> </span>
-      <span css={dot(3)}> </span>
+    <div css={container}>
+      <div css={wrap}>
+        <span css={dot(1)}> </span>
+        <span css={dot(2)}> </span>
+        <span css={dot(3)}> </span>
+      </div>
     </div>
   );
 }
+
+const container = css`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 const wave = keyframes`
   0%, 100% {

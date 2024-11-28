@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { useState, useEffect, useRef } from "react";
+import { saveImageDb } from "@api/image/saveImageDb";
 import { serviceStepStore } from "@store/serviceStepStore";
 import { IloadingModal } from "@components/common/ui/Modal/LoadingModal";
 import LoadingModal from "@components/common/ui/Modal/LoadingModal";
@@ -23,13 +24,18 @@ import Loading from "@components/common/ui/Loading/loading";
 import { IserviceInfo } from "./ServiceStep1Page";
 import { IserviceData } from "./ServiceStep2Page";
 import { AxiosResponse } from "axios";
+import { getFeatureData } from "@api/project/getFeatureData";
+import { IfetchedfeatureResponseData } from "@components/template/types";
 
 /* 임시 */
 export interface IgeneratedText {
   menu: string;
   feature: string;
+  feature_id: string;
   content: any;
+  success: boolean;
 }
+
 export interface IfeatureResponseData {
   featureResponseData: IgeneratedText;
 }
@@ -324,28 +330,31 @@ export default function ServiceStep3Page() {
       if (response.status === 200) {
         const data = response.data.featureResponseData
           .map((item: IgeneratedText) => {
-            const { menu, feature, content } = item || {};
-            if (!menu || !feature || !content) {
+            const { menu, feature, feature_id, content } = item || {};
+            if (!menu || !feature || !feature_id || !content) {
               console.error("Invalid featureResponseData:", item);
-              return null; // Skip invalid items
+              return null;
             }
-            return { menu, feature: feature.split(" ").join(""), content };
+            return {
+              menu,
+              feature: feature.split(" ").join(""),
+              feature_id: feature_id,
+              content,
+            };
           })
-          .filter(Boolean); // Remove null values
-
-        console.log("Processed generateText data:", data);
+          .filter(Boolean);
 
         if (data.length > 0) {
           setGeneratedTextData(data);
 
-          const headerArr = data.map((item: { menu: any }) => item.menu);
-          const headerData = {
-            categories: [...new Set(headerArr)],
-            logo: serviceInfo?.serviceTitle || "",
-          };
+          // const headerArr = data.map((item: { menu: any }) => item.menu);
+          // const headerData = {
+          //   categories: [...new Set(headerArr)],
+          //   logo: serviceInfo?.serviceTitle || "",
+          // };
 
           localStorage.setItem("generatedTextData", JSON.stringify(data));
-          localStorage.setItem("headerData", JSON.stringify(headerData));
+          // localStorage.setItem("headerData", JSON.stringify(headerData));
         } else {
           console.error("No valid data found in featureResponseData");
         }
@@ -361,21 +370,95 @@ export default function ServiceStep3Page() {
     }
   }
 
-  useEffect(() => {
-    console.log("State changed: ", { loading, isModalOpen });
-  }, [loading, isModalOpen]);
+  // async function saveImages() {
+  //   const projectId = sessionStorage.getItem("projectId");
+  //   if (
+  //     !projectId ||
+  //     !generatedTextData ||
+  //     generatedTextData.length === 0 ||
+  //     !serviceDefaultData
+  //   ) {
+  //     console.error("Missing required data for saveImages");
+  //     return;
+  //   }
 
-  useEffect(() => {
-    const preventReload = (event: BeforeUnloadEvent) => {
-      event.preventDefault();
-      event.returnValue = "";
-    };
-    window.addEventListener("beforeunload", preventReload);
+  //   const projectType = serviceDefaultData.serviceType.text as string;
+  //   const parameterArr = generatedTextData.map(
+  //     (item) => `${projectType}-${item.feature.split(" ").join("")}`
+  //   );
 
-    return () => {
-      window.removeEventListener("beforeunload", preventReload);
-    };
-  }, []);
+  //   try {
+  //     const responses = await Promise.allSettled(
+  //       parameterArr.map((param, idx) => saveImage(true, param, projectId))
+  //     );
+
+  //     // Filter fulfilled responses
+  //     const fulfilledResponses = responses.filter(
+  //       (res): res is PromiseFulfilledResult<AxiosResponse<any>> =>
+  //         res.status === "fulfilled"
+  //     );
+
+  //     // Filter rejected responses
+  //     const rejectedResponses = responses.filter(
+  //       (res): res is PromiseRejectedResult => res.status === "rejected"
+  //     );
+
+  //     console.log("fulfilledResponses:", fulfilledResponses);
+  //     console.log("rejectedResponses:", rejectedResponses);
+
+  //     if (fulfilledResponses.length > 0) {
+  //       const imageNameMapping = fulfilledResponses.map((res, idx) => ({
+  //         imageName: res.value.data.imageName,
+  //         parameter: parameterArr[idx],
+  //       }));
+  //       const imageUrlMapping = fulfilledResponses.map((res, idx) => ({
+  //         imageUrl: res.value.data.url,
+  //         parameter: parameterArr[idx],
+  //       }));
+
+  //       localStorage.setItem("imageName", JSON.stringify(imageNameMapping));
+  //       localStorage.setItem("imageUrl", JSON.stringify(imageUrlMapping));
+  //     }
+
+  //     if (rejectedResponses.length > 0) {
+  //       console.error(
+  //         "Some image save requests failed:",
+  //         rejectedResponses.map((res) => res.reason)
+  //       );
+  //     } else if (rejectedResponses.length === 0) {
+  //       setIsImgageSaved(true);
+  //       // setLoading(false);
+  //       // setIsModalOpen(false);
+  //       // **조건부 네비게이션 로직**
+  //       // if (steps.step3 && currentStep < totalStep) {
+  //       //   handleNavigation(`/service/step${currentStep + 1}`);
+  //       // } else {
+  //       //   console.error("Navigation aborted: invalid step conditions");
+  //       // }
+  //     }
+  //   } catch (error) {
+  //     console.error("Error saving images:", error);
+  //     return null;
+  //   } finally {
+  //   }
+  // }
+
+  // const [featureData, setFeatureData] = useState<
+  //   IfetchedfeatureResponseData[] | null
+  // >(null);
+
+  // async function fetchFeatureData(isProduction: boolean, projectId: string) {
+  //   try {
+  //     const response = await getFeatureData(isProduction, projectId);
+  //     if (response.status === 200) {
+  //       setFeatureData(response.data.featureResponseData);
+  //     } else {
+  //       console.error("getFeatureData error", response.status);
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }
 
   async function saveImages() {
     const projectId = sessionStorage.getItem("projectId");
@@ -390,6 +473,7 @@ export default function ServiceStep3Page() {
     }
 
     const projectType = serviceDefaultData.serviceType.text as string;
+    const featureId = generatedTextData.map((item) => item.feature_id);
     const parameterArr = generatedTextData.map(
       (item) => `${projectType}-${item.feature.split(" ").join("")}`
     );
@@ -397,7 +481,7 @@ export default function ServiceStep3Page() {
     try {
       const responses = await Promise.allSettled(
         parameterArr.map((param, idx) =>
-          saveImage(isProduction, param, projectId)
+          saveImageDb(true, param, projectId, featureId[idx])
         )
       );
 
@@ -435,7 +519,7 @@ export default function ServiceStep3Page() {
           rejectedResponses.map((res) => res.reason)
         );
       } else if (rejectedResponses.length === 0) {
-        // setIsImgageSaved(true);
+        setIsImgageSaved(true);
         // setLoading(false);
         // setIsModalOpen(false);
         // **조건부 네비게이션 로직**
@@ -453,15 +537,15 @@ export default function ServiceStep3Page() {
   }
 
   useEffect(() => {
-    // if (isImageSaved) {
-    //   setLoading(false);
-    //   setIsModalOpen(false);
-    //   if (steps.step3 && currentStep < totalStep) {
-    //     handleNavigation(`/service/step${currentStep + 1}`);
-    //   } else {
-    //     console.error("Navigation aborted: invalid step conditions");
-    //   }
-    // }
+    if (isImageSaved) {
+      setLoading(false);
+      setIsModalOpen(false);
+      if (steps.step3 && currentStep < totalStep) {
+        handleNavigation(`/service/step${currentStep + 1}`);
+      } else {
+        console.error("Navigation aborted: invalid step conditions");
+      }
+    }
   }, [isImageSaved]);
 
   useEffect(() => {

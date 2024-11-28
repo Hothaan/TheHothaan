@@ -34,7 +34,8 @@ export type TimageUrl = {
 };
 
 export default function ServicePreviewPage() {
-  const { isProduction } = useIsProduction();
+  // const { isProduction } = useIsProduction();
+  const isProduction = true;
   const [generatedTextData, setGeneratedTextData] = useState<
     IgeneratedText[] | null
   >(null);

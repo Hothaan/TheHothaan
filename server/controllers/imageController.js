@@ -15,31 +15,46 @@ const saveImageFromURL = async (req, res) => {
   let browser;
   try {
     browser = await puppeteer.launch({
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-gpu"],
     });
     const page = await browser.newPage();
 
+    // Set user agent and viewport size
     await page.setUserAgent(
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
     );
     await page.setViewport({ width: 1920, height: 1080 });
 
     console.log(`Navigating to ${url}...`);
-    await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
+    await page.goto(url, { waitUntil: "load", timeout: 60000 });
 
     let imageBuffer;
+
+    // Wait for .templateImage or full page screenshot
     try {
-      await page.waitForSelector(".templateImage", { timeout: 30000 });
+      await page.waitForSelector(".templateImage", { timeout: 120000 });
+
+      // Check if element exists and has non-zero dimensions
       const element = await page.$(".templateImage");
-      console.log(".templateImage found! Capturing screenshot...");
-      imageBuffer = await element.screenshot();
+      const boundingBox = await element.boundingBox();
+
+      if (boundingBox && boundingBox.width > 0 && boundingBox.height > 0) {
+        console.log(".templateImage found! Capturing screenshot...");
+        imageBuffer = await element.screenshot();
+      } else {
+        console.warn(
+          "`.templateImage` found but has zero size. Capturing full page screenshot..."
+        );
+        imageBuffer = await page.screenshot({ fullPage: true });
+      }
     } catch (err) {
       console.warn(
-        "`.templateImage` not found. Capturing full page screenshot..."
+        "`.templateImage` not found or has issues. Capturing full page screenshot..."
       );
       imageBuffer = await page.screenshot({ fullPage: true });
     }
 
+    // Save image to disk
     const imageName = `image-${Date.now()}.png`;
     const imageDir =
       process.env.IMAGE_DIRECTORY || path.resolve(__dirname, "../images");
@@ -51,6 +66,7 @@ const saveImageFromURL = async (req, res) => {
 
     fs.writeFileSync(imagePath, imageBuffer);
 
+    // Construct URL for the saved image
     const imageUrl = `http://dolllpitoxic3.mycafe24.com/images/${imageName}`;
 
     res.status(200).json({

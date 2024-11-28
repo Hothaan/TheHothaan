@@ -5,7 +5,7 @@ import Footer from "@components/template/common/footer/Footer";
 import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
 import OrderList from "@components/template/mypage/OrderList";
 import {
-  IfeatureResponseData,
+  IfetchedfeatureResponseData,
   ItemplateMode,
 } from "@components/template/types";
 import Loading from "@components/common/ui/Loading/loading";
@@ -19,6 +19,7 @@ export default function ShoppingMallOrderList(prop: ItemplateMode) {
   /* only projectId */
   const { isProduction } = useIsProduction();
   const { projectId } = useParams();
+  const [projectIdValue, setProjectIdValue] = useState<string | null>(null);
   const [headerData, setHeaderData] = useState<Iheader | null>(null);
   const [generatedText, setGeneratedText] = useState<IgeneratedText | null>(
     null
@@ -28,7 +29,7 @@ export default function ShoppingMallOrderList(prop: ItemplateMode) {
       const response = await getFeatureData(isProduction, projectId);
       if (response.status === 200) {
         const categoryArr: string[] = response.data.featureResponseData.map(
-          (item: IfeatureResponseData) => item.menu
+          (item: IfetchedfeatureResponseData) => item.menu
         );
         setHeaderData({
           logo: response.data.projectName,
@@ -36,7 +37,7 @@ export default function ShoppingMallOrderList(prop: ItemplateMode) {
         });
         setGeneratedText(
           response.data.featureResponseData.find(
-            (item: IfeatureResponseData) => item.feature === feature
+            (item: IfetchedfeatureResponseData) => item.feature === feature
           )
         );
       } else {
@@ -48,10 +49,18 @@ export default function ShoppingMallOrderList(prop: ItemplateMode) {
   }
 
   useEffect(() => {
-    if (projectId) {
-      fetchFeatureData(isProduction, projectId);
+    if (projectId === undefined) {
+      setProjectIdValue(sessionStorage.getItem("projectId"));
+    } else {
+      setProjectIdValue(projectId);
     }
   }, [projectId]);
+
+  useEffect(() => {
+    if (projectIdValue) {
+      fetchFeatureData(isProduction, projectIdValue);
+    }
+  }, [projectIdValue]);
 
   if (!generatedText || !headerData) {
     return <Loading />;

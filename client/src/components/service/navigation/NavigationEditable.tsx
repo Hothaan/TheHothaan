@@ -26,9 +26,10 @@ export default function NavigationEditable(prop: INavigationEditable) {
   const { imageUrlArr, imageNameArr, listData, selectedItem, setSelectedItem } =
     prop;
 
-  const { isProduction } = useIsProduction();
+  // const { isProduction } = useIsProduction();
+  const isProduction = true;
 
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(true);
   const [currentIdx, setCurrentIdx] = useState<number>(0);
 
   function handleSelectItem(e: React.MouseEvent<HTMLLIElement>) {
@@ -101,54 +102,56 @@ export default function NavigationEditable(prop: INavigationEditable) {
         <Preview />
         <p css={list_title}>모든화면</p>
       </div>
-      <ul css={list}>
-        {isProduction === true &&
-          imageUrlArr &&
-          listData.length > 0 &&
-          listData.map((item, idx) => (
-            <li
-              css={[list_item, list_item_color(selectedItem === item)]}
-              onClick={handleSelectItem}
-              data-idx={idx}
-              key={idx}
-            >
-              <div css={image_container}>
-                <img
-                  src={imageUrlArr[idx]?.imageUrl}
-                  alt="template thumbnail"
-                  css={image_style}
-                />
-              </div>
-              <div css={list_item_info_container(selectedItem === item)}>
-                <p css={list_item_title}>{item}</p>
-                {selectedItem === item && <Edit />}
-              </div>
-            </li>
-          ))}
-        {isProduction === false &&
-          imageNameArr &&
-          listData.length > 0 &&
-          listData.map((item, idx) => (
-            <li
-              css={[list_item, list_item_color(selectedItem === item)]}
-              onClick={handleSelectItem}
-              data-idx={idx}
-              key={idx}
-            >
-              <div css={image_container}>
-                <img
-                  src={`/images/${imageNameArr[idx]?.imageName}`}
-                  alt="template thumbnail"
-                  css={image_style}
-                />
-              </div>
-              <div css={list_item_info_container(selectedItem === item)}>
-                <p css={list_item_title}>{item}</p>
-                {selectedItem === item && <Edit />}
-              </div>
-            </li>
-          ))}
-      </ul>
+      <div css={list_container}>
+        <ul css={list}>
+          {isProduction === true
+            ? imageUrlArr &&
+              listData.length > 0 &&
+              listData.map((item, idx) => (
+                <li
+                  css={[list_item, list_item_color(selectedItem === item)]}
+                  onClick={handleSelectItem}
+                  data-idx={idx}
+                  key={idx}
+                >
+                  <div css={image_container}>
+                    <img
+                      src={imageUrlArr[idx]?.imageUrl}
+                      alt="template thumbnail"
+                      css={image_style}
+                    />
+                  </div>
+                  <div css={list_item_info_container(selectedItem === item)}>
+                    <p css={list_item_title}>{item}</p>
+                    {selectedItem === item && <Edit />}
+                  </div>
+                </li>
+              ))
+            : imageNameArr &&
+              listData.length > 0 &&
+              listData.map((item, idx) => (
+                <li
+                  css={[list_item, list_item_color(selectedItem === item)]}
+                  onClick={handleSelectItem}
+                  data-idx={idx}
+                  key={idx}
+                >
+                  <div css={image_container}>
+                    <img
+                      src={`/images/${imageNameArr[idx]?.imageName}`}
+                      alt="template thumbnail"
+                      css={image_style}
+                    />
+                  </div>
+                  <div css={list_item_info_container(selectedItem === item)}>
+                    <p css={list_item_title}>{item}</p>
+                    {selectedItem === item && <Edit />}
+                  </div>
+                </li>
+              ))}
+        </ul>
+      </div>
+
       <div css={aside_controler}>
         <ButtonArrowIconControler {...buttonSelectPrevItemAside} />
         <p css={pagination}>
@@ -181,8 +184,6 @@ const side_nav = (isOpen: boolean) => css`
   padding: 20px;
   background-color: #fff;
 
-  overflow: auto;
-
   box-shadow: 0px 4px 24px 0px rgba(0, 0, 0, 0.25);
 `;
 
@@ -190,9 +191,12 @@ const aside_button = css`
   position: absolute;
   right: 0;
   top: 50%;
+  z-index: 100;
   transform: translate(100%, -50%);
   display: flex;
   width: 44px;
+  height: 44px;
+
   padding: 10px;
   align-items: center;
   gap: 10px;
@@ -219,9 +223,16 @@ const list_title = css`
   font-weight: 700;
   line-height: normal;
 `;
+
+const list_container = css`
+  height: 100%;
+  overflow: auto;
+`;
 const list = css`
   width: 100%;
-
+  height: auto;
+  overflow: auto;
+  // height: calc(100vh - 70px);
   display: flex;
   flex-direction: column;
   gap: 14px;
