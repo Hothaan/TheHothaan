@@ -34,12 +34,15 @@ const saveImageFromURL = async (req, res) => {
       console.log(".templateImage found! Capturing screenshot...");
       imageBuffer = await element.screenshot();
     } catch (err) {
-      console.warn("`.templateImage` not found. Capturing full page screenshot...");
+      console.warn(
+        "`.templateImage` not found. Capturing full page screenshot..."
+      );
       imageBuffer = await page.screenshot({ fullPage: true });
     }
 
     const imageName = `image-${Date.now()}.png`;
-    const imageDir = process.env.IMAGE_DIRECTORY || path.resolve(__dirname, "../images");
+    const imageDir =
+      process.env.IMAGE_DIRECTORY || path.resolve(__dirname, "../images");
     const imagePath = path.join(imageDir, imageName);
 
     if (!fs.existsSync(imageDir)) {
@@ -71,7 +74,9 @@ const saveImageToDatabase = async (req, res) => {
   const { url, project_id, feature_id } = req.body;
 
   if (!url || !project_id || !feature_id) {
-    return res.status(400).json({ message: "URL, project_id, and feature_id are required" });
+    return res
+      .status(400)
+      .json({ message: "URL, project_id, and feature_id are required" });
   }
 
   let browser;
@@ -96,12 +101,15 @@ const saveImageToDatabase = async (req, res) => {
       console.log(".templateImage found! Capturing screenshot...");
       imageBuffer = await element.screenshot();
     } catch (err) {
-      console.warn("`.templateImage` not found. Capturing full page screenshot...");
+      console.warn(
+        "`.templateImage` not found. Capturing full page screenshot..."
+      );
       imageBuffer = await page.screenshot({ fullPage: true });
     }
 
     const imageName = `image-${Date.now()}.png`;
-    const imageDir = process.env.IMAGE_DIRECTORY || path.resolve(__dirname, "../images");
+    const imageDir =
+      process.env.IMAGE_DIRECTORY || path.resolve(__dirname, "../images");
     const imagePath = path.join(imageDir, imageName);
 
     if (!fs.existsSync(imageDir)) {
@@ -113,7 +121,13 @@ const saveImageToDatabase = async (req, res) => {
     const imageUrl = `http://dolllpitoxic3.mycafe24.com/images/${imageName}`;
 
     // `addFileRecord` 함수 호출하여 DB에 저장
-    const fileId = await projectModel.addFileRecord(project_id, feature_id, "image", imagePath, imageUrl);
+    const fileId = await projectModel.addFileRecord(
+      project_id,
+      feature_id,
+      "image",
+      imagePath,
+      imageUrl
+    );
 
     res.status(200).json({
       message: "Image saved successfully",

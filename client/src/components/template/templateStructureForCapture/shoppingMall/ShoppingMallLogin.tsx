@@ -87,7 +87,10 @@ export default function ShoppingMallLogin(prop: ItemplateMode) {
 
     return (
       <div className="templateImage">
-        <Header categories={headerData.categories} logo={headerData.logo} />
+        <Header
+          categories={headerData.categories || undefined}
+          logo={headerData.logo || undefined}
+        />
         <Login option="default" />
         <Footer logo={headerData.logo} />
       </div>

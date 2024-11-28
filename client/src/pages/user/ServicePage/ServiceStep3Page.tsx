@@ -66,6 +66,7 @@ export default function ServiceStep3Page() {
   const [sendData, setSendData] = useState<IsendData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isReady, setIsReady] = useState<boolean>(false);
+  const [isImageSaved, setIsImgageSaved] = useState<boolean>(false);
 
   useEffect(() => {
     const sessionData = sessionStorage.getItem("serviceData");
@@ -134,11 +135,9 @@ export default function ServiceStep3Page() {
   }, [serviceDefaultData]);
 
   useEffect(() => {
-    if (isReady) {
-      if (generatedTextData && generatedTextData.length > 0) {
-        console.log("Generated text data has changed, calling saveImages...");
-        saveImages();
-      }
+    if (isReady && generatedTextData && generatedTextData.length > 0) {
+      console.log("Generated text data has changed, calling saveImages...");
+      saveImages();
     }
   }, [isReady]);
 
@@ -350,11 +349,10 @@ export default function ServiceStep3Page() {
         } else {
           console.error("No valid data found in featureResponseData");
         }
-      } else {
-        console.error(
-          "generateText API returned non-OK status:",
-          response.status
-        );
+      } else if (response.status === 404) {
+        console.error("해당 프로젝트를 찾을 수 없습니다.");
+      } else if (response.status === 500) {
+        console.log("텍스트 생성 실패");
       }
     } catch (error) {
       console.error("Error fetching generated text:", error);
@@ -363,8 +361,26 @@ export default function ServiceStep3Page() {
     }
   }
 
+  useEffect(() => {
+    console.log("State changed: ", { loading, isModalOpen });
+  }, [loading, isModalOpen]);
+
+  useEffect(() => {
+    const preventReload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = ""; // 브라우저 경고 표시
+    };
+    window.addEventListener("beforeunload", preventReload);
+
+    return () => {
+      window.removeEventListener("beforeunload", preventReload);
+    };
+  }, []);
+
   async function saveImages() {
+    const projectId = sessionStorage.getItem("projectId");
     if (
+      !projectId ||
       !generatedTextData ||
       generatedTextData.length === 0 ||
       !serviceDefaultData
@@ -373,25 +389,38 @@ export default function ServiceStep3Page() {
       return;
     }
 
-    setLoading(true);
-    try {
-      const projectType = serviceDefaultData.serviceType.text as string;
-      const parameterArr = generatedTextData.map(
-        (item) => `${projectType}-${item.feature.split(" ").join("")}`
-      );
-      const dataArr = generatedTextData.map((item) =>
-        encodeURIComponent(JSON.stringify(item.content))
-      );
-      const headerData = encodeURIComponent(
-        JSON.stringify({
-          categories: [...new Set(generatedTextData.map((item) => item.menu))],
-          logo: serviceInfo?.serviceTitle,
-        })
-      );
+    // setLoading(true);
 
+    const projectType = serviceDefaultData.serviceType.text as string;
+    const filtered = generatedTextData.filter(
+      (item) => item.content !== "none"
+    );
+
+    // const parameterArr = generatedTextData.map(
+    //   (item) => `${projectType}-${item.feature.split(" ").join("")}`
+    // );
+    const parameterArr = filtered.map(
+      (item) => `${projectType}-${item.feature.split(" ").join("")}`
+    );
+
+    // const dataArr = generatedTextData.map((item) =>
+    //   encodeURIComponent(JSON.stringify(item.content))
+    // );
+    // const dataArr = filtered.map((item) =>
+    //   encodeURIComponent(JSON.stringify(item.content))
+    // );
+    // const headerData = encodeURIComponent(
+    //   JSON.stringify({
+    //     categories: [...new Set(filtered.map((item) => item.menu))],
+    //     logo: serviceInfo?.serviceTitle,
+    //   })
+    // );
+
+    try {
       const responses = await Promise.allSettled(
-        parameterArr.map((param, idx) =>
-          saveImage(isProduction, param, dataArr[idx], headerData)
+        parameterArr.map(
+          (param, idx) => saveImage(isProduction, param, projectId)
+          // saveImage(isProduction, param, dataArr[idx], headerData)
         )
       );
 
@@ -405,6 +434,9 @@ export default function ServiceStep3Page() {
       const rejectedResponses = responses.filter(
         (res): res is PromiseRejectedResult => res.status === "rejected"
       );
+
+      console.log("fulfilledResponses:", fulfilledResponses);
+      console.log("rejectedResponses:", rejectedResponses);
 
       if (fulfilledResponses.length > 0) {
         const imageNameMapping = fulfilledResponses.map((res, idx) => ({
@@ -425,15 +457,36 @@ export default function ServiceStep3Page() {
           "Some image save requests failed:",
           rejectedResponses.map((res) => res.reason)
         );
+      } else if (rejectedResponses.length === 0) {
+        // setIsImgageSaved(true);
+        // setLoading(false);
+        // setIsModalOpen(false);
+        // **조건부 네비게이션 로직**
+        // if (steps.step3 && currentStep < totalStep) {
+        //   handleNavigation(`/service/step${currentStep + 1}`);
+        // } else {
+        //   console.error("Navigation aborted: invalid step conditions");
+        // }
       }
     } catch (error) {
       console.error("Error saving images:", error);
+      return null;
     } finally {
-      setLoading(false);
-      setIsModalOpen(false);
-      handleNavigation(`/service/step${currentStep + 1}`);
     }
   }
+
+  // useEffect(() => {
+  //   if (isImageSaved) {
+  //     setLoading(false);
+  //     setIsModalOpen(false);
+
+  //     if (steps.step3 && currentStep < totalStep) {
+  //       handleNavigation(`/service/step${currentStep + 1}`);
+  //     } else {
+  //       console.error("Navigation aborted: invalid step conditions");
+  //     }
+  //   }
+  // }, [isImageSaved]);
 
   useEffect(() => {
     if (sendData) {

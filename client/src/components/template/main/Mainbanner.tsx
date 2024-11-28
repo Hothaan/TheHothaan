@@ -103,9 +103,9 @@ const pass_desc: Record<string, string> = {
   maxWidth: "676px",
 
   display: "-webkit-box",
-  "-webkit-box-orient": "vertical",
+  WebkitBoxOrient: "vertical",
   overflow: "hidden",
   textOverflow: "ellipsis",
   height: "100px",
-  "-webkit-line-clamp": "2",
+  WebkitLineClamp: "2",
 };

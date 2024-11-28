@@ -9,6 +9,7 @@ import TestPage from "@pages/user/TestPage/TestPage";
 
 import EstimatePage from "@pages/user/EstimatePage/EstimatePage";
 import PlanIntroPage from "@pages/user/PlanIntroPage/PlanIntroPage";
+
 import ServiceLayout from "./ServiceLayout";
 import ServiceStep1Page from "@pages/user/ServicePage/ServiceStep1Page";
 import ServiceStep2Page from "@pages/user/ServicePage/ServiceStep2Page";
@@ -16,6 +17,8 @@ import ServiceStep3Page from "@pages/user/ServicePage/ServiceStep3Page";
 import ServiceStep4Page from "@pages/user/ServicePage/ServiceStep4Page";
 import ServiceStep5Page from "@pages/user/ServicePage/ServiceStep5Page";
 import ServicePreviewPage from "@pages/user/ServicePage/ServicePreviewPage";
+
+import MyPage from "@pages/user/MyPage/MyPage";
 import LoginPage from "@pages/user/LoginPage/LoginPage";
 import JoinPage from "@pages/user/JoinPage/JoinPage";
 
@@ -48,6 +51,7 @@ export default function UserLayout() {
           {/* ---- user -------------- */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/join" element={<JoinPage />} />
+          <Route path="/myPage" element={<MyPage />} />
           {/* ---- test -------------- */}
           <Route path="/test" element={<TestPage />} />
         </Routes>
