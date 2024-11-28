@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { saveImageFromURL } = require("../controllers/imageController");
+const { saveImageFromURL, saveImageToDatabase } = require("../controllers/imageController");
 
 /**
  * @swagger
@@ -34,5 +34,52 @@ const { saveImageFromURL } = require("../controllers/imageController");
  *                   type: string
  */
 router.post("/save", saveImageFromURL);
+
+/**
+ * @swagger
+ * /api/image/save-to-db:
+ *   post:
+ *     summary: URL 페이지를 이미지로 저장하고 데이터베이스에 기록
+ *     description: URL 페이지를 PNG 이미지로 변환하고 데이터베이스에 project_id 및 feature_id와 함께 저장합니다.
+ *     tags:
+ *       - Image
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               url:
+ *                 type: string
+ *                 description: 변환할 url
+ *               project_id:
+ *                 type: integer
+ *                 description: 프로젝트 ID
+ *               feature_id:
+ *                 type: integer
+ *                 description: 피처 ID
+ *     responses:
+ *       200:
+ *         description: 이미지 저장 성공 및 데이터베이스 기록 완료
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 project_id:
+ *                   type: integer
+ *                 feature_id:
+ *                   type: integer
+ *                 file_id:
+ *                   type: integer
+ *                 path:
+ *                   type: string
+ *                 url:
+ *                   type: string
+ */
+router.post("/save-to-db", saveImageToDatabase);
 
 module.exports = router;

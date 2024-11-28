@@ -1,8 +1,10 @@
 const puppeteer = require("puppeteer");
 const fs = require("fs");
 const path = require("path");
+const projectModel = require("../models/project");
 require("dotenv").config();
 
+// 단순 URL - 이미지 저장
 const saveImageFromURL = async (req, res) => {
   const { url } = req.body;
 
@@ -12,52 +14,40 @@ const saveImageFromURL = async (req, res) => {
 
   let browser;
   try {
-    // Puppeteer 브라우저 실행
     browser = await puppeteer.launch({
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
     const page = await browser.newPage();
 
-    // 뷰포트 설정
+    await page.setUserAgent(
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+    );
     await page.setViewport({ width: 1920, height: 1080 });
 
-    // 페이지 이동 및 요소 확인
     console.log(`Navigating to ${url}...`);
-    await page.goto(url, { waitUntil: "domcontentloaded", timeout: 30000 });
-    await page.waitForSelector(".templateImage", { timeout: 10000 });
+    await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
 
-    const element = await page.$(".templateImage");
-    if (!element) {
-      console.warn(".templateImage not found, capturing full page screenshot...");
+    let imageBuffer;
+    try {
+      await page.waitForSelector(".templateImage", { timeout: 30000 });
+      const element = await page.$(".templateImage");
+      console.log(".templateImage found! Capturing screenshot...");
+      imageBuffer = await element.screenshot();
+    } catch (err) {
+      console.warn("`.templateImage` not found. Capturing full page screenshot...");
+      imageBuffer = await page.screenshot({ fullPage: true });
     }
 
-    // 페이지 또는 요소 캡처
-    console.log(".templateImage found! Capturing screenshot...");
-    const imageBuffer = element
-      ? await element.screenshot()
-      : await page.screenshot({ fullPage: true });
-
-    // 이미지 저장 경로 설정
     const imageName = `image-${Date.now()}.png`;
-    const imageDir =
-      process.env.IMAGE_DIRECTORY || path.resolve(__dirname, "../images");
+    const imageDir = process.env.IMAGE_DIRECTORY || path.resolve(__dirname, "../images");
     const imagePath = path.join(imageDir, imageName);
 
     if (!fs.existsSync(imageDir)) {
-      try {
-        fs.mkdirSync(imageDir, { recursive: true });
-      } catch (err) {
-        console.error("Error creating image directory:", err);
-        return res
-          .status(500)
-          .json({ message: "Failed to create image directory" });
-      }
+      fs.mkdirSync(imageDir, { recursive: true });
     }
 
     fs.writeFileSync(imagePath, imageBuffer);
-    console.log(`${imageName} Screenshot saved`);
 
-    // 이미지 URL 생성
     const imageUrl = `http://dolllpitoxic3.mycafe24.com/images/${imageName}`;
 
     res.status(200).json({
@@ -68,7 +58,6 @@ const saveImageFromURL = async (req, res) => {
     });
   } catch (error) {
     console.error("Error generating image from URL:", error.message);
-    console.error(error.stack);
     res.status(500).json({ message: "Error generating image from URL" });
   } finally {
     if (browser) {
@@ -77,4 +66,72 @@ const saveImageFromURL = async (req, res) => {
   }
 };
 
-module.exports = { saveImageFromURL };
+// 이미지 & DB 저장
+const saveImageToDatabase = async (req, res) => {
+  const { url, project_id, feature_id } = req.body;
+
+  if (!url || !project_id || !feature_id) {
+    return res.status(400).json({ message: "URL, project_id, and feature_id are required" });
+  }
+
+  let browser;
+  try {
+    browser = await puppeteer.launch({
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
+    const page = await browser.newPage();
+
+    await page.setUserAgent(
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+    );
+    await page.setViewport({ width: 1920, height: 1080 });
+
+    console.log(`Navigating to ${url}...`);
+    await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
+
+    let imageBuffer;
+    try {
+      await page.waitForSelector(".templateImage", { timeout: 30000 });
+      const element = await page.$(".templateImage");
+      console.log(".templateImage found! Capturing screenshot...");
+      imageBuffer = await element.screenshot();
+    } catch (err) {
+      console.warn("`.templateImage` not found. Capturing full page screenshot...");
+      imageBuffer = await page.screenshot({ fullPage: true });
+    }
+
+    const imageName = `image-${Date.now()}.png`;
+    const imageDir = process.env.IMAGE_DIRECTORY || path.resolve(__dirname, "../images");
+    const imagePath = path.join(imageDir, imageName);
+
+    if (!fs.existsSync(imageDir)) {
+      fs.mkdirSync(imageDir, { recursive: true });
+    }
+
+    fs.writeFileSync(imagePath, imageBuffer);
+
+    const imageUrl = `http://dolllpitoxic3.mycafe24.com/images/${imageName}`;
+
+    // `addFileRecord` 함수 호출하여 DB에 저장
+    const fileId = await projectModel.addFileRecord(project_id, feature_id, "image", imagePath, imageUrl);
+
+    res.status(200).json({
+      message: "Image saved successfully",
+      project_id,
+      feature_id,
+      file_id: fileId.toString(),
+      path: imagePath,
+      url: imageUrl,
+      imageName: imageName,
+    });
+  } catch (error) {
+    console.error("Error generating image from URL:", error.message);
+    res.status(500).json({ message: "Error generating image from URL" });
+  } finally {
+    if (browser) {
+      await browser.close();
+    }
+  }
+};
+
+module.exports = { saveImageFromURL, saveImageToDatabase };

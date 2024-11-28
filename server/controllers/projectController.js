@@ -271,6 +271,7 @@ exports.generateProjectText = async (req, res) => {
                     responses.push({
                         menu,
                         feature,
+                        feature_id,
                         content: featureResponseData.content,
                         success: true
                     });
@@ -282,6 +283,7 @@ exports.generateProjectText = async (req, res) => {
                     responses.push({
                         menu,
                         feature,
+                        feature_id,
                         content: null,
                         success: false
                     });
@@ -327,6 +329,12 @@ exports.getAllFeaturesForProject = async (req, res) => {
 
     try {
         // 프로젝트의 기본 정보 가져오기
+        const projectInfo = await projectModel.getProjectById(projectId);
+
+        if (!projectInfo || projectInfo.length === 0) {
+            return res.status(404).json({ error: "Project 정보를 찾을 수 없습니다." });
+        }
+
         const features = await projectModel.getProjectFeaturesWithId(projectId);
 
         if (!features || features.length === 0) {
@@ -349,6 +357,8 @@ exports.getAllFeaturesForProject = async (req, res) => {
         // 성공 응답
         res.status(200).json({
             projectId,
+            projectName: projectInfo.project_name,
+            projectDesc: projectInfo.project_description,
             featureResponseData,
         });
     } catch (error) {

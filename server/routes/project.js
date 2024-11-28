@@ -155,6 +155,9 @@ router.post('/create', projectController.createProject);
  *                       feature:
  *                         type: string
  *                         example: "메인"
+ *                       feature_id:
+ *                         type: integer
+ *                         example: 1
  *                       content:
  *                         type: object
  *                         properties:
@@ -213,6 +216,12 @@ router.get('/:projectId/generate-text', projectController.generateProjectText);
  *                 projectId:
  *                   type: integer
  *                   example: 1
+ *                 projectName:
+ *                   type: string
+ *                   example: "프로젝트 이름"
+ *                 projectDesc:
+ *                   type: string
+ *                   example: "프로젝트 설명"
  *                 featureResponseData:
  *                   type: array
  *                   items:
