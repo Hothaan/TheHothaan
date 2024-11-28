@@ -20,8 +20,8 @@ const port = process.env.PORT || 5001;
 
 app.use(
   cors({
-    // origin: ["http://localhost:3000", "http://dolllpitoxic3.mycafe24.com"], // 허용할 도메인 목록 추가
-    origin: process.env.CORS_ORIGIN,
+    origin: ["http://localhost:3000", "http://dolllpitoxic3.mycafe24.com"], // 프론트 이슈로 임시 사용
+    // origin: process.env.CORS_ORIGIN,
     methods: "GET,POST,PUT,DELETE,OPTIONS",
     credentials: true, // 인증 정보(쿠키, 헤더 등)를 포함한 요청 허용
     allowedHeaders: ["Content-Type", "Authorization"],
