@@ -453,8 +453,12 @@ exports.generateFilesForProject = async (req, res) => {
             const pdfFileName = `project-${project_id}-${Date.now()}.pdf`;
             const pdfFilePath = path.join(outputDir, pdfFileName);
 
+            const isLocal = process.env.NODE_ENV === 'development';
+
             const browser = await puppeteer.launch({
-                executablePath: '/Users/hansong-i/.cache/puppeteer/chrome/mac_arm-131.0.6778.85/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing',
+                executablePath: isLocal
+                    ? '/Users/hansong-i/.cache/puppeteer/chrome/mac_arm-131.0.6778.85/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing'
+                    : '/usr/bin/chromium-browser',  // 배포 서버에서 설치한 Chromium 경로
                 args: ["--no-sandbox", "--disable-setuid-sandbox"],
             });
 
@@ -480,7 +484,7 @@ exports.generateFilesForProject = async (req, res) => {
                             </body>
                         </html>
                     `);
-            
+
                     // 뷰포트를 A4 크기에 맞추기
                     await page.setViewport({
                         width: 595,  // A4 크기 (mm 기준으로 210mm -> 595px)
