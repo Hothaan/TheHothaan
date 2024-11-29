@@ -141,6 +141,7 @@ const saveImageToDatabase = async (req, res) => {
       project_id,
       feature_id,
       "image",
+      url,
       imagePath,
       imageUrl
     );

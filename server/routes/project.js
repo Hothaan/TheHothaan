@@ -334,5 +334,72 @@ router.get('/:projectId/features', projectController.getAllFeaturesForProject);
  */
 router.put('/features/update/:featureId', projectController.updateFeatureContent);
 
+/**
+ * @swagger
+ * /api/project/generate-files:
+ *   post:
+ *     summary: 특정 프로젝트 전체 파일 생성
+ *     description: 저장된 프로젝트 이미지 파일을 기반으로 이미지 압축파일 혹은 pdf 파일을 반환합니다.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               project_id:
+ *                 type: integer
+ *                 description: 프로젝트 ID
+ *                 example: 123
+ *               format:
+ *                 type: string
+ *                 description: 생성할 파일 포맷 (png, jpg, pdf)
+ *                 example: "png"
+ *     tags:
+ *      - Project
+ *     responses:
+ *       200:
+ *         description: 파일이 성공적으로 생성되었습니다.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "파일 생성이 완료되었습니다."
+ *       400:
+ *         description: 잘못된 요청입니다.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "project_id와 format(png, jpg, pdf)이 필요합니다."
+ *       404:
+ *         description: 프로젝트에 파일이 없거나 파일을 찾을 수 없습니다.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "해당 프로젝트에 파일이 없습니다."
+ *       500:
+ *         description: 서버 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "파일 처리 중 오류가 발생했습니다."
+ */
+router.post("/generate-files", projectController.generateFilesForProject);
+
 
 module.exports = router;

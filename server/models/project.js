@@ -112,20 +112,23 @@ exports.getProjectFeaturesWithId = async (projectId) => {
 };
 
 // 파일 정보 저장
-exports.addFileRecord = async (projectId, featureId, fileType, filePath, fileUrl) => {
+exports.addFileRecord = async (projectId, featureId, fileType, action_url, filePath, fileUrl) => {
+    console.log("action_url : ", action_url);
+    
     const result = await pool.query(
-        `INSERT INTO project_files (project_id, feature_id, file_type, file_path, file_url)
-         VALUES (?, ?, ?, ?, ?)`,
-        [projectId, featureId, fileType, filePath, fileUrl]
+        `INSERT INTO project_files (project_id, feature_id, file_type, action_url, file_path, file_url)
+         VALUES (?, ?, ?, ?, ?, ?)`,
+        [projectId, featureId, fileType, action_url, filePath, fileUrl]
     );
     return result.insertId;
 };
 
 // 프로젝트 파일 정보 가져오기
 exports.getFilesByProject = async (projectId) => {
-    const [rows] = await pool.query(
+    const rows = await pool.query(
         `SELECT * FROM project_files WHERE project_id = ?`,
         [projectId]
     );
-    return rows;
+    const result = Array.isArray(rows) ? rows : [rows];
+    return result;
 };
