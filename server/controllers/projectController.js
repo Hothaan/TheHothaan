@@ -417,6 +417,13 @@ exports.generateFilesForProject = async (req, res) => {
             return res.status(404).json({ message: "해당 프로젝트에 파일이 없습니다." });
         }
 
+        // "메인" 파일을 먼저 가져오고 나머지 파일들로 배열을 나누기
+        const mainFiles = files.filter(file => file.action_url.includes("메인"));
+        const otherFiles = files.filter(file => !file.action_url.includes("메인"));
+
+        // "메인" 파일을 맨 앞에 추가하고 나머지 파일들은 뒤에 추가
+        const sortedFiles = [...mainFiles, ...otherFiles];
+
         // 작업 디렉토리 설정
         const outputDir = path.resolve(process.env.FILE_DIRECTORY);
         if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir);
@@ -432,7 +439,7 @@ exports.generateFilesForProject = async (req, res) => {
 
         if (format.toLowerCase() === "png") {
             // PNG 파일을 압축에 추가
-            for (const file of files) {
+            for (const file of sortedFiles) {
                 if (file.file_type === "image" && file.file_path.endsWith(".png")) {
                     archive.file(file.file_path, { name: path.basename(file.file_path) });
                 }
@@ -440,7 +447,7 @@ exports.generateFilesForProject = async (req, res) => {
 
         } else if (format.toLowerCase() === "jpg") {
             // JPG 변환 후 압축 파일 생성
-            for (const file of files) {
+            for (const file of sortedFiles) {
                 if (file.file_type === "image" && file.file_path.endsWith(".png")) {
                     const jpgFilePath = path.join(outputDir, `${path.basename(file.file_path, ".png")}.jpg`);
                     await sharp(file.file_path).jpeg().toFile(jpgFilePath); // PNG -> JPG 변환
@@ -462,15 +469,10 @@ exports.generateFilesForProject = async (req, res) => {
                 args: ["--no-sandbox", "--disable-setuid-sandbox"],
             });
 
-            // const browser = await puppeteer.launch({
-            //     headless: true, // headless 모드로 설정
-            //     args: ["--no-sandbox", "--disable-setuid-sandbox"]
-            // });
-
             const pdfPages = [];
 
             // 각 이미지에 대해 PDF 페이지를 생성
-            for (const file of files) {
+            for (const file of sortedFiles) {
                 if (file.file_type === "image" && file.file_path.endsWith(".png")) {
                     const page = await browser.newPage();
 

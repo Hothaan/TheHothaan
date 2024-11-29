@@ -20,4 +20,5 @@ LOG_DIRECTORY=/path/to/logs
 
 # Image Directory
 IMAGE_DIRECTORY=/path/to/images
+FILE_DIRECTORY=/path/to/files
 ```
