@@ -1,10 +1,11 @@
 const projectModel = require('../models/project');
 const componentModel = require('../models/components');
 const { generateOpenAiText } = require('../helpers/openAiHelper');
+const { mergePdfs } = require('../helpers/pdfMerge');
 const logger = require('../config/logger');
 const archiver = require("archiver");
-const pdfkit = require("pdfkit"); // PDF 생성
 const sharp = require("sharp"); // PNG -> JPG 변환용
+const puppeteer = require("puppeteer");
 const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
@@ -448,57 +449,80 @@ exports.generateFilesForProject = async (req, res) => {
             }
 
         } else if (format.toLowerCase() === "pdf") {
-            // PDF 파일 생성
+            // Puppeteer로 PDF 파일 생성
             const pdfFileName = `project-${project_id}-${Date.now()}.pdf`;
             const pdfFilePath = path.join(outputDir, pdfFileName);
 
-            const doc = new pdfkit();
-            const stream = fs.createWriteStream(pdfFilePath);
-            doc.pipe(stream);
+            const browser = await puppeteer.launch({
+                executablePath: '/Users/hansong-i/.cache/puppeteer/chrome/mac_arm-131.0.6778.85/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing',
+                args: ["--no-sandbox", "--disable-setuid-sandbox"],
+            });
 
-            let firstImage = true;
+            // const browser = await puppeteer.launch({
+            //     headless: true, // headless 모드로 설정
+            //     args: ["--no-sandbox", "--disable-setuid-sandbox"]
+            // });
 
-            // PDF 페이지 크기 설정
-            const pageWidth = 595.28; // A4 페이지 크기: 595.28 x 841.89 points
-            const pageHeight = 841.89;
+            const pdfPages = [];
 
+            // 각 이미지에 대해 PDF 페이지를 생성
             for (const file of files) {
                 if (file.file_type === "image" && file.file_path.endsWith(".png")) {
-                    // 이미지 크기 계산
-                    const image = fs.readFileSync(file.file_path);
-                    const imageSize = await sharp(file.file_path).metadata();
+                    const page = await browser.newPage();
 
-                    // 가로폭 1920px 맞추기
-                    const scaleFactor = pageWidth / 1920; // 1920px에 맞게 스케일링
-                    const imageWidth = pageWidth;
-                    const imageHeight = imageSize.height * scaleFactor;
+                    // 각 이미지를 HTML 페이지로 불러오기
+                    const fileUrl = file.action_url; // DB에서 이미지 URL 가져오기
 
-                    // 첫 번째 이미지는 첫 페이지에 추가
-                    if (firstImage) {
-                        doc.image(file.file_path, 0, 0, { width: imageWidth, height: imageHeight });
-                        firstImage = false;
-                    } else {
-                        // 두 번째 이후부터 새로운 페이지로 넘어가며 이미지 추가
-                        doc.addPage();
-                        doc.image(file.file_path, 0, 0, { width: imageWidth, height: imageHeight });
-                    }
+                    await page.setContent(`
+                        <html>
+                            <body style="width: 100%; margin: 0; display: flex; justify-content: center;">
+                                <img src="${fileUrl}" style="max-width: 100%; height: auto;" />  <!-- 이미지 크기 자동 조정 -->
+                            </body>
+                        </html>
+                    `);
+            
+                    // 뷰포트를 A4 크기에 맞추기
+                    await page.setViewport({
+                        width: 595,  // A4 크기 (mm 기준으로 210mm -> 595px)
+                        height: 842, // A4 크기 (mm 기준으로 297mm -> 842px)
+                        deviceScaleFactor: 2, // 고해상도
+                    });
 
-                    // 세로가 넘칠 경우 새 페이지로 넘어가도록 처리
-                    while (doc.y + imageHeight > pageHeight) {
-                        // 현재 페이지에서 세로가 넘친다면 새 페이지 추가
-                        doc.addPage();
-                        doc.image(file.file_path, 0, 0, { width: imageWidth, height: imageHeight });
-                    }
+                    await page.goto(fileUrl, { waitUntil: "networkidle0" });
+
+                    // 페이지를 PDF로 변환
+                    const pdfPath = path.join(outputDir, `page-${Date.now()}.pdf`);
+                    await page.pdf({
+                        path: pdfPath, // 각 페이지 PDF 저장
+                        format: "A4",
+                        printBackground: true,
+                        scale: 0.5,
+                    });
+
+                    // PDF 파일 경로를 배열에 저장
+                    pdfPages.push(pdfPath);
+                    await page.close();
                 }
             }
 
-            doc.end();
-            
-            // PDF 파일이 생성될 때까지 대기
-            await new Promise((resolve) => stream.on("finish", resolve));
+            await browser.close();
 
-            // 클라이언트에 PDF 파일 경로 반환
-            return res.status(200).json({ downloadUrl: `/files/${pdfFileName}` });
+            // 디버깅을 위한 출력 (pdfPages 배열 확인)
+            console.log('PDF Pages:', pdfPages);
+
+            // PDF 병합
+            if (pdfPages.length > 0) {
+                const mergedPdfBytes = await mergePdfs(pdfPages); // 병합 함수 호출
+
+                // 병합된 PDF 저장
+                fs.writeFileSync(pdfFilePath, mergedPdfBytes);
+
+                // 클라이언트에 PDF 파일 경로 반환
+                return res.status(200).json({ downloadUrl: `/files/${pdfFileName}` });
+            } else {
+                return res.status(500).json({ message: "PDF 페이지를 생성하지 못했습니다." });
+            }
+
         } else {
             return res.status(400).json({ message: "유효하지 않은 format입니다. png, jpg 또는 pdf만 가능합니다." });
         }

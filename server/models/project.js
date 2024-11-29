@@ -113,8 +113,7 @@ exports.getProjectFeaturesWithId = async (projectId) => {
 
 // 파일 정보 저장
 exports.addFileRecord = async (projectId, featureId, fileType, action_url, filePath, fileUrl) => {
-    console.log("action_url : ", action_url);
-    
+    // console.log("action_url : ", action_url);
     const result = await pool.query(
         `INSERT INTO project_files (project_id, feature_id, file_type, action_url, file_path, file_url)
          VALUES (?, ?, ?, ?, ?, ?)`,
