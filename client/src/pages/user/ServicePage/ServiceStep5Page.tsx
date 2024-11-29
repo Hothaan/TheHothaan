@@ -16,7 +16,7 @@ import axios from "axios";
 
 export type Tformat = "pdf" | "png" | "jpg";
 export default function ServiceStep5Page() {
-  const isProduction = false; //임시
+  const isProduction = true; //임시
   const projectId = "395"; //임시
 
   const location = useLocation();
@@ -48,9 +48,7 @@ export default function ServiceStep5Page() {
     try {
       const response = await generateFiles(isProduction, projectId, format);
       if (response.status === 200) {
-        const domain = isProduction
-          ? "dolllpitoxic3.mycafe24.com"
-          : "localhost:3000";
+        const domain = "dolllpitoxic3.mycafe24.com";
         const url = "http://" + domain + response.data.downloadUrl;
         try {
           const response = await axios.get(url, {
