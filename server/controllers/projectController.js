@@ -2,6 +2,12 @@ const projectModel = require('../models/project');
 const componentModel = require('../models/components');
 const { generateOpenAiText } = require('../helpers/openAiHelper');
 const logger = require('../config/logger');
+const archiver = require("archiver");
+const pdfkit = require("pdfkit"); // PDF 생성
+const sharp = require("sharp"); // PNG -> JPG 변환용
+const fs = require('fs');
+const path = require('path');
+require('dotenv').config();
 
 // 프로젝트 생성 함수
 exports.createProject = async (req, res) => {
@@ -239,13 +245,13 @@ exports.generateProjectText = async (req, res) => {
         // 각 메뉴와 그에 해당하는 feature에 대해 OpenAI API 호출
         for (const group of groupedSelections) {
             const { menu, features } = group;
-        
+
             for (const featureObj of features) {
                 const { feature, option: featureOption, feature_id } = featureObj; // feature_id 추가
-        
+
                 try {
                     const featureDetails = await componentModel.getComponentDetails(menu, feature);
-        
+
                     if (!featureDetails || featureDetails.length === 0) {
                         responses.push({
                             menu,
@@ -256,18 +262,18 @@ exports.generateProjectText = async (req, res) => {
                         failureCount++;
                         continue;
                     }
-        
+
                     const { depth1, depth2, structure, content, cnt } = featureDetails;
-        
+
                     const featureResponseData = await generateOpenAiText(
                         serviceType, serviceTitle, serviceDesc, depth1, depth2, feature, structure, content, cnt
                     );
-        
+
                     // DB에 결과 저장
                     if (feature_id) {
                         await projectModel.updateFeatureContent(feature_id, JSON.stringify(featureResponseData.content));
                     }
-        
+
                     responses.push({
                         menu,
                         feature,
@@ -275,11 +281,11 @@ exports.generateProjectText = async (req, res) => {
                         content: featureResponseData.content,
                         success: true
                     });
-        
+
                     successCount++;
                 } catch (error) {
                     console.error(`Error processing feature '${feature}' in menu '${menu}':`, error);
-        
+
                     responses.push({
                         menu,
                         feature,
@@ -287,12 +293,12 @@ exports.generateProjectText = async (req, res) => {
                         content: null,
                         success: false
                     });
-        
+
                     failureCount++;
                 }
             }
         }
-        
+
 
         // 최종 로그에 요약 정보 포함
         logger.info("프로젝트 텍스트 생성 결과", {
@@ -395,3 +401,118 @@ exports.updateFeatureContent = async (req, res) => {
         res.status(500).json({ error: "feature content 업데이트 중 오류가 발생했습니다." });
     }
 };
+
+exports.generateFilesForProject = async (req, res) => {
+    const { project_id, format } = req.body;
+
+    if (!project_id || !format) {
+        return res.status(400).json({ message: "project_id와 format(png, jpg, pdf)이 필요합니다." });
+    }
+
+    try {
+        // 1. DB에서 project_id에 해당하는 파일 가져오기
+        const files = await projectModel.getFilesByProject(project_id);
+        if (!files || files.length === 0) {
+            return res.status(404).json({ message: "해당 프로젝트에 파일이 없습니다." });
+        }
+
+        // 작업 디렉토리 설정
+        const outputDir = path.resolve(process.env.FILE_DIRECTORY);
+        if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir);
+
+        // 파일명 설정 (기본적으로 프로젝트 아이디와 현재 시간을 기반으로 파일명 설정)
+        const zipFileName = `project-${project_id}-${Date.now()}.zip`;
+        const zipFilePath = path.join(outputDir, zipFileName);
+
+        const output = fs.createWriteStream(zipFilePath);
+        const archive = archiver("zip");
+
+        archive.pipe(output);  // 압축 파일 생성
+
+        if (format.toLowerCase() === "png") {
+            // PNG 파일을 압축에 추가
+            for (const file of files) {
+                if (file.file_type === "image" && file.file_path.endsWith(".png")) {
+                    archive.file(file.file_path, { name: path.basename(file.file_path) });
+                }
+            }
+
+        } else if (format.toLowerCase() === "jpg") {
+            // JPG 변환 후 압축 파일 생성
+            for (const file of files) {
+                if (file.file_type === "image" && file.file_path.endsWith(".png")) {
+                    const jpgFilePath = path.join(outputDir, `${path.basename(file.file_path, ".png")}.jpg`);
+                    await sharp(file.file_path).jpeg().toFile(jpgFilePath); // PNG -> JPG 변환
+                    archive.file(jpgFilePath, { name: path.basename(jpgFilePath) });
+                }
+            }
+
+        } else if (format.toLowerCase() === "pdf") {
+            // PDF 파일 생성
+            const pdfFileName = `project-${project_id}-${Date.now()}.pdf`;
+            const pdfFilePath = path.join(outputDir, pdfFileName);
+
+            const doc = new pdfkit();
+            const stream = fs.createWriteStream(pdfFilePath);
+            doc.pipe(stream);
+
+            let firstImage = true;
+
+            // PDF 페이지 크기 설정
+            const pageWidth = 595.28; // A4 페이지 크기: 595.28 x 841.89 points
+            const pageHeight = 841.89;
+
+            for (const file of files) {
+                if (file.file_type === "image" && file.file_path.endsWith(".png")) {
+                    // 이미지 크기 계산
+                    const image = fs.readFileSync(file.file_path);
+                    const imageSize = await sharp(file.file_path).metadata();
+
+                    // 가로폭 1920px 맞추기
+                    const scaleFactor = pageWidth / 1920; // 1920px에 맞게 스케일링
+                    const imageWidth = pageWidth;
+                    const imageHeight = imageSize.height * scaleFactor;
+
+                    // 첫 번째 이미지는 첫 페이지에 추가
+                    if (firstImage) {
+                        doc.image(file.file_path, 0, 0, { width: imageWidth, height: imageHeight });
+                        firstImage = false;
+                    } else {
+                        // 두 번째 이후부터 새로운 페이지로 넘어가며 이미지 추가
+                        doc.addPage();
+                        doc.image(file.file_path, 0, 0, { width: imageWidth, height: imageHeight });
+                    }
+
+                    // 세로가 넘칠 경우 새 페이지로 넘어가도록 처리
+                    while (doc.y + imageHeight > pageHeight) {
+                        // 현재 페이지에서 세로가 넘친다면 새 페이지 추가
+                        doc.addPage();
+                        doc.image(file.file_path, 0, 0, { width: imageWidth, height: imageHeight });
+                    }
+                }
+            }
+
+            doc.end();
+            
+            // PDF 파일이 생성될 때까지 대기
+            await new Promise((resolve) => stream.on("finish", resolve));
+
+            // 클라이언트에 PDF 파일 경로 반환
+            return res.status(200).json({ downloadUrl: `/files/${pdfFileName}` });
+        } else {
+            return res.status(400).json({ message: "유효하지 않은 format입니다. png, jpg 또는 pdf만 가능합니다." });
+        }
+
+        await archive.finalize();
+        output.close(); // 스트림 종료
+
+        // 클라이언트에 ZIP 파일 경로 반환
+        return res.status(200).json({ downloadUrl: `/files/${zipFileName}` });
+
+    } catch (error) {
+        console.error("파일 처리 중 오류:", error);
+        return res.status(500).json({ message: "파일 처리 중 오류가 발생했습니다." });
+    }
+};
+
+
