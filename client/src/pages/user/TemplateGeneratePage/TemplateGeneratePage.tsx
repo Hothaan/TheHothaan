@@ -7,7 +7,7 @@ export default function TemplateGeneratePage() {
 
   return (
     <div>
-      <TemplateToRender templateMode="capture" />
+      <TemplateToRender templateType="capture" />
     </div>
   );
 }

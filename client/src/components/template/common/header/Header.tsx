@@ -7,12 +7,14 @@ import { ReactComponent as Search } from "@svgs/template/searchTemplate.svg";
 import NavItem from "@components/template/commonComponent/NavItem";
 
 export interface Iheader {
+  serviceType?: string;
   logo?: string;
   categories?: string[];
 }
 
 export default function Header(prop: Iheader) {
-  const { logo, categories } = prop;
+  const { serviceType, logo, categories } = prop;
+
   return (
     <div css={wrap}>
       <div css={logo_wrap}>
@@ -39,12 +41,15 @@ export default function Header(prop: Iheader) {
       </ul>
       <div css={user_container}>
         <User />
-        <div css={bag_container}>
-          <Bag />
-          <div css={badge_container}>
-            <p css={badge_text}>10</p>
+        {serviceType === "쇼핑몰" && (
+          <div css={bag_container}>
+            <Bag />
+            <div css={badge_container}>
+              <p css={badge_text}>10</p>
+            </div>
           </div>
-        </div>
+        )}
+
         <Search />
       </div>
     </div>

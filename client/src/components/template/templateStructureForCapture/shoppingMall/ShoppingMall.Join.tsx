@@ -6,14 +6,14 @@ import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
 import Join from "@components/template/utility/Join";
 import {
   IfetchedfeatureResponseData,
-  ItemplateMode,
+  ItemplateType,
 } from "@components/template/types";
 import Loading from "@components/common/ui/Loading/loading";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
-export default function ShoppingMallJoin(prop: ItemplateMode) {
-  const { templateMode } = prop;
+export default function ShoppingMallJoin(prop: ItemplateType) {
+  const { templateType } = prop;
   const feature = "회원가입";
 
   const { isProduction } = useIsProduction();

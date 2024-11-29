@@ -1,7 +1,13 @@
-export type TtemplateMode = "capture" | "render";
+// export type TtemplateType = "capture" | "render";
 
-export interface ItemplateMode {
-  templateMode: TtemplateMode;
+export type TtemplateType = string;
+
+// export interface ItemplateType {
+//   templateType: TtemplateType;
+// }
+
+export interface ItemplateType {
+  templateType: TtemplateType;
 }
 
 export interface IfetchedfeatureResponseData {

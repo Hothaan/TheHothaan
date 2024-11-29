@@ -2,7 +2,6 @@
 import { css } from "@emotion/react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { ReactComponent as Doc } from "@svgs//service/doc.svg";
 import { ReactComponent as BannerIcon1 } from "@svgs/service/bannerIcon1.svg";
 import { ReactComponent as BannerIcon2 } from "@svgs/service/bannerIcon2.svg";
 import { ReactComponent as BannerIcon3 } from "@svgs/service/bannerIcon3.svg";
@@ -12,8 +11,14 @@ import { ReactComponent as Download } from "@svgs//common/download.svg";
 import { IbuttonIcon } from "@components/service/button/ButtonIcon";
 import ButtonIcon from "@components/service/button/ButtonIcon";
 import FullPageModalUneditable from "@components/service/modal/FullPageModalUneditable";
+import { generateFiles } from "@api/project/generateFiles";
+import axios from "axios";
 
+export type Tformat = "pdf" | "png" | "jpg";
 export default function ServiceStep5Page() {
+  const isProduction = false; //임시
+  const projectId = "395"; //임시
+
   const location = useLocation();
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState<number>(1);
@@ -36,23 +41,66 @@ export default function ServiceStep5Page() {
     },
   };
 
+  async function downLoadFiles(format: Tformat) {
+    if (!projectId || !format) {
+      return;
+    }
+    try {
+      const response = await generateFiles(isProduction, projectId, format);
+      if (response.status === 200) {
+        const domain = isProduction
+          ? "dolllpitoxic3.mycafe24.com"
+          : "localhost:3000";
+        const url = "http://" + domain + response.data.downloadUrl;
+        try {
+          const response = await axios.get(url, {
+            responseType: "blob",
+          });
+
+          const blob = new Blob([response.data], {
+            type: response.headers["content-type"],
+          });
+
+          const downloadUrl = URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.href = downloadUrl;
+          link.download = "기획안";
+          link.click();
+
+          URL.revokeObjectURL(downloadUrl);
+        } catch (error) {
+          console.error("파일 다운로드 중 오류 발생:", error);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+    }
+  }
+
   const buttonDonwnloadPdf: IbuttonIcon = {
     size: "XL",
     icon: <Download />,
     text: "PDF 다운로드",
-    onClick: () => {},
+    onClick: () => {
+      downLoadFiles("pdf");
+    },
   };
   const buttonDonwnloadPng: IbuttonIcon = {
     size: "XL",
     icon: <Download />,
     text: "PNG 다운로드",
-    onClick: () => {},
+    onClick: () => {
+      downLoadFiles("png");
+    },
   };
   const buttonDonwnloadJpg: IbuttonIcon = {
     size: "XL",
     icon: <Download />,
     text: "JPG 다운로드",
-    onClick: () => {},
+    onClick: () => {
+      downLoadFiles("jpg");
+    },
   };
 
   useEffect(() => {

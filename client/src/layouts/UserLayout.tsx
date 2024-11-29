@@ -22,6 +22,8 @@ import MyPage from "@pages/user/MyPage/MyPage";
 import LoginPage from "@pages/user/LoginPage/LoginPage";
 import JoinPage from "@pages/user/JoinPage/JoinPage";
 
+import TemplateFublishingPage from "@pages/user/TemplateFublishingPage/TemplateFublishingPage";
+
 export default function UserLayout() {
   const { includeLocation } = useLocationControl();
 
@@ -54,6 +56,7 @@ export default function UserLayout() {
           <Route path="/myPage" element={<MyPage />} />
           {/* ---- test -------------- */}
           <Route path="/test" element={<TestPage />} />
+          <Route path="/fublising" element={<TemplateFublishingPage />} />
         </Routes>
       </main>
       {!includeLocation("template") && <Footer />}

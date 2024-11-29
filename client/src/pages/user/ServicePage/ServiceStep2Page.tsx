@@ -14,6 +14,8 @@ import useNavigation from "@hooks/useNavigation";
 import useLocationControl from "@hooks/useLocationControl";
 import { getServiceTypes, IserviceTypes } from "@api/service/serviceTypes";
 import { getDeviceOptions, IdeviceOptions } from "@api/service/deviceOptions";
+import Loading from "@components/common/ui/Loading/loading";
+import { IserviceInfo } from "./ServiceStep1Page";
 
 export interface IserviceData {
   device: {
@@ -32,6 +34,7 @@ interface IformData {
 }
 
 export default function ServiceStep2Page() {
+  const [isFail, setIsFail] = useState(false);
   const [serviceData, setServiceData] = useState<TserviceDefaultData | null>(
     null
   );
@@ -61,6 +64,16 @@ export default function ServiceStep2Page() {
   const [deviceOptions, setDeviceOptions] = useState<IdeviceOptions[] | null>(
     null
   );
+
+  const [serviceInfo, setServiceInfo] = useState<IserviceInfo | null>(null);
+  useEffect(() => {
+    const sessionData = sessionStorage.getItem("serviceInfo");
+    if (sessionData) {
+      setServiceInfo(JSON.parse(sessionData));
+    } else {
+      setIsFail(true);
+    }
+  }, []);
 
   useEffect(() => {
     const sessionData = sessionStorage.getItem("serviceData");
@@ -281,6 +294,22 @@ export default function ServiceStep2Page() {
       }));
     },
   };
+
+  useEffect(() => {
+    if (isFail) {
+      window.confirm(
+        "프로젝트가 생성을 건너뛰고 접근하셨습니다. 스탭 1부터 진행해주세요."
+      );
+      const timer = setTimeout(() => {
+        handleNavigation("/service/step1");
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [isFail]);
+
+  if (isFail) {
+    return <Loading />;
+  }
 
   return (
     <>

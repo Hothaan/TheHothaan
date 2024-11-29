@@ -11,45 +11,45 @@ import ShoppingMallLogin from "./templateStructureForCapture/shoppingMall/Shoppi
 import ShoppingMallNotice from "./templateStructureForCapture/shoppingMall/ShoppingMallNotice";
 import ShoppingMallWidthDrawer from "./templateStructureForCapture/shoppingMall/ShoppingMallWidthDrawer";
 import ShoppingMallBrandIntroduce from "./templateStructureForCapture/shoppingMall/ShoppingMallBrandIntroduce";
-import { TtemplateMode } from "./types";
+import { TtemplateType } from "./types";
 
 export const templateMapForCapture: {
-  [key: string]: React.FC<{ templateMode: TtemplateMode }>;
+  [key: string]: React.FC<{ templateType: TtemplateType }>;
 } = {
   "쇼핑몰-메인": (props) => (
-    <ShoppingMallMain templateMode={props.templateMode} />
+    <ShoppingMallMain templateType={props.templateType} />
   ),
   "쇼핑몰-상품목록": (props) => (
-    <ShoppingMallProductList templateMode={props.templateMode} />
+    <ShoppingMallProductList templateType={props.templateType} />
   ),
   "쇼핑몰-상품상세": (props) => (
-    <ShoppingMallProductDetail templateMode={props.templateMode} />
+    <ShoppingMallProductDetail templateType={props.templateType} />
   ),
   "쇼핑몰-주문목록": (props) => (
-    <ShoppingMallOrderList templateMode={props.templateMode} />
+    <ShoppingMallOrderList templateType={props.templateType} />
   ),
   "쇼핑몰-장바구니": (props) => (
-    <ShoppingMallCart templateMode={props.templateMode} />
+    <ShoppingMallCart templateType={props.templateType} />
   ),
   "쇼핑몰-공지사항": (props) => (
-    <ShoppingMallNotice templateMode={props.templateMode} />
+    <ShoppingMallNotice templateType={props.templateType} />
   ),
   "쇼핑몰-로그인": (props) => (
-    <ShoppingMallLogin templateMode={props.templateMode} />
+    <ShoppingMallLogin templateType={props.templateType} />
   ),
   "쇼핑몰-회원가입": (props) => (
-    <ShoppingMallJoin templateMode={props.templateMode} />
+    <ShoppingMallJoin templateType={props.templateType} />
   ),
   "쇼핑몰-회원탈퇴": (props) => (
-    <ShoppingMallWidthDrawer templateMode={props.templateMode} />
+    <ShoppingMallWidthDrawer templateType={props.templateType} />
   ),
   "쇼핑몰-아이디찾기": (props) => (
-    <ShoppingMallFindId templateMode={props.templateMode} />
+    <ShoppingMallFindId templateType={props.templateType} />
   ),
   "쇼핑몰-비밀번호찾기": (props) => (
-    <ShoppingMallFindPw templateMode={props.templateMode} />
+    <ShoppingMallFindPw templateType={props.templateType} />
   ),
   "쇼핑몰-브랜드소개": (props) => (
-    <ShoppingMallBrandIntroduce templateMode={props.templateMode} />
+    <ShoppingMallBrandIntroduce templateType={props.templateType} />
   ),
 };

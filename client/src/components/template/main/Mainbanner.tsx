@@ -8,12 +8,16 @@ import { CSSProperties } from "react";
 
 export interface ImainBanner {
   isEditable?: boolean;
-  title: string;
-  desc: string;
+  title?: string;
+  desc?: string;
 }
 
 export default function Mainbanner(prop: ImainBanner) {
   const { isEditable, title, desc } = prop;
+
+  const title_ = "Headline H1";
+  const desc_ =
+    "lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non";
 
   return (
     <OuterWrap padding="0">
@@ -31,21 +35,21 @@ export default function Mainbanner(prop: ImainBanner) {
         <div css={container}>
           {isEditable ? (
             <EditableText
-              text={title}
+              text={title || title_}
               isTextArea={false}
               defaultCss={pass_h1}
             />
           ) : (
-            <p css={pass_h1}>{title}</p>
+            <p css={pass_h1}>{title || title_}</p>
           )}
           {isEditable ? (
             <EditableText
-              text={desc}
+              text={desc || desc_}
               isTextArea={true}
               defaultCss={pass_desc}
             />
           ) : (
-            <p css={pass_desc}>{desc}</p>
+            <p css={pass_desc}>{desc || desc_}</p>
           )}
 
           <TemplateButton type="default" text="button" />

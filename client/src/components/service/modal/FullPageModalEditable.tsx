@@ -19,7 +19,6 @@ interface IFullPageModal {
   imageUrlArr: TimageUrl[] | null;
   imageNameArr: TimageName[] | null;
   projectType: string;
-  data: IgeneratedText[] | null;
   listData: string[];
   selectedItem: string;
   onClick: (isModalOpen: boolean) => void;
@@ -31,7 +30,6 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
     imageUrlArr,
     imageNameArr,
     projectType,
-    data,
     listData,
     selectedItem,
     onClick,
@@ -134,7 +132,7 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
         <div css={content_wrap}>
           <div css={content_container}>
             <div css={content} className="content">
-              {TemplateToRender && <TemplateToRender templateMode="render" />}
+              {TemplateToRender && <TemplateToRender templateType="render" />}
             </div>
           </div>
         </div>

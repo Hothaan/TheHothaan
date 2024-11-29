@@ -10,14 +10,14 @@ import ServiceContact from "@components/template/service/ServiceContact";
 import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
 import {
   IfetchedfeatureResponseData,
-  ItemplateMode,
+  ItemplateType,
 } from "@components/template/types";
 import Loading from "@components/common/ui/Loading/loading";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
-export default function ShoppingMallMain(prop: ItemplateMode) {
-  const { templateMode } = prop;
+export default function ShoppingMallMain(prop: ItemplateType) {
+  const { templateType } = prop;
   const feature = "메인";
 
   /* only projectId */
@@ -74,7 +74,11 @@ export default function ShoppingMallMain(prop: ItemplateMode) {
 
   return (
     <div className="templateImage">
-      <Header categories={headerData.categories} logo={headerData.logo} />
+      <Header
+        categories={headerData.categories}
+        logo={headerData.logo}
+        serviceType={templateType.slice(0, templateType.indexOf("-"))}
+      />
       <Mainbanner
         isEditable={true}
         title={generatedText?.content?.title}

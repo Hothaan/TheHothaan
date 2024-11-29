@@ -37,7 +37,7 @@ export default function NavigationEditable(prop: INavigationEditable) {
     if (idx !== null) {
       setSelectedItem(listData[idx]);
       setSelectedItem(listData[idx]);
-      setIsOpen(false);
+      // setIsOpen(false);
     }
   }
 

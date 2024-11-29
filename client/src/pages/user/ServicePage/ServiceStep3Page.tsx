@@ -54,6 +54,7 @@ export interface IsendData {
 }
 
 export default function ServiceStep3Page() {
+  const [isFail, setIsFail] = useState(false);
   const [generatedTextData, setGeneratedTextData] = useState<
     IgeneratedText[] | null
   >(null);
@@ -78,6 +79,8 @@ export default function ServiceStep3Page() {
     const sessionData = sessionStorage.getItem("serviceData");
     if (sessionData) {
       setServiceDefaultData(JSON.parse(sessionData));
+    } else {
+      setIsFail(true);
     }
   }, []);
 
@@ -85,6 +88,8 @@ export default function ServiceStep3Page() {
     const sessionData = sessionStorage.getItem("serviceInfo");
     if (sessionData) {
       setServiceInfo(JSON.parse(sessionData));
+    } else {
+      setIsFail(true);
     }
   }, []);
 
@@ -343,18 +348,9 @@ export default function ServiceStep3Page() {
             };
           })
           .filter(Boolean);
-
         if (data.length > 0) {
           setGeneratedTextData(data);
-
-          // const headerArr = data.map((item: { menu: any }) => item.menu);
-          // const headerData = {
-          //   categories: [...new Set(headerArr)],
-          //   logo: serviceInfo?.serviceTitle || "",
-          // };
-
           localStorage.setItem("generatedTextData", JSON.stringify(data));
-          // localStorage.setItem("headerData", JSON.stringify(headerData));
         } else {
           console.error("No valid data found in featureResponseData");
         }
@@ -369,96 +365,6 @@ export default function ServiceStep3Page() {
       setIsReady(true);
     }
   }
-
-  // async function saveImages() {
-  //   const projectId = sessionStorage.getItem("projectId");
-  //   if (
-  //     !projectId ||
-  //     !generatedTextData ||
-  //     generatedTextData.length === 0 ||
-  //     !serviceDefaultData
-  //   ) {
-  //     console.error("Missing required data for saveImages");
-  //     return;
-  //   }
-
-  //   const projectType = serviceDefaultData.serviceType.text as string;
-  //   const parameterArr = generatedTextData.map(
-  //     (item) => `${projectType}-${item.feature.split(" ").join("")}`
-  //   );
-
-  //   try {
-  //     const responses = await Promise.allSettled(
-  //       parameterArr.map((param, idx) => saveImage(true, param, projectId))
-  //     );
-
-  //     // Filter fulfilled responses
-  //     const fulfilledResponses = responses.filter(
-  //       (res): res is PromiseFulfilledResult<AxiosResponse<any>> =>
-  //         res.status === "fulfilled"
-  //     );
-
-  //     // Filter rejected responses
-  //     const rejectedResponses = responses.filter(
-  //       (res): res is PromiseRejectedResult => res.status === "rejected"
-  //     );
-
-  //     console.log("fulfilledResponses:", fulfilledResponses);
-  //     console.log("rejectedResponses:", rejectedResponses);
-
-  //     if (fulfilledResponses.length > 0) {
-  //       const imageNameMapping = fulfilledResponses.map((res, idx) => ({
-  //         imageName: res.value.data.imageName,
-  //         parameter: parameterArr[idx],
-  //       }));
-  //       const imageUrlMapping = fulfilledResponses.map((res, idx) => ({
-  //         imageUrl: res.value.data.url,
-  //         parameter: parameterArr[idx],
-  //       }));
-
-  //       localStorage.setItem("imageName", JSON.stringify(imageNameMapping));
-  //       localStorage.setItem("imageUrl", JSON.stringify(imageUrlMapping));
-  //     }
-
-  //     if (rejectedResponses.length > 0) {
-  //       console.error(
-  //         "Some image save requests failed:",
-  //         rejectedResponses.map((res) => res.reason)
-  //       );
-  //     } else if (rejectedResponses.length === 0) {
-  //       setIsImgageSaved(true);
-  //       // setLoading(false);
-  //       // setIsModalOpen(false);
-  //       // **조건부 네비게이션 로직**
-  //       // if (steps.step3 && currentStep < totalStep) {
-  //       //   handleNavigation(`/service/step${currentStep + 1}`);
-  //       // } else {
-  //       //   console.error("Navigation aborted: invalid step conditions");
-  //       // }
-  //     }
-  //   } catch (error) {
-  //     console.error("Error saving images:", error);
-  //     return null;
-  //   } finally {
-  //   }
-  // }
-
-  // const [featureData, setFeatureData] = useState<
-  //   IfetchedfeatureResponseData[] | null
-  // >(null);
-
-  // async function fetchFeatureData(isProduction: boolean, projectId: string) {
-  //   try {
-  //     const response = await getFeatureData(isProduction, projectId);
-  //     if (response.status === 200) {
-  //       setFeatureData(response.data.featureResponseData);
-  //     } else {
-  //       console.error("getFeatureData error", response.status);
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }
 
   async function saveImages() {
     const projectId = sessionStorage.getItem("projectId");
@@ -599,6 +505,22 @@ export default function ServiceStep3Page() {
     onLoad: () => {},
     onComplete: () => {},
   };
+
+  useEffect(() => {
+    if (isFail) {
+      window.confirm(
+        "프로젝트가 생성을 건너뛰고 접근하셨습니다. 스탭 1부터 진행해주세요."
+      );
+      const timer = setTimeout(() => {
+        handleNavigation("/service/step1");
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [isFail]);
+
+  if (isFail) {
+    return <Loading />;
+  }
 
   if (!formData) {
     return <Loading />;

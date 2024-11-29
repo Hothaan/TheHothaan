@@ -1,25 +1,21 @@
+import { Tformat } from "@pages/user/ServicePage/ServiceStep5Page";
 import axios from "axios";
 
-export const saveImage = async (
+export const generateFiles = async (
   isProduction: boolean,
-  url: string,
-  projectId: string
-  // data: string,
-  // headerData: string
+  projectId: string,
+  format: Tformat
 ) => {
   try {
     const response = await axios.post(
       `http://${
         isProduction ? "dolllpitoxic3.mycafe24.com" : "localhost:5001"
-      }/api/image/save`,
+      }/api/project/generate-files`,
       {
-        url: `http://${
-          isProduction ? "dolllpitoxic3.mycafe24.com" : "localhost:3000"
-        }/template/${url}/${projectId}`,
+        project_id: projectId,
+        format: format,
       }
     );
-
-    console.log(response);
     return response;
   } catch (error) {
     console.error("서버 요청 중 오류가 발생했습니다: ", error);

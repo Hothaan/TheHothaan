@@ -17,11 +17,13 @@ import FullPageModalEditable from "@components/service/modal/FullPageModalEditab
 import ButtonArrowIconControler, {
   IbuttonArrowControler,
 } from "@components/service/button/ButtonArrowIconControler";
-import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
 import Loading from "@components/common/ui/Loading/loading";
 import useIsProduction from "@hooks/useIsProduction";
 import { IserviceData } from "./ServiceStep2Page";
 import { IserviceInfo } from "./ServiceStep1Page";
+import { IfetchedfeatureResponseData } from "@components/template/types";
+import { getFeatureData } from "@api/project/getFeatureData";
+import useNavigation from "@hooks/useNavigation";
 
 export type TimageName = {
   imageName: string;
@@ -34,11 +36,10 @@ export type TimageUrl = {
 };
 
 export default function ServicePreviewPage() {
+  const { handleNavigation } = useNavigation();
   // const { isProduction } = useIsProduction();
   const isProduction = true;
-  const [generatedTextData, setGeneratedTextData] = useState<
-    IgeneratedText[] | null
-  >(null);
+  const [projectId, setProjectId] = useState<string | null>(null);
   const [serviceInfo, setServiceInfo] = useState<IserviceInfo | null>(null);
   const [serviceDefaultData, setServiceDefaultData] =
     useState<IserviceData | null>(null);
@@ -47,6 +48,30 @@ export default function ServicePreviewPage() {
   const navigate = useNavigate();
   const [imageNameArr, setImageNameArr] = useState<TimageName[] | null>(null);
   const [imageUrlArr, setImageUrlArr] = useState<TimageUrl[] | null>(null);
+  const [featureData, setFeatureData] = useState<
+    IfetchedfeatureResponseData[] | null
+  >(null);
+  const [isFail, setIsFail] = useState(false);
+
+  async function fetchFeatureData(isProduction: boolean, projectId: string) {
+    try {
+      const response = await getFeatureData(isProduction, projectId);
+      if (response.status === 200) {
+        const data = response.data.featureResponseData.map(
+          (item: IfetchedfeatureResponseData) => {
+            return { ...item, feature: item.feature.split(" ").join("") };
+          }
+        );
+        setFeatureData(data);
+      } else {
+        console.error("getFeatureData error", response.status);
+        setIsFail(true);
+      }
+    } catch (error) {
+      console.error(error);
+      setIsFail(true);
+    }
+  }
 
   useEffect(() => {
     const sessionData = sessionStorage.getItem("serviceInfo");
@@ -63,11 +88,19 @@ export default function ServicePreviewPage() {
   }, []);
 
   useEffect(() => {
-    const localData = localStorage.getItem("generatedTextData");
-    if (localData) {
-      setGeneratedTextData(JSON.parse(localData));
+    const sessionData = sessionStorage.getItem("projectId");
+    if (sessionData) {
+      setProjectId(JSON.parse(sessionData));
+    } else {
+      setIsFail(true);
     }
   }, []);
+
+  useEffect(() => {
+    if (projectId) {
+      fetchFeatureData(isProduction, projectId);
+    }
+  }, [projectId]);
 
   const buttonPrevPage: IbuttonArrow = {
     direction: "left",
@@ -101,8 +134,8 @@ export default function ServicePreviewPage() {
   };
 
   function makeListData() {
-    if (generatedTextData) {
-      return generatedTextData.map((item: IgeneratedText) => {
+    if (featureData) {
+      return featureData.map((item: IfetchedfeatureResponseData) => {
         return item.feature;
       });
     }
@@ -115,7 +148,7 @@ export default function ServicePreviewPage() {
     if (data) {
       setListData(data);
     }
-  }, [generatedTextData]);
+  }, [featureData]);
 
   const [currentIdx, setCurrentIdx] = useState<number>(0);
   const [selectedItem, setSelectedItem] = useState<string>(listData[0]);
@@ -221,7 +254,6 @@ export default function ServicePreviewPage() {
     imageNameArr: imageNameArr,
     projectType:
       (serviceDefaultData && serviceDefaultData.serviceType.text) || "쇼핑몰",
-    data: generatedTextData,
     listData: listData,
     selectedItem: selectedItem,
     onClick: handleChangeisFullpageModalOpen,
@@ -240,7 +272,21 @@ export default function ServicePreviewPage() {
     };
   }, []);
 
-  console.log(imageUrlArr);
+  useEffect(() => {
+    if (isFail) {
+      window.confirm(
+        "프로젝트가 생성을 건너뛰고 접근하셨습니다. 스탭 1부터 진행해주세요."
+      );
+      const timer = setTimeout(() => {
+        handleNavigation("/service/step1");
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [isFail]);
+
+  if (isFail) {
+    return <Loading />;
+  }
 
   if (isProduction && !imageUrlArr) {
     return <Loading />;

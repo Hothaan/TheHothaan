@@ -6,14 +6,14 @@ import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
 import Notice from "@components/template/customerService/Notice";
 import {
   IfetchedfeatureResponseData,
-  ItemplateMode,
+  ItemplateType,
 } from "@components/template/types";
 import Loading from "@components/common/ui/Loading/loading";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
-export default function ShoppingMallNotice(prop: ItemplateMode) {
-  const { templateMode } = prop;
+export default function ShoppingMallNotice(prop: ItemplateType) {
+  const { templateType } = prop;
   const feature = "공지사항";
 
   /* only projectId */
@@ -76,87 +76,4 @@ export default function ShoppingMallNotice(prop: ItemplateMode) {
       <Footer logo={headerData.logo} />
     </div>
   );
-
-  // /* capture */
-  // const { data, header } = useParams();
-  // const decodedData = data ? JSON.parse(decodeURIComponent(data)) : null;
-  // const decodedHeader = header ? JSON.parse(decodeURIComponent(header)) : null;
-
-  // /* render */
-  // const [generatedTextData, setGeneratedTextData] = useState<
-  //   IgeneratedText[] | null
-  // >(null);
-  // const [generatedText, setGeneratedText] = useState<IgeneratedText | null>(
-  //   null
-  // );
-
-  // /* 나중에 옵션 받는 부분 추가 */
-
-  // useEffect(() => {
-  //   const localData = localStorage.getItem("generatedTextData");
-  //   if (localData) {
-  //     const parsedData = JSON.parse(localData);
-  //     setGeneratedTextData(parsedData);
-  //   }
-  // }, []);
-
-  // function getGeneratedText(
-  //   generatedTextData: IgeneratedText[]
-  // ): IgeneratedText | undefined {
-  //   const data = generatedTextData.find((item) => item.feature === feature);
-  //   return data;
-  // }
-
-  // useEffect(() => {
-  //   if (generatedTextData && generatedTextData.length > 0 && !generatedText) {
-  //     const data = getGeneratedText(generatedTextData);
-  //     if (data) {
-  //       setGeneratedText(data);
-  //     }
-  //   }
-  // }, [generatedTextData]);
-
-  // const [headerData, setHeaderData] = useState<Iheader | null>(null);
-
-  // useEffect(() => {
-  //   const localData = localStorage.getItem("headerData");
-  //   if (localData) {
-  //     const parsedData = JSON.parse(localData);
-  //     setHeaderData(parsedData);
-  //   }
-  // }, []);
-
-  // /* capture */
-  // if (templateMode === "capture") {
-  //   if (!decodedData || !decodedHeader) {
-  //     return <Loading />;
-  //   }
-
-  //   return (
-  //     <div className="templateImage">
-  //       <Header
-  //         categories={decodedHeader.categories}
-  //         logo={decodedHeader.logo}
-  //       />
-  //       <Notice option="text" />
-  //       <Footer logo={decodedHeader.logo} />
-  //     </div>
-  //   );
-  // } else {
-  //   /* render */
-  //   // if (!generatedText || !headerData) {
-  //   if (!headerData) {
-  //     return <Loading />;
-  //   }
-  //   return (
-  //     <div className="templateImage">
-  //       <Header
-  //         categories={headerData.categories || undefined}
-  //         logo={headerData.logo || undefined}
-  //       />
-  //       <Notice option="text" />
-  //       <Footer logo={headerData.logo} />
-  //     </div>
-  //   );
-  // }
 }
