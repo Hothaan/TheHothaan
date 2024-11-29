@@ -353,6 +353,7 @@ exports.getAllFeaturesForProject = async (req, res) => {
             feature_id: feature.feature_id,
             menu: feature.menu,
             feature: feature.feature_name,
+            option: feature.feature_option,
             content:
                 typeof feature.content === "string"
                     ? feature.content === "none"
@@ -403,6 +404,7 @@ exports.updateFeatureContent = async (req, res) => {
     }
 };
 
+// 최종 파일 생성 
 exports.generateFilesForProject = async (req, res) => {
     const { project_id, format } = req.body;
 
