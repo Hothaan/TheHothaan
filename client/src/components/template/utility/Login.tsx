@@ -6,8 +6,10 @@ import { ReactComponent as Naver } from "@svgs/template/naver.svg";
 import { ReactComponent as Kakao } from "@svgs/template/kakao.svg";
 import { text } from "stream/consumers";
 
+export type Tlogin = "기본 로그인" | "소셜 로그인";
+
 export interface Ilogin {
-  option: "default" | "snsLogin";
+  option: Tlogin;
 }
 
 export default function Login(prop: Ilogin) {
@@ -51,7 +53,7 @@ export default function Login(prop: Ilogin) {
               <p css={text_style}>아이디 찾기</p>
               <p css={text_style}>비밀번호 찾기</p>
             </div>
-            {option === "snsLogin" && (
+            {option === "소셜 로그인" && (
               <div css={sns_container}>
                 <div css={sns_item}>
                   <Naver />

@@ -6,28 +6,24 @@ import Mainbanner from "@components/template/main/Mainbanner";
 import NoticeMain from "@components/template/main/NoticeMain";
 import NormalBoardMain from "@components/template/main/NormalBoardMain";
 import FeedMain from "@components/template/main/FeedMain";
-import ProductListMain from "@components/template/main/ProductListMain";
-import Review from "@components/template/product/Review";
-import ServiceIntroduction from "@components/template/service/ServiceIntroduction";
+import ImageBoardMain from "@components/template/main/ImageBoardMain";
+import NewsMain from "@components/template/main/NewsMain";
+import FaqMain from "@components/template/main/FaqMain";
 import ServiceContact from "@components/template/service/ServiceContact";
-import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
-import {
-  IfetchedfeatureResponseData,
-  ItemplateType,
-} from "@components/template/types";
-import Loading from "@components/common/ui/Loading/loading";
-import { getFeatureData } from "@api/project/getFeatureData";
-import useIsProduction from "@hooks/useIsProduction";
 
 export default function CommunitySnsMain() {
   return (
-    <div>
+    <>
       <Header serviceType="커뮤니티SNS" />
       <Mainbanner />
       <NoticeMain />
       <NormalBoardMain />
       <FeedMain />
+      <ImageBoardMain />
+      <NewsMain />
+      <FaqMain />
+      <ServiceContact />
       <Footer />
-    </div>
+    </>
   );
 }

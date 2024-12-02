@@ -29,11 +29,12 @@ import { IfetchedfeatureResponseData } from "@components/template/types";
 
 /* 임시 */
 export interface IgeneratedText {
+  feature_id: string;
   menu: string;
   feature: string;
-  feature_id: string;
+  option: string | null;
   content: any;
-  success: boolean;
+  success?: boolean;
 }
 
 export interface IfeatureResponseData {

@@ -71,9 +71,10 @@ export default function ShoppingMallWidthDrawer(prop: ItemplateType) {
       <Header
         categories={headerData.categories || undefined}
         logo={headerData.logo || undefined}
+        serviceType="쇼핑몰"
       />
       <WithDrawer />
-      <Footer logo={headerData.logo} />
+      <Footer logo={headerData.logo} serviceType="쇼핑몰" />
     </div>
   );
 }

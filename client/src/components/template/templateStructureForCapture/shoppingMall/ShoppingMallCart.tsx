@@ -68,9 +68,13 @@ export default function ShoppingMallCart(prop: ItemplateType) {
 
   return (
     <div className="templateImage">
-      <Header categories={headerData.categories} logo={headerData.logo} />
+      <Header
+        categories={headerData.categories}
+        logo={headerData.logo}
+        serviceType="쇼핑몰"
+      />
       <Cart data={generatedText.content} />
-      <Footer logo={headerData.logo} />
+      <Footer logo={headerData.logo} serviceType="쇼핑몰" />
     </div>
   );
 }

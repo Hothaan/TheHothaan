@@ -88,7 +88,7 @@ export default function ShoppingMallMain(prop: ItemplateType) {
       <ServiceIntroduction />
       <ProductListMain option="list" />
       <ServiceContact />
-      <Footer logo={headerData.logo} />
+      <Footer logo={headerData.logo} serviceType="쇼핑몰" />
     </div>
   );
 }

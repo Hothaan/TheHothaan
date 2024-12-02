@@ -8,6 +8,7 @@ import Pagination from "../commonComponent/Pagination";
 import FormButton from "../commonComponent/form/FormButton";
 import SelectBox from "../commonComponent/form/SelectBox";
 import ImageBox from "../commonComponent/ImageBox";
+import { ReactComponent as Reply } from "@svgs/template/faq/reply.svg";
 
 export type Tnotice = "텍스트형" | "이미지형";
 
@@ -33,11 +34,11 @@ function NoticeTitle() {
   return (
     <div css={container}>
       <div css={breadCrumble_container}>
-        <BreadCrumble path1="홈" path2="공지사항" />
+        <BreadCrumble path1="홈" path2="Q&A LIST BOARD" />
       </div>
       <Title
-        title="공지사항"
-        weight="light"
+        title="Q&A LIST BOARD"
+        weight="bold"
         marginBottom={0}
         transform="uppercase"
       />
@@ -51,18 +52,80 @@ function NoticeTable() {
     title: string;
     date: string;
     views: number;
+    isReply: boolean;
   }
 
   const mockData: TableRow[] = [
-    { id: 10, title: "SUBJECT NAME", date: "YYYY.MM.DD", views: 1 },
-    { id: 10, title: "게시글 제목입니다.", date: "YYYY.MM.DD", views: 1 },
-    { id: 10, title: "게시글 제목입니다.", date: "YYYY.MM.DD", views: 1 },
-    { id: 10, title: "게시글 제목입니다.", date: "YYYY.MM.DD", views: 1 },
-    { id: 10, title: "게시글 제목입니다.", date: "YYYY.MM.DD", views: 1 },
-    { id: 10, title: "게시글 제목입니다.", date: "YYYY.MM.DD", views: 1 },
-    { id: 10, title: "게시글 제목입니다.", date: "2024.01.01", views: 1 },
-    { id: 10, title: "게시글 제목입니다.", date: "YYYY.MM.DD", views: 1 },
-    { id: 10, title: "게시글 제목입니다.", date: "YYYY.MM.DD", views: 1 },
+    {
+      id: 10,
+      title: "SUBJECT NAME",
+      date: "YYYY.MM.DD",
+      views: 1,
+      isReply: false,
+    },
+    {
+      id: 10,
+      title: "SUBJECT NAME",
+      date: "YYYY.MM.DD",
+      views: 1,
+      isReply: true,
+    },
+    {
+      id: 10,
+      title: "SUBJECT NAME",
+      date: "YYYY.MM.DD",
+      views: 1,
+      isReply: false,
+    },
+    {
+      id: 10,
+      title: "SUBJECT NAME",
+      date: "YYYY.MM.DD",
+      views: 1,
+      isReply: true,
+    },
+    {
+      id: 10,
+      title: "SUBJECT NAME",
+      date: "YYYY.MM.DD",
+      views: 1,
+      isReply: false,
+    },
+    {
+      id: 10,
+      title: "SUBJECT NAME",
+      date: "YYYY.MM.DD",
+      views: 1,
+      isReply: true,
+    },
+    {
+      id: 10,
+      title: "SUBJECT NAME",
+      date: "2024.01.01",
+      views: 1,
+      isReply: false,
+    },
+    {
+      id: 10,
+      title: "SUBJECT NAME",
+      date: "YYYY.MM.DD",
+      views: 1,
+      isReply: true,
+    },
+    {
+      id: 10,
+      title: "SUBJECT NAME",
+      date: "YYYY.MM.DD",
+      views: 1,
+      isReply: false,
+    },
+    {
+      id: 10,
+      title: "SUBJECT NAME",
+      date: "YYYY.MM.DD",
+      views: 1,
+      isReply: true,
+    },
   ];
 
   const tableStyle = css`
@@ -118,6 +181,12 @@ function NoticeTable() {
     text-align: left;
   `;
 
+  const inner_container = css`
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  `;
+
   return (
     <table css={tableStyle}>
       <thead>
@@ -133,7 +202,10 @@ function NoticeTable() {
           <tr key={index} css={rowStyle}>
             <td css={[cellStyle, text_style, col1]}>{item.id}</td>
             <td css={[cellStyle, text_style, col2, text_align_left]}>
-              {item.title}
+              <div css={inner_container}>
+                {item.isReply && <Reply />}
+                {item.title}
+              </div>
             </td>
             <td css={[cellStyle, text_style, col3]}>{item.date}</td>
             <td css={[cellStyle, text_style, col4]}>{item.views}</td>
@@ -268,9 +340,7 @@ function NoticeSearch() {
   );
 }
 
-export default function Notice(prop: Inotice) {
-  const { option } = prop;
-
+export default function Faq() {
   const container = css`
     width: 100%;
     display: flex;
@@ -278,29 +348,16 @@ export default function Notice(prop: Inotice) {
     justify-content: center;
     gap: 50px;
   `;
-  if (option === "텍스트형") {
-    return (
-      <OuterWrap padding="100px 0">
-        <ContentsWrap>
-          <div css={container}>
-            <NoticeTitle />
-            <NoticeTable />
-            <NoticeSearch />
-          </div>
-        </ContentsWrap>
-      </OuterWrap>
-    );
-  } else {
-    return (
-      <OuterWrap padding="100px 0">
-        <ContentsWrap>
-          <div css={container}>
-            <NoticeTitle />
-            <NoticeGalleryBoard />
-            <NoticeSearch />
-          </div>
-        </ContentsWrap>
-      </OuterWrap>
-    );
-  }
+
+  return (
+    <OuterWrap padding="100px 0">
+      <ContentsWrap>
+        <div css={container}>
+          <NoticeTitle />
+          <NoticeTable />
+          <NoticeSearch />
+        </div>
+      </ContentsWrap>
+    </OuterWrap>
+  );
 }

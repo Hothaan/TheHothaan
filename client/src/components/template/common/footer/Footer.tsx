@@ -4,10 +4,11 @@ import { ReactComponent as Image } from "@svgs/template/imageTemplate.svg";
 import { ReactComponent as GotoBottom } from "@svgs/template/footerGotoBottom.svg";
 
 export interface Ifooter {
+  serviceType?: string;
   logo?: string;
 }
 export default function Footer(prop: Ifooter) {
-  const { logo } = prop;
+  const { serviceType, logo } = prop;
   return (
     <div css={wrap}>
       <div css={[text_wrap, margin_right_62]}>
@@ -48,11 +49,14 @@ export default function Footer(prop: Ifooter) {
         <p css={[title, montserrat, font_14]}>CUSTOMER CENTER</p>
         <p css={[text_big, montserrat]}>000-0000-0000</p>
       </div>
-      <div css={[text_container, gap_20, margin_right_119]}>
-        <p css={[title, montserrat, font_14]}>BANK INFO</p>
-        <p css={[text_big, montserrat]}>국민 123-45789-101123</p>
-        <p css={[title, montserrat, font_15]}>홍길동</p>
-      </div>
+      {serviceType === "쇼핑몰" && (
+        <div css={[text_container, gap_20, margin_right_119]}>
+          <p css={[title, montserrat, font_14]}>BANK INFO</p>
+          <p css={[text_big, montserrat]}>국민 123-45789-101123</p>
+          <p css={[title, montserrat, font_15]}>홍길동</p>
+        </div>
+      )}
+
       <div css={[text_container, gap_20, margin_right_247]}>
         <p css={[title, montserrat, font_14]}>USE GUIDE</p>
         <p css={[title, montserrat, font_14]}>개인정보처리방침</p>
@@ -66,12 +70,13 @@ export default function Footer(prop: Ifooter) {
 const wrap = css`
   display: flex;
   width: 100%;
+  justify-content: space-between;
   max-width: 1920px;
   min-width: 1000px;
   background-color: #9cb0c9;
   padding: 55px 72px 75px 89px;
   @media (max-width: 1919px) {
-    justify-content: space-between;
+    // justify-content: space-between;
   }
   @media (max-width: 1200px) {
     padding: 55px 70px 75px;

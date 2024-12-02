@@ -71,9 +71,10 @@ export default function ShoppingMallOrderList(prop: ItemplateType) {
       <Header
         categories={headerData.categories || undefined}
         logo={headerData.logo || undefined}
+        serviceType="쇼핑몰"
       />
       <OrderList />
-      <Footer logo={headerData.logo} />
+      <Footer logo={headerData.logo} serviceType="쇼핑몰" />
     </div>
   );
 }

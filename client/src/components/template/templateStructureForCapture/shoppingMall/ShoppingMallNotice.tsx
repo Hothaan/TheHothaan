@@ -3,7 +3,10 @@ import { useParams } from "react-router-dom";
 import Header, { Iheader } from "@components/template/common/header/Header";
 import Footer from "@components/template/common/footer/Footer";
 import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
-import Notice from "@components/template/customerService/Notice";
+import Notice, {
+  Inotice,
+  Tnotice,
+} from "@components/template/customerService/Notice";
 import {
   IfetchedfeatureResponseData,
   ItemplateType,
@@ -71,9 +74,14 @@ export default function ShoppingMallNotice(prop: ItemplateType) {
       <Header
         categories={headerData.categories || undefined}
         logo={headerData.logo || undefined}
+        serviceType="쇼핑몰"
       />
-      <Notice option="text" />
-      <Footer logo={headerData.logo} />
+      <Notice
+        option={
+          generatedText.option ? (generatedText.option as Tnotice) : "텍스트형"
+        }
+      />
+      <Footer logo={headerData.logo} serviceType="쇼핑몰" />
     </div>
   );
 }

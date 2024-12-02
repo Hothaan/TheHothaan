@@ -70,9 +70,13 @@ export default function ShoppingMallJoin(prop: ItemplateType) {
 
   return (
     <div className="templateImage">
-      <Header categories={headerData.categories} logo={headerData.logo} />
+      <Header
+        categories={headerData.categories}
+        logo={headerData.logo}
+        serviceType="쇼핑몰"
+      />
       <Join />
-      <Footer logo={headerData.logo} />
+      <Footer logo={headerData.logo} serviceType="쇼핑몰" />
     </div>
   );
 }

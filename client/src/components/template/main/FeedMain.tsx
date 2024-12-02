@@ -29,6 +29,7 @@ export default function FeedMain() {
               container: "",
               icon: "width: 40px; height: 40px;",
             }}
+            key={index}
           />
         ))}
       </div>

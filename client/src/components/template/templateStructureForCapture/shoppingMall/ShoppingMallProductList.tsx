@@ -71,6 +71,7 @@ export default function ShoppingMallProductList(prop: ItemplateType) {
       <Header
         categories={headerData.categories || undefined}
         logo={headerData.logo || undefined}
+        serviceType="쇼핑몰"
       />
       {generatedText?.content?.categories &&
       generatedText.content.categories.length > 0 ? (
@@ -78,7 +79,7 @@ export default function ShoppingMallProductList(prop: ItemplateType) {
       ) : (
         <ProductList />
       )}
-      <Footer logo={headerData.logo} />
+      <Footer logo={headerData.logo} serviceType="쇼핑몰" />
     </div>
   );
 }
