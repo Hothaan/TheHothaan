@@ -5,7 +5,28 @@ import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 import { ReactComponent as GotoLink } from "@svgs/template/gotoLink.svg";
 
-function ServiceIntroductionItem() {
+const title_ = "service Introduction";
+const desc_ = "lorem ipsum, quia dolorem ipsum, quia do";
+
+const item_title_ = "lorem ipsum, quia do ddd";
+const item_desc_ = "lorem ipsum";
+
+const item_title_id = "service_introduction_item_title";
+const item_desc_id = "service_introduction_item_desc";
+
+export interface IserviceIntroductionText {
+  title?: string;
+  desc?: string;
+}
+interface IserviceIntroduction extends IserviceIntroductionText {}
+
+interface IserviceIntroductionItem extends IserviceIntroduction {
+  idx?: string;
+}
+
+function ServiceIntroductionItem(prop: IserviceIntroductionItem) {
+  const { title, desc, idx } = prop;
+
   const item = css`
     display: flex;
     flex-direction: column;
@@ -70,8 +91,12 @@ function ServiceIntroductionItem() {
       />
       <div css={info_container}>
         <div css={text_container}>
-          <p css={item_title}> lorem ipsum, quia do ddd</p>
-          <p css={item_desc}>lorem ipsum</p>
+          <p css={item_title} id={item_title_id + "_" + idx}>
+            {title || item_title_}
+          </p>
+          <p css={item_desc} id={item_desc_id + "_" + idx}>
+            {desc || item_desc_}
+          </p>
         </div>
         <GotoLink css={icon} />
       </div>
@@ -79,22 +104,26 @@ function ServiceIntroductionItem() {
   );
 }
 
-export default function ServiceIntroduction() {
+export default function ServiceIntroduction(prop: IserviceIntroduction) {
+  const { title, desc } = prop;
+
+  const count = 3;
   return (
     <OuterWrap padding="160px 0">
       <InnerWrap>
         <div css={title_container}>
-          <Title
-            title="service Introduction"
-            transform="capitalize"
-            marginBottom={20}
-          />
-          <p css={title_desc}>lorem ipsum, quia dolorem ipsum, quia do</p>
+          <Title title={title_} transform="capitalize" marginBottom={20} />
+          <p css={title_desc}>{desc_}</p>
         </div>
         <div css={item_container}>
-          <ServiceIntroductionItem />
-          <ServiceIntroductionItem />
-          <ServiceIntroductionItem />
+          {Array.from({ length: count }, (_, index) => (
+            <ServiceIntroductionItem
+              key={index}
+              title={title || item_title_}
+              desc={desc || item_desc_}
+              idx={index.toString()}
+            />
+          ))}
         </div>
       </InnerWrap>
     </OuterWrap>

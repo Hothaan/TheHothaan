@@ -12,7 +12,7 @@ import {
   TimageUrl,
 } from "@pages/user/ServicePage/ServiceStep4Page";
 import { TserviceDefaultData } from "@store/serviceDefaultDataStore";
-import { templateMapForCapture } from "@components/template/templateForCaptureMapping";
+import { templateMapForCapture } from "@components/template/templateMapping";
 import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
 
 interface IFullPageModal {
@@ -118,21 +118,12 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
             <div css={button_container}>
               <Button {...buttonClose} />
             </div>
-            {/* <button
-              type="button"
-              css={close_icon_container}
-              onClick={() => {
-                onClick(false);
-              }}
-            >
-              닫기
-            </button> */}
           </div>
         </div>
         <div css={content_wrap}>
           <div css={content_container}>
             <div css={content} className="content">
-              {TemplateToRender && <TemplateToRender templateType="render" />}
+              {TemplateToRender && <TemplateToRender />}
             </div>
           </div>
         </div>

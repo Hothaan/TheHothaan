@@ -12,8 +12,7 @@ import Loading from "@components/common/ui/Loading/loading";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
-export default function ShoppingMallFindId(prop: ItemplateType) {
-  const { templateType } = prop;
+export default function ShoppingMallFindId() {
   const feature = "아이디 찾기";
 
   /* only projectId */

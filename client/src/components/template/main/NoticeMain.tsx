@@ -2,20 +2,30 @@
 import { css } from "@emotion/react";
 import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";
 
-export interface InoticeMainItem {
-  title?: string;
-  content?: string;
-  date?: string;
-}
-
 const component_title_ = "공지사항";
+
 const title_ = "공지사항 제목입니다.";
+const title_id = "notice_main_title";
+
 const content_ =
   "공지사항 입니다. 공지사항 입니다. 공지사항 입니다. 공지사항 입니다. 공지사항 입니다. 공지사항 입니다. 공지사항 입니다. 공지사항 입니다. 공지사항 입니다. 공지사항 입니다. 공지사항 입니다. ";
+const content_id = "notice_main_content";
+
 const date_ = "2024.11.12";
 
+export interface InoticeMainText {
+  title?: string;
+  content?: string;
+}
+
+export interface InoticeMain extends InoticeMainText {}
+
+export interface InoticeMainItem extends InoticeMainText {
+  idx?: string;
+}
+
 export function NoticeMainItem(prop: InoticeMainItem) {
-  const { title, content, date } = prop;
+  const { title, content, idx } = prop;
 
   const container = css`
     display: flex;
@@ -48,7 +58,7 @@ export function NoticeMainItem(prop: InoticeMainItem) {
     justify-content: center;
     align-items: center;
     gap: 10px;
-
+    color: #486284;
     border-radius: 100px;
     border: 1px solid #486284;
   `;
@@ -100,43 +110,36 @@ export function NoticeMainItem(prop: InoticeMainItem) {
       <div css={title_container}>
         <div css={title_inner_container}>
           <p css={tag}>NEW</p>
-          <p css={title_style}>{title || title_}</p>
+          <p css={title_style} id={title_id + "_" + idx}>
+            {title || title_}
+          </p>
         </div>
-
-        <p css={date_style}>{date || date_}</p>
+        <p css={date_style}>{date_}</p>
       </div>
-      <p css={content_style}>{content || content_}</p>
+      <p css={content_style} id={content_id + "_" + idx}>
+        {content || content_}
+      </p>
     </div>
   );
 }
 
-export default function NoticeMain() {
-  const itemDatas: InoticeMainItem[] = [
-    {
-      title: title_,
-      content: content_,
-      date: date_,
-    },
-    {
-      title: title_,
-      content: content_,
-      date: date_,
-    },
-    {
-      title: title_,
-      content: content_,
-      date: date_,
-    },
-  ];
+export default function NoticeMain(prop: InoticeMain) {
+  const { title, content } = prop;
+  const count = 3;
 
   return (
     <OuterWrap padding="98px 0">
       <InnerWrap>
         <div css={container}>
-          <p css={title}>{component_title_}</p>
+          <p css={title_style}>{component_title_}</p>
           <div css={item_container}>
-            {itemDatas.map((item, idx) => (
-              <NoticeMainItem {...item} key={idx} />
+            {Array.from({ length: count }, (_, index) => (
+              <NoticeMainItem
+                key={index}
+                title={title || title_}
+                content={content || content_}
+                idx={index.toString()}
+              />
             ))}
           </div>
         </div>
@@ -152,7 +155,7 @@ const container = css`
   gap: 20px;
 `;
 
-const title = css`
+const title_style = css`
   color: #486284;
   font-family: Pretendard;
   font-size: 24px;

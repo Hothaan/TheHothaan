@@ -4,16 +4,16 @@ import Header, { Iheader } from "@components/template/common/header/Header";
 import Footer from "@components/template/common/footer/Footer";
 import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
 import Cart from "@components/template/mypage/Cart";
-import {
-  IfetchedfeatureResponseData,
-  ItemplateType,
-} from "@components/template/types";
+import { IfetchedfeatureResponseData } from "@components/template/types";
 import Loading from "@components/common/ui/Loading/loading";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
-export default function ShoppingMallCart(prop: ItemplateType) {
-  const { templateType } = prop;
+interface IshoppingMallCart {
+  title: string;
+}
+
+export default function ShoppingMallCart() {
   const feature = "메인";
 
   /* only projectId */
@@ -73,7 +73,7 @@ export default function ShoppingMallCart(prop: ItemplateType) {
         logo={headerData.logo}
         serviceType="쇼핑몰"
       />
-      <Cart data={generatedText.content} />
+      <Cart title={generatedText.content} />
       <Footer logo={headerData.logo} serviceType="쇼핑몰" />
     </div>
   );

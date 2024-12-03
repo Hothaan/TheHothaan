@@ -10,13 +10,22 @@ import SelectBox from "../commonComponent/form/SelectBox";
 import ImageBox from "../commonComponent/ImageBox";
 import { ReactComponent as Reply } from "@svgs/template/faq/reply.svg";
 
-export type Tnotice = "텍스트형" | "이미지형";
+const title_ = "Q&A LIST BOARD";
 
-export interface Inotice {
-  option: Tnotice;
+const item_title = "Q&A 제목";
+const item_title_id = "qna_table_item_title";
+
+export type Tqna = "텍스트형" | "이미지형";
+
+export interface IqnaText {
+  title?: string;
 }
 
-function NoticeTitle() {
+export interface Iqna extends IqnaText {
+  option?: Tqna;
+}
+
+function QnaTitle() {
   const container = css`
     width: 100%;
     display: flex;
@@ -34,10 +43,10 @@ function NoticeTitle() {
   return (
     <div css={container}>
       <div css={breadCrumble_container}>
-        <BreadCrumble path1="홈" path2="Q&A LIST BOARD" />
+        <BreadCrumble path1="홈" path2={title_} />
       </div>
       <Title
-        title="Q&A LIST BOARD"
+        title={title_}
         weight="bold"
         marginBottom={0}
         transform="uppercase"
@@ -46,7 +55,11 @@ function NoticeTitle() {
   );
 }
 
-function NoticeTable() {
+function QnaTable(prop: IqnaText) {
+  const { title } = prop;
+
+  const count = 10;
+
   interface TableRow {
     id: number;
     title: string;
@@ -55,78 +68,8 @@ function NoticeTable() {
     isReply: boolean;
   }
 
-  const mockData: TableRow[] = [
-    {
-      id: 10,
-      title: "SUBJECT NAME",
-      date: "YYYY.MM.DD",
-      views: 1,
-      isReply: false,
-    },
-    {
-      id: 10,
-      title: "SUBJECT NAME",
-      date: "YYYY.MM.DD",
-      views: 1,
-      isReply: true,
-    },
-    {
-      id: 10,
-      title: "SUBJECT NAME",
-      date: "YYYY.MM.DD",
-      views: 1,
-      isReply: false,
-    },
-    {
-      id: 10,
-      title: "SUBJECT NAME",
-      date: "YYYY.MM.DD",
-      views: 1,
-      isReply: true,
-    },
-    {
-      id: 10,
-      title: "SUBJECT NAME",
-      date: "YYYY.MM.DD",
-      views: 1,
-      isReply: false,
-    },
-    {
-      id: 10,
-      title: "SUBJECT NAME",
-      date: "YYYY.MM.DD",
-      views: 1,
-      isReply: true,
-    },
-    {
-      id: 10,
-      title: "SUBJECT NAME",
-      date: "2024.01.01",
-      views: 1,
-      isReply: false,
-    },
-    {
-      id: 10,
-      title: "SUBJECT NAME",
-      date: "YYYY.MM.DD",
-      views: 1,
-      isReply: true,
-    },
-    {
-      id: 10,
-      title: "SUBJECT NAME",
-      date: "YYYY.MM.DD",
-      views: 1,
-      isReply: false,
-    },
-    {
-      id: 10,
-      title: "SUBJECT NAME",
-      date: "YYYY.MM.DD",
-      views: 1,
-      isReply: true,
-    },
-  ];
+  const date_ = "YYYY.MM.DD";
+  const views_ = 1;
 
   const tableStyle = css`
     width: 100%;
@@ -198,17 +141,17 @@ function NoticeTable() {
         </tr>
       </thead>
       <tbody>
-        {mockData.map((item, index) => (
+        {Array.from({ length: count }, (_, index) => (
           <tr key={index} css={rowStyle}>
-            <td css={[cellStyle, text_style, col1]}>{item.id}</td>
+            <td css={[cellStyle, text_style, col1]}>{index + 1}</td>
             <td css={[cellStyle, text_style, col2, text_align_left]}>
               <div css={inner_container}>
-                {item.isReply && <Reply />}
-                {item.title}
+                {(index + 1) % 2 === 0 && <Reply />}
+                {title || item_title}
               </div>
             </td>
-            <td css={[cellStyle, text_style, col3]}>{item.date}</td>
-            <td css={[cellStyle, text_style, col4]}>{item.views}</td>
+            <td css={[cellStyle, text_style, col3]}>{date_}</td>
+            <td css={[cellStyle, text_style, col4]}>{views_}</td>
           </tr>
         ))}
       </tbody>
@@ -216,7 +159,7 @@ function NoticeTable() {
   );
 }
 
-function NoticeGalleryBoard() {
+function QnaGalleryBoard() {
   const container = css`
     display: flex;
     flex-wrap: wrap;
@@ -310,7 +253,7 @@ function NoticeGalleryBoard() {
   );
 }
 
-function NoticeSearch() {
+function QnaSearch() {
   const container = css`
     width: 100%;
     display: flex;
@@ -340,7 +283,9 @@ function NoticeSearch() {
   );
 }
 
-export default function Faq() {
+export default function Qna(prop: Iqna) {
+  const { title } = prop;
+
   const container = css`
     width: 100%;
     display: flex;
@@ -353,9 +298,9 @@ export default function Faq() {
     <OuterWrap padding="100px 0">
       <ContentsWrap>
         <div css={container}>
-          <NoticeTitle />
-          <NoticeTable />
-          <NoticeSearch />
+          <QnaTitle />
+          <QnaTable title={title || item_title} />
+          <QnaSearch />
         </div>
       </ContentsWrap>
     </OuterWrap>

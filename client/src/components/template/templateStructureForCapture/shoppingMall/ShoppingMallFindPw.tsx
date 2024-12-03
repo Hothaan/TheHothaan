@@ -12,8 +12,7 @@ import Loading from "@components/common/ui/Loading/loading";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
-export default function ShoppingMallFindPw(prop: ItemplateType) {
-  const { templateType } = prop;
+export default function ShoppingMallFindPw() {
   const feature = "비밀번호 찾기";
 
   /* only projectId */

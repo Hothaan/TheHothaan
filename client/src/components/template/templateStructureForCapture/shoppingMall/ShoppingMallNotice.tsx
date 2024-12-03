@@ -3,20 +3,16 @@ import { useParams } from "react-router-dom";
 import Header, { Iheader } from "@components/template/common/header/Header";
 import Footer from "@components/template/common/footer/Footer";
 import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
-import Notice, {
-  Inotice,
-  Tnotice,
-} from "@components/template/customerService/Notice";
-import {
-  IfetchedfeatureResponseData,
-  ItemplateType,
-} from "@components/template/types";
+import Notice, { Tnotice } from "@components/template/customerService/Notice";
+import { IfetchedfeatureResponseData } from "@components/template/types";
 import Loading from "@components/common/ui/Loading/loading";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
+import { InoticeText } from "@components/template/customerService/Notice";
 
-export default function ShoppingMallNotice(prop: ItemplateType) {
-  const { templateType } = prop;
+interface IshoppingMallNotice extends InoticeText {}
+
+export default function ShoppingMallNotice() {
   const feature = "공지사항";
 
   /* only projectId */
@@ -27,6 +23,7 @@ export default function ShoppingMallNotice(prop: ItemplateType) {
   const [generatedText, setGeneratedText] = useState<IgeneratedText | null>(
     null
   );
+
   async function fetchFeatureData(isProduction: boolean, projectId: string) {
     try {
       const response = await getFeatureData(isProduction, projectId);

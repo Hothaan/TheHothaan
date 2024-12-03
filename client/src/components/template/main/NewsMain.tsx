@@ -4,10 +4,25 @@ import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 
 const title_ = "뉴스";
+
 const item_title_ = "뉴스 제목입니다. 뉴스 제목입니다. 뉴스 제목입니다.";
+const item_title_id = "news_main_item_title";
+
 const item_tag_ = "뉴스 카테고리";
 
-function NewsMainItem() {
+export interface InewsMainText {
+  title?: string;
+}
+
+interface InewsMain extends InewsMainText {}
+
+interface InewMainItem extends InewsMainText {
+  idx?: string;
+}
+
+function NewsMainItem(prop: InewMainItem) {
+  const { title, idx } = prop;
+
   const item = css`
     width: 100%;
     display: flex;
@@ -15,6 +30,7 @@ function NewsMainItem() {
     align-items: flex-start;
     gap: 20px;
   `;
+
   const info_container = css`
     width: 100%;
     display: flex;
@@ -24,6 +40,7 @@ function NewsMainItem() {
     gap: 10px;
     align-self: stretch;
   `;
+
   const item_tag = css`
     display: flex;
     padding: 4px 16px;
@@ -70,22 +87,30 @@ function NewsMainItem() {
       />
       <div css={info_container}>
         <p css={item_tag}>{item_tag_}</p>
-        <p css={item_title}>{item_title_}</p>
+        <p css={item_title} id={item_title_id + "_" + idx}>
+          {title || item_title_}
+        </p>
       </div>
     </div>
   );
 }
 
-export default function NewsMain() {
+export default function NewsMain(prop: InewsMain) {
+  const { title } = prop;
+
   const count = 6;
 
   return (
     <OuterWrap padding="86px 0">
       <div css={container}>
-        <p css={title}>{title_}</p>
+        <p css={title_style}>{title_}</p>
         <div css={item_container}>
           {Array.from({ length: count }, (_, index) => (
-            <NewsMainItem key={index} />
+            <NewsMainItem
+              key={index}
+              idx={index.toString()}
+              title={title || item_title_}
+            />
           ))}
         </div>
       </div>
@@ -101,7 +126,7 @@ const container = css`
   padding: 0 60px;
 `;
 
-const title = css`
+const title_style = css`
   color: #486284;
   text-align: center;
   font-family: "Noto Sans KR";

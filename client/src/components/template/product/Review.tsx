@@ -5,7 +5,36 @@ import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 import { ReactComponent as Star } from "@svgs/template/star.svg";
 
-function ReviewItem() {
+const title_ =
+  "Lorem ipsum dolor sit amet consectetur adipiscing eli mattis sit phasellus mollis sit aliquam sit nullam.";
+const title_id = "review_title";
+
+const desc_ =
+  "Lorem ipsum dolor sit amet consectetur adipiscing eli mattis sit phasellus mollis sit aliquam sit nullam.";
+const desc_id = "review_desc";
+
+const name_ = "Lorem ipsum";
+const name_id = "review_name";
+
+const role_ = "Lorem ipsum";
+const role_id = "review_role";
+
+export interface IreviewText {
+  title?: string;
+  desc?: string;
+  name?: string;
+  role?: string;
+}
+
+interface Ireview extends IreviewText {}
+
+interface IreviewItem extends Ireview {
+  idx?: string;
+}
+
+function ReviewItem(prop: IreviewItem) {
+  const { title, desc, name, role, idx } = prop;
+
   return (
     <div css={item}>
       <ImageBox
@@ -21,42 +50,48 @@ function ReviewItem() {
           <Star />
           <Star />
         </div>
-        <p css={item_title}>
-          Lorem ipsum dolor sit amet consectetur adipiscing eli mattis sit
-          phasellus mollis sit aliquam sit nullam.
+        <p css={item_title} id={title_id + "_" + idx}>
+          {title || title_}
         </p>
-        <p css={item_desc}>
-          Lorem ipsum dolor sit amet consectetur adipiscing eli mattis sit
-          phasellus mollis sit aliquam sit nullam.
+        <p css={item_desc} id={desc_id + "_" + idx}>
+          {desc || desc_}
         </p>
         <div css={item_caption_container}>
-          <p css={item_caption_title}>Lorem ipsum</p>
-          <p css={item_caption_desc}>Lorem ipsum</p>
+          <p css={item_caption_title} id={name_id}>
+            {name || name_}
+          </p>
+          <p css={item_caption_desc} id={role_id}>
+            {role || role_}
+          </p>
         </div>
       </div>
     </div>
   );
 }
 
-export default function Review() {
+export default function Review(prop: Ireview) {
+  const { title, desc, name, role } = prop;
+
+  const count = 7;
+
   return (
     <OuterWrap padding="80px 0">
       <InnerWrap>
         <div css={text_container}>
           <Title title="Review" transform="capitalize" marginBottom={24} />
-          <p css={desc}>
-            Lorem ipsum dolor sit amet consectetur adipiscing eli mattis sit
-            phasellus mollis sit aliquam sit nullam.
-          </p>
+          <p css={desc_style}>{desc_}</p>
         </div>
         <div css={item_container}>
-          <ReviewItem />
-          <ReviewItem />
-          <ReviewItem />
-          <ReviewItem />
-          <ReviewItem />
-          <ReviewItem />
-          <ReviewItem />
+          {Array.from({ length: count }, (_, index) => (
+            <ReviewItem
+              key={index}
+              idx={index.toString()}
+              title={title || title_}
+              desc={desc || desc_}
+              name={name || name_}
+              role={role || role_}
+            />
+          ))}
         </div>
       </InnerWrap>
     </OuterWrap>
@@ -69,7 +104,7 @@ const text_container = css`
   margin-bottom: 40px;
 `;
 
-const desc = css`
+const desc_style = css`
   color: var(--Neutral-colors-600, #6d758f);
   text-align: center;
   word-break: keep-all;

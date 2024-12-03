@@ -2,17 +2,22 @@
 import { css } from "@emotion/react";
 import Title from "../commonComponent/Title";
 import ImageBox from "../commonComponent/ImageBox";
-import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";
-
-interface IfeedItem {
-  count: number;
-  title: string;
-}
+import { OuterWrap } from "../commonComponent/Wrap";
 
 const item_title_ = "lorem ipsum, quia do";
+const item_title_id = "feed_item_title";
+
+export interface IfeedText {
+  title?: string;
+}
+export interface Ifeed extends IfeedText {}
+
+interface IfeedItem extends IfeedText {}
 
 function FeedItem(prop: IfeedItem) {
-  const { title, count } = prop;
+  const { title } = prop;
+
+  const count = 36;
 
   const item = css`
     display: flex;
@@ -49,7 +54,7 @@ function FeedItem(prop: IfeedItem) {
   return (
     <div css={image_wrap}>
       {Array.from({ length: count }, (_, index) => (
-        <div css={item}>
+        <div css={item} key={index}>
           <ImageBox
             container={{ width: "100%", height: "280px" }}
             icon={{ width: "40px", height: "40px" }}
@@ -59,18 +64,18 @@ function FeedItem(prop: IfeedItem) {
               container: "",
               icon: "width: 40px; height: 40px;",
             }}
-            key={index}
           />
-          <p css={item_title}>{title || item_title_}</p>
+          <p css={item_title} id={item_title_id + "_" + index}>
+            {title || item_title_}
+          </p>
         </div>
       ))}
     </div>
   );
 }
 
-export default function Feed() {
-  const data: any[] = [];
-  const count = 36;
+export default function Feed(prop: Ifeed) {
+  const { title } = prop;
 
   return (
     <OuterWrap padding="60px 0">
@@ -80,7 +85,7 @@ export default function Feed() {
         marginBottom={30}
         transform="capitalize"
       />
-      <FeedItem count={count} title={item_title_} />
+      <FeedItem title={title || item_title_} />
     </OuterWrap>
   );
 }

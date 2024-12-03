@@ -7,11 +7,32 @@ import NavItem from "../commonComponent/NavItem";
 import { ReactComponent as Heart } from "@svgs/template/heart.svg";
 import { ReactComponent as Bag } from "@svgs/template/bag.svg";
 
-export interface IproductList {
-  categories?: string[];
+const product_title_ = "lorem ipsum, quia do";
+const product_title_id = "product_list_item_title";
+
+const product_desc_ = "lorem ipsum, quia do";
+const product_desc_id = "product_list_item_desc";
+
+export interface IproductListItem {
+  title?: string;
+  desc?: string;
+  row?: string;
+  idx?: string;
 }
 
-function ProductListItem() {
+export interface IproductListText {
+  categories?: string[];
+  product?: {
+    title?: string;
+    desc?: string;
+  };
+}
+
+export interface IproductList extends IproductListText {}
+
+function ProductListItem(prop: IproductListItem) {
+  const { title, desc, row, idx } = prop;
+
   const slide_item = css`
     width: 100%;
     max-width: 280px;
@@ -112,8 +133,12 @@ function ProductListItem() {
       <div css={info_container}>
         <div css={text_container}>
           <div css={product_info_container}>
-            <p css={product_name}>lorem ipsum, quia do</p>
-            <p css={product_desc}>lorem ipsum, quia do</p>
+            <p css={product_name} id={product_title_id + "_" + idx + "_" + row}>
+              {title || product_title_}
+            </p>
+            <p css={product_desc} id={product_desc_id + "_" + idx + "_" + row}>
+              {desc || product_desc_}
+            </p>
           </div>
           <div css={product_price_container}>
             <p css={product_price_sale}>50,000원</p>
@@ -131,7 +156,10 @@ function ProductListItem() {
 }
 
 export default function ProductList(prop: IproductList) {
-  const { categories } = prop;
+  const { categories, product } = prop;
+
+  const count = 3;
+
   const item_rows_container = css`
     display: flex;
     flex-direction: column;
@@ -182,21 +210,19 @@ export default function ProductList(prop: IproductList) {
             </ul>
           </div>
           <div css={item_rows_container}>
-            <div css={item_container}>
-              <ProductListItem />
-              <ProductListItem />
-              <ProductListItem />
-            </div>
-            <div css={item_container}>
-              <ProductListItem />
-              <ProductListItem />
-              <ProductListItem />
-            </div>
-            <div css={item_container}>
-              <ProductListItem />
-              <ProductListItem />
-              <ProductListItem />
-            </div>
+            {Array.from({ length: count }, (_, index1) => (
+              <div css={item_container} key={index1}>
+                {Array.from({ length: count }, (_, index2) => (
+                  <ProductListItem
+                    key={index2}
+                    title={product?.title || product_title_}
+                    desc={product?.desc || product_desc_}
+                    idx={index2.toString()}
+                    row={index1.toString()}
+                  />
+                ))}
+              </div>
+            ))}
           </div>
         </ContentsWrap>
       </InnerWrap>

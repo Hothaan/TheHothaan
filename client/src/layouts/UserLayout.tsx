@@ -23,6 +23,12 @@ import LoginPage from "@pages/user/LoginPage/LoginPage";
 import JoinPage from "@pages/user/JoinPage/JoinPage";
 
 import TemplateFublishingPage from "@pages/user/TemplateFublishingPage/TemplateFublishingPage";
+import CustomerServiceLayout from "./CustomerServiceLayout";
+import GuidePage from "@pages/user/CustomerServicePage/GuidePage/GuidePage";
+import ManualPage from "@pages/user/CustomerServicePage/ManualPage/ManualPage";
+import FaqPage from "@pages/user/CustomerServicePage/FaqPage/FaqPage";
+import NoticePage from "@pages/user/CustomerServicePage/NoticePage/NoticePage";
+import SupportPage from "@pages/user/CustomerServicePage/SupportPage/SupportPage";
 
 export default function UserLayout() {
   const { includeLocation } = useLocationControl();
@@ -47,7 +53,13 @@ export default function UserLayout() {
           {/* ---------------------- */}
           <Route path="/estimate" element={<EstimatePage />} />
           <Route path="/planIntro" element={<PlanIntroPage />} />
-          <Route path="/customerService" element={<MainPage />} />
+          <Route path="/customerService" element={<CustomerServiceLayout />}>
+            {/* <Route path="support" element={<SupportPage />} /> */}
+            <Route path="guide" element={<GuidePage />} />
+            <Route path="manual" element={<ManualPage />} />
+            <Route path="faq" element={<FaqPage />} />
+            <Route path="notice" element={<NoticePage />} />
+          </Route>
           {/*depth2 ----------------------------------------------------- */}
           {/* ----- company menu ----- */}
           {/* ---- user -------------- */}

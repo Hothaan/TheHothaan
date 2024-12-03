@@ -8,18 +8,38 @@ import TemplateButton from "../commonComponent/TemplateButton";
 import TemplateAccordion from "../commonComponent/TemplateAccordion";
 import Pagination from "../commonComponent/Pagination";
 import { ProductListItemMain } from "../main/ProductListMain";
-import NavItem from "../commonComponent/NavItem";
 import { ReactComponent as Heart } from "@svgs/template/heart.svg";
-import { ReactComponent as Bag } from "@svgs/template/bag.svg";
 import { ReactComponent as Plus } from "@svgs/template/productAmountPlus.svg";
 import { ReactComponent as Minus } from "@svgs/template/productAmountMinus.svg";
 
-export interface IproductDetail {
-  data: { [key: string]: string };
+const product_title_ = "상품제목입니다";
+const product_title_id = "product_detail_product_title";
+
+const product_desc_ = "상품 설명 내용입니다.";
+const product_desc_id = "product_detail_product_desc";
+
+const more_product_title_ = "lorem ipsum, quia do";
+const more_product_desc_ = "lorem ipsum, quia do";
+
+export interface IproductDetailText {
+  product?: { title?: string; desc?: string };
+  moreProduct?: { title?: string; desc?: string };
 }
 
-function ProductDetailInfo(prop: IproductDetail) {
-  const { data } = prop;
+interface IproductDetail extends IproductDetailText {}
+
+interface IproductDetailInfo {
+  title?: string;
+  desc?: string;
+}
+
+interface IproductDetailList {
+  title?: string;
+  desc?: string;
+}
+
+function ProductDetailInfo(prop: IproductDetailInfo) {
+  const { title, desc } = prop;
   const top_container = css`
     width: 100%;
     display: flex;
@@ -213,16 +233,22 @@ function ProductDetailInfo(prop: IproductDetail) {
         </div>
         <div css={prodcut_info_container}>
           <TemplateBadge text="카테고리" />
-          <p css={product_name}>{data.title || "상품제목입니다"}</p>
+          <p css={product_name} id={product_title_id}>
+            {title || product_title_}
+          </p>
           <div css={product_price_container}>
             <p css={product_price}>32,000원</p>
             <p css={product_price_sale}>32,000원</p>
           </div>
-          <p css={product_desc}>{data.desc || "상품 설명 내용입니다."}</p>
+          <p css={product_desc} id={product_desc_id}>
+            {desc || product_desc_}
+          </p>
         </div>
         <div css={product_amount_container}>
           <div css={product_amount_controller_container}>
-            <p css={product_amount_name}>{data.title || "상품제목입니다"}</p>
+            <p css={product_amount_name} id={product_title_id + "_cart"}>
+              {title || product_title_}
+            </p>
             <div css={product_amount_controller}>
               <div css={icon_container}>
                 <Minus />
@@ -264,7 +290,11 @@ function ProductDetailAccordion() {
   );
 }
 
-function ProductDetailList() {
+function ProductDetailList(prop: IproductDetailList) {
+  const { title, desc } = prop;
+
+  const count = 3;
+
   const container = css`
     width: 100%;
     display: flex;
@@ -272,11 +302,18 @@ function ProductDetailList() {
     align-items: center;
     gap: 20px;
   `;
+
   return (
     <div css={container}>
-      <ProductListItemMain option="main" />
-      <ProductListItemMain option="main" />
-      <ProductListItemMain option="main" />
+      {Array.from({ length: count }, (_, index) => (
+        <ProductListItemMain
+          option="main"
+          key={index}
+          title={title || more_product_title_}
+          desc={desc || more_product_desc_}
+          idx={index.toString()}
+        />
+      ))}
     </div>
   );
 }
@@ -295,7 +332,7 @@ function ProductDetailReview() {
 }
 
 export default function ProductDetail(prop: IproductDetail) {
-  const { data } = prop;
+  const { product, moreProduct } = prop;
   const container = css`
     display: flex;
     flex-direction: column;
@@ -307,9 +344,15 @@ export default function ProductDetail(prop: IproductDetail) {
     <OuterWrap padding="200px 0">
       <ContentsWrap>
         <div css={container}>
-          <ProductDetailInfo data={data} />
+          <ProductDetailInfo
+            title={product?.title || product_title_}
+            desc={product?.desc || product_title_}
+          />
           <ProductDetailAccordion />
-          <ProductDetailList />
+          <ProductDetailList
+            title={moreProduct?.title || more_product_title_}
+            desc={moreProduct?.desc || more_product_desc_}
+          />
           <ProductDetailReview />
           <Pagination />
           <ImageBox

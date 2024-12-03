@@ -7,17 +7,27 @@ import ProductListMain from "@components/template/main/ProductListMain";
 import Review from "@components/template/product/Review";
 import ServiceIntroduction from "@components/template/service/ServiceIntroduction";
 import ServiceContact from "@components/template/service/ServiceContact";
-import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
-import {
-  IfetchedfeatureResponseData,
-  ItemplateType,
-} from "@components/template/types";
+
+import { IfetchedfeatureResponseData } from "@components/template/types";
 import Loading from "@components/common/ui/Loading/loading";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
-export default function ShoppingMallMain(prop: ItemplateType) {
-  const { templateType } = prop;
+import { ImainBannerText } from "@components/template/main/Mainbanner";
+import { IproductListText } from "@components/template/main/ProductListMain";
+import { IserviceContact } from "@components/template/service/ServiceContact";
+import { IreviewText } from "@components/template/product/Review";
+import { IserviceIntroductionText } from "@components/template/service/ServiceIntroduction";
+
+interface IshoppingMallMain {
+  mainBanner: ImainBannerText;
+  productList: IproductListText;
+  review: IreviewText;
+  serviceIntroduction: IserviceIntroductionText;
+  serviceContact: IserviceContact;
+}
+
+export default function ShoppingMallMain() {
   const feature = "메인";
 
   /* only projectId */
@@ -76,7 +86,7 @@ export default function ShoppingMallMain(prop: ItemplateType) {
       <Header
         categories={headerData.categories}
         logo={headerData.logo}
-        serviceType={templateType.slice(0, templateType.indexOf("-"))}
+        serviceType="쇼핑몰"
       />
       <Mainbanner
         isEditable={true}

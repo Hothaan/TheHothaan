@@ -5,10 +5,11 @@ export interface ItemplateButton {
   type: "default" | "round" | "square";
   text: string;
   color?: "dark" | "light";
+  id?: string;
 }
 
 export default function TemplateButton(prop: ItemplateButton) {
-  const { type, text, color } = prop;
+  const { type, text, color, id } = prop;
 
   if (type === "default") {
     return (
@@ -24,7 +25,7 @@ export default function TemplateButton(prop: ItemplateButton) {
     );
   } else {
     return (
-      <button type="button" css={button_square(color)}>
+      <button type="button" css={button_square(color)} id={id}>
         {text}
       </button>
     );

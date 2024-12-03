@@ -4,16 +4,15 @@ import Header, { Iheader } from "@components/template/common/header/Header";
 import Footer from "@components/template/common/footer/Footer";
 import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
 import ProductDetail from "@components/template/product/ProductDetail";
-import {
-  IfetchedfeatureResponseData,
-  ItemplateType,
-} from "@components/template/types";
+import { IfetchedfeatureResponseData } from "@components/template/types";
 import Loading from "@components/common/ui/Loading/loading";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
+import { IproductDetailText } from "@components/template/product/ProductDetail";
 
-export default function ShoppingMallProductDetail(prop: ItemplateType) {
-  const { templateType } = prop;
+interface IShoppingMallProductDetail extends IproductDetailText {}
+
+export default function ShoppingMallProductDetail() {
   const feature = "상품 상세";
 
   /* only projectId */
@@ -73,7 +72,7 @@ export default function ShoppingMallProductDetail(prop: ItemplateType) {
         logo={headerData.logo || undefined}
         serviceType="쇼핑몰"
       />
-      <ProductDetail data={generatedText.content} />
+      <ProductDetail />
       <Footer logo={headerData.logo} serviceType="쇼핑몰" />
     </div>
   );

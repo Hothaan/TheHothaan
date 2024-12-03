@@ -3,9 +3,26 @@ import { css } from "@emotion/react";
 import { OuterWrap, ContentsWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 
+const banner_title_ = "headline h1";
+const banner_desc_ =
+  "lorem ipsum, quia dolor sit, amet,consectetur, adipisci velit, sed quia non";
+
+const content_title_ = "headline h1";
+const content_desc_ =
+  "lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia nonlorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia nonlorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia nonlorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non";
+
 export interface IbrandIntroduceItem {
   title?: string;
   desc?: string;
+}
+
+export interface IbrandIntroduceText {
+  banner?: { title?: string; desc?: string };
+  content?: IbrandIntroduceItem;
+}
+
+export interface IbrandIntroduce extends IbrandIntroduceText {
+  isEditable?: boolean;
 }
 
 function BrandIntroduceItem(prop: IbrandIntroduceItem) {
@@ -52,36 +69,17 @@ function BrandIntroduceItem(prop: IbrandIntroduceItem) {
           icon: "width: 100px; height: 100px;",
         }}
       />
-
-      <p css={item_title}>{title || "title"}</p>
-      <p css={item_desc}>{desc || "description"}</p>
+      <p css={item_title}>{title || content_title_}</p>
+      <p css={item_desc}>{desc || content_desc_}</p>
     </div>
   );
 }
 
-export interface IbrandIntroduce {
-  isEditable?: boolean;
-  title?: string;
-  desc?: string;
-}
-
 export default function BrandIntroduce(prop: IbrandIntroduce) {
-  const { isEditable, title, desc } = prop;
+  const { isEditable, banner, content } = prop;
 
-  const ItemDatas: IbrandIntroduceItem[] = [
-    {
-      title: title || "headline h1",
-      desc:
-        desc ||
-        "lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia nonlorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia nonlorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia nonlorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non",
-    },
-    {
-      title: title || "headline h1",
-      desc:
-        desc ||
-        "lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia nonlorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia nonlorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia nonlorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non",
-    },
-  ];
+  const count = 2;
+
   return (
     <OuterWrap padding="0">
       <div css={banner_container}>
@@ -96,18 +94,19 @@ export default function BrandIntroduce(prop: IbrandIntroduce) {
           }}
         />
         <div css={container}>
-          <p css={pass_h1}>{title || "headline h1"}</p>
-          <p css={desc_style}>
-            {desc ||
-              "lorem ipsum, quia dolor sit, amet,consectetur, adipisci velit, sed quia non"}
-          </p>
+          <p css={pass_h1}>{banner?.title || banner_title_}</p>
+          <p css={desc_style}>{banner?.desc || banner_desc_}</p>
         </div>
       </div>
       <OuterWrap padding="290px">
         <ContentsWrap>
           <div css={item_container}>
-            {ItemDatas.map((item) => (
-              <BrandIntroduceItem {...item} />
+            {Array.from({ length: count }, (_, index) => (
+              <BrandIntroduceItem
+                key={index}
+                title={content?.title || content_title_}
+                desc={content?.desc || content_desc_}
+              />
             ))}
           </div>
         </ContentsWrap>

@@ -6,12 +6,27 @@ import ImageBox from "../commonComponent/ImageBox";
 import { ReactComponent as Heart } from "@svgs/template/heart.svg";
 import { ReactComponent as Bag } from "@svgs/template/bag.svg";
 
-export interface IproductList {
+export interface IproductListText {
+  title?: string;
+  desc?: string;
+}
+
+export interface IproductList extends IproductListText {
   option: "main" | "list";
 }
 
-function ProductListItemMain(prop: IproductList) {
-  const { option } = prop;
+export interface IproductListItem extends IproductList {
+  idx?: string;
+  row?: string;
+}
+
+const title_ = "lorem ipsum, quia do";
+const desc_ = "lorem ipsum, quia do";
+const title_id = "product_list_main_title";
+const desc_id = "product_list_main_desc";
+
+function ProductListItemMain(prop: IproductListItem) {
+  const { option, title, desc, idx, row } = prop;
 
   const slide_item = css`
     width: 100%;
@@ -113,8 +128,12 @@ function ProductListItemMain(prop: IproductList) {
         />
         <div css={text_container}>
           <div css={product_info_container}>
-            <p css={product_name(option)}>lorem ipsum, quia do</p>
-            <p css={product_desc(option)}>lorem ipsum, quia do</p>
+            <p css={product_name(option)} id={title_id + "_" + idx + "_" + row}>
+              {title || title_}
+            </p>
+            <p css={product_desc(option)} id={desc_id + "_" + idx + "_" + row}>
+              {desc || desc_}
+            </p>
           </div>
           <div css={product_price_container(option)}>
             <p css={product_price_sale}>50,000원</p>
@@ -134,8 +153,12 @@ function ProductListItemMain(prop: IproductList) {
         <div css={info_container}>
           <div css={text_container}>
             <div css={product_info_container}>
-              <p css={product_name(option)}>lorem ipsum, quia do</p>
-              <p css={product_desc(option)}>lorem ipsum, quia do</p>
+              <p css={product_name(option)} id={title_id + "_" + idx}>
+                {title || title_}
+              </p>
+              <p css={product_desc(option)} id={desc_id + "_" + idx}>
+                {desc || desc_}
+              </p>
             </div>
             <div css={product_price_container(option)}>
               <p css={product_price_sale}>50,000원</p>
@@ -155,6 +178,8 @@ function ProductListItemMain(prop: IproductList) {
 
 export default function ProductListMain(prop: IproductList) {
   const { option } = prop;
+
+  const count = 3;
 
   const item_rows_container = css`
     display: flex;
@@ -178,9 +203,13 @@ export default function ProductListMain(prop: IproductList) {
         <InnerWrap>
           <Title title="category" transform="uppercase" marginBottom={57} />
           <div css={item_container}>
-            <ProductListItemMain option={option} />
-            <ProductListItemMain option={option} />
-            <ProductListItemMain option={option} />
+            {Array.from({ length: count }, (_, index) => (
+              <ProductListItemMain
+                option={option}
+                key={index}
+                idx={index.toString()}
+              />
+            ))}
           </div>
         </InnerWrap>
       </OuterWrap>
@@ -191,21 +220,18 @@ export default function ProductListMain(prop: IproductList) {
         <InnerWrap>
           <Title title="category" transform="uppercase" marginBottom={57} />
           <div css={item_rows_container}>
-            <div css={item_container}>
-              <ProductListItemMain option={option} />
-              <ProductListItemMain option={option} />
-              <ProductListItemMain option={option} />
-            </div>
-            <div css={item_container}>
-              <ProductListItemMain option={option} />
-              <ProductListItemMain option={option} />
-              <ProductListItemMain option={option} />
-            </div>
-            <div css={item_container}>
-              <ProductListItemMain option={option} />
-              <ProductListItemMain option={option} />
-              <ProductListItemMain option={option} />
-            </div>
+            {Array.from({ length: count }, (_, index1) => (
+              <div css={item_container} key={index1}>
+                {Array.from({ length: count }, (_, index2) => (
+                  <ProductListItemMain
+                    option={option}
+                    key={index2}
+                    idx={index2.toString()}
+                    row={index1.toString()}
+                  />
+                ))}
+              </div>
+            ))}
           </div>
         </InnerWrap>
       </OuterWrap>

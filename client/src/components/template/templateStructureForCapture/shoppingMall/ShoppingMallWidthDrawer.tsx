@@ -12,8 +12,7 @@ import Loading from "@components/common/ui/Loading/loading";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
-export default function ShoppingMallWidthDrawer(prop: ItemplateType) {
-  const { templateType } = prop;
+export default function ShoppingMallWidthDrawer() {
   const feature = "회원탈퇴";
 
   /* only projectId */

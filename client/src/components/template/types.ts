@@ -15,4 +15,5 @@ export interface IfetchedfeatureResponseData {
   menu: string;
   feature: string;
   content: any;
+  option?: string | null;
 }

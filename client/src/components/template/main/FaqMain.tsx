@@ -4,19 +4,30 @@ import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";
 import { ReactComponent as ChevUp } from "@svgs/template/faqMain/chevUp.svg";
 
 const title_ = "FAQ";
+
 const item_title_ =
   "FAQ 제목입니다. FAQ 제목입니다. FAQ 제목입니다. FAQ 제목입니다. ";
+const item_title_id = "faq_main_item_title";
+
 const item_content_ =
   "FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. ";
+const item_content_id = "faq_main_item_content";
+
+export interface IfaqMainText {
+  title?: string;
+  content?: string;
+}
+
+interface IfaqMain extends IfaqMainText {}
 
 export interface IfaqMainItem {
-  title: string;
-  content: string;
-  isOpen: boolean;
+  title?: string;
+  content?: string;
 }
 
 function FaqMainItem(prop: IfaqMainItem) {
-  const { title, content, isOpen } = prop;
+  const { title, content } = prop;
+  const count = 6;
 
   const item = css`
     width: 100%;
@@ -63,60 +74,53 @@ function FaqMainItem(prop: IfaqMainItem) {
       : "";
 
   return (
-    <div css={item}>
-      <div css={title_container}>
-        <p css={item_title(isOpen)}>{title || item_title_}</p>
-        <ChevUp css={icon(isOpen)} />
-      </div>
-      {isOpen && <p css={item_content}>{content || item_content_}</p>}
+    <div css={item_container}>
+      {Array.from({ length: count }, (_, index) => {
+        if (index === 1) {
+          return (
+            <div css={item}>
+              <div css={title_container}>
+                <p css={item_title(true)} id={item_title_id + "_" + index}>
+                  {title || item_title_}
+                </p>
+                <ChevUp css={icon(true)} />
+              </div>
+              {
+                <p css={item_content} id={item_content_id + "_" + index}>
+                  {content || item_content_}
+                </p>
+              }
+            </div>
+          );
+        } else {
+          return (
+            <div css={item}>
+              <div css={title_container}>
+                <p css={item_title(false)} id={item_title_id + "_" + index}>
+                  {title || item_title_}
+                </p>
+                <ChevUp css={icon(false)} />
+              </div>
+            </div>
+          );
+        }
+      })}
     </div>
   );
 }
 
-export default function FaqMain() {
-  const data: IfaqMainItem[] = [
-    {
-      title: item_title_,
-      content: item_content_,
-      isOpen: false,
-    },
-    {
-      title: item_title_,
-      content: item_content_,
-      isOpen: true,
-    },
-    {
-      title: item_title_,
-      content: item_content_,
-      isOpen: false,
-    },
-    {
-      title: item_title_,
-      content: item_content_,
-      isOpen: false,
-    },
-    {
-      title: item_title_,
-      content: item_content_,
-      isOpen: false,
-    },
-    {
-      title: item_title_,
-      content: item_content_,
-      isOpen: false,
-    },
-  ];
+export default function FaqMain(prop: IfaqMain) {
+  const { title, content } = prop;
 
   return (
     <OuterWrap padding="114px 0">
       <InnerWrap>
         <div css={container}>
-          <p css={title}>{title_}</p>
-          <div css={item_container}>
-            {data.map((item, idx) => (
-              <FaqMainItem {...item} key={idx} />
-            ))}
-          </div>
+          <p css={title_style}>{title_}</p>
+          <FaqMainItem
+            title={title || item_title_}
+            content={content || item_content_}
+          />
         </div>
       </InnerWrap>
     </OuterWrap>
@@ -131,7 +135,7 @@ const container = css`
   padding: 0 60px;
 `;
 
-const title = css`
+const title_style = css`
   color: #486284;
   text-align: center;
   font-family: "Noto Sans KR";

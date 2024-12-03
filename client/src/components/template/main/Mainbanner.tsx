@@ -4,20 +4,35 @@ import { OuterWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 import TemplateButton from "../commonComponent/TemplateButton";
 import EditableText from "@components/service/editableText/EditableText";
-import { CSSProperties } from "react";
 
-export interface ImainBanner {
-  isEditable?: boolean;
+// 수정된 위치 식별자 필요
+// 수정되기 전 텍스트와 수정된 후 텍스트 비교 가능해야함
+// 수정되기 전 css와 수정된 후 css 비교 가능해야함
+// 모달 전체에서 수정 감지해서 수정된 내용 저장
+// 모달에서 저장버튼 클릭시 수정한 내용 db에 업데이트
+
+const title_ = "Headline H1";
+const title_id = "main_banner_title";
+
+const desc_ =
+  "lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non";
+const desc_id = "main_banner_desc";
+
+const button_ = "button";
+const button_id = "main_banner_button";
+
+export interface ImainBannerText {
   title?: string;
   desc?: string;
+  button?: string;
+}
+
+export interface ImainBanner extends ImainBannerText {
+  isEditable?: boolean;
 }
 
 export default function Mainbanner(prop: ImainBanner) {
-  const { isEditable, title, desc } = prop;
-
-  const title_ = "Headline H1";
-  const desc_ =
-    "lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non";
+  const { isEditable, title, desc, button } = prop;
 
   return (
     <OuterWrap padding="0">
@@ -38,21 +53,30 @@ export default function Mainbanner(prop: ImainBanner) {
               text={title || title_}
               isTextArea={false}
               defaultCss={pass_h1}
+              id={title_id}
             />
           ) : (
-            <p css={pass_h1}>{title || title_}</p>
+            <p css={pass_h1} id={title_id}>
+              {title || title_}
+            </p>
           )}
           {isEditable ? (
             <EditableText
               text={desc || desc_}
               isTextArea={true}
               defaultCss={pass_desc}
+              id={desc_id}
             />
           ) : (
-            <p css={pass_desc}>{desc || desc_}</p>
+            <p css={pass_desc} id={title_id}>
+              {desc || desc_}
+            </p>
           )}
-
-          <TemplateButton type="default" text="button" />
+          <TemplateButton
+            type="default"
+            text={button || button_}
+            id={button_id}
+          />
         </div>
       </div>
     </OuterWrap>

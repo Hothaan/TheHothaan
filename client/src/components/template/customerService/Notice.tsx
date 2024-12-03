@@ -9,10 +9,16 @@ import FormButton from "../commonComponent/form/FormButton";
 import SelectBox from "../commonComponent/form/SelectBox";
 import ImageBox from "../commonComponent/ImageBox";
 
+const title_ = "게시글 제목";
+
+export interface InoticeText {
+  title?: string;
+}
+
 export type Tnotice = "텍스트형" | "이미지형";
 
-export interface Inotice {
-  option: Tnotice;
+export interface Inotice extends InoticeText {
+  option?: Tnotice;
 }
 
 function NoticeTitle() {
@@ -45,26 +51,24 @@ function NoticeTitle() {
   );
 }
 
-function NoticeTable() {
+function NoticeTable(prop: InoticeText) {
+  const { title } = prop;
+
+  const count = 10;
+
   interface TableRow {
-    id: number;
+    num: number;
     title: string;
     date: string;
     views: number;
   }
 
-  const mockData: TableRow[] = [
-    { id: 10, title: "SUBJECT NAME", date: "YYYY.MM.DD", views: 1 },
-    { id: 10, title: "게시글 제목입니다.", date: "YYYY.MM.DD", views: 1 },
-    { id: 10, title: "게시글 제목입니다.", date: "YYYY.MM.DD", views: 1 },
-    { id: 10, title: "게시글 제목입니다.", date: "YYYY.MM.DD", views: 1 },
-    { id: 10, title: "게시글 제목입니다.", date: "YYYY.MM.DD", views: 1 },
-    { id: 10, title: "게시글 제목입니다.", date: "YYYY.MM.DD", views: 1 },
-    { id: 10, title: "게시글 제목입니다.", date: "2024.01.01", views: 1 },
-    { id: 10, title: "게시글 제목입니다.", date: "YYYY.MM.DD", views: 1 },
-    { id: 10, title: "게시글 제목입니다.", date: "YYYY.MM.DD", views: 1 },
-  ];
-
+  const mockData = {
+    num: 10,
+    title: title || title_,
+    date: "YYYY.MM.DD",
+    views: 1,
+  };
   const tableStyle = css`
     width: 100%;
     border-collapse: collapse;
@@ -129,22 +133,27 @@ function NoticeTable() {
         </tr>
       </thead>
       <tbody>
-        {mockData.map((item, index) => (
-          <tr key={index} css={rowStyle}>
-            <td css={[cellStyle, text_style, col1]}>{item.id}</td>
-            <td css={[cellStyle, text_style, col2, text_align_left]}>
-              {item.title}
-            </td>
-            <td css={[cellStyle, text_style, col3]}>{item.date}</td>
-            <td css={[cellStyle, text_style, col4]}>{item.views}</td>
-          </tr>
-        ))}
+        {mockData &&
+          Array.from({ length: count }, (_, index) => (
+            <tr key={index} css={rowStyle}>
+              <td css={[cellStyle, text_style, col1]}>{mockData.num}</td>
+              <td css={[cellStyle, text_style, col2, text_align_left]}>
+                {mockData.title}
+              </td>
+              <td css={[cellStyle, text_style, col3]}>{mockData.date}</td>
+              <td css={[cellStyle, text_style, col4]}>{mockData.views}</td>
+            </tr>
+          ))}
       </tbody>
     </table>
   );
 }
 
-function NoticeGalleryBoard() {
+function NoticeGalleryBoard(prop: InoticeText) {
+  const { title } = prop;
+
+  const count = 8;
+
   const container = css`
     display: flex;
     flex-wrap: wrap;
@@ -168,72 +177,19 @@ function NoticeGalleryBoard() {
     line-height: normal;
     text-transform: capitalize;
   `;
+
   return (
     <div css={container}>
-      <div css={item_container}>
-        <ImageBox
-          container={{ width: "430px", height: "310px" }}
-          icon={{ width: "50px", height: "50px" }}
-          borderRadius="0"
-        />
-        <p css={item_name}>gallery board name</p>
-      </div>
-      <div css={item_container}>
-        <ImageBox
-          container={{ width: "430px", height: "310px" }}
-          icon={{ width: "50px", height: "50px" }}
-          borderRadius="0"
-        />
-        <p css={item_name}>gallery board name</p>
-      </div>
-      <div css={item_container}>
-        <ImageBox
-          container={{ width: "430px", height: "310px" }}
-          icon={{ width: "50px", height: "50px" }}
-          borderRadius="0"
-        />
-        <p css={item_name}>gallery board name</p>
-      </div>
-      <div css={item_container}>
-        <ImageBox
-          container={{ width: "430px", height: "310px" }}
-          icon={{ width: "50px", height: "50px" }}
-          borderRadius="0"
-        />
-        <p css={item_name}>gallery board name</p>
-      </div>
-      <div css={item_container}>
-        <ImageBox
-          container={{ width: "430px", height: "310px" }}
-          icon={{ width: "50px", height: "50px" }}
-          borderRadius="0"
-        />
-        <p css={item_name}>gallery board name</p>
-      </div>
-      <div css={item_container}>
-        <ImageBox
-          container={{ width: "430px", height: "310px" }}
-          icon={{ width: "50px", height: "50px" }}
-          borderRadius="0"
-        />
-        <p css={item_name}>gallery board name</p>
-      </div>
-      <div css={item_container}>
-        <ImageBox
-          container={{ width: "430px", height: "310px" }}
-          icon={{ width: "50px", height: "50px" }}
-          borderRadius="0"
-        />
-        <p css={item_name}>gallery board name</p>
-      </div>
-      <div css={item_container}>
-        <ImageBox
-          container={{ width: "430px", height: "310px" }}
-          icon={{ width: "50px", height: "50px" }}
-          borderRadius="0"
-        />
-        <p css={item_name}>gallery board name</p>
-      </div>
+      {Array.from({ length: count }, (_, index) => (
+        <div css={item_container} key={index}>
+          <ImageBox
+            container={{ width: "430px", height: "310px" }}
+            icon={{ width: "50px", height: "50px" }}
+            borderRadius="0"
+          />
+          <p css={item_name}>{title || title_}</p>
+        </div>
+      ))}
     </div>
   );
 }
@@ -269,7 +225,7 @@ function NoticeSearch() {
 }
 
 export default function Notice(prop: Inotice) {
-  const { option } = prop;
+  const { option, title } = prop;
 
   const container = css`
     width: 100%;
@@ -278,13 +234,14 @@ export default function Notice(prop: Inotice) {
     justify-content: center;
     gap: 50px;
   `;
+
   if (option === "텍스트형") {
     return (
       <OuterWrap padding="100px 0">
         <ContentsWrap>
           <div css={container}>
             <NoticeTitle />
-            <NoticeTable />
+            <NoticeTable title={title || title_} />
             <NoticeSearch />
           </div>
         </ContentsWrap>
@@ -296,7 +253,7 @@ export default function Notice(prop: Inotice) {
         <ContentsWrap>
           <div css={container}>
             <NoticeTitle />
-            <NoticeGalleryBoard />
+            <NoticeGalleryBoard title={title || title_} />
             <NoticeSearch />
           </div>
         </ContentsWrap>

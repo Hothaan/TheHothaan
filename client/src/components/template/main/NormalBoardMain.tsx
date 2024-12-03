@@ -2,20 +2,30 @@
 import { css } from "@emotion/react";
 import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";
 
-export interface INormalBoardMainItem {
-  content?: string;
-  date?: string;
+export interface InormalBoardText {
+  title?: string;
 }
 
-const component_title_ = "일반게시판(텍스트형) 제목 입니다.";
-const content_ =
+interface InormalBoardMain extends InormalBoardText {}
+
+export interface INormalBoardMainItem extends InormalBoardText {
+  idx?: string;
+}
+
+const component_title_ = "게시판";
+
+const title_ =
   "글 제목입니다. 글 제목입니다. 영역을 넘어갈 시 말줄임표가 적용됩니다.글 제목입니다. 글 제목입니다. 영역을 넘어갈 시 말줄임표가 적용됩니다.";
+const title_id = "normal_board_main_title";
+
 const date_ = "2025.09.31";
 
 export function NormalBoardMainItem(prop: INormalBoardMainItem) {
-  const { content, date } = prop;
+  const { title, idx } = prop;
 
   const container = css`
+    width: 100%;
+
     display: flex;
     padding: 20px 0px;
     justify-content: space-between;
@@ -24,7 +34,7 @@ export function NormalBoardMainItem(prop: INormalBoardMainItem) {
     border-bottom: 1px solid #e9e9e9;
   `;
 
-  const content_style = css`
+  const title_style = css`
     width: 50%;
     color: var(--Greys-Blue-Grey-800, #444a6d);
     font-family: "Noto Sans KR";
@@ -42,6 +52,7 @@ export function NormalBoardMainItem(prop: INormalBoardMainItem) {
 
   const inner_container = css`
     display: flex;
+
     align-items: center;
     gap: 26px;
   `;
@@ -60,7 +71,7 @@ export function NormalBoardMainItem(prop: INormalBoardMainItem) {
     padding: 4px 10px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-title: center;
     flex-shrink: 0;
 
     border-radius: 100px;
@@ -77,9 +88,11 @@ export function NormalBoardMainItem(prop: INormalBoardMainItem) {
 
   return (
     <div css={container}>
-      <p css={content_style}>{content || content_}</p>
+      <p css={title_style} id={title_id + "_" + idx}>
+        {title || title_}
+      </p>
       <div css={inner_container}>
-        <p css={date_style}>{date || date_}</p>
+        <p css={date_style}>{date_}</p>
         <button type="button" css={button}>
           바로가기
         </button>
@@ -88,30 +101,23 @@ export function NormalBoardMainItem(prop: INormalBoardMainItem) {
   );
 }
 
-export default function NormalBoardMain() {
-  const itemDatas: INormalBoardMainItem[] = [
-    {
-      content: content_,
-      date: date_,
-    },
-    {
-      content: content_,
-      date: date_,
-    },
-    {
-      content: content_,
-      date: date_,
-    },
-  ];
+export default function NormalBoardMain(prop: InormalBoardMain) {
+  const { title } = prop;
+
+  const count = 3;
 
   return (
     <OuterWrap padding="74px 0">
       <InnerWrap>
         <div css={container}>
-          <p css={title}>{component_title_}</p>
+          <p css={title_style}>{component_title_}</p>
           <div css={item_container}>
-            {itemDatas.map((item, idx) => (
-              <NormalBoardMainItem {...item} key={idx} />
+            {Array.from({ length: count }, (_, index) => (
+              <NormalBoardMainItem
+                title={title || title_}
+                key={index}
+                idx={index.toString()}
+              />
             ))}
           </div>
         </div>
@@ -127,7 +133,7 @@ const container = css`
   gap: 20px;
 `;
 
-const title = css`
+const title_style = css`
   color: #486284;
   font-family: Pretendard;
   font-size: 24px;

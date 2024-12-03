@@ -36,7 +36,7 @@ export const menu: ImenuItem[] = [
     eng: "support",
     link: "/customerService",
     depth2: [
-      { kor: "고객지원", eng: "support", link: "/customerService/support" },
+      // { kor: "고객지원", eng: "support", link: "/customerService/support" },
       { kor: "이용가이드", eng: "guide", link: "/customerService/guide" },
       { kor: "매뉴얼", eng: "manual", link: "/customerService/manual" },
       { kor: "FAQ", eng: "FAQ", link: "/customerService/faq" },

@@ -5,15 +5,14 @@ import Footer from "@components/template/common/footer/Footer";
 import BrandIntroduce from "@components/template/brandIntroduce/BrandIntroduce";
 import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
 import Loading from "@components/common/ui/Loading/loading";
-import {
-  IfetchedfeatureResponseData,
-  ItemplateType,
-} from "@components/template/types";
+import { IfetchedfeatureResponseData } from "@components/template/types";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
+import { IbrandIntroduceText } from "@components/template/brandIntroduce/BrandIntroduce";
 
-export default function ShoppingMallBrandIntroduce(prop: ItemplateType) {
-  const { templateType } = prop;
+interface IshoppingMallBrandIntroduce extends IbrandIntroduceText {}
+
+export default function ShoppingMallBrandIntroduce() {
   const feature = "브랜드 소개";
 
   /* only projectId */
@@ -24,6 +23,7 @@ export default function ShoppingMallBrandIntroduce(prop: ItemplateType) {
   const [generatedText, setGeneratedText] = useState<IgeneratedText | null>(
     null
   );
+
   async function fetchFeatureData(isProduction: boolean, projectId: string) {
     try {
       const response = await getFeatureData(isProduction, projectId);
@@ -75,7 +75,6 @@ export default function ShoppingMallBrandIntroduce(prop: ItemplateType) {
       />
       <BrandIntroduce />
       <Footer logo={headerData.logo} serviceType="쇼핑몰" />
-      <Footer />
     </div>
   );
 }

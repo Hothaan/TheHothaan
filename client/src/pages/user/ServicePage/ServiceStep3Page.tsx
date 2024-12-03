@@ -19,7 +19,6 @@ import {
 } from "@api/service/serviceTypeMenu";
 import { createProject } from "@api/project/createProject";
 import { generateText } from "@api/project/generateText";
-import { saveImage } from "@api/image/saveImage";
 import Loading from "@components/common/ui/Loading/loading";
 import { IserviceInfo } from "./ServiceStep1Page";
 import { IserviceData } from "./ServiceStep2Page";
@@ -66,6 +65,9 @@ export default function ServiceStep3Page() {
   const [currentStep, setCurrentStep] = useState<number>(2);
   const { isProduction } = useIsProduction();
   // const isProduction = true;
+  const [featureData, setFeatureData] = useState<
+    IfetchedfeatureResponseData[] | null
+  >(null);
   const [loading, setLoading] = useState(false);
   const [serviceInfo, setServiceInfo] = useState<IserviceInfo | null>(null);
   const [serviceDefaultData, setServiceDefaultData] =
@@ -94,12 +96,12 @@ export default function ServiceStep3Page() {
     }
   }, []);
 
-  useEffect(() => {
-    const localData = localStorage.getItem("generatedTextData");
-    if (localData) {
-      setGeneratedTextData(JSON.parse(localData));
-    }
-  }, []);
+  // useEffect(() => {
+  //   const localData = localStorage.getItem("generatedTextData");
+  //   if (localData) {
+  //     setGeneratedTextData(JSON.parse(localData));
+  //   }
+  // }, []);
 
   async function fetchServiceTypeMenu() {
     if (
@@ -146,12 +148,19 @@ export default function ServiceStep3Page() {
     }
   }, [serviceDefaultData]);
 
+  // useEffect(() => {
+  //   if (isReady && generatedTextData && generatedTextData.length > 0) {
+  //     console.log("Generated text data has changed, calling saveImages...");
+  //     saveImages();
+  //   }
+  // }, [isReady]);
+
   useEffect(() => {
-    if (isReady && generatedTextData && generatedTextData.length > 0) {
+    if (featureData) {
       console.log("Generated text data has changed, calling saveImages...");
       saveImages();
     }
-  }, [isReady]);
+  }, [featureData]);
 
   useEffect(() => {
     if (checkAllOptionSelected(formData)) {
@@ -350,8 +359,7 @@ export default function ServiceStep3Page() {
           })
           .filter(Boolean);
         if (data.length > 0) {
-          setGeneratedTextData(data);
-          localStorage.setItem("generatedTextData", JSON.stringify(data));
+          fetchFeatureData(isProduction, projectId);
         } else {
           console.error("No valid data found in featureResponseData");
         }
@@ -363,7 +371,27 @@ export default function ServiceStep3Page() {
     } catch (error) {
       console.error("Error fetching generated text:", error);
     } finally {
-      setIsReady(true);
+    }
+  }
+
+  async function fetchFeatureData(isProduction: boolean, projectId: string) {
+    try {
+      const response = await getFeatureData(isProduction, projectId);
+      if (response.status === 200) {
+        const data = response.data.featureResponseData.map(
+          (item: IfetchedfeatureResponseData) => {
+            return {
+              ...item,
+              feature: item.feature.split(" ").join(""),
+            };
+          }
+        );
+        setFeatureData(data);
+      } else {
+        console.error("getFeatureData error", response.status);
+      }
+    } catch (error) {
+      console.error(error);
     }
   }
 
@@ -371,8 +399,8 @@ export default function ServiceStep3Page() {
     const projectId = sessionStorage.getItem("projectId");
     if (
       !projectId ||
-      !generatedTextData ||
-      generatedTextData.length === 0 ||
+      !featureData ||
+      featureData.length === 0 ||
       !serviceDefaultData
     ) {
       console.error("Missing required data for saveImages");
@@ -380,15 +408,15 @@ export default function ServiceStep3Page() {
     }
 
     const projectType = serviceDefaultData.serviceType.text as string;
-    const featureId = generatedTextData.map((item) => item.feature_id);
-    const parameterArr = generatedTextData.map(
+    const featureId = featureData.map((item) => item.feature_id);
+    const parameterArr = featureData.map(
       (item) => `${projectType}-${item.feature.split(" ").join("")}`
     );
 
     try {
       const responses = await Promise.allSettled(
         parameterArr.map((param, idx) =>
-          saveImageDb(true, param, projectId, featureId[idx])
+          saveImageDb(true, param, projectId, featureId[idx].toString())
         )
       );
 
@@ -427,14 +455,6 @@ export default function ServiceStep3Page() {
         );
       } else if (rejectedResponses.length === 0) {
         setIsImgageSaved(true);
-        // setLoading(false);
-        // setIsModalOpen(false);
-        // **조건부 네비게이션 로직**
-        // if (steps.step3 && currentStep < totalStep) {
-        //   handleNavigation(`/service/step${currentStep + 1}`);
-        // } else {
-        //   console.error("Navigation aborted: invalid step conditions");
-        // }
       }
     } catch (error) {
       console.error("Error saving images:", error);

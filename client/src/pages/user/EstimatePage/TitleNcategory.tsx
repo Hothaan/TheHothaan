@@ -88,8 +88,6 @@ export default function TitleNcategory() {
     null
   );
 
-  console.log(selectedCategory);
-
   const itemDatas: IcategoryItem[] = [
     {
       category: "기획 분야",

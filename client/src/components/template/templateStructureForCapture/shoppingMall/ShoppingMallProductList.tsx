@@ -4,16 +4,17 @@ import Header, { Iheader } from "@components/template/common/header/Header";
 import Footer from "@components/template/common/footer/Footer";
 import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
 import ProductList from "@components/template/product/ProductList";
-import {
-  IfetchedfeatureResponseData,
-  ItemplateType,
-} from "@components/template/types";
+import { IfetchedfeatureResponseData } from "@components/template/types";
 import Loading from "@components/common/ui/Loading/loading";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
-export default function ShoppingMallProductList(prop: ItemplateType) {
-  const { templateType } = prop;
+interface IshoppingMallProductList {
+  category: string[];
+  product: { title: string; desc: string };
+}
+
+export default function ShoppingMallProductList() {
   const feature = "상품 목록";
 
   /* only projectId */

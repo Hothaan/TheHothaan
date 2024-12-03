@@ -11,9 +11,13 @@ import { ReactComponent as Caption } from "@svgs/template/productCaption.svg";
 import Tabs from "../commonComponent/Tabs";
 import ImageBox from "../commonComponent/ImageBox";
 
-export interface ItemplateData {
-  data: { [key: string]: string };
+const title_ = "제품 이름";
+
+export interface IcartText {
+  title?: string;
 }
+
+interface Icart extends IcartText {}
 
 function CartTitle() {
   const container = css`
@@ -61,8 +65,9 @@ function CartTitle() {
   );
 }
 
-function CartOrder(prop: ItemplateData) {
-  const { data } = prop;
+function CartOrder(prop: IcartText) {
+  const { title } = prop;
+
   const container = css`
     display: flex;
     gap: 50px;
@@ -364,7 +369,7 @@ function CartOrder(prop: ItemplateData) {
                   borderRadius="0"
                 />
                 <div css={product_info_container}>
-                  <p css={text_style}>{data.title || "제품 이름입니다"}</p>
+                  <p css={text_style}>{title || title_}</p>
                   <p css={text_style}>￦5,600,000</p>
                 </div>
               </div>
@@ -598,17 +603,19 @@ function CartInfo() {
   );
 }
 
-export default function Cart(prop: ItemplateData) {
-  const { data } = prop;
+export default function Cart(prop: Icart) {
+  const { title } = prop;
+
   const container = css`
     width: 100%;
   `;
+
   return (
     <OuterWrap padding="200px 0">
       <ContentsWrap>
         <div css={container}>
           <CartTitle />
-          <CartOrder data={data} />
+          <CartOrder title={title || title_} />
           <CartInfo />
         </div>
       </ContentsWrap>
