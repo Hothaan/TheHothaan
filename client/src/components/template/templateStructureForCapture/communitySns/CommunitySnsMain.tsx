@@ -80,9 +80,9 @@ export default function CommunitySnsMain() {
     }
   }, [projectIdValue]);
 
-  if (!generatedText || !headerData) {
-    return <Loading />;
-  }
+  // if (!generatedText || !headerData) {
+  //   return <Loading />;
+  // }
 
   return (
     <div className="templateImage">

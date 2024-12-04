@@ -5,19 +5,12 @@ import CommunitySnsBoard from "@components/template/templateStructureForCapture/
 import CommunitySnsFeed from "@components/template/templateStructureForCapture/communitySns/CommunitySnsFeed";
 import CommunitySnsFaq from "@components/template/templateStructureForCapture/communitySns/CommunitySnsQna";
 import CommunitySnsMyProfile from "@components/template/templateStructureForCapture/communitySns/CommunitySnsMyProfile";
+import HomePageBoardMain from "@components/template/templateStructureForCapture/homepageBoard/HomePageBoardMain";
 export default function TemplateFublishingPage() {
   return (
     <div css={container}>
-      <p>CommunitySnsMain</p>
-      <CommunitySnsMain />
-      <p>CommunitySnsBoard</p>
-      <CommunitySnsBoard />
-      <p>CommunitySnsFeed</p>
-      <CommunitySnsFeed />
-      <p>CommunitySnsFaq</p>
-      <CommunitySnsFaq />
-      <p>CommunitySnsMyProfile</p>
-      <CommunitySnsMyProfile />
+      <p>HomePageBoardMain</p>
+      <HomePageBoardMain />
     </div>
   );
 }

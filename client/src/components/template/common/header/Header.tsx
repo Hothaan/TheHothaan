@@ -40,7 +40,7 @@ export default function Header(prop: Iheader) {
         )}
       </ul>
       <div css={user_container}>
-        <User />
+        {serviceType !== "홈페이지 · 게시판" && <User />}
         {serviceType === "쇼핑몰" && (
           <div css={bag_container}>
             <Bag />
@@ -49,7 +49,6 @@ export default function Header(prop: Iheader) {
             </div>
           </div>
         )}
-
         <Search />
       </div>
     </div>

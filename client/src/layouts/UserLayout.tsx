@@ -5,7 +5,7 @@ import { Routes, Route } from "react-router-dom";
 import Header from "@components/common/ui/Header/Header";
 import Footer from "@components/common/ui/Footer/Footer";
 import MainPage from "@pages/user/MainPage/MainPage";
-import TestPage from "@pages/user/TestPage/TestPage";
+// import TestPage from "@pages/user/TestPage/TestPage";
 
 import EstimatePage from "@pages/user/EstimatePage/EstimatePage";
 import PlanIntroPage from "@pages/user/PlanIntroPage/PlanIntroPage";
@@ -67,7 +67,7 @@ export default function UserLayout() {
           <Route path="/join" element={<JoinPage />} />
           <Route path="/myPage" element={<MyPage />} />
           {/* ---- test -------------- */}
-          <Route path="/test" element={<TestPage />} />
+          {/* <Route path="/test" element={<TestPage />} /> */}
           <Route path="/fublising" element={<TemplateFublishingPage />} />
         </Routes>
       </main>

@@ -12,7 +12,7 @@ export interface ImenuItem {
   kor: string;
   eng: string;
   include?: string;
-  link: string;
+  link: string | null;
   depth2?: IsubMenuItem[];
 }
 
@@ -34,7 +34,8 @@ export const menu: ImenuItem[] = [
   {
     kor: "고객센터",
     eng: "support",
-    link: "/customerService",
+    link: null,
+    include: "/customerService",
     depth2: [
       // { kor: "고객지원", eng: "support", link: "/customerService/support" },
       { kor: "이용가이드", eng: "guide", link: "/customerService/guide" },
@@ -67,17 +68,28 @@ export default function GlobalNav(prop: IGlobalNav) {
             css={hover}
             onMouseEnter={item.depth2 ? handleMouseEnter : undefined}
           >
-            <Link
-              to={item.link}
-              css={depth1_btn(theme, isMain)}
-              className={
-                includeLocation(item.include ? item.include : item.link)
-                  ? "selected"
-                  : ""
-              }
-            >
-              <p className="link">{item.kor}</p>
-            </Link>
+            {item.link ? (
+              <Link
+                to={item.link}
+                css={depth1_btn(theme, isMain)}
+                className={
+                  includeLocation(item.include ? item.include : item.link)
+                    ? "selected"
+                    : ""
+                }
+              >
+                <p className="link">{item.kor}</p>
+              </Link>
+            ) : (
+              <div
+                css={depth1_btn(theme, isMain)}
+                className={
+                  includeLocation(item?.include || "") ? "selected" : ""
+                }
+              >
+                <p className="link">{item.kor}</p>
+              </div>
+            )}
             {item.depth2 && isDropdownOpen && (
               <ul
                 css={depth2_container(theme)}

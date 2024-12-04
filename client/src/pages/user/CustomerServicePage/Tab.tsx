@@ -2,7 +2,6 @@
 import { css } from "@emotion/react";
 import { useEffect, useState } from "react";
 import useLocationControl from "@hooks/useLocationControl";
-import ResponsiveContainer from "@components/common/ui/Container/ResponsiveContainer";
 import { TcustomerService } from "./types";
 import { Link } from "react-router-dom";
 
@@ -49,7 +48,6 @@ export default function Tab() {
 const container = css`
   max-width: 1200px;
   margin: 0 auto;
-  padding: 80px 0;
   width: 100%;
   display: flex;
   align-items: center;
@@ -74,6 +72,6 @@ const tab = (isSelected: boolean) => css`
 
 const tab_text = (isSelected: boolean) => css`
   color: ${isSelected ? "#119CD4" : "#DEDEDE"};
-  padding-bottom: 20px;
+  padding: 12px 0;
   transition: 0.3s ease-out;
 `;

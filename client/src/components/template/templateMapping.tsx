@@ -22,6 +22,10 @@ import CommunitySnsJoin from "./templateStructureForCapture/communitySns/Communi
 import CommunitySnsFindId from "./templateStructureForCapture/communitySns/CommunitySnsFindId";
 import CommunitySnsFindPw from "./templateStructureForCapture/communitySns/CommunitySnsFindPw";
 
+import HomePageBoardMain from "./templateStructureForCapture/homepageBoard/HomePageBoardMain";
+
+import LandingIntroduceMain from "./templateStructureForCapture/landingIntroduce/LandingIntroduceMain";
+
 export const templateMapForCapture: {
   [key: string]: any;
 } = {
@@ -48,4 +52,8 @@ export const templateMapForCapture: {
   "커뮤니티·sns-회원가입": CommunitySnsJoin,
   "커뮤니티·sns-아이디찾기": CommunitySnsFindId,
   "커뮤니티·sns-비밀번호찾기": CommunitySnsFindPw,
+
+  "홈페이지·게시판-메인": HomePageBoardMain,
+
+  "랜딩·소개-메인": LandingIntroduceMain,
 };
