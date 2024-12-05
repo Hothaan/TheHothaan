@@ -3,7 +3,7 @@
     <path d="M7.60986 56L27.7499 19H30.7899L49.8899 56H7.60986Z" fill="#E4E5EA"/>
     <path d="M0.75 56.0002L16.5 28.4102L32.25 56.0002H0.75Z" fill="#50C950"/>
     <path d="M25.25 56.0002L41 28.4102L56.75 56.0002H25.25Z" fill="#50C950"/>
-    <path d="M29.25 19V2" stroke="#142746" stroke-width="3" stroke-miterlimit="10"/>
+    <path d="M29.25 19V2" stroke="#142746" strokeWidth="3" stroke-miterlimit="10"/>
     <path d="M27.75 12.25V0L40.87 6.12L27.75 12.25Z" fill="#FF5436"/>
   </g>
   <defs>

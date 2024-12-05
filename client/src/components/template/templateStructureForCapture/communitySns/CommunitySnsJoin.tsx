@@ -43,6 +43,7 @@ export default function CommunitySnsJoin() {
       }
     } catch (error) {
       console.error(error);
+      window.location.href = "/error";
     }
   }
 

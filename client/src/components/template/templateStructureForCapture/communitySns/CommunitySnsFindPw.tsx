@@ -41,6 +41,7 @@ export default function CommunitySnsFindPw() {
       }
     } catch (error) {
       console.error(error);
+      window.location.href = "/error";
     }
   }
 

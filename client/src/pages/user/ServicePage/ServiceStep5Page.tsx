@@ -2,6 +2,9 @@
 import { css } from "@emotion/react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import LoadingModal, {
+  IloadingModal,
+} from "@components/common/ui/Modal/LoadingModal";
 import { ReactComponent as BannerIcon1 } from "@svgs/service/bannerIcon1.svg";
 import { ReactComponent as BannerIcon2 } from "@svgs/service/bannerIcon2.svg";
 import { ReactComponent as BannerIcon3 } from "@svgs/service/bannerIcon3.svg";
@@ -13,6 +16,7 @@ import ButtonIcon from "@components/service/button/ButtonIcon";
 import FullPageModalUneditable from "@components/service/modal/FullPageModalUneditable";
 import { generateFiles } from "@api/project/generateFiles";
 import axios from "axios";
+import { IserviceInfo } from "./ServiceStep1Page";
 
 export type Tformat = "pdf" | "png" | "jpg";
 export default function ServiceStep5Page() {
@@ -22,6 +26,7 @@ export default function ServiceStep5Page() {
   const location = useLocation();
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState<number>(1);
+  const [isLoadingModalOpen, setIsLoadingModalOpen] = useState(false);
   const [isFullpageModalOpen, setIsFullpageModalOpen] = useState(false);
 
   function handleChangeisFullpageModalOpen(isFullpageModalOpen: boolean) {
@@ -45,6 +50,7 @@ export default function ServiceStep5Page() {
     if (!projectId || !format) {
       return;
     }
+    setIsLoadingModalOpen(true);
     try {
       const response = await generateFiles(isProduction, projectId, format);
       if (response.status === 200) {
@@ -66,12 +72,16 @@ export default function ServiceStep5Page() {
           link.click();
 
           URL.revokeObjectURL(downloadUrl);
+
+          setIsLoadingModalOpen(false);
         } catch (error) {
           console.error("파일 다운로드 중 오류 발생:", error);
+          window.location.href = "/error";
         }
       }
     } catch (error) {
       console.log(error);
+      window.location.href = "/error";
     } finally {
     }
   }
@@ -117,6 +127,24 @@ export default function ServiceStep5Page() {
     };
   }, []);
 
+  const [serviceInfo, setServiceInfo] = useState<IserviceInfo | null>(null);
+
+  useEffect(() => {
+    const sessionData = sessionStorage.getItem("serviceInfo");
+    if (sessionData) {
+      setServiceInfo(JSON.parse(sessionData));
+    }
+  }, []);
+
+  const loadingModal: IloadingModal = {
+    isOpen: isLoadingModalOpen,
+    content: {
+      title: (serviceInfo && serviceInfo.serviceTitle) || "프로젝트",
+      desc: ["파일을 생성 중이예요!", <br key="1" />, "잠시만 기다려주세요"],
+    },
+    bubble: "파일 생성 중!",
+  };
+
   return (
     <>
       <div css={wrap}>
@@ -127,6 +155,22 @@ export default function ServiceStep5Page() {
           </div>
         </div>
         <div css={button_wrap}>
+          <div css={speech_bubble_container}>
+            <div css={bubble}>
+              <p css={speech}>
+                <span css={high_light}>더핫한이 만든 기획서</span>가 마음에
+                드시나요? <br />
+                그렇다면 <span css={high_light}>다운로드</span> 할 수 있게
+                준비해 드렸어요!
+              </p>
+            </div>
+            <img
+              src="/assets/images/serviceIntro1/speechBalloon.png"
+              alt="speechBalloon"
+              css={triangle}
+            />
+          </div>
+          <img src="/assets/images/serviceStep5/ai.png" alt="ai" css={ai} />
           <div css={button_container}>
             <ButtonIcon {...buttonDonwnloadPdf} />
             <ButtonIcon {...buttonDonwnloadPng} />
@@ -154,6 +198,7 @@ export default function ServiceStep5Page() {
           </Link>
         </div>
       </div>
+      {isLoadingModalOpen && <LoadingModal {...loadingModal} />}
       {isFullpageModalOpen && <FullPageModalUneditable {...fullPageModal} />}
     </>
   );
@@ -164,6 +209,45 @@ const wrap = css`
   flex-direction: column;
   gap: 20px;
   margin-bottom: 100px;
+`;
+
+const speech_bubble_container = css`
+  position: absolute;
+
+  bottom: calc(100% + 60px);
+  left: 90px;
+`;
+
+const bubble = css`
+  border-radius: 50px;
+  background-color: #119cd4;
+  padding: 20px 19px;
+`;
+
+const speech = css`
+  color: #fff;
+  font-family: Pretendard;
+  text-align: center;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+`;
+
+const high_light = css`
+  color: #fffa9a;
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+`;
+
+const triangle = css`
+  position: absolute;
+  top: calc(100% - 4px);
+  right: 50%;
 `;
 
 const title_container = css`
@@ -183,6 +267,8 @@ const title = css`
 `;
 
 const button_wrap = css`
+  position: relative;
+
   display: flex;
   padding: 80px 100px;
   flex-direction: column;
@@ -191,6 +277,13 @@ const button_wrap = css`
 
   border-radius: 20px;
   background: var(--F6F8FF, #f6f8ff);
+`;
+
+const ai = css`
+  position: absolute;
+  z-index: 1;
+  top: -30px;
+  left: 140px;
 `;
 
 const button_container = css`

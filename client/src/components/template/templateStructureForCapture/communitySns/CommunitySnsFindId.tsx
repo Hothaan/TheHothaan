@@ -41,6 +41,7 @@ export default function CommunitySnsFindId() {
       }
     } catch (error) {
       console.error(error);
+      window.location.href = "/error";
     }
   }
 

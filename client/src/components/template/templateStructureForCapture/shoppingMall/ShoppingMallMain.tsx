@@ -60,6 +60,7 @@ export default function ShoppingMallMain() {
       }
     } catch (error) {
       console.error(error);
+      window.location.href = "/error";
     }
   }
 

@@ -130,6 +130,7 @@ export default function ServiceStep3Page() {
         }
       } catch (error) {
         console.error("Error fetching service type menu:", error);
+        window.location.href = "/error";
       } finally {
         setLoading(false);
       }
@@ -325,6 +326,7 @@ export default function ServiceStep3Page() {
         }
       } catch (error) {
         console.error("API 요청 실패:", error);
+        window.location.href = "/error";
       } finally {
         fetchGeneratedText();
       }
@@ -370,6 +372,7 @@ export default function ServiceStep3Page() {
       }
     } catch (error) {
       console.error("Error fetching generated text:", error);
+      window.location.href = "/error";
     } finally {
     }
   }
@@ -392,6 +395,7 @@ export default function ServiceStep3Page() {
       }
     } catch (error) {
       console.error(error);
+      window.location.href = "/error";
     }
   }
 
@@ -458,6 +462,7 @@ export default function ServiceStep3Page() {
       }
     } catch (error) {
       console.error("Error saving images:", error);
+      window.location.href = "/error";
       return null;
     } finally {
     }
@@ -523,8 +528,7 @@ export default function ServiceStep3Page() {
       title: serviceInfo?.serviceTitle || "프로젝트",
       desc: ["화면을 구성중이에요!", <br key="1" />, "잠시만 기다려주세요"],
     },
-    onLoad: () => {},
-    onComplete: () => {},
+    bubble: "화면을 구성하고 있어요!",
   };
 
   useEffect(() => {

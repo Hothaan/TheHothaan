@@ -8,6 +8,7 @@ import Loading from "@components/common/ui/Loading/loading";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 import { IboardText } from "@components/template/board/Board";
+import useNavigation from "@hooks/useNavigation";
 
 interface IcommunitySnsBoard extends IboardText {}
 
@@ -16,6 +17,7 @@ export default function CommunitySnsBoard() {
 
   /* only projectId */
   const { isProduction } = useIsProduction();
+  const { handleNavigation } = useNavigation();
   const { projectId } = useParams();
   const [projectIdValue, setProjectIdValue] = useState<string | null>(null);
 
@@ -44,6 +46,7 @@ export default function CommunitySnsBoard() {
       }
     } catch (error) {
       console.error(error);
+      window.location.href = "/error";
     }
   }
 

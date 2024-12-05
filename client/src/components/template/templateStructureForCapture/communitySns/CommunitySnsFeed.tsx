@@ -45,6 +45,7 @@ export default function CommunitySnsFeed() {
       }
     } catch (error) {
       console.error(error);
+      window.location.href = "/error";
     }
   }
 

@@ -101,6 +101,7 @@ export default function ServiceStep2Page() {
         }
       } catch (error) {
         console.error("API 요청 실패:", error);
+        window.location.href = "/error";
       } finally {
         setLoading(false);
       }
@@ -119,6 +120,7 @@ export default function ServiceStep2Page() {
         }
       } catch (error) {
         console.error("API 요청 실패:", error);
+        window.location.href = "/error";
       } finally {
         setLoading(false);
       }

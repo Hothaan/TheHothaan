@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css, keyframes } from "@emotion/react";
 import MainPageSectionContainer from "./MainPageSectionContainer";
+import Bubble from "@components/common/text/Bubble";
 
 export default function ServiceIntro1() {
   return (
@@ -18,15 +19,8 @@ export default function ServiceIntro1() {
             alt="serviceIntro1"
             css={serviceIntro1}
           />
-          <div css={speech_bubble_container}>
-            <div css={bubble}>
-              <p css={speech}>기획안 파일이 생성되었어요 👀🎉</p>
-            </div>
-            <img
-              src="/assets/images/serviceIntro1/speechBalloon.png"
-              alt="speechBalloon"
-              css={triangle}
-            />
+          <div css={bubble_container}>
+            <Bubble text="기획안 파일이 생성되었어요 👀🎉" />
           </div>
         </div>
       </div>
@@ -98,7 +92,7 @@ const rotate = keyframes`
     transform: rotate(0deg);
   }`;
 
-const speech_bubble_container = css`
+const bubble_container = css`
   position: absolute;
   top: -16px;
   right: -60px;

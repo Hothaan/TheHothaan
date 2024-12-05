@@ -44,6 +44,7 @@ export default function ShoppingMallFindId() {
       }
     } catch (error) {
       console.error(error);
+      window.location.href = "/error";
     }
   }
 

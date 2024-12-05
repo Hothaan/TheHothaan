@@ -44,6 +44,7 @@ export default function ShoppingMallOrderList() {
       }
     } catch (error) {
       console.error(error);
+      window.location.href = "/error";
     }
   }
 

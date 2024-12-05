@@ -71,6 +71,7 @@ export default function ServicePreviewPage() {
     } catch (error) {
       console.error(error);
       setIsFail(true);
+      window.location.href = "/error";
     }
   }
 
@@ -130,8 +131,8 @@ export default function ServicePreviewPage() {
         "잠시만 기다려주세요",
       ],
     },
-    onLoad: () => {},
-    onComplete: () => {},
+    bubble: "나만의 기획안 생성 중!",
+    type: "clock",
   };
 
   function makeListData() {
@@ -203,7 +204,8 @@ export default function ServicePreviewPage() {
     currentIdx: currentIdx,
     total: listData.length - 1,
     direction: "left",
-    onClick: () => {
+    onClick: (e: React.MouseEvent) => {
+      e.stopPropagation();
       handleSelectPrevItem();
     },
   };
@@ -212,7 +214,8 @@ export default function ServicePreviewPage() {
     currentIdx: currentIdx,
     total: listData.length - 1,
     direction: "up",
-    onClick: () => {
+    onClick: (e: React.MouseEvent) => {
+      e.stopPropagation();
       handleSelectPrevItem();
     },
   };
@@ -221,7 +224,8 @@ export default function ServicePreviewPage() {
     currentIdx: currentIdx,
     total: listData.length - 1,
     direction: "right",
-    onClick: () => {
+    onClick: (e: React.MouseEvent) => {
+      e.stopPropagation();
       handleNextPrevItem();
     },
   };
@@ -230,13 +234,25 @@ export default function ServicePreviewPage() {
     currentIdx: currentIdx,
     total: listData.length - 1,
     direction: "down",
-    onClick: () => {
+    onClick: (e: React.MouseEvent) => {
+      e.stopPropagation();
       handleNextPrevItem();
     },
   };
 
   const buttonFullPage: IbuttonFullPage = {
-    onClick: () => {
+    onClick: (e: React.MouseEvent) => {
+      e.stopPropagation();
+      setIsFullpageModalOpen(true);
+    },
+  };
+
+  const buttonEdit: Ibutton = {
+    size: "full",
+    bg: "gradient",
+    text: "수정하기 ✍️",
+    onClick: (e: React.MouseEvent) => {
+      e.stopPropagation();
       setIsFullpageModalOpen(true);
     },
   };
@@ -434,6 +450,7 @@ export default function ServicePreviewPage() {
               </p>
               <ButtonArrowIconControler {...buttonSelectNextItem} />
               <ButtonFullPage {...buttonFullPage} />
+              <Button {...buttonEdit} />
             </div>
           </div>
         </div>

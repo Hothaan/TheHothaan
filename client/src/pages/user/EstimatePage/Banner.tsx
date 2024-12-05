@@ -14,7 +14,7 @@ export default function Banner() {
         <path
           d="M1.59668 8.95161L8.04829 2.5M8.04829 2.5L14.4999 8.95161M8.04829 2.5V22.5"
           stroke="white"
-          stroke-width="3"
+          strokeWidth="3"
         />
       </svg>
       <svg

@@ -3,7 +3,7 @@ import { css } from "@emotion/react";
 import { ReactComponent as FullPage } from "@svgs//service/buttonFullPage.svg";
 
 export interface IbuttonFullPage {
-  onClick: () => void;
+  onClick: (e: React.MouseEvent) => void;
 }
 
 export default function ButtonFullPage(prop: IbuttonFullPage) {

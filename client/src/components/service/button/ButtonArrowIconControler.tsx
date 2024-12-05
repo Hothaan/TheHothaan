@@ -9,7 +9,7 @@ export interface IbuttonArrowControler {
   currentIdx: number;
   total: number;
   direction: "left" | "right" | "up" | "down";
-  onClick: () => void;
+  onClick: (e: React.MouseEvent) => void;
 }
 
 export default function ButtonArrowIconControler(prop: IbuttonArrowControler) {

@@ -7,7 +7,7 @@ export interface Ibutton {
   size: TbtnSize;
   bg: TbtnBg;
   text: string;
-  onClick?: () => void;
+  onClick?: any;
   disabled?: boolean;
 }
 

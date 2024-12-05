@@ -23,7 +23,7 @@ import { IserviceContact } from "@components/template/service/ServiceContact";
 export default function HomePageBoardMain() {
   return (
     <div className="templateImage">
-      <Header serviceType="홈페이지 · 게시판" />
+      <Header serviceType="홈페이지·게시판" />
       <Mainbanner />
       <ServiceIntroduce />
       <ProductIntroduceMain />
@@ -31,7 +31,7 @@ export default function HomePageBoardMain() {
       <RecruitMain />
       <NewsMain />
       <ExploreServiceMain />
-      <Footer serviceType="홈페이지 · 게시판" />
+      <Footer serviceType="홈페이지·게시판" />
     </div>
   );
 }

@@ -30,6 +30,10 @@ import FaqPage from "@pages/user/CustomerServicePage/FaqPage/FaqPage";
 import NoticePage from "@pages/user/CustomerServicePage/NoticePage/NoticePage";
 import SupportPage from "@pages/user/CustomerServicePage/SupportPage/SupportPage";
 
+import PreparePage from "@pages/user/PreparePage/PreparePage";
+import ErrorPage from "@pages/user/ErrorPage/ErrorPage";
+import NotFoundPage from "@pages/user/NotFoundPage/NotFoundPage";
+
 export default function UserLayout() {
   const { includeLocation } = useLocationControl();
 
@@ -69,6 +73,10 @@ export default function UserLayout() {
           {/* ---- test -------------- */}
           {/* <Route path="/test" element={<TestPage />} /> */}
           <Route path="/fublising" element={<TemplateFublishingPage />} />
+          {/* error page */}
+          <Route path="/prepare" element={<PreparePage />} />
+          <Route path="/error" element={<ErrorPage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
       {!includeLocation("template") && <Footer />}
