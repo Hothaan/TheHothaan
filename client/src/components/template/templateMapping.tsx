@@ -23,6 +23,11 @@ import CommunitySnsFindId from "./templateStructureForCapture/communitySns/Commu
 import CommunitySnsFindPw from "./templateStructureForCapture/communitySns/CommunitySnsFindPw";
 
 import HomePageBoardMain from "./templateStructureForCapture/homepageBoard/HomePageBoardMain";
+import HomePageBoardGreetings from "./templateStructureForCapture/homepageBoard/HomePageBoardGreetings";
+import HomePageBoardHistory from "./templateStructureForCapture/homepageBoard/HomePageBoardHistory";
+import HomePageBoardSearch from "./templateStructureForCapture/homepageBoard/HomePageBoardSearch";
+import HomePageBoardMedia from "./templateStructureForCapture/homepageBoard/HomePageBoardMedia";
+import HomePageBoardNews from "./templateStructureForCapture/homepageBoard/HomePageBoardNews";
 
 import LandingIntroduceMain from "./templateStructureForCapture/landingIntroduce/LandingIntroduceMain";
 
@@ -54,6 +59,11 @@ export const templateMapForCapture: {
   "커뮤니티·sns-비밀번호찾기": CommunitySnsFindPw,
 
   "홈페이지·게시판-메인": HomePageBoardMain,
+  "홈페이지·게시판-인사말": HomePageBoardGreetings,
+  "홈페이지·게시판-연혁": HomePageBoardHistory,
+  "홈페이지·게시판-검색": HomePageBoardSearch,
+  "홈페이지·게시판-미디어": HomePageBoardMedia,
+  "홈페이지·게시판-뉴스": HomePageBoardNews,
 
   "랜딩·소개-메인": LandingIntroduceMain,
 };
