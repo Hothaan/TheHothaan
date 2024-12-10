@@ -32,7 +32,6 @@ const saveImageFromURL = async (req, res) => {
 
     // Wait for .templateImage or full page screenshot
     try {
-      await page.waitForFunction(() => document.styleSheets.length > 0);
       await page.waitForSelector(".templateImage", { timeout: 120000 });
 
       // Check if element exists and has non-zero dimensions
@@ -99,16 +98,9 @@ const saveImageToDatabase = async (req, res) => {
   let browser;
   try {
     browser = await puppeteer.launch({
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-gpu",
-        "--disable-dev-shm-usage",
-      ],
-      headless: false,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
     const page = await browser.newPage();
-    await page.setJavaScriptEnabled(true);
 
     await page.setUserAgent(
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
@@ -120,26 +112,10 @@ const saveImageToDatabase = async (req, res) => {
 
     let imageBuffer;
     try {
-      await page.waitForFunction(() => document.styleSheets.length > 0);
-      // await page.waitForSelector(".templateImage", { timeout: 30000 });
-      await page.waitForFunction(
-        () => document.querySelector(".templateImage")?.innerHTML.trim() !== "",
-        { timeout: 60000 }
-      );
-      const content = await page.evaluate(() => {
-        const element = document.querySelector(".templateImage");
-
-        if (element) {
-          element.style.display = "block";
-          element.style.visibility = "visible";
-          element.style.opacity = "1";
-        }
-
-        return element ? element.innerHTML : "Element not found";
-      });
-      // const element = await page.$(".templateImage");
+      await page.waitForSelector(".templateImage", { timeout: 30000 });
+      const element = await page.$(".templateImage");
       console.log(".templateImage found! Capturing screenshot...");
-      imageBuffer = await content.screenshot();
+      imageBuffer = await element.screenshot();
     } catch (err) {
       console.warn(
         "`.templateImage` not found. Capturing full page screenshot..."
