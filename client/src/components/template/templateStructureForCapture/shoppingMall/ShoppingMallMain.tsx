@@ -26,6 +26,13 @@ import { IserviceIntroductionText } from "@components/template/service/ServiceIn
 /* content */
 import { ImainBannerContent } from "@components/template/main/Mainbanner";
 
+/*
+  추가 구현사항
+  
+  값이 변경됐는지 감지하여 변경된 부분만 localStorage에 저장
+  저장된 값을 모두 모달에서 가져와서 저장버튼 클릭시 db에 저장
+*/
+
 interface IshoppingMallMain {
   mainBanner: ImainBannerText;
   productList: IproductListText;
@@ -157,7 +164,7 @@ export default function ShoppingMallMain() {
         serviceType="쇼핑몰"
       />
       <Mainbanner
-        content={mainBannerContent || undefined}
+        content={mainBannerContent}
         isEditable={true}
         onChange={handleMainBannerChange}
       />
