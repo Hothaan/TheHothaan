@@ -1,10 +1,8 @@
-// export type TtemplateType = "capture" | "render";
-
 export type TtemplateType = string;
 
-// export interface ItemplateType {
-//   templateType: TtemplateType;
-// }
+export interface ItemplateCss {
+  [key: string]: Record<string, string>;
+}
 
 export interface ItemplateType {
   templateType: TtemplateType;

@@ -23,6 +23,9 @@ import { IserviceContact } from "@components/template/service/ServiceContact";
 import { IreviewText } from "@components/template/product/Review";
 import { IserviceIntroductionText } from "@components/template/service/ServiceIntroduction";
 
+/* content */
+import { ImainBannerContent } from "@components/template/main/Mainbanner";
+
 interface IshoppingMallMain {
   mainBanner: ImainBannerText;
   productList: IproductListText;
@@ -38,10 +41,19 @@ export default function ShoppingMallMain() {
   const { isProduction } = useIsProduction();
   const { projectId } = useParams();
   const [projectIdValue, setProjectIdValue] = useState<string | null>(null);
-
   const [headerData, setHeaderData] = useState<Iheader | null>(null);
   const [generatedText, setGeneratedText] =
     useState<IfetchedfeatureResponseData | null>(null);
+
+  const [mainBannerContent, setMainBannerContent] =
+    useState<ImainBannerContent | null>(null);
+
+  function handleMainBannerChange(updatedContent: ImainBannerContent) {
+    setMainBannerContent((prevContent) => ({
+      ...prevContent,
+      ...updatedContent,
+    }));
+  }
 
   async function fetchFeatureData(isProduction: boolean, projectId: string) {
     try {
@@ -82,6 +94,57 @@ export default function ShoppingMallMain() {
     }
   }, [projectIdValue]);
 
+  useEffect(() => {
+    if (
+      generatedText &&
+      generatedText.content?.title &&
+      generatedText.content?.desc
+    ) {
+      setMainBannerContent({
+        title: generatedText.content?.title,
+        titleCss: mainBanner_title_css_,
+        desc: generatedText.content?.desc,
+        descCss: mainBanner_desc_css_,
+      });
+    }
+  }, [generatedText]);
+
+  const mainBanner_title_css_: Record<string, string> = {
+    marginBottom: "30px",
+    color: "#486284",
+    fontFamily: "Inter",
+    fontSize: "96px",
+    fontStyle: "normal",
+    fontWeight: "900",
+    lineHeight: "150%",
+    textTransform: "capitalize",
+    width: "100%",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+  };
+
+  const mainBanner_desc_css_: Record<string, string> = {
+    wordBreak: "keep-all",
+    color: "#486284",
+    fontFamily: "Inter",
+    fontSize: "32px",
+    fontStyle: "normal",
+    fontWeight: "400",
+    lineHeight: "150%",
+    marginBottom: "80px",
+    maxWidth: "676px",
+
+    display: "-webkit-box",
+    WebkitBoxOrient: "vertical",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    height: "100px",
+    WebkitLineClamp: "2",
+  };
+
+  console.log(mainBannerContent);
+
   if (!generatedText || !headerData) {
     return <Loading />;
   }
@@ -94,9 +157,9 @@ export default function ShoppingMallMain() {
         serviceType="쇼핑몰"
       />
       <Mainbanner
+        content={mainBannerContent || undefined}
         isEditable={true}
-        title={generatedText?.content?.title}
-        desc={generatedText?.content?.desc}
+        onChange={handleMainBannerChange}
       />
       <ProductListMain option="main" />
       <Review />

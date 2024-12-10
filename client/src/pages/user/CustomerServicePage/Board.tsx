@@ -7,6 +7,7 @@ interface IboardItem {
   title?: string;
   category?: string;
   date?: string;
+  idx?: number;
 }
 
 const item_title_ = "게시글 제목";
@@ -14,7 +15,7 @@ const item_category_ = "분류명";
 const item_date_ = "2024.12.04";
 
 function BoardItem(prop: IboardItem) {
-  const { title, category, date } = prop;
+  const { title, category, date, idx } = prop;
 
   const container = css`
     width: 420px;
@@ -53,9 +54,20 @@ function BoardItem(prop: IboardItem) {
     line-height: normal;
   `;
 
+  const image_style = css`
+    width: 100%;
+    object-fit: cover;
+  `;
+
   return (
     <div css={container}>
-      <div css={image_container}></div>
+      <div css={image_container}>
+        <img
+          src={`/assets/images/customerService/${idx ? idx + 1 : 1}.png`}
+          alt="board"
+          css={image_style}
+        />
+      </div>
       <p css={title_style}>{title || item_title_}</p>
       <div css={info_container}>
         <p css={info}>{category || item_category_}</p>
@@ -88,7 +100,7 @@ export default function Board() {
     <div css={container}>
       <div css={item_container}>
         {Array.from({ length: count }, (_, index) => (
-          <BoardItem key={index} />
+          <BoardItem key={index} idx={index} />
         ))}
       </div>
       <Pagination

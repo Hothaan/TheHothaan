@@ -1,15 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import { useState, useEffect } from "react";
 import { OuterWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
-import TemplateButton from "../commonComponent/TemplateButton";
 import EditableText from "@components/service/editableText/EditableText";
-
-// 수정된 위치 식별자 필요
-// 수정되기 전 텍스트와 수정된 후 텍스트 비교 가능해야함
-// 수정되기 전 css와 수정된 후 css 비교 가능해야함
-// 모달 전체에서 수정 감지해서 수정된 내용 저장
-// 모달에서 저장버튼 클릭시 수정한 내용 db에 업데이트
 
 const title_ = "Headline H1";
 const title_className = "main_banner_title";
@@ -27,12 +21,81 @@ export interface ImainBannerText {
   button?: string;
 }
 
-interface ImainBanner extends ImainBannerText {
+export interface ImainBannerContent {
+  title?: string;
+  titleCss?: Record<string, string>;
+  desc?: string;
+  descCss?: Record<string, string>;
+  button?: string;
+  buttonCss?: Record<string, string>;
+}
+
+interface ImainBanner {
+  content?: ImainBannerContent | null;
   isEditable?: boolean;
+  onChange?: (content: ImainBannerContent) => void;
 }
 
 export default function Mainbanner(prop: ImainBanner) {
-  const { isEditable, title, desc, button } = prop;
+  const { isEditable, content, onChange } = prop;
+
+  const [editTitle, setEditTitle] = useState(content?.title || title_);
+  const [editTitleCss, setEditTitleCss] = useState(content?.titleCss);
+  const [editDesc, setEditDesc] = useState(content?.desc || desc_);
+  const [editDescCss, setEditDescCss] = useState(content?.descCss);
+  const [editButton, setEditButton] = useState(content?.button || button_);
+  const [editButtonCss, setEditButtonCss] = useState(content?.buttonCss);
+
+  useEffect(() => {
+    if (content && content !== undefined) {
+      setEditTitle(content?.title || title_);
+      setEditTitleCss(content?.titleCss);
+      setEditDesc(content?.desc || desc_);
+      setEditDescCss(content.descCss);
+    }
+  }, [content]);
+
+  console.log(editTitle);
+
+  function handleEditTitle(
+    updatedText: string,
+    updatedCss: Record<string, string>
+  ) {
+    const newContent = {
+      ...content,
+      title: updatedText,
+      titleCss: updatedCss,
+    };
+    setEditTitle(updatedText);
+    setEditTitleCss(updatedCss);
+    onChange?.(newContent);
+  }
+
+  function handleEditDesc(
+    updatedText: string,
+    updatedCss: Record<string, string>
+  ) {
+    setEditDesc(updatedText);
+    setEditDescCss(updatedCss);
+    onChange?.({
+      ...content,
+      desc: updatedText,
+      descCss: updatedCss,
+    });
+  }
+
+  function handleEditButton(
+    updatedText: string,
+    updatedCss: Record<string, string>
+  ) {
+    setEditButton(updatedText);
+    setEditButtonCss(updatedCss);
+    onChange?.({
+      ...content,
+      button: updatedText,
+      buttonCss: updatedCss,
+    });
+  }
 
   return (
     <OuterWrap padding="0">
@@ -50,33 +113,39 @@ export default function Mainbanner(prop: ImainBanner) {
         <div css={container}>
           {isEditable ? (
             <EditableText
-              text={title || title_}
+              text={editTitle}
               isTextArea={false}
-              defaultCss={pass_h1}
+              defaultCss={editTitleCss || mainBanner_title_css_}
               className={title_className}
+              onChange={handleEditTitle}
             />
           ) : (
-            <p css={pass_h1} className={title_className}>
-              {title || title_}
+            <p css={editTitleCss} className={title_className}>
+              {editTitle}
             </p>
           )}
           {isEditable ? (
             <EditableText
-              text={desc || desc_}
+              text={editDesc}
               isTextArea={true}
-              defaultCss={pass_desc}
+              defaultCss={editDescCss || mainBanner_desc_css_}
               className={desc_className}
+              onChange={handleEditDesc}
             />
           ) : (
-            <p css={pass_desc} className={title_className}>
-              {desc || desc_}
+            <p
+              css={editDescCss || mainBanner_desc_css_}
+              className={title_className}
+            >
+              {editDesc}
             </p>
           )}
-          <TemplateButton
+          <p css={editButtonCss || mainBanner_button_css}>{editButton}</p>
+          {/* <TemplateButton
             type="default"
-            text={button || button_}
+            text={content?.button || button_}
             className={button_className}
-          />
+          /> */}
         </div>
       </div>
     </OuterWrap>
@@ -104,7 +173,7 @@ const container = css`
   justify-content: start;
 `;
 
-const pass_h1: Record<string, string> = {
+const mainBanner_title_css_: Record<string, string> = {
   marginBottom: "30px",
   color: "#486284",
   fontFamily: "Inter",
@@ -114,12 +183,12 @@ const pass_h1: Record<string, string> = {
   lineHeight: "150%",
   textTransform: "capitalize",
   width: "100%",
-  overflow: "hidden" /* 넘치는 텍스트 숨김 */,
-  textOverflow: "ellipsis" /* 말줄임표 적용 */,
-  whiteSpace: "nowrap" /* 텍스트를 한 줄로 처리 */,
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
 };
 
-const pass_desc: Record<string, string> = {
+const mainBanner_desc_css_: Record<string, string> = {
   wordBreak: "keep-all",
   color: "#486284",
   fontFamily: "Inter",
@@ -136,4 +205,21 @@ const pass_desc: Record<string, string> = {
   textOverflow: "ellipsis",
   height: "100px",
   WebkitLineClamp: "2",
+};
+
+const mainBanner_button_css: Record<string, string> = {
+  display: "flex",
+  padding: "22px 66px",
+  justifyContent: "center",
+  alignItems: "center",
+
+  borderRadius: "10px",
+  background: "#486284",
+  color: "var(--FFFFFF, #fff)",
+
+  fontFamily: "Inter",
+  fontSize: "32px",
+  fontStyle: "normal",
+  fontWeight: "400",
+  lineHeight: "normal",
 };

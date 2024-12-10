@@ -421,8 +421,8 @@ export default function ServiceStep3Page() {
 
     try {
       const responses = await Promise.allSettled(
-        parameterArr.map((param, idx) =>
-          saveImageDb(true, param, projectId, featureId[idx].toString())
+        parameterArr.map((url, idx) =>
+          saveImageDb(true, url, projectId, featureId[idx].toString())
         )
       );
 

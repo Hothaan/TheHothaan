@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, SerializedStyles } from "@emotion/react";
-import { useState, useRef, useLayoutEffect, CSSProperties } from "react";
+import { useState, useRef, useLayoutEffect, useEffect } from "react";
 import {
   TselectableColor,
   TfontFamily,
@@ -41,10 +41,12 @@ interface IeditableText {
   text: string;
   isTextArea: boolean;
   defaultCss: Record<string, string>;
+  onChange?: (text: string, css: Record<string, string>) => void;
 }
 
 export default function EditableText(prop: IeditableText) {
-  const { className, text, isTextArea, defaultCss } = prop;
+  const { className, text, isTextArea, defaultCss, onChange } = prop;
+
   const divRef = useRef<HTMLDivElement>(null);
   const toolbarRef = useRef<HTMLDivElement>(null);
   const [toolbarPosition, setToolbarPosition] = useState({ top: 0, left: 0 });
@@ -53,6 +55,16 @@ export default function EditableText(prop: IeditableText) {
   const [styles, setStyles] = useState<Record<string, string>>({
     ...defaultCss,
   });
+
+  useEffect(() => {
+    setTextContent(text);
+  }, [text]);
+
+  useEffect(() => {
+    if (onChange) {
+      onChange(textContent, styles);
+    }
+  }, [textContent, styles]);
 
   useLayoutEffect(() => {
     if (isEditing && divRef.current && toolbarRef.current) {
