@@ -7,23 +7,20 @@ const title_ = "FAQ";
 
 const item_title_ =
   "FAQ 제목입니다. FAQ 제목입니다. FAQ 제목입니다. FAQ 제목입니다. ";
-const item_title_id = "faq_main_item_title";
+const item_title_className = "faq_main_item_title";
 
 const item_content_ =
   "FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. ";
-const item_content_id = "faq_main_item_content";
+const item_content_className = "faq_main_item_content";
 
 export interface IfaqMainText {
   title?: string;
   content?: string;
 }
 
-interface IfaqMain extends IfaqMainText {}
+interface IfaqMainItem extends IfaqMainText {}
 
-export interface IfaqMainItem {
-  title?: string;
-  content?: string;
-}
+interface IfaqMain extends IfaqMainText {}
 
 function FaqMainItem(prop: IfaqMainItem) {
   const { title, content } = prop;
@@ -80,13 +77,13 @@ function FaqMainItem(prop: IfaqMainItem) {
           return (
             <div css={item}>
               <div css={title_container}>
-                <p css={item_title(true)} id={item_title_id + "_" + index}>
+                <p css={item_title(true)} className={item_title_className}>
                   {title || item_title_}
                 </p>
                 <ChevUp css={icon(true)} />
               </div>
               {
-                <p css={item_content} id={item_content_id + "_" + index}>
+                <p css={item_content} className={item_content_className}>
                   {content || item_content_}
                 </p>
               }
@@ -96,7 +93,7 @@ function FaqMainItem(prop: IfaqMainItem) {
           return (
             <div css={item}>
               <div css={title_container}>
-                <p css={item_title(false)} id={item_title_id + "_" + index}>
+                <p css={item_title(false)} className={item_title_className}>
                   {title || item_title_}
                 </p>
                 <ChevUp css={icon(false)} />

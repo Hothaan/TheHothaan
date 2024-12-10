@@ -13,7 +13,6 @@ import {
 } from "@pages/user/ServicePage/ServiceStep4Page";
 import { TserviceDefaultData } from "@store/serviceDefaultDataStore";
 import { templateMapForCapture } from "@components/template/templateMapping";
-import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
 
 interface IFullPageModal {
   imageUrlArr: TimageUrl[] | null;

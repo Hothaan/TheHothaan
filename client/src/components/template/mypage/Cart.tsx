@@ -12,6 +12,7 @@ import Tabs from "../commonComponent/Tabs";
 import ImageBox from "../commonComponent/ImageBox";
 
 const title_ = "제품 이름";
+const title_className = "cart_title";
 
 export interface IcartText {
   title?: string;
@@ -369,7 +370,9 @@ function CartOrder(prop: IcartText) {
                   borderRadius="0"
                 />
                 <div css={product_info_container}>
-                  <p css={text_style}>{title || title_}</p>
+                  <p css={text_style} className={title_className}>
+                    {title || title_}
+                  </p>
                   <p css={text_style}>￦5,600,000</p>
                 </div>
               </div>

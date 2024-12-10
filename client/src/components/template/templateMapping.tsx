@@ -1,3 +1,4 @@
+/* 쇼핑몰 */
 import ShoppingMallMain from "./templateStructureForCapture/shoppingMall/ShoppingMallMain";
 import ShoppingMallProductList from "./templateStructureForCapture/shoppingMall/ShoppingMallProductList";
 import ShoppingMallProductDetail from "./templateStructureForCapture/shoppingMall/ShoppingMallProductDetail";
@@ -11,6 +12,7 @@ import ShoppingMallNotice from "./templateStructureForCapture/shoppingMall/Shopp
 import ShoppingMallWidthDrawer from "./templateStructureForCapture/shoppingMall/ShoppingMallWidthDrawer";
 import ShoppingMallBrandIntroduce from "./templateStructureForCapture/shoppingMall/ShoppingMallBrandIntroduce";
 
+/* 커뮤니티 SNS */
 import CommunitySnsMain from "./templateStructureForCapture/communitySns/CommunitySnsMain";
 import CommunitySnsBoard from "./templateStructureForCapture/communitySns/CommunitySnsBoard";
 import CommunitySnsFeed from "./templateStructureForCapture/communitySns/CommunitySnsFeed";
@@ -22,6 +24,7 @@ import CommunitySnsJoin from "./templateStructureForCapture/communitySns/Communi
 import CommunitySnsFindId from "./templateStructureForCapture/communitySns/CommunitySnsFindId";
 import CommunitySnsFindPw from "./templateStructureForCapture/communitySns/CommunitySnsFindPw";
 
+/* 홈페이지 게시판 */
 import HomePageBoardMain from "./templateStructureForCapture/homepageBoard/HomePageBoardMain";
 import HomePageBoardGreetings from "./templateStructureForCapture/homepageBoard/HomePageBoardGreetings";
 import HomePageBoardHistory from "./templateStructureForCapture/homepageBoard/HomePageBoardHistory";
@@ -29,6 +32,7 @@ import HomePageBoardSearch from "./templateStructureForCapture/homepageBoard/Hom
 import HomePageBoardMedia from "./templateStructureForCapture/homepageBoard/HomePageBoardMedia";
 import HomePageBoardNews from "./templateStructureForCapture/homepageBoard/HomePageBoardNews";
 
+/* 랜딩 소개 */
 import LandingIntroduceMain from "./templateStructureForCapture/landingIntroduce/LandingIntroduceMain";
 
 export const templateMapForCapture: {

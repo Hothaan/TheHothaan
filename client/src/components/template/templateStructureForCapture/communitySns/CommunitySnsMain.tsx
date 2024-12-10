@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+
+/* component */
 import Header, { Iheader } from "@components/template/common/header/Header";
 import Footer from "@components/template/common/footer/Footer";
 import Mainbanner from "@components/template/main/Mainbanner";
@@ -10,10 +12,14 @@ import ImageBoardMain from "@components/template/main/ImageBoardMain";
 import NewsMain from "@components/template/main/NewsMain";
 import FaqMain from "@components/template/main/FaqMain";
 import ServiceContact from "@components/template/service/ServiceContact";
-import { IfetchedfeatureResponseData } from "@components/template/types";
 import Loading from "@components/common/ui/Loading/loading";
+
+/* data */
+import { IfetchedfeatureResponseData } from "@components/template/types";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
+
+/* text */
 import { ImainBannerText } from "@components/template/main/Mainbanner";
 import { InoticeMainText } from "@components/template/main/NoticeMain";
 import { InormalBoardText } from "@components/template/main/NormalBoardMain";
@@ -26,6 +32,7 @@ interface IcommunitySnsMain {
   notice: InoticeMainText;
   board: InormalBoardText;
   news: InewsMainText;
+  feed: null;
   faq: IfaqMainText;
   serviceContact: IserviceContact;
 }

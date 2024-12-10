@@ -1,16 +1,24 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+
+/* component */
 import Header, { Iheader } from "@components/template/common/header/Header";
-import Footer from "@components/template/common/footer/Footer";
-import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
 import ProductDetail from "@components/template/product/ProductDetail";
-import { IfetchedfeatureResponseData } from "@components/template/types";
+import Footer from "@components/template/common/footer/Footer";
 import Loading from "@components/common/ui/Loading/loading";
+
+/* data */
+import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
+import { IfetchedfeatureResponseData } from "@components/template/types";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
+
+/* text */
 import { IproductDetailText } from "@components/template/product/ProductDetail";
 
-interface IShoppingMallProductDetail extends IproductDetailText {}
+interface IShoppingMallProductDetail {
+  productDetail: IproductDetailText;
+}
 
 export default function ShoppingMallProductDetail() {
   const feature = "상품 상세";

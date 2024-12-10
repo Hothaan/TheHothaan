@@ -5,7 +5,7 @@ import ImageBox from "../commonComponent/ImageBox";
 import { OuterWrap } from "../commonComponent/Wrap";
 
 const item_title_ = "lorem ipsum, quia do";
-const item_title_id = "feed_item_title";
+const item_title_className = "feed_item_title";
 
 export interface IfeedText {
   title?: string;
@@ -18,38 +18,6 @@ function FeedItem(prop: IfeedItem) {
   const { title } = prop;
 
   const count = 36;
-
-  const item = css`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 20px;
-  `;
-
-  const image_wrap = css`
-    width: 100%;
-    padding: 0 45px;
-    flex-wrap: wrap;
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 30px;
-
-    @media (max-width: 1000px) {
-      padding: 0 50px;
-      grid-template-columns: repeat(3, 1fr);
-    }
-  `;
-
-  const item_title = css`
-    color: #486284;
-
-    /* mall/subject */
-    font-family: Inter;
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-  `;
 
   return (
     <div css={image_wrap}>
@@ -65,7 +33,7 @@ function FeedItem(prop: IfeedItem) {
               icon: "width: 40px; height: 40px;",
             }}
           />
-          <p css={item_title} id={item_title_id + "_" + index}>
+          <p css={item_title} className={item_title_className}>
             {title || item_title_}
           </p>
         </div>
@@ -89,3 +57,35 @@ export default function Feed(prop: Ifeed) {
     </OuterWrap>
   );
 }
+
+const item = css`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+`;
+
+const image_wrap = css`
+  width: 100%;
+  padding: 0 45px;
+  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 30px;
+
+  @media (max-width: 1000px) {
+    padding: 0 50px;
+    grid-template-columns: repeat(3, 1fr);
+  }
+`;
+
+const item_title = css`
+  color: #486284;
+
+  /* mall/subject */
+  font-family: Inter;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+`;

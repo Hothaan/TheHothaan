@@ -3,22 +3,21 @@ import { css } from "@emotion/react";
 import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 
+const component_title_ = "게시판";
+
+const item_title_ = "일반게시판(이미지형) 게시판입니다.";
+const item_title_className = "image_board_main_item_title";
+
 export interface IimageBoardText {
   title?: string;
 }
 
 interface IimageBoardMain extends IimageBoardText {}
 
-export interface IimageBoardMainItem extends IimageBoardText {
-  idx?: string;
-}
-
-const title_ = "게시판";
-const item_title_ = "일반게시판(이미지형) 게시판입니다.";
-const item_title_id = "image_board_main_item_title";
+interface IimageBoardMainItem extends IimageBoardText {}
 
 function ImageBoardMainItem(prop: IimageBoardMainItem) {
-  const { idx, title } = prop;
+  const { title } = prop;
 
   const container = css`
     display: flex;
@@ -48,7 +47,7 @@ function ImageBoardMainItem(prop: IimageBoardMainItem) {
           icon: "width: 50px; height: 50px;",
         }}
       />
-      <p css={item_title} id={item_title_id + "_" + idx}>
+      <p css={item_title} className={item_title_className}>
         {title || item_title_}
       </p>
     </div>
@@ -64,14 +63,10 @@ export default function ImageBoardMain(prop: IimageBoardMain) {
     <OuterWrap padding="120px 0">
       <InnerWrap>
         <div css={container}>
-          <p css={title_style}>{title_}</p>
+          <p css={title_style}>{component_title_}</p>
           <div css={item_container}>
             {Array.from({ length: count }, (_, index) => (
-              <ImageBoardMainItem
-                key={index}
-                idx={index.toString()}
-                title={title || item_title_}
-              />
+              <ImageBoardMainItem key={index} title={title || item_title_} />
             ))}
           </div>
         </div>

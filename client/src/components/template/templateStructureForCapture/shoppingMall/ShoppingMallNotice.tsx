@@ -1,16 +1,24 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+
+/* component */
 import Header, { Iheader } from "@components/template/common/header/Header";
-import Footer from "@components/template/common/footer/Footer";
-import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
 import Notice, { Tnotice } from "@components/template/customerService/Notice";
-import { IfetchedfeatureResponseData } from "@components/template/types";
+import Footer from "@components/template/common/footer/Footer";
 import Loading from "@components/common/ui/Loading/loading";
+
+/* data */
+import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
+import { IfetchedfeatureResponseData } from "@components/template/types";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
+
+/* text */
 import { InoticeText } from "@components/template/customerService/Notice";
 
-interface IshoppingMallNotice extends InoticeText {}
+interface IshoppingMallNotice {
+  notice: InoticeText;
+}
 
 export default function ShoppingMallNotice() {
   const feature = "공지사항";

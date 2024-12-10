@@ -7,17 +7,17 @@ import { ReactComponent as Star } from "@svgs/template/star.svg";
 
 const title_ =
   "Lorem ipsum dolor sit amet consectetur adipiscing eli mattis sit phasellus mollis sit aliquam sit nullam.";
-const title_id = "review_title";
+const title_className = "review_title";
 
 const desc_ =
   "Lorem ipsum dolor sit amet consectetur adipiscing eli mattis sit phasellus mollis sit aliquam sit nullam.";
-const desc_id = "review_desc";
+const desc_className = "review_desc";
 
 const name_ = "Lorem ipsum";
-const name_id = "review_name";
+const name_className = "review_name";
 
 const role_ = "Lorem ipsum";
-const role_id = "review_role";
+const role_className = "review_role";
 
 export interface IreviewText {
   title?: string;
@@ -28,12 +28,10 @@ export interface IreviewText {
 
 interface Ireview extends IreviewText {}
 
-interface IreviewItem extends Ireview {
-  idx?: string;
-}
+interface IreviewItem extends Ireview {}
 
 function ReviewItem(prop: IreviewItem) {
-  const { title, desc, name, role, idx } = prop;
+  const { title, desc, name, role } = prop;
 
   return (
     <div css={item}>
@@ -50,17 +48,17 @@ function ReviewItem(prop: IreviewItem) {
           <Star />
           <Star />
         </div>
-        <p css={item_title} id={title_id + "_" + idx}>
+        <p css={item_title} className={title_className}>
           {title || title_}
         </p>
-        <p css={item_desc} id={desc_id + "_" + idx}>
+        <p css={item_desc} className={desc_className}>
           {desc || desc_}
         </p>
         <div css={item_caption_container}>
-          <p css={item_caption_title} id={name_id}>
+          <p css={item_caption_title} className={name_className}>
             {name || name_}
           </p>
-          <p css={item_caption_desc} id={role_id}>
+          <p css={item_caption_desc} className={role_className}>
             {role || role_}
           </p>
         </div>
@@ -85,7 +83,6 @@ export default function Review(prop: Ireview) {
           {Array.from({ length: count }, (_, index) => (
             <ReviewItem
               key={index}
-              idx={index.toString()}
               title={title || title_}
               desc={desc || desc_}
               name={name || name_}

@@ -4,14 +4,22 @@ import { OuterWrap } from "../commonComponent/Wrap";
 import Title from "../commonComponent/Title";
 import ImageBox from "../commonComponent/ImageBox";
 
-const title_ = "media board";
-const item_title_ = "lorem ipsum, quia do";
-const item_desc_ = "lorem ipsum, quia do";
+const component_title_ = "media board";
 
-export interface ImediaItem {
+const item_title_ = "lorem ipsum, quia do";
+const item_title_className = "media_item_title";
+
+const item_desc_ = "lorem ipsum, quia do";
+const item_desc_className = "media_item_desc";
+
+export interface ImediaText {
   title?: string;
   desc?: string;
 }
+
+interface ImediaItem extends ImediaText {}
+
+interface Imedia extends ImediaText {}
 
 function MediaItem(prop: ImediaItem) {
   const { title, desc } = prop;
@@ -30,22 +38,36 @@ function MediaItem(prop: ImediaItem) {
       />
       <div css={item_info_container}>
         <p css={number_style}>483</p>
-        <p css={item_title_style}>{title || item_title_}</p>
-        <p css={item_desc_style}>{desc || item_desc_}</p>
+        <p css={item_title_style} className={item_title_className}>
+          {title || item_title_}
+        </p>
+        <p css={item_desc_style} className={item_desc_className}>
+          {desc || item_desc_}
+        </p>
       </div>
     </div>
   );
 }
 
-export default function Media() {
+export default function Media(prop: Imedia) {
+  const { title, desc } = prop;
+
   const count = 6;
 
   return (
     <OuterWrap padding="100px 0">
-      <Title title={title_} transform="capitalize" marginBottom={50} />
+      <Title
+        title={component_title_}
+        transform="capitalize"
+        marginBottom={50}
+      />
       <div css={item_list_container}>
         {Array.from({ length: count }, (_, index) => (
-          <MediaItem key={index} />
+          <MediaItem
+            key={index}
+            title={title || item_title_}
+            desc={desc || item_desc_}
+          />
         ))}
       </div>
     </OuterWrap>

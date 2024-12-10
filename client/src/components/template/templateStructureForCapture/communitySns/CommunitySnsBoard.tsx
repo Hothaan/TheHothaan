@@ -1,16 +1,24 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+
+/* component */
 import Header, { Iheader } from "@components/template/common/header/Header";
 import Footer from "@components/template/common/footer/Footer";
 import Board from "@components/template/board/Board";
-import { IfetchedfeatureResponseData } from "@components/template/types";
 import Loading from "@components/common/ui/Loading/loading";
+
+/* data */
+import { IfetchedfeatureResponseData } from "@components/template/types";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
-import { IboardText } from "@components/template/board/Board";
 import useNavigation from "@hooks/useNavigation";
 
-interface IcommunitySnsBoard extends IboardText {}
+/* text */
+import { IboardText } from "@components/template/board/Board";
+
+interface IcommunitySnsBoard {
+  board: IboardText;
+}
 
 export default function CommunitySnsBoard() {
   const feature = "일반 게시판";

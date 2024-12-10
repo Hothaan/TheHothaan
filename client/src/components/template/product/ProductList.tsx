@@ -8,30 +8,25 @@ import { ReactComponent as Heart } from "@svgs/template/heart.svg";
 import { ReactComponent as Bag } from "@svgs/template/bag.svg";
 
 const product_title_ = "lorem ipsum, quia do";
-const product_title_id = "product_list_item_title";
+const product_title_className = "product_list_item_title";
 
 const product_desc_ = "lorem ipsum, quia do";
-const product_desc_id = "product_list_item_desc";
+const product_desc_className = "product_list_item_desc";
 
-export interface IproductListItem {
+interface IproductListItem {
   title?: string;
   desc?: string;
-  row?: string;
-  idx?: string;
 }
 
 export interface IproductListText {
   categories?: string[];
-  product?: {
-    title?: string;
-    desc?: string;
-  };
+  product?: IproductListItem;
 }
 
-export interface IproductList extends IproductListText {}
+interface IproductList extends IproductListText {}
 
 function ProductListItem(prop: IproductListItem) {
-  const { title, desc, row, idx } = prop;
+  const { title, desc } = prop;
 
   const slide_item = css`
     width: 100%;
@@ -133,10 +128,10 @@ function ProductListItem(prop: IproductListItem) {
       <div css={info_container}>
         <div css={text_container}>
           <div css={product_info_container}>
-            <p css={product_name} id={product_title_id + "_" + idx + "_" + row}>
+            <p css={product_name} className={product_title_className}>
               {title || product_title_}
             </p>
-            <p css={product_desc} id={product_desc_id + "_" + idx + "_" + row}>
+            <p css={product_desc} className={product_desc_className}>
               {desc || product_desc_}
             </p>
           </div>
@@ -217,8 +212,6 @@ export default function ProductList(prop: IproductList) {
                     key={index2}
                     title={product?.title || product_title_}
                     desc={product?.desc || product_desc_}
-                    idx={index2.toString()}
-                    row={index1.toString()}
                   />
                 ))}
               </div>

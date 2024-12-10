@@ -4,20 +4,24 @@ import { OuterWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 import EditableText from "@components/service/editableText/EditableText";
 
-const image_desc_ =
-  "lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non";
-
 const title_ = "Headline H1";
-const title_id = "main_banner_title";
+const title_className = "main_banner_title";
 
 const desc_ =
   "lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non";
-const desc_id = "main_banner_desc";
+const desc_className = "main_banner_desc";
 
-export default function Greetings() {
-  const isEditable = false;
-  const title = undefined;
-  const desc = undefined;
+export interface IgreetingsText {
+  title?: string;
+  desc?: string;
+}
+
+interface Igreetings extends IgreetingsText {
+  isEditable?: boolean;
+}
+
+export default function Greetings(prop: Igreetings) {
+  const { title, desc, isEditable } = prop;
 
   return (
     <OuterWrap padding="0 0 100px 0">
@@ -36,8 +40,8 @@ export default function Greetings() {
             />
           </div>
           <div css={text_container}>
-            <p css={title_style}>{title_}</p>
-            <p css={desc_style}>{desc_}</p>
+            <p css={title_style}>{title || title_}</p>
+            <p css={desc_style}>{desc || desc_}</p>
           </div>
         </div>
         <div css={container}>
@@ -57,10 +61,10 @@ export default function Greetings() {
                 text={title || title_}
                 isTextArea={false}
                 defaultCss={pass_h1}
-                id={title_id}
+                id={title_className}
               />
             ) : (
-              <p css={pass_h1} id={title_id}>
+              <p css={pass_h1} id={title_className}>
                 {title || title_}
               </p>
             )}
@@ -69,7 +73,7 @@ export default function Greetings() {
                 text={desc || desc_}
                 isTextArea={true}
                 defaultCss={pass_desc}
-                id={desc_id}
+                id={desc_className}
               />
             ) : (
               <p css={pass_desc}>{desc || desc_}</p>
@@ -79,7 +83,7 @@ export default function Greetings() {
                 text={desc || desc_}
                 isTextArea={true}
                 defaultCss={pass_desc}
-                id={desc_id}
+                id={desc_className}
               />
             ) : (
               <p css={pass_desc}>{desc || desc_}</p>
@@ -88,8 +92,8 @@ export default function Greetings() {
         </div>
         <div css={container}>
           <div css={text_container}>
-            <p css={title_style}>{title_}</p>
-            <p css={desc_style}>{desc_}</p>
+            <p css={title_style}>{title || title_}</p>
+            <p css={desc_style}>{desc || desc_}</p>
           </div>
           <div css={image_container}>
             <ImageBox

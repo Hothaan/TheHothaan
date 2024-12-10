@@ -202,22 +202,24 @@ export default function ServiceStep2Page() {
     id: 2,
     name: deviceOptions?.filter((item) => item.id === 2)[0].name || "Tablet",
     isSelected: formData.device.number === 2,
+    isDisabled: true,
     onClick: () => {
-      setFormData((prev) => ({
-        ...prev,
-        device: { number: 2, text: "Tablet" },
-      }));
+      // setFormData((prev) => ({
+      //   ...prev,
+      //   device: { number: 2, text: "Tablet" },
+      // }));
     },
   };
   const mobile: IbuttonChooseDeviceOption = {
     id: 3,
     name: deviceOptions?.filter((item) => item.id === 3)[0].name || "Mobile",
     isSelected: formData.device.number === 3,
+    isDisabled: true,
     onClick: () => {
-      setFormData((prev) => ({
-        ...prev,
-        device: { number: 3, text: "Mobile" },
-      }));
+      // setFormData((prev) => ({
+      //   ...prev,
+      //   device: { number: 3, text: "Mobile" },
+      // }));
     },
   };
 

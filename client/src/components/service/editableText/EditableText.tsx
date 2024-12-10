@@ -37,13 +37,14 @@ interface Istyles {
 
 interface IeditableText {
   id?: string;
+  className?: string;
   text: string;
   isTextArea: boolean;
   defaultCss: Record<string, string>;
 }
 
 export default function EditableText(prop: IeditableText) {
-  const { id, text, isTextArea, defaultCss } = prop;
+  const { className, text, isTextArea, defaultCss } = prop;
   const divRef = useRef<HTMLDivElement>(null);
   const toolbarRef = useRef<HTMLDivElement>(null);
   const [toolbarPosition, setToolbarPosition] = useState({ top: 0, left: 0 });
@@ -252,7 +253,7 @@ export default function EditableText(prop: IeditableText) {
           value={textContent}
           onClick={() => setIsEditing(!isEditing)}
           onChange={(e) => setTextContent(e.target.value)}
-          id={id}
+          className={className}
         />
       ) : (
         <input
@@ -261,7 +262,7 @@ export default function EditableText(prop: IeditableText) {
           value={textContent}
           onClick={() => setIsEditing(!isEditing)}
           onChange={(e) => setTextContent(e.target.value)}
-          id={id}
+          className={className}
         />
       )}
     </div>

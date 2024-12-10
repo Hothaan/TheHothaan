@@ -4,8 +4,9 @@ import Title from "../commonComponent/Title";
 import ImageBox from "../commonComponent/ImageBox";
 import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";
 
+/* text 없는 컴포넌트 */
+
 export default function FeedMain() {
-  const data: any[] = [];
   const count = 36;
 
   return (

@@ -20,14 +20,14 @@ const title_ = "Nomal Board";
 
 const col1_ = "483";
 const col2_ = "게시글 제목";
-const col2_id = "board_text_table_col2";
+const col2_className = "board_text_table_col2";
 const col3_ = "닉네임";
 const col4_ = "2024.12.31";
 const item_num_ = "483";
 const item_title_ = "lorem ipsum, quia do";
-const item_title_id = "board_text_image_title";
+const item_title_className = "board_text_image_title";
 const item_desc_ = "lorem ipsum, quia do";
-const item_desc_id = "board_text_image_desc";
+const item_desc_className = "board_text_image_desc";
 
 function TextTable(prop: IboardText) {
   const { title } = prop;
@@ -133,7 +133,7 @@ function TextTable(prop: IboardText) {
                 <p css={[td_text, col1_text]}>{col1_}</p>
               </td>
               <td css={[td, col2]}>
-                <p css={[td_title, col2_text]} id={col2_id + "_" + index}>
+                <p css={[td_title, col2_text]} className={col2_className}>
                   {title || col2_}
                 </p>
               </td>
@@ -231,10 +231,10 @@ function ImageItem(prop: IboardText) {
           />
           <div css={info_container}>
             <p css={item_num}>{item_num_}</p>
-            <p css={item_title} id={item_title_id + "_" + index}>
+            <p css={item_title} className={item_title_className}>
               {title || item_title_}
             </p>
-            <p css={item_desc} id={item_desc_id + "_" + index}>
+            <p css={item_desc} className={item_desc_className}>
               {desc || item_desc_}
             </p>
           </div>

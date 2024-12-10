@@ -1,10 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import CommunitySnsMain from "@components/template/templateStructureForCapture/communitySns/CommunitySnsMain";
-import CommunitySnsBoard from "@components/template/templateStructureForCapture/communitySns/CommunitySnsBoard";
-import CommunitySnsFeed from "@components/template/templateStructureForCapture/communitySns/CommunitySnsFeed";
-import CommunitySnsFaq from "@components/template/templateStructureForCapture/communitySns/CommunitySnsQna";
-import CommunitySnsMyProfile from "@components/template/templateStructureForCapture/communitySns/CommunitySnsMyProfile";
 import HomePageBoardMain from "@components/template/templateStructureForCapture/homepageBoard/HomePageBoardMain";
 import HomePageBoardGreetings from "@components/template/templateStructureForCapture/homepageBoard/HomePageBoardGreetings";
 import HomePageBoardHistory from "@components/template/templateStructureForCapture/homepageBoard/HomePageBoardHistory";

@@ -55,9 +55,9 @@ export interface IsendData {
 
 export default function ServiceStep3Page() {
   const [isFail, setIsFail] = useState(false);
-  const [generatedTextData, setGeneratedTextData] = useState<
-    IgeneratedText[] | null
-  >(null);
+  // const [generatedTextData, setGeneratedTextData] = useState<
+  //   IgeneratedText[] | null
+  // >(null);
   const { handleNavigation } = useNavigation();
   const { currentLocation } = useLocationControl();
   const totalStep = 5;
@@ -75,7 +75,7 @@ export default function ServiceStep3Page() {
   const [formData, setFormData] = useState<TserviceTypeMenu | null>(null);
   const [sendData, setSendData] = useState<IsendData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [isReady, setIsReady] = useState<boolean>(false);
+  // const [isReady, setIsReady] = useState<boolean>(false);
   const [isImageSaved, setIsImgageSaved] = useState<boolean>(false);
 
   useEffect(() => {
@@ -390,6 +390,7 @@ export default function ServiceStep3Page() {
           }
         );
         setFeatureData(data);
+        console.log(data);
       } else {
         console.error("getFeatureData error", response.status);
       }
@@ -414,7 +415,8 @@ export default function ServiceStep3Page() {
     const projectType = serviceDefaultData.serviceType.text as string;
     const featureId = featureData.map((item) => item.feature_id);
     const parameterArr = featureData.map(
-      (item) => `${projectType}-${item.feature.split(" ").join("")}`
+      // (item) => `${projectType}-${item.feature.split(" ").join("")}`
+      (item) => `${projectType}-${item.feature}`
     );
 
     try {

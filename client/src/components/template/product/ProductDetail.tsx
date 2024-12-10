@@ -13,10 +13,10 @@ import { ReactComponent as Plus } from "@svgs/template/productAmountPlus.svg";
 import { ReactComponent as Minus } from "@svgs/template/productAmountMinus.svg";
 
 const product_title_ = "상품제목입니다";
-const product_title_id = "product_detail_product_title";
+const product_title_className = "product_detail_product_title";
 
 const product_desc_ = "상품 설명 내용입니다.";
-const product_desc_id = "product_detail_product_desc";
+const product_desc_className = "product_detail_product_desc";
 
 const more_product_title_ = "lorem ipsum, quia do";
 const more_product_desc_ = "lorem ipsum, quia do";
@@ -233,20 +233,23 @@ function ProductDetailInfo(prop: IproductDetailInfo) {
         </div>
         <div css={prodcut_info_container}>
           <TemplateBadge text="카테고리" />
-          <p css={product_name} id={product_title_id}>
+          <p css={product_name} className={product_title_className}>
             {title || product_title_}
           </p>
           <div css={product_price_container}>
             <p css={product_price}>32,000원</p>
             <p css={product_price_sale}>32,000원</p>
           </div>
-          <p css={product_desc} id={product_desc_id}>
+          <p css={product_desc} className={product_desc_className}>
             {desc || product_desc_}
           </p>
         </div>
         <div css={product_amount_container}>
           <div css={product_amount_controller_container}>
-            <p css={product_amount_name} id={product_title_id + "_cart"}>
+            <p
+              css={product_amount_name}
+              className={product_title_className + "_cart"}
+            >
               {title || product_title_}
             </p>
             <div css={product_amount_controller}>
@@ -311,7 +314,6 @@ function ProductDetailList(prop: IproductDetailList) {
           key={index}
           title={title || more_product_title_}
           desc={desc || more_product_desc_}
-          idx={index.toString()}
         />
       ))}
     </div>

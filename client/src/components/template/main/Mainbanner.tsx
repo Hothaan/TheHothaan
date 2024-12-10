@@ -12,14 +12,14 @@ import EditableText from "@components/service/editableText/EditableText";
 // 모달에서 저장버튼 클릭시 수정한 내용 db에 업데이트
 
 const title_ = "Headline H1";
-const title_id = "main_banner_title";
+const title_className = "main_banner_title";
 
 const desc_ =
   "lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non";
-const desc_id = "main_banner_desc";
+const desc_className = "main_banner_desc";
 
 const button_ = "button";
-const button_id = "main_banner_button";
+const button_className = "main_banner_button";
 
 export interface ImainBannerText {
   title?: string;
@@ -27,7 +27,7 @@ export interface ImainBannerText {
   button?: string;
 }
 
-export interface ImainBanner extends ImainBannerText {
+interface ImainBanner extends ImainBannerText {
   isEditable?: boolean;
 }
 
@@ -53,10 +53,10 @@ export default function Mainbanner(prop: ImainBanner) {
               text={title || title_}
               isTextArea={false}
               defaultCss={pass_h1}
-              id={title_id}
+              className={title_className}
             />
           ) : (
-            <p css={pass_h1} id={title_id}>
+            <p css={pass_h1} className={title_className}>
               {title || title_}
             </p>
           )}
@@ -65,17 +65,17 @@ export default function Mainbanner(prop: ImainBanner) {
               text={desc || desc_}
               isTextArea={true}
               defaultCss={pass_desc}
-              id={desc_id}
+              className={desc_className}
             />
           ) : (
-            <p css={pass_desc} id={title_id}>
+            <p css={pass_desc} className={title_className}>
               {desc || desc_}
             </p>
           )}
           <TemplateButton
             type="default"
             text={button || button_}
-            id={button_id}
+            className={button_className}
           />
         </div>
       </div>

@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+
+/* component */
 import Header, { Iheader } from "@components/template/common/header/Header";
 import Footer from "@components/template/common/footer/Footer";
 import Mainbanner from "@components/template/main/Mainbanner";
@@ -7,12 +9,14 @@ import ProductListMain from "@components/template/main/ProductListMain";
 import Review from "@components/template/product/Review";
 import ServiceIntroduction from "@components/template/service/ServiceIntroduction";
 import ServiceContact from "@components/template/service/ServiceContact";
-
-import { IfetchedfeatureResponseData } from "@components/template/types";
 import Loading from "@components/common/ui/Loading/loading";
+
+/* data */
+import { IfetchedfeatureResponseData } from "@components/template/types";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
+/* text */
 import { ImainBannerText } from "@components/template/main/Mainbanner";
 import { IproductListText } from "@components/template/main/ProductListMain";
 import { IserviceContact } from "@components/template/service/ServiceContact";

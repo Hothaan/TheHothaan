@@ -1,16 +1,24 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+
+/* component */
 import Header, { Iheader } from "@components/template/common/header/Header";
-import Footer from "@components/template/common/footer/Footer";
 import BrandIntroduce from "@components/template/brandIntroduce/BrandIntroduce";
-import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
+import Footer from "@components/template/common/footer/Footer";
 import Loading from "@components/common/ui/Loading/loading";
+
+/* data */
+import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
 import { IfetchedfeatureResponseData } from "@components/template/types";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
+
+/* text  */
 import { IbrandIntroduceText } from "@components/template/brandIntroduce/BrandIntroduce";
 
-interface IshoppingMallBrandIntroduce extends IbrandIntroduceText {}
+interface IshoppingMallBrandIntroduce {
+  brandIntroduce: IbrandIntroduceText;
+}
 
 export default function ShoppingMallBrandIntroduce() {
   const feature = "브랜드 소개";

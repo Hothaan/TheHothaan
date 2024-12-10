@@ -4,12 +4,20 @@ import { OuterWrap } from "../commonComponent/Wrap";
 
 const item_desc_ =
   "lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non";
+const item_desc_className = "history_item_desc";
 
-export interface IhistoryItem {
-  year?: string;
+export interface IhistoryText {
   desc?: string;
+}
+
+interface IhistoryItem extends IhistoryText {
+  year?: string;
   isSelected?: boolean;
   isLast?: boolean;
+}
+
+interface Ihistory extends IhistoryText {
+  isEditable?: boolean;
 }
 
 function HistoryItem(prop: IhistoryItem) {
@@ -20,20 +28,23 @@ function HistoryItem(prop: IhistoryItem) {
       <div css={circle_container}>
         <span css={circle(isSelected)}></span>
       </div>
-
-      <p css={desc_style(isSelected, isLast)}>{desc}</p>
+      <p css={desc_style(isSelected, isLast)} className={item_desc_className}>
+        {desc}
+      </p>
     </li>
   );
 }
 
-export default function History() {
+export default function History(prop: Ihistory) {
+  const { desc, isEditable } = prop;
+
   const itemDatas: IhistoryItem[] = [
-    { year: "2021", desc: item_desc_, isSelected: true },
-    { year: "2020", desc: item_desc_ },
-    { year: "2018", desc: item_desc_ },
-    { year: "2016", desc: item_desc_ },
-    { year: "2015", desc: item_desc_ },
-    { year: "2014", desc: item_desc_, isLast: true },
+    { year: "2021", desc: desc || item_desc_, isSelected: true },
+    { year: "2020", desc: desc || item_desc_ },
+    { year: "2018", desc: desc || item_desc_ },
+    { year: "2016", desc: desc || item_desc_ },
+    { year: "2015", desc: desc || item_desc_ },
+    { year: "2014", desc: desc || item_desc_, isLast: true },
   ];
 
   return (

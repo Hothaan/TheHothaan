@@ -10,6 +10,7 @@ import SelectBox from "../commonComponent/form/SelectBox";
 import ImageBox from "../commonComponent/ImageBox";
 
 const title_ = "게시글 제목";
+const title_className = "notice_title";
 
 export interface InoticeText {
   title?: string;
@@ -69,6 +70,7 @@ function NoticeTable(prop: InoticeText) {
     date: "YYYY.MM.DD",
     views: 1,
   };
+
   const tableStyle = css`
     width: 100%;
     border-collapse: collapse;
@@ -137,7 +139,10 @@ function NoticeTable(prop: InoticeText) {
           Array.from({ length: count }, (_, index) => (
             <tr key={index} css={rowStyle}>
               <td css={[cellStyle, text_style, col1]}>{mockData.num}</td>
-              <td css={[cellStyle, text_style, col2, text_align_left]}>
+              <td
+                css={[cellStyle, text_style, col2, text_align_left]}
+                className={title_className}
+              >
                 {mockData.title}
               </td>
               <td css={[cellStyle, text_style, col3]}>{mockData.date}</td>
@@ -187,7 +192,9 @@ function NoticeGalleryBoard(prop: InoticeText) {
             icon={{ width: "50px", height: "50px" }}
             borderRadius="0"
           />
-          <p css={item_name}>{title || title_}</p>
+          <p css={item_name} className={title_className}>
+            {title || title_}
+          </p>
         </div>
       ))}
     </div>

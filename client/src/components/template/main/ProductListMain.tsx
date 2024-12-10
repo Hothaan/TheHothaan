@@ -6,27 +6,25 @@ import ImageBox from "../commonComponent/ImageBox";
 import { ReactComponent as Heart } from "@svgs/template/heart.svg";
 import { ReactComponent as Bag } from "@svgs/template/bag.svg";
 
+const title_ = "lorem ipsum, quia do";
+const title_className = "product_list_main_title";
+
+const desc_ = "lorem ipsum, quia do";
+const desc_className = "product_list_main_desc";
+
 export interface IproductListText {
   title?: string;
   desc?: string;
 }
 
-export interface IproductList extends IproductListText {
+interface IproductList extends IproductListText {
   option: "main" | "list";
 }
 
-export interface IproductListItem extends IproductList {
-  idx?: string;
-  row?: string;
-}
-
-const title_ = "lorem ipsum, quia do";
-const desc_ = "lorem ipsum, quia do";
-const title_id = "product_list_main_title";
-const desc_id = "product_list_main_desc";
+interface IproductListItem extends IproductList {}
 
 function ProductListItemMain(prop: IproductListItem) {
-  const { option, title, desc, idx, row } = prop;
+  const { option, title, desc } = prop;
 
   const slide_item = css`
     width: 100%;
@@ -128,10 +126,10 @@ function ProductListItemMain(prop: IproductListItem) {
         />
         <div css={text_container}>
           <div css={product_info_container}>
-            <p css={product_name(option)} id={title_id + "_" + idx + "_" + row}>
+            <p css={product_name(option)} className={title_className}>
               {title || title_}
             </p>
-            <p css={product_desc(option)} id={desc_id + "_" + idx + "_" + row}>
+            <p css={product_desc(option)} className={desc_className}>
               {desc || desc_}
             </p>
           </div>
@@ -153,10 +151,10 @@ function ProductListItemMain(prop: IproductListItem) {
         <div css={info_container}>
           <div css={text_container}>
             <div css={product_info_container}>
-              <p css={product_name(option)} id={title_id + "_" + idx}>
+              <p css={product_name(option)} className={title_className}>
                 {title || title_}
               </p>
-              <p css={product_desc(option)} id={desc_id + "_" + idx}>
+              <p css={product_desc(option)} className={desc_className}>
                 {desc || desc_}
               </p>
             </div>
@@ -204,11 +202,7 @@ export default function ProductListMain(prop: IproductList) {
           <Title title="category" transform="uppercase" marginBottom={57} />
           <div css={item_container}>
             {Array.from({ length: count }, (_, index) => (
-              <ProductListItemMain
-                option={option}
-                key={index}
-                idx={index.toString()}
-              />
+              <ProductListItemMain option={option} key={index} />
             ))}
           </div>
         </InnerWrap>
@@ -223,12 +217,7 @@ export default function ProductListMain(prop: IproductList) {
             {Array.from({ length: count }, (_, index1) => (
               <div css={item_container} key={index1}>
                 {Array.from({ length: count }, (_, index2) => (
-                  <ProductListItemMain
-                    option={option}
-                    key={index2}
-                    idx={index2.toString()}
-                    row={index1.toString()}
-                  />
+                  <ProductListItemMain option={option} key={index2} />
                 ))}
               </div>
             ))}

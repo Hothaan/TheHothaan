@@ -4,24 +4,30 @@ import { OuterWrap, ContentsWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 
 const banner_title_ = "headline h1";
+const banner_title_className = "brand_introduce_banner_title";
+
 const banner_desc_ =
   "lorem ipsum, quia dolor sit, amet,consectetur, adipisci velit, sed quia non";
+const banner_desc_className = "brand_introduce_banner_desc";
 
 const content_title_ = "headline h1";
+const content_title_className = "brand_introduce_content_title";
+
 const content_desc_ =
   "lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia nonlorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia nonlorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia nonlorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non";
-
-export interface IbrandIntroduceItem {
-  title?: string;
-  desc?: string;
-}
+const content_desc_className = "brand_introduce_content_desc";
 
 export interface IbrandIntroduceText {
   banner?: { title?: string; desc?: string };
   content?: IbrandIntroduceItem;
 }
 
-export interface IbrandIntroduce extends IbrandIntroduceText {
+interface IbrandIntroduceItem {
+  title?: string;
+  desc?: string;
+}
+
+interface IbrandIntroduce extends IbrandIntroduceText {
   isEditable?: boolean;
 }
 
@@ -69,8 +75,12 @@ function BrandIntroduceItem(prop: IbrandIntroduceItem) {
           icon: "width: 100px; height: 100px;",
         }}
       />
-      <p css={item_title}>{title || content_title_}</p>
-      <p css={item_desc}>{desc || content_desc_}</p>
+      <p css={item_title} className={content_title_className}>
+        {title || content_title_}
+      </p>
+      <p css={item_desc} className={content_desc_className}>
+        {desc || content_desc_}
+      </p>
     </div>
   );
 }
@@ -94,8 +104,12 @@ export default function BrandIntroduce(prop: IbrandIntroduce) {
           }}
         />
         <div css={container}>
-          <p css={pass_h1}>{banner?.title || banner_title_}</p>
-          <p css={desc_style}>{banner?.desc || banner_desc_}</p>
+          <p css={pass_h1} className={banner_title_className}>
+            {banner?.title || banner_title_}
+          </p>
+          <p css={desc_style} className={banner_desc_className}>
+            {banner?.desc || banner_desc_}
+          </p>
         </div>
       </div>
       <OuterWrap padding="290px">

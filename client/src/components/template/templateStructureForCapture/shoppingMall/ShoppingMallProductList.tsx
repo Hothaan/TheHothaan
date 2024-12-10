@@ -1,17 +1,22 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+/* component */
 import Header, { Iheader } from "@components/template/common/header/Header";
-import Footer from "@components/template/common/footer/Footer";
-import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
 import ProductList from "@components/template/product/ProductList";
-import { IfetchedfeatureResponseData } from "@components/template/types";
+import Footer from "@components/template/common/footer/Footer";
 import Loading from "@components/common/ui/Loading/loading";
+
+/* data */
+import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
+import { IfetchedfeatureResponseData } from "@components/template/types";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
+/* text */
+import { IproductListText } from "@components/template/product/ProductList";
+
 interface IshoppingMallProductList {
-  category: string[];
-  product: { title: string; desc: string };
+  productList: IproductListText;
 }
 
 export default function ShoppingMallProductList() {

@@ -79,54 +79,6 @@ function OrderListFilterSearch() {
     margin-bottom: 28px;
   `;
 
-  const tabs_container = css`
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid #486284;
-
-    margin-bottom: 53px;
-  `;
-
-  const tab_button = css`
-    width: 228px;
-    height: 50px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  `;
-
-  const tab_button_selected = css`
-    position: relative;
-
-    border-top: 1px solid #486284;
-    border-right: 1px solid #486284;
-    border-left: 1px solid #486284;
-
-    &:after {
-      position: absolute;
-      display: block;
-      content: "";
-      width: 100%;
-      background-color: #fff;
-      height: 1px;
-      bottom: -1px;
-    }
-  `;
-
-  const tab_button_unselected = css`
-    border: 1px solid var(--E5E5E5, #e5e5e5);
-    background: #f6f6f6;
-  `;
-
-  const text_style = css`
-    color: #486284;
-    font-family: "Noto Sans KR";
-    font-size: 13px;
-    font-style: normal;
-    font-weight: 500;
-  `;
-
   const text_light = css`
     color: #486284;
     text-align: center;

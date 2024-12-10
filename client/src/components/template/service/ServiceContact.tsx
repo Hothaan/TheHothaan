@@ -5,10 +5,10 @@ import ImageBox from "../commonComponent/ImageBox";
 import TemplateButton from "../commonComponent/TemplateButton";
 
 const title_ = [`Lorem ipsum dolor`, <br key="1" />, `sit amet consectetur`];
-const title_id = "service_contact_title";
+const title_className = "service_contact_title";
 
 const button_ = "Lorem ipsum dolor";
-const button_id = "service_contact_button";
+const button_className = "service_contact_button";
 
 export interface IserviceContact {
   title?: string;
@@ -32,13 +32,13 @@ export default function ServiceContact(prop: IserviceContact) {
           }}
         />
         <div css={contents_container}>
-          <p css={title_style} id={title_id}>
+          <p css={title_style} className={title_className}>
             {title || title_}
           </p>
           <TemplateButton
             type="round"
             text={button || button_}
-            id={button_id}
+            className={button_className}
           />
         </div>
       </div>

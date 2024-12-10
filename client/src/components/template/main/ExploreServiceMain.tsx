@@ -11,30 +11,32 @@ import EditableText from "@components/service/editableText/EditableText";
 // 모달에서 저장버튼 클릭시 수정한 내용 db에 업데이트
 
 const title_ = "Lorem ipsum dolorsit amet consectetur";
-const title_id = "explore_service_title";
-
-const desc_ =
-  "lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non";
-const desc_id = "explore_service_desc";
+const title_className = "explore_service_title";
 
 const button_ = "Lorem ipsum dolor";
-const button_id = "explore_service_button";
+const button_className = "explore_service_button";
 
-const explore_title_ = "Explore";
-const explore_button_ = "Explore";
+const item_title_ = "Explore";
+const item_title_className = "explore_service_title";
+
+const item_button_ = "Explore";
+const item_button_className = "explore_service_button";
 
 export interface IexploreServiceText {
   title?: string;
-  desc?: string;
   button?: string;
+  exploreTitle?: string;
+  exploreButton?: string;
 }
 
-export interface IexploreService extends IexploreServiceText {
+interface IexploreService extends IexploreServiceText {
   isEditable?: boolean;
 }
 
 export default function ExploreServiceMain(prop: IexploreService) {
-  const { isEditable, title, desc, button } = prop;
+  const { isEditable, title, button, exploreTitle, exploreButton } = prop;
+
+  const count = 3;
 
   return (
     <OuterWrap padding="0">
@@ -56,28 +58,28 @@ export default function ExploreServiceMain(prop: IexploreService) {
                 text={title || title_}
                 isTextArea={false}
                 defaultCss={pass_h1}
-                id={title_id}
+                className={title_className}
               />
             ) : (
-              <p css={pass_h1} id={title_id}>
+              <p css={pass_h1} className={title_className}>
                 {title || title_}
               </p>
             )}
             <ul css={explore_list}>
-              <li css={explore_item}>
-                <p css={explore_title}>{explore_title_}</p>
-                <p css={explore_button}>{explore_button_}</p>
-              </li>
-              <li css={explore_item}>
-                <p css={explore_title}>{explore_title_}</p>
-                <p css={explore_button}>{explore_button_}</p>
-              </li>
-              <li css={explore_item}>
-                <p css={explore_title}>{explore_title_}</p>
-                <p css={explore_button}>{explore_button_}</p>
-              </li>
+              {Array.from({ length: count }, (_, index) => (
+                <li css={explore_item} key={index}>
+                  <p css={explore_title} className={item_title_className}>
+                    {exploreTitle || item_title_}
+                  </p>
+                  <p css={explore_button} className={item_button_className}>
+                    {exploreButton || item_button_}
+                  </p>
+                </li>
+              ))}
             </ul>
-            <div css={button_style}>{button_}</div>
+            <div css={button_style} className={button_className}>
+              {button || button_}
+            </div>
           </div>
         </div>
       </div>

@@ -5,14 +5,14 @@ import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 import { ReactComponent as GotoLink } from "@svgs/template/gotoLink.svg";
 
-const title_ = "service Introduction";
-const desc_ = "lorem ipsum, quia dolorem ipsum, quia do";
+const component_title_ = "service Introduction";
+const component_desc_ = "lorem ipsum, quia dolorem ipsum, quia do";
 
 const item_title_ = "lorem ipsum, quia do ddd";
-const item_desc_ = "lorem ipsum";
+const item_title_className = "service_introduction_item_title";
 
-const item_title_id = "service_introduction_item_title";
-const item_desc_id = "service_introduction_item_desc";
+const item_desc_ = "lorem ipsum";
+const item_desc_className = "service_introduction_item_desc";
 
 export interface IserviceIntroductionText {
   title?: string;
@@ -20,12 +20,10 @@ export interface IserviceIntroductionText {
 }
 interface IserviceIntroduction extends IserviceIntroductionText {}
 
-interface IserviceIntroductionItem extends IserviceIntroduction {
-  idx?: string;
-}
+interface IserviceIntroductionItem extends IserviceIntroduction {}
 
 function ServiceIntroductionItem(prop: IserviceIntroductionItem) {
-  const { title, desc, idx } = prop;
+  const { title, desc } = prop;
 
   const item = css`
     display: flex;
@@ -91,10 +89,10 @@ function ServiceIntroductionItem(prop: IserviceIntroductionItem) {
       />
       <div css={info_container}>
         <div css={text_container}>
-          <p css={item_title} id={item_title_id + "_" + idx}>
+          <p css={item_title} className={item_title_className}>
             {title || item_title_}
           </p>
-          <p css={item_desc} id={item_desc_id + "_" + idx}>
+          <p css={item_desc} className={item_desc_className}>
             {desc || item_desc_}
           </p>
         </div>
@@ -112,8 +110,12 @@ export default function ServiceIntroduction(prop: IserviceIntroduction) {
     <OuterWrap padding="160px 0">
       <InnerWrap>
         <div css={title_container}>
-          <Title title={title_} transform="capitalize" marginBottom={20} />
-          <p css={title_desc}>{desc_}</p>
+          <Title
+            title={component_title_}
+            transform="capitalize"
+            marginBottom={20}
+          />
+          <p css={title_desc}>{component_desc_}</p>
         </div>
         <div css={item_container}>
           {Array.from({ length: count }, (_, index) => (
@@ -121,7 +123,6 @@ export default function ServiceIntroduction(prop: IserviceIntroduction) {
               key={index}
               title={title || item_title_}
               desc={desc || item_desc_}
-              idx={index.toString()}
             />
           ))}
         </div>

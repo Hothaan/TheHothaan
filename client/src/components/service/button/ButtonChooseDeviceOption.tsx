@@ -8,13 +8,14 @@ export interface IbuttonChooseDeviceOption {
   id: number;
   name: string;
   isSelected: boolean;
+  isDisabled?: boolean;
   onClick?: () => void;
 }
 
 export default function ButtonChooseDeviceOption(
   props: IbuttonChooseDeviceOption
 ) {
-  const { id, name, isSelected, onClick } = props;
+  const { id, name, isSelected, isDisabled, onClick } = props;
 
   function makeIcon(id: number) {
     switch (id) {
@@ -31,7 +32,10 @@ export default function ButtonChooseDeviceOption(
 
   return (
     <button
-      css={[choose_device, choose_device_color(isSelected)]}
+      css={[
+        choose_device(isDisabled),
+        choose_device_color(isSelected, isDisabled),
+      ]}
       onClick={onClick}
     >
       {makeIcon(id)}
@@ -40,7 +44,12 @@ export default function ButtonChooseDeviceOption(
   );
 }
 
-const choose_device_color = (isSelected: boolean) => {
+const choose_device_color = (isSelected: boolean, isDisabled?: boolean) => {
+  if (isDisabled) {
+    return css`
+      background: #d6d6d6;
+    `;
+  }
   if (isSelected) {
     return css`
       background: var(--FFF, #fff);
@@ -58,7 +67,7 @@ const choose_device_color = (isSelected: boolean) => {
   }
 };
 
-const choose_device = css`
+const choose_device = (isDisabled?: boolean) => css`
   position: relative;
   display: flex;
   width: 400px;
@@ -74,7 +83,7 @@ const choose_device = css`
   transition: 0.3s ease;
 
   &:hover {
-    background: var(--EEF7FD, #eef7fd);
+    background: ${isDisabled ? "#d0d0d0" : " #eef7fd"};
   }
 
   &:before {

@@ -1,16 +1,19 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+
+/* component */
 import Header, { Iheader } from "@components/template/common/header/Header";
-import Footer from "@components/template/common/footer/Footer";
-import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
 import Join from "@components/template/utility/Join";
-import {
-  IfetchedfeatureResponseData,
-  ItemplateType,
-} from "@components/template/types";
+import Footer from "@components/template/common/footer/Footer";
 import Loading from "@components/common/ui/Loading/loading";
+
+/* data */
+import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
+import { IfetchedfeatureResponseData } from "@components/template/types";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
+
+/* text 없는 페이지 */
 
 export default function ShoppingMallJoin() {
   const feature = "회원가입";
@@ -22,8 +25,6 @@ export default function ShoppingMallJoin() {
   const [generatedText, setGeneratedText] = useState<IgeneratedText | null>(
     null
   );
-
-  /* 추가 */
 
   async function fetchFeatureData(isProduction: boolean, projectId: string) {
     try {

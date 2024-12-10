@@ -160,8 +160,8 @@ export default function ServiceStep1Page() {
         <div css={input_container}>
           <div css={input_guide_container}>
             <p css={text_left}>
-              <span css={require_text}>홈페이지를</span>
-              <span css={gradient_text}>설명</span>
+              <span css={require_text}>홈페이지를&nbsp;</span>
+              <span css={gradient_text}>설명&nbsp;</span>
               <span css={require_text}>해주세요.</span>
             </p>
           </div>

@@ -1,16 +1,23 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+
+/* component */
 import Header, { Iheader } from "@components/template/common/header/Header";
 import Footer from "@components/template/common/footer/Footer";
 import Feed from "@components/template/board/Feed";
-
-import { IfetchedfeatureResponseData } from "@components/template/types";
 import Loading from "@components/common/ui/Loading/loading";
+
+/* data */
+import { IfetchedfeatureResponseData } from "@components/template/types";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
+
+/* text */
 import { IfeedText } from "@components/template/board/Feed";
 
-interface IcommunitySnsFeed extends IfeedText {}
+interface IcommunitySnsFeed {
+  feed: IfeedText;
+}
 
 export default function CommunitySnsFeed() {
   const feature = "피드";

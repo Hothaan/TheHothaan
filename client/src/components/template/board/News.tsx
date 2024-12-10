@@ -4,14 +4,22 @@ import { OuterWrap } from "../commonComponent/Wrap";
 import Title from "../commonComponent/Title";
 import ImageBox from "../commonComponent/ImageBox";
 
-const title_ = "news board";
-const item_title_ = "lorem ipsum, quia do";
-const item_desc_ = "lorem ipsum, quia do";
+const component_title_ = "news board";
 
-export interface InewsItem {
+const item_title_ = "lorem ipsum, quia do";
+const item_title_className = "news_item_title";
+
+const item_desc_ = "lorem ipsum, quia do";
+const item_desc_className = "news_item_desc";
+
+export interface InewsText {
   title?: string;
   desc?: string;
 }
+
+interface InewsItem extends InewsText {}
+
+interface Inews extends InewsText {}
 
 function NewsItem(prop: InewsItem) {
   const { title, desc } = prop;
@@ -30,23 +38,37 @@ function NewsItem(prop: InewsItem) {
       />
       <div css={item_info_container}>
         <p css={number_style}>483</p>
-        <p css={item_title_style}>{title || item_title_}</p>
-        <p css={item_desc_style}>{desc || item_desc_}</p>
+        <p css={item_title_style} className={item_title_className}>
+          {title || item_title_}
+        </p>
+        <p css={item_desc_style} className={item_desc_className}>
+          {desc || item_desc_}
+        </p>
       </div>
     </div>
   );
 }
 
-export default function News() {
+export default function News(prop: Inews) {
+  const { title, desc } = prop;
+
   const count = 4;
 
   return (
     <OuterWrap padding="100px">
       <div css={container}></div>
-      <Title title={title_} transform="capitalize" marginBottom={50} />
+      <Title
+        title={component_title_}
+        transform="capitalize"
+        marginBottom={50}
+      />
       <div css={item_list_container}>
         {Array.from({ length: count }, (_, index) => (
-          <NewsItem key={index} />
+          <NewsItem
+            key={index}
+            title={title || item_title_}
+            desc={desc || item_desc_}
+          />
         ))}
       </div>
     </OuterWrap>
