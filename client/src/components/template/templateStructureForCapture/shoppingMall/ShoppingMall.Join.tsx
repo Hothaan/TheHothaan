@@ -30,9 +30,14 @@ export default function ShoppingMallJoin() {
     try {
       const response = await getFeatureData(isProduction, projectId);
       if (response.status === 200) {
-        const categoryArr: string[] = response.data.featureResponseData.map(
-          (item: IfetchedfeatureResponseData) => item.menu
-        );
+        const categoryArr: string[] = response.data.featureResponseData
+          .filter(
+            (item: IfetchedfeatureResponseData) =>
+              item.menu !== "메인" &&
+              item.menu !== "유틸리티" &&
+              item.menu !== "마이페이지"
+          )
+          .map((item: IfetchedfeatureResponseData) => item.menu);
         setHeaderData({
           logo: response.data.projectName,
           categories: [...new Set(categoryArr)],

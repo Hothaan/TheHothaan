@@ -35,7 +35,8 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
     setSelectedItem,
   } = prop;
 
-  const [isToast, setIsToast] = useState(true);
+  const [isInitalToast, setisInitalToast] = useState(true);
+  const [isSavedToast, setisSavedToast] = useState(false);
 
   const [serviceDefaultData, setServiceDefaultData] =
     useState<TserviceDefaultData | null>(null);
@@ -45,10 +46,16 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
   );
   const TemplateToRender = templateMapForCapture[templateKey];
 
-  const toast = {
+  const initialToast = {
     text: "✅ ESC를 누르거나 상단 우측 축소 버튼을 눌러 풀화면 화면 종료할 수 있어요.",
-    isToast: isToast,
-    setIsToast: setIsToast,
+    isToast: isInitalToast,
+    setIsToast: setisInitalToast,
+  };
+
+  const savedToast = {
+    text: "✅ 수정사항을 저장 완료했어요.",
+    isToast: isSavedToast,
+    setIsToast: setisSavedToast,
   };
 
   useEffect(() => {
@@ -62,6 +69,8 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
     setTemplateKey(`${projectType}-${selectedItem}`);
   }, [selectedItem]);
 
+  const [isSaved, setIsSaved] = useState<boolean>(false);
+
   const buttonSave: Ibutton = {
     size: "full",
     bg: "gradient",
@@ -71,8 +80,36 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
     },
   };
 
+  function saveChangedContent() {
+    const localData = localStorage.getItem("changedContent");
+    if (localData) {
+      /* db 저장 api 적용 */
+      console.log("db 저장 api 적용");
+      const timer = setTimeout(() => {
+        setIsSaved(true);
+        setisSavedToast(true);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }
+
+  useEffect(() => {
+    if (isSaved) {
+      setIsLoadingModalOpen(false);
+    }
+  }, [isSaved]);
+
+  useEffect(() => {
+    if (isLoadingModalOpen) {
+      saveChangedContent();
+    } else {
+      setIsSaved(false);
+    }
+  }, [isLoadingModalOpen]);
+
   const loadingModal: IloadingModal = {
     isOpen: isLoadingModalOpen,
+    bubble: "열심히 수정 중!",
     content: {
       title:
         (serviceDefaultData && serviceDefaultData.serviceTitle) || "프로젝트",
@@ -127,7 +164,8 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
           </div>
         </div>
       </div>
-      <ToastPopup {...toast} />
+      <ToastPopup {...initialToast} />
+      <ToastPopup {...savedToast} />
       {isLoadingModalOpen && <LoadingModal {...loadingModal} />}
     </>
   );

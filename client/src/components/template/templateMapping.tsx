@@ -24,6 +24,8 @@ import CommunitySnsJoin from "./templateStructureForCapture/communitySns/Communi
 import CommunitySnsFindId from "./templateStructureForCapture/communitySns/CommunitySnsFindId";
 import CommunitySnsFindPw from "./templateStructureForCapture/communitySns/CommunitySnsFindPw";
 
+/* 중개 매칭 */
+
 /* 홈페이지 게시판 */
 import HomePageBoardMain from "./templateStructureForCapture/homepageBoard/HomePageBoardMain";
 import HomePageBoardGreetings from "./templateStructureForCapture/homepageBoard/HomePageBoardGreetings";

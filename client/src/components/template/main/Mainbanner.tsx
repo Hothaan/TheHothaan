@@ -173,7 +173,7 @@ const container = css`
   justify-content: start;
 `;
 
-const mainBanner_title_css_: Record<string, string> = {
+export const mainBanner_title_css_: Record<string, string> = {
   marginBottom: "30px",
   color: "#486284",
   fontFamily: "Inter",
@@ -188,7 +188,7 @@ const mainBanner_title_css_: Record<string, string> = {
   whiteSpace: "nowrap",
 };
 
-const mainBanner_desc_css_: Record<string, string> = {
+export const mainBanner_desc_css_: Record<string, string> = {
   wordBreak: "keep-all",
   color: "#486284",
   fontFamily: "Inter",
@@ -207,7 +207,7 @@ const mainBanner_desc_css_: Record<string, string> = {
   WebkitLineClamp: "2",
 };
 
-const mainBanner_button_css: Record<string, string> = {
+export const mainBanner_button_css: Record<string, string> = {
   display: "flex",
   padding: "22px 66px",
   justifyContent: "center",

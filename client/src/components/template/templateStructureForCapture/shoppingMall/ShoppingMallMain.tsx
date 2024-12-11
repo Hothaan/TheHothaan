@@ -17,7 +17,7 @@ import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
 /* text */
-import { ImainBannerText } from "@components/template/main/Mainbanner";
+// import { ImainBannerContent } from "@components/template/main/Mainbanner";
 import { IproductListText } from "@components/template/main/ProductListMain";
 import { IserviceContact } from "@components/template/service/ServiceContact";
 import { IreviewText } from "@components/template/product/Review";
@@ -26,15 +26,15 @@ import { IserviceIntroductionText } from "@components/template/service/ServiceIn
 /* content */
 import { ImainBannerContent } from "@components/template/main/Mainbanner";
 
-/*
-  추가 구현사항
-  
-  값이 변경됐는지 감지하여 변경된 부분만 localStorage에 저장
-  저장된 값을 모두 모달에서 가져와서 저장버튼 클릭시 db에 저장
-*/
+/* css */
+import {
+  mainBanner_title_css_,
+  mainBanner_desc_css_,
+  mainBanner_button_css,
+} from "@components/template/main/Mainbanner";
 
 interface IshoppingMallMain {
-  mainBanner: ImainBannerText;
+  mainBanner: ImainBannerContent;
   productList: IproductListText;
   review: IreviewText;
   serviceIntroduction: IserviceIntroductionText;
@@ -51,6 +51,7 @@ export default function ShoppingMallMain() {
   const [headerData, setHeaderData] = useState<Iheader | null>(null);
   const [generatedText, setGeneratedText] =
     useState<IfetchedfeatureResponseData | null>(null);
+  const [changedContent, setChangedContent] = useState(null);
 
   const [mainBannerContent, setMainBannerContent] =
     useState<ImainBannerContent | null>(null);
@@ -66,9 +67,14 @@ export default function ShoppingMallMain() {
     try {
       const response = await getFeatureData(isProduction, projectId);
       if (response.status === 200) {
-        const categoryArr: string[] = response.data.featureResponseData.map(
-          (item: IfetchedfeatureResponseData) => item.menu
-        );
+        const categoryArr: string[] = response.data.featureResponseData
+          .filter(
+            (item: IfetchedfeatureResponseData) =>
+              item.menu !== "메인" &&
+              item.menu !== "유틸리티" &&
+              item.menu !== "마이페이지"
+          )
+          .map((item: IfetchedfeatureResponseData) => item.menu);
         setHeaderData({
           logo: response.data.projectName,
           categories: [...new Set(categoryArr)],
@@ -116,41 +122,26 @@ export default function ShoppingMallMain() {
     }
   }, [generatedText]);
 
-  const mainBanner_title_css_: Record<string, string> = {
-    marginBottom: "30px",
-    color: "#486284",
-    fontFamily: "Inter",
-    fontSize: "96px",
-    fontStyle: "normal",
-    fontWeight: "900",
-    lineHeight: "150%",
-    textTransform: "capitalize",
-    width: "100%",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
-  };
+  useEffect(() => {
+    const localData = localStorage.getItem("changedContent");
+    if (localData) {
+      setChangedContent(JSON.parse(localData));
+    }
+  }, []);
 
-  const mainBanner_desc_css_: Record<string, string> = {
-    wordBreak: "keep-all",
-    color: "#486284",
-    fontFamily: "Inter",
-    fontSize: "32px",
-    fontStyle: "normal",
-    fontWeight: "400",
-    lineHeight: "150%",
-    marginBottom: "80px",
-    maxWidth: "676px",
-
-    display: "-webkit-box",
-    WebkitBoxOrient: "vertical",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    height: "100px",
-    WebkitLineClamp: "2",
-  };
-
-  console.log(mainBannerContent);
+  useEffect(() => {
+    if (mainBannerContent) {
+      localStorage.setItem(
+        "changedContent",
+        JSON.stringify({
+          featureId: generatedText?.feature_id,
+          structure: {
+            mainBanner: mainBannerContent,
+          },
+        })
+      );
+    }
+  }, [mainBannerContent]);
 
   if (!generatedText || !headerData) {
     return <Loading />;
