@@ -40,7 +40,9 @@ export default function Mainbanner(prop: ImainBanner) {
   const { isEditable, content, onChange } = prop;
 
   const [editTitle, setEditTitle] = useState(content?.title || title_);
-  const [editTitleCss, setEditTitleCss] = useState(content?.titleCss);
+  const [editTitleCss, setEditTitleCss] = useState(
+    content?.titleCss || mainBanner_title_css_
+  );
   const [editDesc, setEditDesc] = useState(content?.desc || desc_);
   const [editDescCss, setEditDescCss] = useState(content?.descCss);
   const [editButton, setEditButton] = useState(content?.button || button_);
@@ -49,7 +51,7 @@ export default function Mainbanner(prop: ImainBanner) {
   useEffect(() => {
     if (content && content !== undefined) {
       setEditTitle(content?.title || title_);
-      setEditTitleCss(content?.titleCss);
+      setEditTitleCss(content?.titleCss || mainBanner_title_css_);
       setEditDesc(content?.desc || desc_);
       setEditDescCss(content.descCss);
     }

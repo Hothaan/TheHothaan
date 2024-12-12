@@ -25,6 +25,11 @@ import CommunitySnsFindId from "./templateStructureForCapture/communitySns/Commu
 import CommunitySnsFindPw from "./templateStructureForCapture/communitySns/CommunitySnsFindPw";
 
 /* 중개 매칭 */
+import IntermediaryMatchMain from "./templateStructureForCapture/intermediaryMatch/IntermediaryMatchMain";
+import IntermediaryMatchPrice from "./templateStructureForCapture/intermediaryMatch/IntermediaryMatchPrice";
+import IntermediaryMatchServiceIntroduce from "./templateStructureForCapture/intermediaryMatch/IntermediaryMatchServiceIntroduce";
+import IntermediaryMatchEstimateInquiry from "./templateStructureForCapture/intermediaryMatch/IntermediaryMatchEstimateInquiry";
+import IntermediaryMatchFAQ from "./templateStructureForCapture/intermediaryMatch/IntermediaryMatchFAQ";
 
 /* 홈페이지 게시판 */
 import HomePageBoardMain from "./templateStructureForCapture/homepageBoard/HomePageBoardMain";
@@ -63,6 +68,19 @@ export const templateMapForCapture: {
   "커뮤니티·sns-회원가입": CommunitySnsJoin,
   "커뮤니티·sns-아이디찾기": CommunitySnsFindId,
   "커뮤니티·sns-비밀번호찾기": CommunitySnsFindPw,
+
+  "중개·매칭-메인": IntermediaryMatchMain,
+  "중개·매칭-이용요금": IntermediaryMatchPrice,
+  "중개·매칭-서비스소개": IntermediaryMatchServiceIntroduce,
+  "중개·매칭-견적문의": IntermediaryMatchEstimateInquiry,
+  "중개·매칭-FAQ": IntermediaryMatchFAQ,
+  "중개·매칭-내프로필": IntermediaryMatchMain,
+  "중개·매칭-회원탈퇴": IntermediaryMatchMain,
+  "중개·매칭-로그인": IntermediaryMatchMain,
+  "중개·매칭-회원가입": IntermediaryMatchMain,
+  "중개·매칭-아이디찾기": IntermediaryMatchMain,
+  "중개·매칭-비밀번호찾기": IntermediaryMatchMain,
+  "중개·매칭-검색": IntermediaryMatchMain,
 
   "홈페이지·게시판-메인": HomePageBoardMain,
   "홈페이지·게시판-인사말": HomePageBoardGreetings,
