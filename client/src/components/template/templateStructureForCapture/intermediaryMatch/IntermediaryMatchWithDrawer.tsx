@@ -1,13 +1,18 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+
+/* component */
 import Header, { Iheader } from "@components/template/common/header/Header";
 import Footer from "@components/template/common/footer/Footer";
-import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
-import WithDrawer from "@components/template/mypage/WithDrawer";
-import { IfetchedfeatureResponseData } from "@components/template/types";
 import Loading from "@components/common/ui/Loading/loading";
+import WithDrawer from "@components/template/mypage/WithDrawer";
+
+/* data */
+import { IfetchedfeatureResponseData } from "@components/template/types";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
+
+/* text 없는 페이지 */
 
 export default function IntermediaryMatchWithDrawer() {
   const feature = "회원탈퇴";
@@ -17,9 +22,9 @@ export default function IntermediaryMatchWithDrawer() {
   const { projectId } = useParams();
   const [projectIdValue, setProjectIdValue] = useState<string | null>(null);
   const [headerData, setHeaderData] = useState<Iheader | null>(null);
-  const [generatedText, setGeneratedText] = useState<IgeneratedText | null>(
-    null
-  );
+  const [generatedText, setGeneratedText] =
+    useState<IfetchedfeatureResponseData | null>(null);
+
   async function fetchFeatureData(isProduction: boolean, projectId: string) {
     try {
       const response = await getFeatureData(isProduction, projectId);

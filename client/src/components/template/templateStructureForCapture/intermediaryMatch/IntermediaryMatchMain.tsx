@@ -19,20 +19,18 @@ import useIsProduction from "@hooks/useIsProduction";
 
 /* text */
 import { ImainBannerText } from "@components/template/main/Mainbanner";
-import { IserviceIntroduceText } from "@components/template/main/ServiceIntroduceMain";
+import { ImatchingServiceIntroduceMainText } from "@components/template/main/MatchingServiceIntroduceMain";
 import { IproductIntroduceMainText } from "@components/template/main/ProductIntroduceMain";
-import { InoticeMainText } from "@components/template/main/NoticeMain";
-import { IrecruitMainText } from "@components/template/main/RecruitMain";
-import { InewsMainText } from "@components/template/main/NewsMain";
+import { IreviewText } from "@components/template/product/Review";
 import { IexploreServiceText } from "@components/template/main/ExploreServiceMain";
+import { iPriceMainText } from "@components/template/main/PriceMain";
 
-interface IlandingIntroduceMain {
+interface IntermediaryMatchMain {
   mainBanner: ImainBannerText;
-  serviceIntroduce: IserviceIntroduceText;
+  MatchingServiceIntroduceMain: ImatchingServiceIntroduceMainText;
   productIntroduce: IproductIntroduceMainText;
-  notice: InoticeMainText;
-  recruit: IrecruitMainText;
-  news: InewsMainText;
+  Review: IreviewText;
+  PriceMain: iPriceMainText;
   exploreService: IexploreServiceText;
 }
 

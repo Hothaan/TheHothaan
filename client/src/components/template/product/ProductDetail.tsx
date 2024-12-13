@@ -312,8 +312,10 @@ function ProductDetailList(prop: IproductDetailList) {
         <ProductListItemMain
           option="main"
           key={index}
-          title={title || more_product_title_}
-          desc={desc || more_product_desc_}
+          content={{
+            title: title || more_product_title_,
+            desc: desc || more_product_desc_,
+          }}
         />
       ))}
     </div>

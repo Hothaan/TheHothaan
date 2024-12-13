@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 /* component */
 import Header, { Iheader } from "@components/template/common/header/Header";
 import Footer from "@components/template/common/footer/Footer";
-import FAQ from "@components/template/customerService/FAQ";
+import Search from "@components/template/utility/Search";
 import Loading from "@components/common/ui/Loading/loading";
 
 /* data */
@@ -12,10 +12,15 @@ import { IfetchedfeatureResponseData } from "@components/template/types";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
-/* text 없는 페이지 */
+/* text */
+import { IsearchText } from "@components/template/utility/Search";
 
-export default function IntermediaryMatchFAQ() {
-  const feature = "FAQ";
+interface IntermediaryMatchSearch {
+  Search: IsearchText;
+}
+
+export default function IntermediaryMatchSearch() {
+  const feature = "검색";
 
   /* only projectId */
   const { isProduction } = useIsProduction();
@@ -77,7 +82,7 @@ export default function IntermediaryMatchFAQ() {
   return (
     <div className="templateImage">
       <Header serviceType="중개·매칭" />
-      <FAQ />
+      <Search option="통합 검색" />
       <Footer serviceType="중개·매칭" />
     </div>
   );

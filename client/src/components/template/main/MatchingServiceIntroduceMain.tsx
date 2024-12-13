@@ -3,6 +3,13 @@ import { css } from "@emotion/react";
 import { OuterWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 
+export interface ImatchingServiceIntroduceMainText {
+  bannerTitle?: string;
+  bannerDesc?: string;
+  itemTitle?: string;
+  itemDesc?: string;
+}
+
 const banner_title_ = "Headline H1";
 const banner_desc_ =
   "lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non";
@@ -11,6 +18,8 @@ const item_title_ = "Headline H1";
 const item_desc_ =
   "lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non";
 const circle_text_ = "lorem ipsum";
+const input_text_ = "lorem ipsum";
+const input_button_ = "lorem ipsum";
 
 function MatchingServiceIntroduceMainItem() {
   return (
@@ -59,6 +68,40 @@ export default function MatchingServiceIntroduceMain() {
           {Array.from({ length: count }, (_, index) => (
             <MatchingServiceIntroduceMainItem key={index} />
           ))}
+        </div>
+        <div css={input_wrap}>
+          <div css={input_container}>
+            <p css={input_text}>
+              {input_text_}
+              <span css={high_light}>*</span>
+            </p>
+            <div css={input_box_container}>
+              <div css={input_box("252px")}>
+                <p css={input_text}>{input_text_}</p>
+              </div>
+              <div css={input_box("354px")}>
+                <p css={input_text}>{input_text_}</p>
+              </div>
+            </div>
+            <div css={input_checkbox_container}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="15"
+                height="14"
+                viewBox="0 0 15 14"
+                fill="none"
+              >
+                <path
+                  d="M1 2C1 1.17157 1.67157 0.5 2.5 0.5H12.5C13.3284 0.5 14 1.17157 14 2V12C14 12.8284 13.3284 13.5 12.5 13.5H2.5C1.67157 13.5 1 12.8284 1 12V2Z"
+                  stroke="#B8B8B8"
+                />
+                <path d="M3.5 6.5L6.5 9.5L12 4" stroke="black" />
+              </svg>
+
+              <p css={input_checkbox_label}>{input_text_}</p>
+            </div>
+          </div>
+          <p css={input_button}>{input_button_}</p>
         </div>
       </div>
     </OuterWrap>
@@ -184,4 +227,103 @@ const circle_text = css`
   font-style: normal;
   font-weight: 400;
   line-height: 80px; /* 333.333% */
+`;
+
+const input_wrap = css`
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+  align-items: center;
+  justify-content: center;
+`;
+
+const input_container = css`
+  display: flex;
+  gap: 70px;
+  flex-wrap: wrap;
+  align-items: center;
+
+  padding: 36px 130px;
+  background: #f8f8f8;
+
+  @media (max-width: 1000px) {
+    flex-direction: column;
+  }
+`;
+
+const input_box_container = css`
+  display: flex;
+  align-items: center;
+  gap: 20px;
+
+  @media (max-width: 1000px) {
+    flex-direction: column;
+  }
+`;
+
+const input_box = (width: string) => css`
+  display: flex;
+  align-items: center;
+  width: ${width};
+  height: 56px;
+  flex-shrink: 0;
+  padding: 0 20px;
+
+  border: 1px solid #ddd;
+  background: #fff;
+`;
+
+const input_text = css`
+  color: #222;
+  font-family: Pretendard;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 30px; /* 150% */
+  letter-spacing: -0.4px;
+`;
+
+const high_light = css`
+  color: #ff3a3a;
+  font-family: Pretendard;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 30px;
+  letter-spacing: -0.4px;
+`;
+
+const input_checkbox_container = css`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+`;
+
+const input_checkbox_label = css`
+  color: #000;
+  font-family: Pretendard;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 55px; /* 392.857% */
+  letter-spacing: -0.14px;
+  text-transform: lowercase;
+`;
+
+const input_button = css`
+  padding: 16px 114px;
+  flex-shrink: 0;
+
+  border-radius: 35px;
+  border: 2px solid #9cb0c9;
+
+  color: #486284;
+  text-align: center;
+
+  /* h2_middle */
+  font-family: Inter;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
 `;

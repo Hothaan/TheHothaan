@@ -4,12 +4,7 @@ import { useParams } from "react-router-dom";
 /* component */
 import Header, { Iheader } from "@components/template/common/header/Header";
 import Footer from "@components/template/common/footer/Footer";
-import Mainbanner from "@components/template/main/Mainbanner";
-import ProductIntroduceMain from "@components/template/main/ProductIntroduceMain";
-import MatchingServiceIntroduceMain from "@components/template/main/MatchingServiceIntroduceMain";
-import Review from "@components/template/product/Review";
-import PriceMain from "@components/template/main/PriceMain";
-import ExploreServiceMain from "@components/template/main/ExploreServiceMain";
+import EstimateInquiry from "@components/template/service/EstimateInquiry";
 import Loading from "@components/common/ui/Loading/loading";
 
 /* data */
@@ -17,27 +12,10 @@ import { IfetchedfeatureResponseData } from "@components/template/types";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
-/* text */
-import { ImainBannerText } from "@components/template/main/Mainbanner";
-import { IserviceIntroduceText } from "@components/template/main/ServiceIntroduceMain";
-import { IproductIntroduceMainText } from "@components/template/main/ProductIntroduceMain";
-import { InoticeMainText } from "@components/template/main/NoticeMain";
-import { IrecruitMainText } from "@components/template/main/RecruitMain";
-import { InewsMainText } from "@components/template/main/NewsMain";
-import { IexploreServiceText } from "@components/template/main/ExploreServiceMain";
-
-interface IlandingIntroduceMain {
-  mainBanner: ImainBannerText;
-  serviceIntroduce: IserviceIntroduceText;
-  productIntroduce: IproductIntroduceMainText;
-  notice: InoticeMainText;
-  recruit: IrecruitMainText;
-  news: InewsMainText;
-  exploreService: IexploreServiceText;
-}
+/* text 없는 페이지 */
 
 export default function IntermediaryMatchEstimateInquiry() {
-  const feature = "메인";
+  const feature = "견적 문의";
 
   /* only projectId */
   const { isProduction } = useIsProduction();
@@ -99,12 +77,7 @@ export default function IntermediaryMatchEstimateInquiry() {
   return (
     <div className="templateImage">
       <Header serviceType="중개·매칭" />
-      <Mainbanner />
-      <MatchingServiceIntroduceMain />
-      <ProductIntroduceMain />
-      <Review />
-      <PriceMain />
-      <ExploreServiceMain />
+      <EstimateInquiry />
       <Footer serviceType="중개·매칭" />
     </div>
   );

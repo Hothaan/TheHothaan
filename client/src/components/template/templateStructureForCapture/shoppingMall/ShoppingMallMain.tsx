@@ -17,7 +17,7 @@ import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
 /* text */
-// import { ImainBannerContent } from "@components/template/main/Mainbanner";
+import { ImainBannerText } from "@components/template/main/Mainbanner";
 import { IproductListText } from "@components/template/main/ProductListMain";
 import { IserviceContact } from "@components/template/service/ServiceContact";
 import { IreviewText } from "@components/template/product/Review";
@@ -25,6 +25,7 @@ import { IserviceIntroductionText } from "@components/template/service/ServiceIn
 
 /* content */
 import { ImainBannerContent } from "@components/template/main/Mainbanner";
+import { IproductListContent } from "@components/template/main/ProductListMain";
 
 /* css */
 import {
@@ -33,8 +34,23 @@ import {
   mainBanner_button_css,
 } from "@components/template/main/Mainbanner";
 
-interface IshoppingMallMain {
+import {
+  product_list_option_list_desc_css,
+  product_list_option_list_title_css,
+  product_list_option_main_desc_css,
+  product_list_option_main_title_css,
+} from "@components/template/main/ProductListMain";
+
+interface IshoppingMallMainContent {
   mainBanner: ImainBannerContent;
+  productList: IproductListContent;
+  review: IreviewText;
+  serviceIntroduction: IserviceIntroductionText;
+  serviceContact: IserviceContact;
+}
+
+interface IshoppingMallMainText {
+  mainBanner: ImainBannerText;
   productList: IproductListText;
   review: IreviewText;
   serviceIntroduction: IserviceIntroductionText;

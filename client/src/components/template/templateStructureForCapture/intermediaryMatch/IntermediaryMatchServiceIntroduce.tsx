@@ -4,12 +4,7 @@ import { useParams } from "react-router-dom";
 /* component */
 import Header, { Iheader } from "@components/template/common/header/Header";
 import Footer from "@components/template/common/footer/Footer";
-import Mainbanner from "@components/template/main/Mainbanner";
-import ProductIntroduceMain from "@components/template/main/ProductIntroduceMain";
-import MatchingServiceIntroduceMain from "@components/template/main/MatchingServiceIntroduceMain";
-import Review from "@components/template/product/Review";
-import PriceMain from "@components/template/main/PriceMain";
-import ExploreServiceMain from "@components/template/main/ExploreServiceMain";
+import IntermediaryMatchServiceIntroduction from "@components/template/service/IntermediaryMatchServiceIntroduction";
 import Loading from "@components/common/ui/Loading/loading";
 
 /* data */
@@ -18,22 +13,10 @@ import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
 /* text */
-import { ImainBannerText } from "@components/template/main/Mainbanner";
-import { IserviceIntroduceText } from "@components/template/main/ServiceIntroduceMain";
-import { IproductIntroduceMainText } from "@components/template/main/ProductIntroduceMain";
-import { InoticeMainText } from "@components/template/main/NoticeMain";
-import { IrecruitMainText } from "@components/template/main/RecruitMain";
-import { InewsMainText } from "@components/template/main/NewsMain";
-import { IexploreServiceText } from "@components/template/main/ExploreServiceMain";
+import { IintermediaryMatchServiceIntroductionText } from "@components/template/service/IntermediaryMatchServiceIntroduction";
 
-interface IlandingIntroduceMain {
-  mainBanner: ImainBannerText;
-  serviceIntroduce: IserviceIntroduceText;
-  productIntroduce: IproductIntroduceMainText;
-  notice: InoticeMainText;
-  recruit: IrecruitMainText;
-  news: InewsMainText;
-  exploreService: IexploreServiceText;
+interface IntermediaryMatchServiceIntroduce {
+  IntermediaryMatchServiceIntroduction: IintermediaryMatchServiceIntroductionText;
 }
 
 export default function IntermediaryMatchServiceIntroduce() {
@@ -99,12 +82,7 @@ export default function IntermediaryMatchServiceIntroduce() {
   return (
     <div className="templateImage">
       <Header serviceType="중개·매칭" />
-      <Mainbanner />
-      <MatchingServiceIntroduceMain />
-      <ProductIntroduceMain />
-      <Review />
-      <PriceMain />
-      <ExploreServiceMain />
+      <IntermediaryMatchServiceIntroduction />
       <Footer serviceType="중개·매칭" />
     </div>
   );
