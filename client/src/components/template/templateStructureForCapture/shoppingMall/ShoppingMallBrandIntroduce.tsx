@@ -16,7 +16,11 @@ import useIsProduction from "@hooks/useIsProduction";
 /* text  */
 import { IbrandIntroduceText } from "@components/template/brandIntroduce/BrandIntroduce";
 
-interface IshoppingMallBrandIntroduce {
+interface IshoppingMallBrandIntroduceText {
+  brandIntroduce: IbrandIntroduceText;
+}
+
+interface IshoppingMallBrandIntroduceContent {
   brandIntroduce: IbrandIntroduceText;
 }
 
