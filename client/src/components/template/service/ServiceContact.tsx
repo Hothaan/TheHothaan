@@ -1,22 +1,72 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import { useState, useEffect } from "react";
 import { OuterWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 import TemplateButton from "../commonComponent/TemplateButton";
 
 const title_ = [`Lorem ipsum dolor`, <br key="1" />, `sit amet consectetur`];
-const title_className = "service_contact_title";
 
 const button_ = "Lorem ipsum dolor";
-const button_className = "service_contact_button";
 
-export interface IserviceContact {
+export interface IserviceContactText {
   title?: string;
   button?: string;
 }
 
+export interface IserviceContactContent {
+  title?: {
+    text?: string;
+    css?: Record<string, string>;
+  };
+  button?: {
+    text?: string;
+  };
+}
+
+interface IserviceContact {
+  content?: IserviceContactContent | null;
+  isEditable?: boolean;
+  onChange?: (content: IserviceContactContent) => void;
+}
+
+const service_contact_title_css_: Record<string, string> = {
+  width: "100%",
+  color: "#486284",
+  textAlign: "center",
+  fontFamily: "Inter",
+  fontSize: "50px",
+  fontStyle: "normal",
+  fontWeight: "800",
+  lineHeight: "normal",
+};
+
 export default function ServiceContact(prop: IserviceContact) {
-  const { title, button } = prop;
+  const { content, isEditable, onChange } = prop;
+
+  const [edit, setEdit] = useState({
+    title: {
+      text: content?.title?.text || title_,
+      css: content?.title?.css || service_contact_title_css_,
+    },
+    button: {
+      text: content?.button?.text || button_,
+    },
+  });
+
+  useEffect(() => {
+    if (content) {
+      setEdit({
+        title: {
+          text: content?.title?.text || title_,
+          css: content?.title?.css || service_contact_title_css_,
+        },
+        button: {
+          text: content?.button?.text || button_,
+        },
+      });
+    }
+  }, [content]);
 
   return (
     <OuterWrap padding="0">
@@ -32,13 +82,12 @@ export default function ServiceContact(prop: IserviceContact) {
           }}
         />
         <div css={contents_container}>
-          <p css={title_style} className={title_className}>
-            {title || title_}
+          <p css={service_contact_title_css_}>
+            {content?.title?.text || title_}
           </p>
           <TemplateButton
             type="round"
-            text={button || button_}
-            className={button_className}
+            text={content?.button?.text || button_}
           />
         </div>
       </div>
@@ -65,17 +114,4 @@ const contents_container = css`
   gap: 40px;
   align-items: center;
   justify-content: center;
-`;
-
-const title_style = css`
-  width: 100%;
-  color: var(--Neutral-10, #486284);
-  text-align: center;
-
-  /* H2_50 */
-  font-family: Inter;
-  font-size: 50px;
-  font-style: normal;
-  font-weight: 800;
-  line-height: normal;
 `;

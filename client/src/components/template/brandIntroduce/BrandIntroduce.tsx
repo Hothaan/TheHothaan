@@ -2,6 +2,7 @@
 import { css } from "@emotion/react";
 import { OuterWrap, ContentsWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
+import { useEffect, useState } from "react";
 
 const banner_title_ = "headline h1";
 const banner_title_className = "brand_introduce_banner_title";
@@ -10,58 +11,93 @@ const banner_desc_ =
   "lorem ipsum, quia dolor sit, amet,consectetur, adipisci velit, sed quia non";
 const banner_desc_className = "brand_introduce_banner_desc";
 
-const content_title_ = "headline h1";
-const content_title_className = "brand_introduce_content_title";
+const item_title_ = "headline h1";
+const item_title_className = "brand_introduce_content_title";
 
-const content_desc_ =
+const item_desc_ =
   "lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia nonlorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia nonlorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia nonlorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non";
-const content_desc_className = "brand_introduce_content_desc";
+const item_desc_className = "brand_introduce_content_desc";
 
 export interface IbrandIntroduceText {
   banner?: { title?: string; desc?: string };
-  content?: IbrandIntroduceItem;
+  item?: { title?: string; desc?: string };
 }
 
-interface IbrandIntroduceItem {
+export interface IbrandIntroduceContent {
+  banner?: {
+    title?: string;
+    titleCss?: Record<string, string>;
+    desc?: string;
+    descCss?: Record<string, string>;
+  };
+  item?: {
+    title?: string;
+    titleCss?: Record<string, string>;
+    desc?: string;
+    descCss?: Record<string, string>;
+  };
+}
+
+interface IbrandIntroduceItemText {
   title?: string;
   desc?: string;
 }
 
-interface IbrandIntroduce extends IbrandIntroduceText {
-  isEditable?: boolean;
+interface IbrandIntroduceItemContent extends IbrandIntroduceItemText {
+  titleCss?: Record<string, string>;
+  descCss?: Record<string, string>;
 }
 
-function BrandIntroduceItem(prop: IbrandIntroduceItem) {
-  const { title, desc } = prop;
-  const item_container = css`
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 20px;
-  `;
+interface IbrandIntroduce {
+  content?: IbrandIntroduceContent | null;
+  isEditable?: boolean;
+  onChange?: (content: IbrandIntroduceContent) => void;
+}
 
-  const item_title = css`
-    color: #486284;
+export const brandIntroduce_item_title_css: Record<string, string> = {
+  color: "#486284",
+  fontFamily: "Inter",
+  fontSize: "96px",
+  fontStyle: "normal",
+  fontWeight: "900",
+  lineHeight: "150%",
+  textTransform: "capitalize",
+};
 
-    /* H1 */
-    font-family: Inter;
-    font-size: 96px;
-    font-style: normal;
-    font-weight: 900;
-    line-height: 150%; /* 144px */
-    text-transform: capitalize;
-  `;
+export const brandIntroduce_item_desc_css: Record<string, string> = {
+  color: "#486284",
+  fontFamily: "Inter",
+  fontSize: "32px",
+  fontStyle: "normal",
+  fontWeight: "400",
+  lineHeight: "normal",
+};
 
-  const item_desc = css`
-    color: #486284;
+export const brandIntroduce_banner_title_css: Record<string, string> = {
+  marginBottom: "30px",
+  color: "#486284",
+  fontFamily: "Inter",
+  fontSize: "96px",
+  fontStyle: "normal",
+  fontWeight: "900",
+  lineHeight: "150%",
+  textTransform: "capitalize",
+};
 
-    /* h2_middle */
-    font-family: Inter;
-    font-size: 32px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-  `;
+export const brandIntroduce_banner_desc_css: Record<string, string> = {
+  textAlign: "center",
+  wordBreak: "keep-all",
+  color: "#486284",
+  fontFamily: "Inter",
+  fontSize: "32px",
+  fontStyle: "normal",
+  fontWeight: "400",
+  lineHeight: "normal",
+  maxWidth: "676px",
+};
+
+function BrandIntroduceItem(prop: IbrandIntroduceItemContent) {
+  const { title, titleCss, desc, descCss } = prop;
 
   return (
     <div css={item_container}>
@@ -75,20 +111,84 @@ function BrandIntroduceItem(prop: IbrandIntroduceItem) {
           icon: "width: 100px; height: 100px;",
         }}
       />
-      <p css={item_title} className={content_title_className}>
-        {title || content_title_}
+      <p css={titleCss} className={item_title_className}>
+        {title || item_title_}
       </p>
-      <p css={item_desc} className={content_desc_className}>
-        {desc || content_desc_}
+      <p css={descCss} className={item_desc_className}>
+        {desc || item_desc_}
       </p>
     </div>
   );
 }
 
 export default function BrandIntroduce(prop: IbrandIntroduce) {
-  const { isEditable, banner, content } = prop;
+  const { isEditable, content, onChange } = prop;
 
   const count = 2;
+
+  const [editBannerTitle, setEditBannerTitle] = useState(
+    content?.banner?.title || banner_title_
+  );
+  const [editBannerTitleCss, setEditBannerTitleCss] = useState(
+    content?.banner?.titleCss || brandIntroduce_banner_title_css
+  );
+  const [editBannerDesc, setEditBannerDesc] = useState(
+    content?.banner?.desc || banner_desc_
+  );
+  const [editBannerDescCss, setEditBannerDescCss] = useState(
+    content?.banner?.descCss || brandIntroduce_banner_desc_css
+  );
+
+  const [editItemTitle, setEditItemTitle] = useState(
+    content?.item?.title || item_title_
+  );
+  const [editItemTitleCss, setEditItemTitleCss] = useState(
+    content?.item?.titleCss || brandIntroduce_item_title_css
+  );
+  const [editItemDesc, setEditItemDesc] = useState(
+    content?.item?.desc || item_desc_
+  );
+  const [editItemDescCss, setEditItemDescCss] = useState(
+    content?.item?.descCss || brandIntroduce_item_desc_css
+  );
+
+  useEffect(() => {
+    if (content && content !== undefined) {
+      setEditBannerTitle(content?.banner?.title || banner_title_);
+      setEditBannerTitleCss(
+        content?.banner?.titleCss || brandIntroduce_banner_title_css
+      );
+      setEditBannerDesc(content?.banner?.desc || banner_desc_);
+      setEditBannerDescCss(
+        content?.banner?.descCss || brandIntroduce_banner_desc_css
+      );
+      setEditItemTitle(content?.item?.title || item_title_);
+      setEditItemTitleCss(
+        content?.item?.titleCss || brandIntroduce_item_title_css
+      );
+      setEditItemDesc(content?.item?.desc || item_desc_);
+      setEditItemDescCss(
+        content?.item?.descCss || brandIntroduce_item_desc_css
+      );
+    }
+  }, [content]);
+
+  function handleEditBannerTitle(
+    updatedText: string,
+    updatedCss: Record<string, string>
+  ) {
+    const newContent = {
+      ...content,
+      banner: {
+        ...content?.banner,
+        title: updatedText,
+        titleCss: updatedCss,
+      },
+    };
+    setEditBannerTitle(updatedText);
+    setEditBannerTitleCss(updatedCss);
+    onChange?.(newContent);
+  }
 
   return (
     <OuterWrap padding="0">
@@ -104,22 +204,30 @@ export default function BrandIntroduce(prop: IbrandIntroduce) {
           }}
         />
         <div css={container}>
-          <p css={pass_h1} className={banner_title_className}>
-            {banner?.title || banner_title_}
+          <p
+            css={editBannerTitleCss || brandIntroduce_banner_title_css}
+            className={banner_title_className}
+          >
+            {editBannerTitle || banner_title_}
           </p>
-          <p css={desc_style} className={banner_desc_className}>
-            {banner?.desc || banner_desc_}
+          <p
+            css={editBannerDescCss || brandIntroduce_banner_desc_css}
+            className={banner_desc_className}
+          >
+            {editBannerDesc || banner_desc_}
           </p>
         </div>
       </div>
       <OuterWrap padding="290px">
         <ContentsWrap>
-          <div css={item_container}>
+          <div css={item_wrap}>
             {Array.from({ length: count }, (_, index) => (
               <BrandIntroduceItem
                 key={index}
-                title={content?.title || content_title_}
-                desc={content?.desc || content_desc_}
+                title={editItemTitle || item_title_}
+                titleCss={editItemTitleCss || brandIntroduce_item_title_css}
+                desc={editItemDesc || item_desc_}
+                descCss={editItemDescCss || brandIntroduce_item_desc_css}
               />
             ))}
           </div>
@@ -129,7 +237,7 @@ export default function BrandIntroduce(prop: IbrandIntroduce) {
   );
 }
 
-const item_container = css`
+const item_wrap = css`
   display: flex;
   flex-direction: column;
   gap: 100px;
@@ -157,27 +265,9 @@ const container = css`
   justify-content: center;
 `;
 
-const pass_h1: Record<string, string> = {
-  marginBottom: "30px",
-  color: "#486284",
-  fontFamily: "Inter",
-  fontSize: "96px",
-  fontStyle: "normal",
-  fontWeight: "900",
-  lineHeight: "150%",
-  textTransform: "capitalize",
-};
-
-const desc_style = css`
-  text-align: center;
-  word-break: keep-all;
-  color: #486284;
-  font-family: Inter;
-  font-size: 32px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  // margin-bottom: 80px;
-
-  max-width: 676px;
+const item_container = css`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
 `;

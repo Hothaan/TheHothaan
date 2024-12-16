@@ -26,6 +26,13 @@ export interface IreviewText {
   role?: string;
 }
 
+export interface IreviewContent {
+  title?: { text?: string; css?: Record<string, string> };
+  desc?: { text?: string; css?: Record<string, string> };
+  name?: { text?: string; css?: Record<string, string> };
+  role?: { text?: string; css?: Record<string, string> };
+}
+
 interface Ireview extends IreviewText {}
 
 interface IreviewItem extends Ireview {}

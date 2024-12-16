@@ -6,174 +6,11 @@ import ImageBox from "../commonComponent/ImageBox";
 import EditableText from "@components/service/editableText/EditableText";
 
 const title_ = "Headline H1";
-const title_className = "main_banner_title";
 
 const desc_ =
   "lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non";
-const desc_className = "main_banner_desc";
 
 const button_ = "button";
-const button_className = "main_banner_button";
-
-export interface ImainBannerText {
-  title?: string;
-  desc?: string;
-  button?: string;
-}
-
-export interface ImainBannerContent {
-  title?: string;
-  titleCss?: Record<string, string>;
-  desc?: string;
-  descCss?: Record<string, string>;
-  button?: string;
-  buttonCss?: Record<string, string>;
-}
-
-interface ImainBanner {
-  content?: ImainBannerContent | null;
-  isEditable?: boolean;
-  onChange?: (content: ImainBannerContent) => void;
-}
-
-export default function Mainbanner(prop: ImainBanner) {
-  const { isEditable, content, onChange } = prop;
-
-  const [editTitle, setEditTitle] = useState(content?.title || title_);
-  const [editTitleCss, setEditTitleCss] = useState(
-    content?.titleCss || mainBanner_title_css_
-  );
-  const [editDesc, setEditDesc] = useState(content?.desc || desc_);
-  const [editDescCss, setEditDescCss] = useState(content?.descCss);
-  const [editButton, setEditButton] = useState(content?.button || button_);
-  const [editButtonCss, setEditButtonCss] = useState(content?.buttonCss);
-
-  useEffect(() => {
-    if (content && content !== undefined) {
-      setEditTitle(content?.title || title_);
-      setEditTitleCss(content?.titleCss || mainBanner_title_css_);
-      setEditDesc(content?.desc || desc_);
-      setEditDescCss(content.descCss);
-    }
-  }, [content]);
-
-  console.log(editTitle);
-
-  function handleEditTitle(
-    updatedText: string,
-    updatedCss: Record<string, string>
-  ) {
-    const newContent = {
-      ...content,
-      title: updatedText,
-      titleCss: updatedCss,
-    };
-    setEditTitle(updatedText);
-    setEditTitleCss(updatedCss);
-    onChange?.(newContent);
-  }
-
-  function handleEditDesc(
-    updatedText: string,
-    updatedCss: Record<string, string>
-  ) {
-    setEditDesc(updatedText);
-    setEditDescCss(updatedCss);
-    onChange?.({
-      ...content,
-      desc: updatedText,
-      descCss: updatedCss,
-    });
-  }
-
-  function handleEditButton(
-    updatedText: string,
-    updatedCss: Record<string, string>
-  ) {
-    setEditButton(updatedText);
-    setEditButtonCss(updatedCss);
-    onChange?.({
-      ...content,
-      button: updatedText,
-      buttonCss: updatedCss,
-    });
-  }
-
-  return (
-    <OuterWrap padding="0">
-      <div css={banner_container}>
-        <ImageBox
-          container={{ width: "100%", height: "850px" }}
-          icon={{ width: "210px", height: "210px" }}
-          borderRadius="none"
-          responsive={{
-            maxWidth: 1000,
-            container: "",
-            icon: "width: 110px; height: 108px;",
-          }}
-        />
-        <div css={container}>
-          {isEditable ? (
-            <EditableText
-              text={editTitle}
-              isTextArea={false}
-              defaultCss={editTitleCss || mainBanner_title_css_}
-              className={title_className}
-              onChange={handleEditTitle}
-            />
-          ) : (
-            <p css={editTitleCss} className={title_className}>
-              {editTitle}
-            </p>
-          )}
-          {isEditable ? (
-            <EditableText
-              text={editDesc}
-              isTextArea={true}
-              defaultCss={editDescCss || mainBanner_desc_css_}
-              className={desc_className}
-              onChange={handleEditDesc}
-            />
-          ) : (
-            <p
-              css={editDescCss || mainBanner_desc_css_}
-              className={title_className}
-            >
-              {editDesc}
-            </p>
-          )}
-          <p css={editButtonCss || mainBanner_button_css}>{editButton}</p>
-          {/* <TemplateButton
-            type="default"
-            text={content?.button || button_}
-            className={button_className}
-          /> */}
-        </div>
-      </div>
-    </OuterWrap>
-  );
-}
-
-const banner_container = css`
-  position: relative;
-  width: 100%;
-  height: 100%;
-`;
-
-const container = css`
-  position: absolute;
-
-  width: 100%;
-  height: 100%;
-  padding: 212px 132px;
-  left: 0;
-  top: 0;
-
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  justify-content: start;
-`;
 
 export const mainBanner_title_css_: Record<string, string> = {
   marginBottom: "30px",
@@ -209,7 +46,7 @@ export const mainBanner_desc_css_: Record<string, string> = {
   WebkitLineClamp: "2",
 };
 
-export const mainBanner_button_css: Record<string, string> = {
+export const mainBanner_button_css_: Record<string, string> = {
   display: "flex",
   padding: "22px 66px",
   justifyContent: "center",
@@ -225,3 +62,150 @@ export const mainBanner_button_css: Record<string, string> = {
   fontWeight: "400",
   lineHeight: "normal",
 };
+
+export interface ImainBannerText {
+  title?: string;
+  desc?: string;
+  button?: string;
+}
+
+export interface ImainBannerContent {
+  title?: {
+    text?: string;
+    css?: Record<string, string>;
+  };
+  desc?: {
+    text?: string;
+    css?: Record<string, string>;
+  };
+  button?: {
+    text?: string;
+    css?: Record<string, string>;
+  };
+}
+
+interface ImainBanner {
+  content?: ImainBannerContent | null;
+  isEditable?: boolean;
+  onChange?: (content: ImainBannerContent) => void;
+}
+
+export default function Mainbanner(prop: ImainBanner) {
+  const { isEditable, content, onChange } = prop;
+
+  const [mainBanner, setMainBanner] = useState({
+    title: {
+      text: content?.title?.text || title_,
+      css: content?.title?.css || mainBanner_title_css_,
+    },
+    desc: {
+      text: content?.desc?.text || desc_,
+      css: content?.desc?.css || mainBanner_desc_css_,
+    },
+    button: {
+      text: content?.button?.text || button_,
+      css: content?.button?.css || mainBanner_button_css_,
+    },
+  });
+
+  useEffect(() => {
+    if (content) {
+      setMainBanner({
+        title: {
+          text: content?.title?.text || title_,
+          css: content?.title?.css || mainBanner_title_css_,
+        },
+        desc: {
+          text: content?.desc?.text || desc_,
+          css: content?.desc?.css || mainBanner_desc_css_,
+        },
+        button: {
+          text: content?.button?.text || button_,
+          css: content?.button?.css || mainBanner_button_css_,
+        },
+      });
+    }
+  }, [content]);
+
+  function handleEdit(
+    field: keyof ImainBannerContent,
+    updatedText: string,
+    updatedCss: Record<string, string>
+  ) {
+    const updatedState = {
+      ...mainBanner,
+      [field]: {
+        text: updatedText,
+        css: updatedCss,
+      },
+    };
+    setMainBanner(updatedState);
+    onChange?.(updatedState);
+  }
+
+  return (
+    <OuterWrap padding="0">
+      <div css={banner_container}>
+        <ImageBox
+          container={{ width: "100%", height: "850px" }}
+          icon={{ width: "210px", height: "210px" }}
+          borderRadius="none"
+          responsive={{
+            maxWidth: 1000,
+            container: "",
+            icon: "width: 110px; height: 108px;",
+          }}
+        />
+        <div css={container}>
+          {isEditable ? (
+            <EditableText
+              text={mainBanner.title.text}
+              isTextArea={false}
+              defaultCss={mainBanner.title.css}
+              onChange={(text, css) => handleEdit("title", text, css)}
+            />
+          ) : (
+            <p css={mainBanner.title.css}>{mainBanner.title.text}</p>
+          )}
+          {isEditable ? (
+            <EditableText
+              text={mainBanner.desc.text}
+              isTextArea={true}
+              defaultCss={mainBanner.desc.css}
+              onChange={(text, css) => handleEdit("desc", text, css)}
+            />
+          ) : (
+            <p css={mainBanner.desc.css}>{mainBanner.desc.text}</p>
+          )}
+          <p css={mainBanner.button.css}>{mainBanner.button.text}</p>
+          {/* <TemplateButton
+            type="default"
+            text={content?.button || button_}
+            className={button_className}
+          /> */}
+        </div>
+      </div>
+    </OuterWrap>
+  );
+}
+
+const banner_container = css`
+  position: relative;
+  width: 100%;
+  height: 100%;
+`;
+
+const container = css`
+  position: absolute;
+
+  width: 100%;
+  height: 100%;
+  padding: 212px 132px;
+  left: 0;
+  top: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: start;
+`;

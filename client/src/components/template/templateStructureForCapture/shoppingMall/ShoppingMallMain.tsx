@@ -19,19 +19,22 @@ import useIsProduction from "@hooks/useIsProduction";
 /* text */
 import { ImainBannerText } from "@components/template/main/Mainbanner";
 import { IproductListText } from "@components/template/main/ProductListMain";
-import { IserviceContact } from "@components/template/service/ServiceContact";
+import { IserviceContactText } from "@components/template/service/ServiceContact";
 import { IreviewText } from "@components/template/product/Review";
 import { IserviceIntroductionText } from "@components/template/service/ServiceIntroduction";
 
 /* content */
 import { ImainBannerContent } from "@components/template/main/Mainbanner";
 import { IproductListContent } from "@components/template/main/ProductListMain";
+import { IreviewContent } from "@components/template/product/Review";
+import { IserviceIntroductionContent } from "@components/template/service/ServiceIntroduction";
+import { IserviceContactContent } from "@components/template/service/ServiceContact";
 
 /* css */
 import {
   mainBanner_title_css_,
   mainBanner_desc_css_,
-  mainBanner_button_css,
+  mainBanner_button_css_,
 } from "@components/template/main/Mainbanner";
 
 import {
@@ -44,9 +47,9 @@ import {
 interface IshoppingMallMainContent {
   mainBanner: ImainBannerContent;
   productList: IproductListContent;
-  review: IreviewText;
-  serviceIntroduction: IserviceIntroductionText;
-  serviceContact: IserviceContact;
+  review: IreviewContent;
+  serviceIntroduction: IserviceIntroductionContent;
+  serviceContact: IserviceContactContent;
 }
 
 interface IshoppingMallMainText {
@@ -54,7 +57,7 @@ interface IshoppingMallMainText {
   productList: IproductListText;
   review: IreviewText;
   serviceIntroduction: IserviceIntroductionText;
-  serviceContact: IserviceContact;
+  serviceContact: IserviceContactText;
 }
 
 export default function ShoppingMallMain() {
@@ -68,14 +71,20 @@ export default function ShoppingMallMain() {
   const [generatedText, setGeneratedText] =
     useState<IfetchedfeatureResponseData | null>(null);
   const [changedContent, setChangedContent] = useState(null);
+  const [pageContent, setPageContent] = useState<IshoppingMallMainContent>(
+    {} as IshoppingMallMainContent
+  );
 
-  const [mainBannerContent, setMainBannerContent] =
-    useState<ImainBannerContent | null>(null);
-
-  function handleMainBannerChange(updatedContent: ImainBannerContent) {
-    setMainBannerContent((prevContent) => ({
-      ...prevContent,
-      ...updatedContent,
+  function updateSectionContent<T extends keyof IshoppingMallMainContent>(
+    section: T,
+    updatedContent: Partial<IshoppingMallMainContent[T]>
+  ) {
+    setPageContent((prev) => ({
+      ...prev,
+      [section]: {
+        ...prev?.[section],
+        ...updatedContent,
+      },
     }));
   }
 
@@ -129,12 +138,22 @@ export default function ShoppingMallMain() {
       generatedText.content?.title &&
       generatedText.content?.desc
     ) {
-      setMainBannerContent({
-        title: generatedText.content?.title,
-        titleCss: mainBanner_title_css_,
-        desc: generatedText.content?.desc,
-        descCss: mainBanner_desc_css_,
+      updateSectionContent("mainBanner", {
+        title: {
+          text: generatedText.content?.title,
+          css: mainBanner_title_css_,
+        },
+        desc: {
+          text: generatedText.content?.desc,
+          css: mainBanner_desc_css_,
+        },
       });
+      // setMainBannerContent({
+      //   title: generatedText.content?.title,
+      //   titleCss: mainBanner_title_css_,
+      //   desc: generatedText.content?.desc,
+      //   descCss: mainBanner_desc_css_,
+      // });
     }
   }, [generatedText]);
 
@@ -146,18 +165,18 @@ export default function ShoppingMallMain() {
   }, []);
 
   useEffect(() => {
-    if (mainBannerContent) {
+    if (pageContent) {
       localStorage.setItem(
         "changedContent",
         JSON.stringify({
           featureId: generatedText?.feature_id,
           structure: {
-            mainBanner: mainBannerContent,
+            mainBanner: pageContent?.mainBanner,
           },
         })
       );
     }
-  }, [mainBannerContent]);
+  }, [pageContent]);
 
   if (!generatedText || !headerData) {
     return <Loading />;
@@ -171,9 +190,11 @@ export default function ShoppingMallMain() {
         serviceType="쇼핑몰"
       />
       <Mainbanner
-        content={mainBannerContent}
+        content={pageContent?.mainBanner}
         isEditable={true}
-        onChange={handleMainBannerChange}
+        onChange={(updatedContent) =>
+          updateSectionContent("mainBanner", updatedContent)
+        }
       />
       <ProductListMain option="main" />
       <Review />

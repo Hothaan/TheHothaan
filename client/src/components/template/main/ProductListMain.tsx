@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import { useState, useEffect } from "react";
 import Title from "../commonComponent/Title";
 import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
@@ -7,10 +8,8 @@ import { ReactComponent as Heart } from "@svgs/template/heart.svg";
 import { ReactComponent as Bag } from "@svgs/template/bag.svg";
 
 const title_ = "lorem ipsum, quia do";
-const title_className = "product_list_main_title";
 
 const desc_ = "lorem ipsum, quia do";
-const desc_className = "product_list_main_desc";
 
 export interface IproductListText {
   title?: string;
@@ -18,10 +17,14 @@ export interface IproductListText {
 }
 
 export interface IproductListContent {
-  title?: string;
-  titleCss?: Record<string, string>;
-  desc?: string;
-  descCss?: Record<string, string>;
+  title?: {
+    text?: string;
+    css?: Record<string, string>;
+  };
+  desc?: {
+    text?: string;
+    css?: Record<string, string>;
+  };
 }
 
 interface IproductListItem extends IproductList {}
@@ -33,8 +36,106 @@ interface IproductList {
   option: "main" | "list";
 }
 
+export const product_list_option_main_title_css: Record<string, string> = {
+  color: "#486284",
+  textAlign: "center",
+  fontFamily: "Inter",
+  fontSize: "20px",
+  fontStyle: "normal",
+  fontWeight: "400",
+  lineHeight: "normal",
+};
+
+export const product_list_option_list_title_css: Record<string, string> = {
+  color: "#486284",
+  textAlign: "left",
+  fontFamily: "Inter",
+  fontSize: "20px",
+  fontStyle: "normal",
+  fontWeight: "400",
+  lineHeight: "normal",
+};
+
+export const product_list_option_main_desc_css: Record<string, string> = {
+  color: "#a0a0a0",
+  textAlign: "center",
+  fontFamily: "Inter",
+  fontSize: "15px",
+  fontStyle: "normal",
+  fontWeight: "400",
+  lineHeight: "normal",
+};
+
+export const product_list_option_list_desc_css: Record<string, string> = {
+  color: "#a0a0a0",
+  textAlign: "left",
+  fontFamily: "Inter",
+  fontSize: "15px",
+  fontStyle: "normal",
+  fontWeight: "400",
+  lineHeight: "normal",
+};
+
 function ProductListItemMain(prop: IproductListItem) {
   const { option, content, isEditable, onChange } = prop;
+
+  const [productListMain, setProductListMain] = useState({
+    title: {
+      text: content?.title?.text || title_,
+      css:
+        content?.title?.css ||
+        (option === "main"
+          ? product_list_option_main_title_css
+          : product_list_option_list_title_css),
+    },
+    desc: {
+      text: content?.desc?.text || desc_,
+      css:
+        content?.desc?.css ||
+        (option === "list"
+          ? product_list_option_main_desc_css
+          : product_list_option_list_desc_css),
+    },
+  });
+
+  useEffect(() => {
+    if (content) {
+      setProductListMain({
+        title: {
+          text: content?.title?.text || title_,
+          css:
+            content?.title?.css ||
+            (option === "main"
+              ? product_list_option_main_title_css
+              : product_list_option_list_title_css),
+        },
+        desc: {
+          text: content?.desc?.text || desc_,
+          css:
+            content?.desc?.css ||
+            (option === "list"
+              ? product_list_option_main_desc_css
+              : product_list_option_list_desc_css),
+        },
+      });
+    }
+  }, [content]);
+
+  function handleEdit(
+    field: keyof IproductListContent,
+    updatedText: string,
+    updatedCss: Record<string, string>
+  ) {
+    const updatedState = {
+      ...productListMain,
+      [field]: {
+        text: updatedText,
+        css: updatedCss,
+      },
+    };
+    setProductListMain(updatedState);
+    onChange?.(updatedState);
+  }
 
   if (option === "main") {
     return (
@@ -46,17 +147,11 @@ function ProductListItemMain(prop: IproductListItem) {
         />
         <div css={text_container}>
           <div css={product_info_container}>
-            <p
-              css={product_list_option_main_title_css}
-              className={title_className}
-            >
-              {content?.title || title_}
+            <p css={product_list_option_main_title_css}>
+              {content?.title?.text || title_}
             </p>
-            <p
-              css={product_list_option_main_desc_css}
-              className={desc_className}
-            >
-              {content?.desc || desc_}
+            <p css={product_list_option_main_desc_css}>
+              {content?.desc?.text || desc_}
             </p>
           </div>
           <div css={product_price_container(option)}>
@@ -77,17 +172,11 @@ function ProductListItemMain(prop: IproductListItem) {
         <div css={info_container}>
           <div css={text_container}>
             <div css={product_info_container}>
-              <p
-                css={product_list_option_list_title_css}
-                className={title_className}
-              >
-                {content?.title || title_}
+              <p css={product_list_option_list_title_css}>
+                {content?.title?.text || title_}
               </p>
-              <p
-                css={product_list_option_list_desc_css}
-                className={desc_className}
-              >
-                {content?.desc || desc_}
+              <p css={product_list_option_list_desc_css}>
+                {content?.desc?.text || desc_}
               </p>
             </div>
             <div css={product_price_container(option)}>
@@ -233,45 +322,5 @@ const icon_container = css`
   align-items: center;
   gap: 10px;
 `;
-
-export const product_list_option_main_title_css: Record<string, string> = {
-  color: "#486284",
-  textAlign: "center",
-  fontFamily: "Inter",
-  fontSize: "20px",
-  fontStyle: "normal",
-  fontWeight: "400",
-  lineHeight: "normal",
-};
-
-export const product_list_option_list_title_css: Record<string, string> = {
-  color: "#486284",
-  textAlign: "left",
-  fontFamily: "Inter",
-  fontSize: "20px",
-  fontStyle: "normal",
-  fontWeight: "400",
-  lineHeight: "normal",
-};
-
-export const product_list_option_main_desc_css: Record<string, string> = {
-  color: "#a0a0a0",
-  textAlign: "center",
-  fontFamily: "Inter",
-  fontSize: "15px",
-  fontStyle: "normal",
-  fontWeight: "400",
-  lineHeight: "normal",
-};
-
-export const product_list_option_list_desc_css: Record<string, string> = {
-  color: "#a0a0a0",
-  textAlign: "left",
-  fontFamily: "Inter",
-  fontSize: "15px",
-  fontStyle: "normal",
-  fontWeight: "400",
-  lineHeight: "normal",
-};
 
 export { ProductListItemMain };

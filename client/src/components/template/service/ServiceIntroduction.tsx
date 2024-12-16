@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import { useState, useEffect } from "react";
 import Title from "../commonComponent/Title";
 import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
@@ -9,71 +10,100 @@ const component_title_ = "service Introduction";
 const component_desc_ = "lorem ipsum, quia dolorem ipsum, quia do";
 
 const item_title_ = "lorem ipsum, quia do ddd";
-const item_title_className = "service_introduction_item_title";
 
 const item_desc_ = "lorem ipsum";
-const item_desc_className = "service_introduction_item_desc";
 
 export interface IserviceIntroductionText {
   title?: string;
   desc?: string;
 }
-interface IserviceIntroduction extends IserviceIntroductionText {}
+
+export interface IserviceIntroductionContent {
+  title?: {
+    text?: string;
+    css?: Record<string, string>;
+  };
+  desc?: {
+    text?: string;
+    css?: Record<string, string>;
+  };
+}
+
+interface IserviceIntroduction {
+  content?: IserviceIntroductionContent | null;
+  isEditable?: boolean;
+  onChange?: (content: IserviceIntroductionContent) => void;
+}
 
 interface IserviceIntroductionItem extends IserviceIntroduction {}
 
+export const service_introduction_title_css_: Record<string, string> = {
+  width: "100%",
+  height: "36px",
+  overflow: "hidden",
+  color: "#486284",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+  fontFamily: "Inter",
+  fontSize: "24px",
+  fontStyle: "normal",
+  fontWeight: "800",
+  lineHeight: "normal",
+};
+
+export const service_introduction_desc_css_: Record<string, string> = {
+  color: "#7f7f7f",
+  fontFamily: "Inter",
+  fontSize: "16px",
+  fontStyle: "normal",
+  fontWeight: "400",
+  lineHeight: "160%",
+};
+
 function ServiceIntroductionItem(prop: IserviceIntroductionItem) {
-  const { title, desc } = prop;
+  const { content, isEditable, onChange } = prop;
 
-  const item = css`
-    display: flex;
-    flex-direction: column;
-    gap: 28px;
-  `;
+  const [serviceIntroduction, setServiceIntroduction] = useState({
+    title: {
+      text: content?.title?.text || item_title_,
+      css: content?.title?.css || service_introduction_title_css_,
+    },
+    desc: {
+      text: content?.desc?.text || item_desc_,
+      css: content?.desc?.css || service_introduction_desc_css_,
+    },
+  });
 
-  const info_container = css`
-    width: 280px;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  `;
+  useEffect(() => {
+    if (content) {
+      setServiceIntroduction({
+        title: {
+          text: content?.title?.text || item_title_,
+          css: content?.title?.css || service_introduction_title_css_,
+        },
+        desc: {
+          text: content?.desc?.text || item_desc_,
+          css: content?.desc?.css || service_introduction_desc_css_,
+        },
+      });
+    }
+  }, [content]);
 
-  const text_container = css`
-    width: calc(100% - 10px - 32px - 6px);
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 7px;
-  `;
-
-  const item_title = css`
-    width: 100%;
-    height: 36px;
-
-    overflow: hidden;
-    color: #486284;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-family: Inter;
-    font-size: 24px;
-    font-style: normal;
-    font-weight: 800;
-    line-height: normal;
-  `;
-
-  const item_desc = css`
-    color: #7f7f7f;
-    font-family: Inter;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 160%; /* 25.6px */
-  `;
-
-  const icon = css`
-    flex-shrink: 0;
-  `;
+  function handleEdit(
+    field: keyof IserviceIntroductionContent,
+    updatedText: string,
+    updatedCss: Record<string, string>
+  ) {
+    const updatedState = {
+      ...serviceIntroduction,
+      [field]: {
+        text: updatedText,
+        css: updatedCss,
+      },
+    };
+    setServiceIntroduction(updatedState);
+    onChange?.(updatedState);
+  }
 
   return (
     <div css={item}>
@@ -89,11 +119,11 @@ function ServiceIntroductionItem(prop: IserviceIntroductionItem) {
       />
       <div css={info_container}>
         <div css={text_container}>
-          <p css={item_title} className={item_title_className}>
-            {title || item_title_}
+          <p css={service_introduction_title_css_}>
+            {content?.title?.text || item_title_}
           </p>
-          <p css={item_desc} className={item_desc_className}>
-            {desc || item_desc_}
+          <p css={service_introduction_desc_css_}>
+            {content?.desc?.text || item_desc_}
           </p>
         </div>
         <GotoLink css={icon} />
@@ -103,7 +133,7 @@ function ServiceIntroductionItem(prop: IserviceIntroductionItem) {
 }
 
 export default function ServiceIntroduction(prop: IserviceIntroduction) {
-  const { title, desc } = prop;
+  const { content, isEditable, onChange } = prop;
 
   const count = 3;
   return (
@@ -121,8 +151,9 @@ export default function ServiceIntroduction(prop: IserviceIntroduction) {
           {Array.from({ length: count }, (_, index) => (
             <ServiceIntroductionItem
               key={index}
-              title={title || item_title_}
-              desc={desc || item_desc_}
+              content={content}
+              isEditable={isEditable}
+              onChange={onChange}
             />
           ))}
         </div>
@@ -157,4 +188,30 @@ const item_container = css`
   @media (max-width: 1500px) {
     gap: 30px;
   }
+`;
+
+const item = css`
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+`;
+
+const info_container = css`
+  width: 280px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
+
+const text_container = css`
+  width: calc(100% - 10px - 32px - 6px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 7px;
+`;
+
+const icon = css`
+  flex-shrink: 0;
 `;
