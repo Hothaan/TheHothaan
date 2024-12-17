@@ -313,8 +313,8 @@ function ProductDetailList(prop: IproductDetailList) {
           option="main"
           key={index}
           content={{
-            title: title || more_product_title_,
-            desc: desc || more_product_desc_,
+            title: { text: title || more_product_title_ },
+            desc: { text: desc || more_product_desc_ },
           }}
         />
       ))}

@@ -25,7 +25,7 @@ import { InoticeMainText } from "@components/template/main/NoticeMain";
 import { InormalBoardText } from "@components/template/main/NormalBoardMain";
 import { InewsMainText } from "@components/template/main/NewsMain";
 import { IfaqMainText } from "@components/template/main/FaqMain";
-import { IserviceContact } from "@components/template/service/ServiceContact";
+import { IserviceContactText } from "@components/template/service/ServiceContact";
 
 interface IcommunitySnsMain {
   mainBanner: ImainBannerText;
@@ -34,7 +34,7 @@ interface IcommunitySnsMain {
   news: InewsMainText;
   feed: null;
   faq: IfaqMainText;
-  serviceContact: IserviceContact;
+  serviceContact: IserviceContactText;
 }
 
 export default function CommunitySnsMain() {
