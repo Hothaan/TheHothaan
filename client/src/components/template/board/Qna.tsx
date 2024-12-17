@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
+import { useState, useEffect } from "react";
 import { OuterWrap, ContentsWrap } from "../commonComponent/Wrap";
 import Title from "../commonComponent/Title";
 import BreadCrumble from "../commonComponent/BreadCrumble";
@@ -13,7 +14,6 @@ import { ReactComponent as Reply } from "@svgs/template/faq/reply.svg";
 const title_ = "Q&A LIST BOARD";
 
 const item_title = "Q&A 제목";
-const item_title_id = "qna_table_item_title";
 
 export type Tqna = "텍스트형" | "이미지형";
 
@@ -21,9 +21,31 @@ export interface IqnaText {
   title?: string;
 }
 
-export interface Iqna extends IqnaText {
+export interface IqnaContent {
+  title?: {
+    text?: string;
+    css?: CSSObject;
+  };
+}
+
+export interface Iqna {
+  content?: IqnaContent | null;
+  isEditable?: boolean;
+  onChange?: (content: IqnaContent) => void;
   option?: Tqna;
 }
+
+export const qna_item_title_css_ = css`
+  color: #486284;
+  text-align: center;
+
+  /* 15 */
+  font-family: Inter;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 160%; /* 24px */
+`;
 
 function QnaTitle() {
   const container = css`
@@ -55,8 +77,8 @@ function QnaTitle() {
   );
 }
 
-function QnaTable(prop: IqnaText) {
-  const { title } = prop;
+function QnaTable(prop: Iqna) {
+  const { content, isEditable, onChange } = prop;
 
   const count = 10;
 
@@ -144,10 +166,17 @@ function QnaTable(prop: IqnaText) {
         {Array.from({ length: count }, (_, index) => (
           <tr key={index} css={rowStyle}>
             <td css={[cellStyle, text_style, col1]}>{index + 1}</td>
-            <td css={[cellStyle, text_style, col2, text_align_left]}>
+            <td
+              css={[
+                cellStyle,
+                content?.title?.css || qna_item_title_css_,
+                col2,
+                text_align_left,
+              ]}
+            >
               <div css={inner_container}>
                 {(index + 1) % 2 === 0 && <Reply />}
-                {title || item_title}
+                {content?.title?.text || item_title}
               </div>
             </td>
             <td css={[cellStyle, text_style, col3]}>{date_}</td>
@@ -284,7 +313,38 @@ function QnaSearch() {
 }
 
 export default function Qna(prop: Iqna) {
-  const { title } = prop;
+  const { content, isEditable, onChange, option } = prop;
+
+  const initial = {
+    title: {
+      text: content?.title?.text || title_,
+      css: content?.title?.css || qna_item_title_css_,
+    },
+  };
+
+  const [edit, setEdit] = useState(initial);
+
+  useEffect(() => {
+    if (content) {
+      setEdit(initial);
+    }
+  }, [content]);
+
+  function handleEdit(
+    field: keyof IqnaContent,
+    updatedText: string,
+    updatedCss: CSSObject
+  ) {
+    const updatedState = {
+      ...edit,
+      [field]: {
+        text: updatedText,
+        css: updatedCss,
+      },
+    };
+    setEdit(updatedState);
+    onChange?.(updatedState);
+  }
 
   const container = css`
     width: 100%;
@@ -299,7 +359,12 @@ export default function Qna(prop: Iqna) {
       <ContentsWrap>
         <div css={container}>
           <QnaTitle />
-          <QnaTable title={title || item_title} />
+          <QnaTable
+            content={content}
+            onChange={onChange}
+            isEditable={isEditable}
+            option={option}
+          />
           <QnaSearch />
         </div>
       </ContentsWrap>

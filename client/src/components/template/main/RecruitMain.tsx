@@ -1,53 +1,98 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
+import { useState, useEffect } from "react";
 import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 
 const component_title_ = "채용";
 
 const title_ = "제목입니다.";
-const title_className = "recruit_main_title";
 
-const content_ =
+const desc_ =
   "채용 게시글입니다. 채용 게시글입니다. 채용 게시글입니다. 채용 게시글입니다. 채용 게시글입니다. 채용 게시글입니다. 채용 게시글입니다. 채용 게시글입니다. 채용 게시글입니다. 채용 게시글입니다. 채용 게시글입니다. ";
-const content_className = "recruit_main_content";
 
 const date_ = "2024.11.12";
 
 export interface IrecruitMainText {
   title?: string;
-  content?: string;
+  desc?: string;
 }
 
-interface IrecruitMainItem extends IrecruitMainText {}
+export interface IrecruitMainContent {
+  title?: {
+    text?: string;
+    css?: CSSObject;
+  };
+  desc?: {
+    text?: string;
+    css?: CSSObject;
+  };
+}
 
-interface IrecruitMain extends IrecruitMainText {
+interface IrecruitMain {
+  content?: IrecruitMainContent | null;
   isEditable?: boolean;
+  onChange?: (content: IrecruitMainContent) => void;
 }
 
-function RecruitMainItem(prop: IrecruitMainItem) {
-  const { title, content } = prop;
+function RecruitMainItem(prop: IrecruitMain) {
+  const { content, isEditable, onChange } = prop;
 
   return (
     <div css={item_container}>
       <div css={title_container}>
         <div css={title_inner_container}>
           <p css={tag}>NEW</p>
-          <p css={item_title_style} className={title_className}>
-            {title || title_}
+          <p css={content?.title?.css || recruit_item_title_css_}>
+            {content?.title?.text || title_}
           </p>
         </div>
         <p css={date_style}>{date_}</p>
       </div>
-      <p css={content_style} className={content_className}>
-        {content || content_}
+      <p css={content?.desc?.css || recruit_item_desc_css_}>
+        {content?.desc?.text || desc_}
       </p>
     </div>
   );
 }
 
 export default function RecruitMain(prop: IrecruitMain) {
-  const { title, content, isEditable } = prop;
+  const { content, isEditable, onChange } = prop;
+
+  const initial = {
+    title: {
+      text: content?.title?.text || title_,
+      css: content?.title?.css || recruit_item_title_css_,
+    },
+    desc: {
+      text: content?.desc?.text || desc_,
+      css: content?.desc?.css || recruit_item_desc_css_,
+    },
+  };
+
+  const [edit, setEdit] = useState(initial);
+
+  useEffect(() => {
+    if (content) {
+      setEdit(initial);
+    }
+  }, [content]);
+
+  function handleEdit(
+    field: keyof IrecruitMainContent,
+    updatedText: string,
+    updatedCss: CSSObject
+  ) {
+    const updatedState = {
+      ...edit,
+      [field]: {
+        text: updatedText,
+        css: updatedCss,
+      },
+    };
+    setEdit(updatedState);
+    onChange?.(updatedState);
+  }
 
   const count = 3;
 
@@ -61,8 +106,9 @@ export default function RecruitMain(prop: IrecruitMain) {
               {Array.from({ length: count }, (_, index) => (
                 <RecruitMainItem
                   key={index}
-                  title={title || title_}
-                  content={content || content_}
+                  content={edit}
+                  isEditable={isEditable}
+                  onChange={onChange}
                 />
               ))}
             </div>
@@ -148,7 +194,7 @@ const tag = css`
   border: 1px solid #486284;
 `;
 
-const item_title_style = css`
+const recruit_item_title_css_ = css`
   overflow: hidden;
   color: #486284;
   text-overflow: ellipsis;
@@ -172,7 +218,7 @@ const date_style = css`
   letter-spacing: -0.32px;
 `;
 
-const content_style = css`
+const recruit_item_desc_css_ = css`
   width: 100%;
   display: -webkit-box;
   -webkit-box-orient: vertical;

@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import { ReactComponent as Pc } from "@svgs/service/pc.svg";
 import { ReactComponent as Tablet } from "@svgs/service/tablet.svg";
 import { ReactComponent as Mobile } from "@svgs/service/mobile.svg";

@@ -1,36 +1,81 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
+import { useState, useEffect } from "react";
 import { OuterWrap, InnerWrap, ContentsWrap } from "../commonComponent/Wrap";
 import Title from "../commonComponent/Title";
 import Pagination from "../commonComponent/Pagination";
 import ImageBox from "../commonComponent/ImageBox";
+
+const title_ = "Nomal Board";
+
+const col1_ = "483";
+const col2_ = "게시글 제목";
+const col3_ = "닉네임";
+const col4_ = "2024.12.31";
+const item_num_ = "483";
+const item_title_ = "lorem ipsum, quia do";
+const item_desc_ = "lorem ipsum, quia do";
 
 export interface IboardText {
   title?: string;
   desc?: string;
 }
 
+export interface IboardContent {
+  title?: {
+    text?: string;
+    css?: CSSObject;
+  };
+  desc?: {
+    text?: string;
+    css?: CSSObject;
+  };
+}
+
 export type Tboard = "이미지형" | "텍스트형" | "동영상형";
 
-export interface Iboard extends IboardText {
+export interface Iboard {
+  content?: IboardContent | null;
+  isEditable?: boolean;
+  onChange?: (content: IboardContent) => void;
   option?: Tboard;
 }
 
-const title_ = "Nomal Board";
+const board_item_option_image_title_css_ = css`
+  color: #486284;
 
-const col1_ = "483";
-const col2_ = "게시글 제목";
-const col2_className = "board_text_table_col2";
-const col3_ = "닉네임";
-const col4_ = "2024.12.31";
-const item_num_ = "483";
-const item_title_ = "lorem ipsum, quia do";
-const item_title_className = "board_text_image_title";
-const item_desc_ = "lorem ipsum, quia do";
-const item_desc_className = "board_text_image_desc";
+  /* mall/subject */
+  font-family: Inter;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+`;
 
-function TextTable(prop: IboardText) {
-  const { title } = prop;
+const board_item_option_image_desc_css_ = css`
+  color: var(--A0A0A0, #a0a0a0);
+
+  /* mall/subject_small */
+  font-family: Inter;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+`;
+
+const board_item_option_text_title_css_ = css`
+  color: #486284;
+
+  /* pretendard/Bold/18px */
+  font-family: Pretendard;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 150%; /* 27px */
+`;
+
+function TextTable(prop: Iboard) {
+  const { content, isEditable, onChange } = prop;
 
   const count = 10;
   const col1 = css`
@@ -88,16 +133,7 @@ function TextTable(prop: IboardText) {
     line-height: 70px;
     letter-spacing: -0.15px;
   `;
-  const td_title = css`
-    color: #486284;
 
-    /* pretendard/Bold/18px */
-    font-family: Pretendard;
-    font-size: 18px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: 150%; /* 27px */
-  `;
   const table = css`
     width: 100%;
     border-collapse: collapse;
@@ -133,8 +169,8 @@ function TextTable(prop: IboardText) {
                 <p css={[td_text, col1_text]}>{col1_}</p>
               </td>
               <td css={[td, col2]}>
-                <p css={[td_title, col2_text]} className={col2_className}>
-                  {title || col2_}
+                <p css={[board_item_option_text_title_css_, col2_text]}>
+                  {content?.title?.text || col2_}
                 </p>
               </td>
               <td css={[td]}>
@@ -152,8 +188,8 @@ function TextTable(prop: IboardText) {
   );
 }
 
-function ImageItem(prop: IboardText) {
-  const { title, desc } = prop;
+function ImageItem(prop: Iboard) {
+  const { content, isEditable, onChange } = prop;
   const count = 6;
 
   const item_container = css`
@@ -184,28 +220,6 @@ function ImageItem(prop: IboardText) {
     letter-spacing: -0.15px;
   `;
 
-  const item_title = css`
-    color: #486284;
-
-    /* mall/subject */
-    font-family: Inter;
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-  `;
-
-  const item_desc = css`
-    color: var(--A0A0A0, #a0a0a0);
-
-    /* mall/subject_small */
-    font-family: Inter;
-    font-size: 15px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-  `;
-
   const info_container = css`
     width: 100%;
     display: flex;
@@ -231,11 +245,11 @@ function ImageItem(prop: IboardText) {
           />
           <div css={info_container}>
             <p css={item_num}>{item_num_}</p>
-            <p css={item_title} className={item_title_className}>
-              {title || item_title_}
+            <p css={content?.title?.css || board_item_option_image_title_css_}>
+              {content?.title?.text || item_title_}
             </p>
-            <p css={item_desc} className={item_desc_className}>
-              {desc || item_desc_}
+            <p css={content?.desc?.css || board_item_option_image_desc_css_}>
+              {content?.desc?.text || item_desc_}
             </p>
           </div>
         </div>
@@ -245,7 +259,46 @@ function ImageItem(prop: IboardText) {
 }
 
 export default function Board(prop: Iboard) {
-  const { option, title, desc } = prop;
+  const { option, content, isEditable, onChange } = prop;
+
+  const initial = {
+    title: {
+      text: content?.title?.text || item_title_,
+      css:
+        content?.title?.css ||
+        (option === "텍스트형"
+          ? board_item_option_text_title_css_
+          : board_item_option_image_title_css_),
+    },
+    desc: {
+      text: content?.desc?.text || item_desc_,
+      css: content?.desc?.css || board_item_option_image_desc_css_,
+    },
+  };
+
+  const [edit, setEdit] = useState(initial);
+
+  useEffect(() => {
+    if (content) {
+      setEdit(initial);
+    }
+  }, [content]);
+
+  function handleEdit(
+    field: keyof IboardContent,
+    updatedText: string,
+    updatedCss: CSSObject
+  ) {
+    const updatedState = {
+      ...edit,
+      [field]: {
+        text: updatedText,
+        css: updatedCss,
+      },
+    };
+    setEdit(updatedState);
+    onChange?.(updatedState);
+  }
 
   return (
     <OuterWrap padding="70px 0">
@@ -258,9 +311,17 @@ export default function Board(prop: Iboard) {
             transform="capitalize"
           />
           {option === "텍스트형" ? (
-            <TextTable title={title || col2_} />
+            <TextTable
+              content={edit}
+              isEditable={isEditable}
+              onChange={onChange}
+            />
           ) : option === "이미지형" ? (
-            <ImageItem title={title || item_title_} desc={desc || item_desc_} />
+            <ImageItem
+              content={edit}
+              isEditable={isEditable}
+              onChange={onChange}
+            />
           ) : (
             <></>
           )}

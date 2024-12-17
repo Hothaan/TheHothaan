@@ -25,13 +25,30 @@ import { IreviewText } from "@components/template/product/Review";
 import { IexploreServiceText } from "@components/template/main/ExploreServiceMain";
 import { iPriceMainText } from "@components/template/main/PriceMain";
 
-interface IntermediaryMatchMain {
+/* content */
+import { ImainBannerContent } from "@components/template/main/Mainbanner";
+import { ImatchingServiceIntroduceMainContent } from "@components/template/main/MatchingServiceIntroduceMain";
+import { IproductIntroduceMainContent } from "@components/template/main/ProductIntroduceMain";
+import { IreviewContent } from "@components/template/product/Review";
+import { iPriceMainContent } from "@components/template/main/PriceMain";
+import { IexploreServiceContent } from "@components/template/main/ExploreServiceMain";
+
+interface IntermediaryMatchMainText {
   mainBanner: ImainBannerText;
   MatchingServiceIntroduceMain: ImatchingServiceIntroduceMainText;
   productIntroduce: IproductIntroduceMainText;
   Review: IreviewText;
   PriceMain: iPriceMainText;
   exploreService: IexploreServiceText;
+}
+
+interface IntermediaryMatchMainContent {
+  mainBanner: ImainBannerContent;
+  MatchingServiceIntroduceMain: ImatchingServiceIntroduceMainContent;
+  productIntroduce: IproductIntroduceMainContent;
+  Review: IreviewContent;
+  PriceMain: IexploreServiceContent;
+  exploreService: iPriceMainContent;
 }
 
 export default function IntermediaryMatchMain() {
@@ -89,6 +106,24 @@ export default function IntermediaryMatchMain() {
       fetchFeatureData(isProduction, projectIdValue);
     }
   }, [projectIdValue]);
+
+  const [changedContent, setChangedContent] = useState(null);
+  const [pageContent, setPageContent] = useState<IntermediaryMatchMainContent>(
+    {} as IntermediaryMatchMainContent
+  );
+
+  function updateSectionContent<T extends keyof IntermediaryMatchMainContent>(
+    section: T,
+    updatedContent: Partial<IntermediaryMatchMainContent[T]>
+  ) {
+    setPageContent((prev) => ({
+      ...prev,
+      [section]: {
+        ...prev?.[section],
+        ...updatedContent,
+      },
+    }));
+  }
 
   // if (!generatedText || !headerData) {
   //   return <Loading />;

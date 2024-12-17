@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import { useState, useEffect, useRef } from "react";
 import { saveImageDb } from "@api/image/saveImageDb";
 import { serviceStepStore } from "@store/serviceStepStore";

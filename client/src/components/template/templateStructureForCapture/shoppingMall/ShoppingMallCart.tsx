@@ -16,8 +16,15 @@ import useIsProduction from "@hooks/useIsProduction";
 /* text */
 import { IcartText } from "@components/template/mypage/Cart";
 
+/* content */
+import { IcartContent } from "@components/template/mypage/Cart";
+
 interface IshoppingMallCart {
   cart: IcartText;
+}
+
+interface IshoppingMallContent {
+  cart: IcartContent;
 }
 
 export default function ShoppingMallCart() {
@@ -65,6 +72,8 @@ export default function ShoppingMallCart() {
     }
   }
 
+  console.log(generatedText);
+
   useEffect(() => {
     if (projectId === undefined) {
       setProjectIdValue(sessionStorage.getItem("projectId"));
@@ -85,16 +94,14 @@ export default function ShoppingMallCart() {
 
   return (
     <div className="templateImage">
-      {/* <div>테스트입니다~~</div> */}
-      {/* <Header serviceType="쇼핑몰" />
-      <Cart />
-      <Footer serviceType="쇼핑몰" /> */}
       <Header
         categories={headerData.categories || undefined}
         logo={headerData.logo || undefined}
         serviceType="쇼핑몰"
       />
-      <Cart title={generatedText.content.title || undefined} />
+      <Cart
+        content={{ title: { text: generatedText.content.title || undefined } }}
+      />
       <Footer logo={headerData.logo || undefined} serviceType="쇼핑몰" />
     </div>
   );

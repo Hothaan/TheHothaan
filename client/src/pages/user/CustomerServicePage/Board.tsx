@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import React, { useState } from "react";
 import Pagination from "@components/common/table/Pagination";
 

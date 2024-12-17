@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import { ReactComponent as Arrow } from "@svgs/template/accordionArrow.svg";
 
 export interface ItemplateAccordion {

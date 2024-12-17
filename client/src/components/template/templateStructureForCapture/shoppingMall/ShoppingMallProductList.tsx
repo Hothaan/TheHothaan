@@ -15,8 +15,15 @@ import useIsProduction from "@hooks/useIsProduction";
 /* text */
 import { IproductListText } from "@components/template/product/ProductList";
 
-interface IshoppingMallProductList {
+/* content */
+import { IproductListContent } from "@components/template/product/ProductList";
+
+interface IshoppingMallProductListText {
   productList: IproductListText;
+}
+
+interface IshoppingMallProductListContent {
+  productList: IproductListContent;
 }
 
 export default function ShoppingMallProductList() {
@@ -30,6 +37,7 @@ export default function ShoppingMallProductList() {
   const [generatedText, setGeneratedText] = useState<IgeneratedText | null>(
     null
   );
+
   async function fetchFeatureData(isProduction: boolean, projectId: string) {
     try {
       const response = await getFeatureData(isProduction, projectId);
@@ -74,6 +82,24 @@ export default function ShoppingMallProductList() {
     }
   }, [projectIdValue]);
 
+  const [changedContent, setChangedContent] = useState(null);
+  const [pageContent, setPageContent] =
+    useState<IshoppingMallProductListContent>(
+      {} as IshoppingMallProductListContent
+    );
+
+  function updateSectionContent<
+    T extends keyof IshoppingMallProductListContent
+  >(section: T, updatedContent: Partial<IshoppingMallProductListContent[T]>) {
+    setPageContent((prev) => ({
+      ...prev,
+      [section]: {
+        ...prev?.[section],
+        ...updatedContent,
+      },
+    }));
+  }
+
   if (!generatedText || !headerData) {
     return <Loading />;
   }
@@ -87,7 +113,9 @@ export default function ShoppingMallProductList() {
       />
       {generatedText?.content?.categories &&
       generatedText.content.categories.length > 0 ? (
-        <ProductList categories={generatedText.content.categories} />
+        <ProductList
+          content={{ categories: { text: generatedText.content.categories } }}
+        />
       ) : (
         <ProductList />
       )}

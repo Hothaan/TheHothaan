@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import { useState } from "react";
 import { IradioButton } from "@components/common/form/RadioButton";
 import RadioButton from "@components/common/form/RadioButton";

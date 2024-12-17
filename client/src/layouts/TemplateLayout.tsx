@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import { Routes, Route, useParams } from "react-router-dom";
 import TemplateGeneratePage from "@pages/user/TemplateGeneratePage/TemplateGeneratePage";
 

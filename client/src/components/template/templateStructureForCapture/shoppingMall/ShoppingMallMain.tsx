@@ -44,14 +44,6 @@ import {
   product_list_option_main_title_css,
 } from "@components/template/main/ProductListMain";
 
-interface IshoppingMallMainContent {
-  mainBanner: ImainBannerContent;
-  productList: IproductListContent;
-  review: IreviewContent;
-  serviceIntroduction: IserviceIntroductionContent;
-  serviceContact: IserviceContactContent;
-}
-
 interface IshoppingMallMainText {
   mainBanner: ImainBannerText;
   productList: IproductListText;
@@ -60,8 +52,17 @@ interface IshoppingMallMainText {
   serviceContact: IserviceContactText;
 }
 
+interface IshoppingMallMainContent {
+  mainBanner: ImainBannerContent;
+  productList: IproductListContent;
+  review: IreviewContent;
+  serviceIntroduction: IserviceIntroductionContent;
+  serviceContact: IserviceContactContent;
+}
+
 export default function ShoppingMallMain() {
   const feature = "메인";
+  const featureKey = "shoppingMallMain";
 
   /* only projectId */
   const { isProduction } = useIsProduction();
@@ -70,23 +71,6 @@ export default function ShoppingMallMain() {
   const [headerData, setHeaderData] = useState<Iheader | null>(null);
   const [generatedText, setGeneratedText] =
     useState<IfetchedfeatureResponseData | null>(null);
-  const [changedContent, setChangedContent] = useState(null);
-  const [pageContent, setPageContent] = useState<IshoppingMallMainContent>(
-    {} as IshoppingMallMainContent
-  );
-
-  function updateSectionContent<T extends keyof IshoppingMallMainContent>(
-    section: T,
-    updatedContent: Partial<IshoppingMallMainContent[T]>
-  ) {
-    setPageContent((prev) => ({
-      ...prev,
-      [section]: {
-        ...prev?.[section],
-        ...updatedContent,
-      },
-    }));
-  }
 
   async function fetchFeatureData(isProduction: boolean, projectId: string) {
     try {
@@ -132,49 +116,91 @@ export default function ShoppingMallMain() {
     }
   }, [projectIdValue]);
 
-  useEffect(() => {
+  const [changedContent, setChangedContent] = useState(null);
+  const [pageContent, setPageContent] = useState<IshoppingMallMainContent>(
+    {} as IshoppingMallMainContent
+  );
+
+  function updateSectionContent<T extends keyof IshoppingMallMainContent>(
+    section: T,
+    updatedContent: Partial<IshoppingMallMainContent[T]>
+  ) {
+    setPageContent((prev) => ({
+      ...prev,
+      [section]: {
+        ...prev?.[section],
+        ...updatedContent,
+      },
+    }));
+  }
+
+  function updateInitial() {
     if (
       generatedText &&
       generatedText.content?.title &&
       generatedText.content?.desc
     ) {
-      updateSectionContent("mainBanner", {
-        title: {
-          text: generatedText.content?.title,
-          css: mainBanner_title_css_,
+      const initialContent = {
+        mainBanner: {
+          title: {
+            text: generatedText.content.title,
+            css: mainBanner_title_css_,
+          },
+          desc: {
+            text: generatedText.content.desc,
+            css: mainBanner_desc_css_,
+          },
         },
-        desc: {
-          text: generatedText.content?.desc,
-          css: mainBanner_desc_css_,
-        },
-      });
-      // setMainBannerContent({
-      //   title: generatedText.content?.title,
-      //   titleCss: mainBanner_title_css_,
-      //   desc: generatedText.content?.desc,
-      //   descCss: mainBanner_desc_css_,
-      // });
+      };
+      localStorage.setItem(
+        "changedContent",
+        JSON.stringify({ [featureKey]: initialContent })
+      );
+      updateSectionContent("mainBanner", initialContent.mainBanner);
+    }
+  }
+
+  useEffect(() => {
+    const localData = localStorage.getItem("changedContent");
+    let parsedData: any = null;
+    if (localData) {
+      try {
+        parsedData = JSON.parse(localData);
+      } catch (e) {
+        localStorage.removeItem("changedContent");
+        return;
+      }
+
+      if (featureKey in parsedData) {
+        setChangedContent(parsedData[featureKey]);
+        setPageContent((prev) => ({
+          ...prev,
+          ...parsedData[featureKey].structure,
+        }));
+      } else {
+        updateInitial();
+      }
+    } else {
+      updateInitial();
     }
   }, [generatedText]);
 
   useEffect(() => {
-    const localData = localStorage.getItem("changedContent");
-    if (localData) {
-      setChangedContent(JSON.parse(localData));
-    }
-  }, []);
-
-  useEffect(() => {
     if (pageContent) {
-      localStorage.setItem(
-        "changedContent",
-        JSON.stringify({
-          featureId: generatedText?.feature_id,
-          structure: {
-            mainBanner: pageContent?.mainBanner,
+      const localData = localStorage.getItem("changedContent");
+      if (localData) {
+        const parsed = JSON.parse(localData);
+        const updatedData = {
+          ...parsed,
+          shoppingMallMain: {
+            featureId: generatedText?.feature_id,
+            structure: {
+              mainBanner: pageContent?.mainBanner,
+            },
           },
-        })
-      );
+        };
+        localStorage.setItem("changedContent", JSON.stringify(updatedData));
+      }
     }
   }, [pageContent]);
 

@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import MyPageNavigation from "./MyPageNavigation";
 import MyInformation from "./MyInformation";
 

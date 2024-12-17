@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import Bubble from "@components/common/text/Bubble";
 
 const bubble_ = "문제가 발생했어요.";

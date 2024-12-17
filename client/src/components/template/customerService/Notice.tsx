@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
+import { useState, useEffect } from "react";
 import { OuterWrap, ContentsWrap } from "../commonComponent/Wrap";
 import Title from "../commonComponent/Title";
 import BreadCrumble from "../commonComponent/BreadCrumble";
@@ -10,17 +11,47 @@ import SelectBox from "../commonComponent/form/SelectBox";
 import ImageBox from "../commonComponent/ImageBox";
 
 const title_ = "게시글 제목";
-const title_className = "notice_title";
 
 export interface InoticeText {
   title?: string;
 }
 
+export interface InoticeContent {
+  title?: {
+    text?: string;
+    css?: CSSObject;
+  };
+}
+
 export type Tnotice = "텍스트형" | "이미지형";
 
-export interface Inotice extends InoticeText {
+interface Inotice {
+  content?: InoticeContent | null;
+  isEditable?: boolean;
+  onChange?: (content: InoticeContent) => void;
   option?: Tnotice;
 }
+
+export const notice_title_option_text_css_: CSSObject = {
+  color: "#486284",
+  textAlign: "center",
+  fontFamily: "Inter",
+  fontSize: "15px",
+  fontStyle: "normal",
+  fontWeight: "400",
+  lineHeight: "160%",
+};
+
+export const notice_title_option_image_css_: CSSObject = {
+  width: "100%",
+  color: "#486284",
+  fontFamily: "Montserrat",
+  fontSize: "17px",
+  fontStyle: "normal",
+  fontWeight: "500",
+  lineHeight: "normal",
+  textTransform: "capitalize",
+};
 
 function NoticeTitle() {
   const container = css`
@@ -52,24 +83,10 @@ function NoticeTitle() {
   );
 }
 
-function NoticeTable(prop: InoticeText) {
-  const { title } = prop;
+function NoticeTable(prop: Inotice) {
+  const { content, isEditable, onChange } = prop;
 
   const count = 10;
-
-  interface TableRow {
-    num: number;
-    title: string;
-    date: string;
-    views: number;
-  }
-
-  const mockData = {
-    num: 10,
-    title: title || title_,
-    date: "YYYY.MM.DD",
-    views: 1,
-  };
 
   const tableStyle = css`
     width: 100%;
@@ -135,27 +152,30 @@ function NoticeTable(prop: InoticeText) {
         </tr>
       </thead>
       <tbody>
-        {mockData &&
-          Array.from({ length: count }, (_, index) => (
-            <tr key={index} css={rowStyle}>
-              <td css={[cellStyle, text_style, col1]}>{mockData.num}</td>
-              <td
-                css={[cellStyle, text_style, col2, text_align_left]}
-                className={title_className}
-              >
-                {mockData.title}
-              </td>
-              <td css={[cellStyle, text_style, col3]}>{mockData.date}</td>
-              <td css={[cellStyle, text_style, col4]}>{mockData.views}</td>
-            </tr>
-          ))}
+        {Array.from({ length: count }, (_, index) => (
+          <tr key={index} css={rowStyle}>
+            <td css={[cellStyle, text_style, col1]}>{10}</td>
+            <td
+              css={[
+                cellStyle,
+                notice_title_option_text_css_,
+                col2,
+                text_align_left,
+              ]}
+            >
+              {content?.title?.text || title_}
+            </td>
+            <td css={[cellStyle, text_style, col3]}>{"YYYY.MM.DD"}</td>
+            <td css={[cellStyle, text_style, col4]}>{1}</td>
+          </tr>
+        ))}
       </tbody>
     </table>
   );
 }
 
-function NoticeGalleryBoard(prop: InoticeText) {
-  const { title } = prop;
+function NoticeGalleryBoard(prop: Inotice) {
+  const { content, isEditable, onChange } = prop;
 
   const count = 8;
 
@@ -172,16 +192,6 @@ function NoticeGalleryBoard(prop: InoticeText) {
     align-items: flex-start;
     gap: 10px;
   `;
-  const item_name = css`
-    width: 100%;
-    color: #486284;
-    font-family: Montserrat;
-    font-size: 17px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
-    text-transform: capitalize;
-  `;
 
   return (
     <div css={container}>
@@ -192,8 +202,8 @@ function NoticeGalleryBoard(prop: InoticeText) {
             icon={{ width: "50px", height: "50px" }}
             borderRadius="0"
           />
-          <p css={item_name} className={title_className}>
-            {title || title_}
+          <p css={notice_title_option_image_css_}>
+            {content?.title?.text || title_}
           </p>
         </div>
       ))}
@@ -232,7 +242,42 @@ function NoticeSearch() {
 }
 
 export default function Notice(prop: Inotice) {
-  const { option, title } = prop;
+  const { option, content, isEditable, onChange } = prop;
+
+  const initial = {
+    title: {
+      text: content?.title?.text || title_,
+      css:
+        content?.title?.css ||
+        (option === "텍스트형"
+          ? notice_title_option_text_css_
+          : notice_title_option_image_css_),
+    },
+  };
+
+  const [edit, setEdit] = useState(initial);
+
+  useEffect(() => {
+    if (content) {
+      setEdit(initial);
+    }
+  }, [content]);
+
+  function handleEdit(
+    field: keyof InoticeContent,
+    updatedText: string,
+    updatedCss: CSSObject
+  ) {
+    const updatedState = {
+      ...edit,
+      [field]: {
+        text: updatedText,
+        css: updatedCss,
+      },
+    };
+    setEdit(updatedState);
+    onChange?.(updatedState);
+  }
 
   const container = css`
     width: 100%;
@@ -248,7 +293,11 @@ export default function Notice(prop: Inotice) {
         <ContentsWrap>
           <div css={container}>
             <NoticeTitle />
-            <NoticeTable title={title || title_} />
+            <NoticeTable
+              content={edit}
+              isEditable={isEditable}
+              onChange={onChange}
+            />
             <NoticeSearch />
           </div>
         </ContentsWrap>
@@ -260,7 +309,11 @@ export default function Notice(prop: Inotice) {
         <ContentsWrap>
           <div css={container}>
             <NoticeTitle />
-            <NoticeGalleryBoard title={title || title_} />
+            <NoticeGalleryBoard
+              content={edit}
+              isEditable={isEditable}
+              onChange={onChange}
+            />
             <NoticeSearch />
           </div>
         </ContentsWrap>

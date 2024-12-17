@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 
 import UserFormLabel, { IuserFormLabel } from "./UserFormLabel";
 import TextField from "@components/common/form/TextField";

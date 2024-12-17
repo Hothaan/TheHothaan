@@ -1,12 +1,12 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
+import { useEffect, useState } from "react";
 import { OuterWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 
 const component_title_ = "뉴스";
 
 const item_title_ = "뉴스 제목입니다. 뉴스 제목입니다. 뉴스 제목입니다.";
-const item_title_className = "news_main_item_title";
 
 const item_tag_ = "뉴스 카테고리";
 
@@ -14,14 +14,21 @@ export interface InewsMainText {
   title?: string;
 }
 
-interface InewMainItem extends InewsMainText {}
-
-interface InewsMain extends InewsMainText {
-  isEditable?: boolean;
+export interface InewsMainContent {
+  title?: {
+    text?: string;
+    css?: CSSObject;
+  };
 }
 
-function NewsMainItem(prop: InewMainItem) {
-  const { title } = prop;
+interface InewsMain {
+  content?: InewsMainContent | null;
+  isEditable?: boolean;
+  onChange?: (content: InewsMainContent) => void;
+}
+
+function NewsMainItem(prop: InewsMain) {
+  const { content, isEditable, onChange } = prop;
 
   return (
     <div css={item}>
@@ -37,8 +44,8 @@ function NewsMainItem(prop: InewMainItem) {
       />
       <div css={info_container}>
         <p css={item_tag}>{item_tag_}</p>
-        <p css={item_title} className={item_title_className}>
-          {title || item_title_}
+        <p css={content?.title?.css || news_main_item_title_css_}>
+          {content?.title?.text || item_title_}
         </p>
       </div>
     </div>
@@ -46,7 +53,38 @@ function NewsMainItem(prop: InewMainItem) {
 }
 
 export default function NewsMain(prop: InewsMain) {
-  const { title, isEditable } = prop;
+  const { content, isEditable, onChange } = prop;
+
+  const initial = {
+    title: {
+      text: content?.title?.text || item_title_,
+      css: content?.title?.css || news_main_item_title_css_,
+    },
+  };
+
+  const [edit, setEdit] = useState(initial);
+
+  useEffect(() => {
+    if (content) {
+      setEdit(initial);
+    }
+  }, [content]);
+
+  function handleEdit(
+    field: keyof InewsMainContent,
+    updatedText: string,
+    updatedCss: CSSObject
+  ) {
+    const updatedState = {
+      ...edit,
+      [field]: {
+        text: updatedText,
+        css: updatedCss,
+      },
+    };
+    setEdit(updatedState);
+    onChange?.(updatedState);
+  }
 
   const count = 6;
 
@@ -56,7 +94,7 @@ export default function NewsMain(prop: InewsMain) {
         <p css={title_style}>{component_title_}</p>
         <div css={item_container}>
           {Array.from({ length: count }, (_, index) => (
-            <NewsMainItem key={index} title={title || item_title_} />
+            <NewsMainItem key={index} content={edit} />
           ))}
         </div>
       </div>
@@ -127,7 +165,7 @@ const item_tag = css`
   white-space: nowrap;
 `;
 
-const item_title = css`
+const news_main_item_title_css_ = css`
   width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;

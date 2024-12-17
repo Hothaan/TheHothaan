@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css, SerializedStyles } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import { useState, useRef, useLayoutEffect, useEffect } from "react";
 import {
   TselectableColor,
@@ -40,8 +40,8 @@ interface IeditableText {
   className?: string;
   text: string;
   isTextArea: boolean;
-  defaultCss: Record<string, string>;
-  onChange?: (text: string, css: Record<string, string>) => void;
+  defaultCss: CSSObject;
+  onChange?: (text: string, css: CSSObject) => void;
 }
 
 export default function EditableText(prop: IeditableText) {
@@ -52,7 +52,7 @@ export default function EditableText(prop: IeditableText) {
   const [toolbarPosition, setToolbarPosition] = useState({ top: 0, left: 0 });
   const [isEditing, setIsEditing] = useState(false);
   const [textContent, setTextContent] = useState(text);
-  const [styles, setStyles] = useState<Record<string, string>>({
+  const [styles, setStyles] = useState<CSSObject>({
     ...defaultCss,
   });
 
@@ -119,7 +119,7 @@ export default function EditableText(prop: IeditableText) {
     show: showFontFamilyOptions,
     isFontFamily: true,
     size: "140px",
-    selected: styles.fontFamily,
+    selected: styles.fontFamily as string,
     options: fontFamilyArr,
     onClick: () => {
       setShowFontFamilyOptions(!showFontFamilyOptions);
@@ -134,7 +134,7 @@ export default function EditableText(prop: IeditableText) {
     show: showFontSizeOptions,
     isFontFamily: false,
     size: "111px",
-    selected: styles.fontSize,
+    selected: styles.fontSize as string,
     options: selectableFontSizeArr,
     onClick: () => {
       setShowFontSizeOptions(!showFontSizeOptions);
@@ -158,7 +158,7 @@ export default function EditableText(prop: IeditableText) {
 
   const colorPicker: IcolorPicker = {
     show: showColorPickerOptions,
-    selected: styles.color,
+    selected: styles.color as string,
     options: selectableColorArr,
     onClick: () => {
       setShowColorPickerOptions(!showColorPickerOptions);

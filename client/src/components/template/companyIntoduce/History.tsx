@@ -1,58 +1,113 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
+import { useEffect, useState } from "react";
 import { OuterWrap } from "../commonComponent/Wrap";
 
-const item_desc_ =
+const desc_ =
   "lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non";
-const item_desc_className = "history_item_desc";
 
 export interface IhistoryText {
   desc?: string;
 }
 
-interface IhistoryItem extends IhistoryText {
-  year?: string;
-  isSelected?: boolean;
-  isLast?: boolean;
+export interface IhistoryContent {
+  desc?: {
+    text?: string;
+    css?: CSSObject;
+  };
 }
 
-interface Ihistory extends IhistoryText {
+interface Ihistory {
+  content?: IhistoryContent | null;
   isEditable?: boolean;
+  onChange?: (content: IhistoryContent) => void;
 }
 
-function HistoryItem(prop: IhistoryItem) {
-  const { year, desc, isSelected, isLast } = prop;
-  return (
-    <li css={history_item}>
-      <p css={year_style}>{year}</p>
-      <div css={circle_container}>
-        <span css={circle(isSelected)}></span>
-      </div>
-      <p css={desc_style(isSelected, isLast)} className={item_desc_className}>
-        {desc}
-      </p>
-    </li>
-  );
-}
+export const history_desc_css_ = (
+  isSelected?: boolean,
+  isLast?: boolean
+) => css`
+  position: relative;
+
+  max-width: 600px;
+  color: #486284;
+
+  /* h2_middle */
+  font-family: Inter;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+
+  padding-bottom: ${isLast ? "0px" : isSelected ? "240px" : "140px"};
+
+  &:after {
+    display: block;
+    content: "";
+    width: 1px;
+    height: 100%;
+    position: absolute;
+    background-color: ${isSelected ? "#486284" : "#D6D6D6"};
+    top: 20px;
+    left: -34px;
+  }
+`;
 
 export default function History(prop: Ihistory) {
-  const { desc, isEditable } = prop;
+  const { content, isEditable, onChange } = prop;
 
-  const itemDatas: IhistoryItem[] = [
-    { year: "2021", desc: desc || item_desc_, isSelected: true },
-    { year: "2020", desc: desc || item_desc_ },
-    { year: "2018", desc: desc || item_desc_ },
-    { year: "2016", desc: desc || item_desc_ },
-    { year: "2015", desc: desc || item_desc_ },
-    { year: "2014", desc: desc || item_desc_, isLast: true },
-  ];
+  const initial = {
+    desc: {
+      text: content?.desc?.text || desc_,
+      css: content?.desc?.css || history_desc_css_,
+    },
+  };
+
+  const [edit, setEdit] = useState(initial);
+
+  useEffect(() => {
+    if (content) {
+      setEdit(initial);
+    }
+  }, [content]);
+
+  function handleEdit(
+    field: keyof IhistoryContent,
+    updatedText: string,
+    updatedCss: CSSObject
+  ) {
+    const updatedState = {
+      ...edit,
+      [field]: {
+        text: updatedText,
+        css: updatedCss,
+      },
+    };
+    setEdit(updatedState);
+    onChange?.(updatedState);
+  }
+
+  const count = 6;
 
   return (
     <OuterWrap padding="200px 0">
       <div css={container}>
         <ul css={history_list}>
-          {itemDatas.map((item, idx) => (
-            <HistoryItem key={idx} {...item} />
+          {Array.from({ length: count }, (_, index) => (
+            <li css={history_item} key={index}>
+              <p css={year_style}>{2021 - index}</p>
+              <div css={circle_container}>
+                <span css={circle(index === 0 ? true : false)}></span>
+              </div>
+              <p
+                css={history_desc_css_(
+                  index === 0 ? true : false,
+                  index === count - 1 ? true : false
+                )}
+              >
+                {content?.desc?.text || desc_}
+              </p>
+            </li>
           ))}
         </ul>
       </div>
@@ -90,33 +145,6 @@ const year_style = css`
   font-style: normal;
   font-weight: 800;
   line-height: normal;
-`;
-
-const desc_style = (isSelected?: boolean, isLast?: boolean) => css`
-  position: relative;
-
-  max-width: 600px;
-  color: #486284;
-
-  /* h2_middle */
-  font-family: Inter;
-  font-size: 32px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-
-  padding-bottom: ${isLast ? "0px" : isSelected ? "240px" : "140px"};
-
-  &:after {
-    display: block;
-    content: "";
-    width: 1px;
-    height: 100%;
-    position: absolute;
-    background-color: ${isSelected ? "#486284" : "#D6D6D6"};
-    top: 20px;
-    left: -34px;
-  }
 `;
 
 const circle_container = css`

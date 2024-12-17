@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import { ReactComponent as ArrowLeft } from "@svgs/common/buttonArrowLeft.svg";
 import { ReactComponent as ArrowRight } from "@svgs/common/buttonArrowRight.svg";
 import { ReactComponent as ArrowUp } from "@svgs/common/buttonArrowTop.svg";

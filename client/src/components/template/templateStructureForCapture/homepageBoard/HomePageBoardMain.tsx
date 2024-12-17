@@ -27,7 +27,16 @@ import { IrecruitMainText } from "@components/template/main/RecruitMain";
 import { InewsMainText } from "@components/template/main/NewsMain";
 import { IexploreServiceText } from "@components/template/main/ExploreServiceMain";
 
-interface IhomePageBoardMain {
+/* content */
+import { ImainBannerContent } from "@components/template/main/Mainbanner";
+import { IserviceIntroduceContent } from "@components/template/main/ServiceIntroduceMain";
+import { IproductIntroduceMainContent } from "@components/template/main/ProductIntroduceMain";
+import { InoticeMainContent } from "@components/template/main/NoticeMain";
+import { IrecruitMainContent } from "@components/template/main/RecruitMain";
+import { InewsMainContent } from "@components/template/main/NewsMain";
+import { IexploreServiceContent } from "@components/template/main/ExploreServiceMain";
+
+interface IhomePageBoardMainText {
   mainBanner: ImainBannerText;
   serviceIntroduce: IserviceIntroduceText;
   productIntroduce: IproductIntroduceMainText;
@@ -35,6 +44,16 @@ interface IhomePageBoardMain {
   recruit: IrecruitMainText;
   news: InewsMainText;
   exploreService: IexploreServiceText;
+}
+
+interface IhomePageBoardMainContent {
+  mainBanner: ImainBannerContent;
+  serviceIntroduce: IserviceIntroduceContent;
+  productIntroduce: IproductIntroduceMainContent;
+  notice: InoticeMainContent;
+  recruit: IrecruitMainContent;
+  news: InewsMainContent;
+  exploreService: IexploreServiceContent;
 }
 
 export default function HomePageBoardMain() {
@@ -92,6 +111,24 @@ export default function HomePageBoardMain() {
       fetchFeatureData(isProduction, projectIdValue);
     }
   }, [projectIdValue]);
+
+  const [changedContent, setChangedContent] = useState(null);
+  const [pageContent, setPageContent] = useState<IhomePageBoardMainContent>(
+    {} as IhomePageBoardMainContent
+  );
+
+  function updateSectionContent<T extends keyof IhomePageBoardMainContent>(
+    section: T,
+    updatedContent: Partial<IhomePageBoardMainContent[T]>
+  ) {
+    setPageContent((prev) => ({
+      ...prev,
+      [section]: {
+        ...prev?.[section],
+        ...updatedContent,
+      },
+    }));
+  }
 
   // if (!generatedText || !headerData) {
   //   return <Loading />;

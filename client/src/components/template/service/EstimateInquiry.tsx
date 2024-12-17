@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import { OuterWrap } from "../commonComponent/Wrap";
 
 const input_text_label_ = "lorem ipsum";

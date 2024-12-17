@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import Title from "../commonComponent/Title";
 import ImageBox from "../commonComponent/ImageBox";
 import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";

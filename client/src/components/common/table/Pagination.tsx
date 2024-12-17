@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import React from "react";
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 
 interface PaginationProps {
   currentPage: number;

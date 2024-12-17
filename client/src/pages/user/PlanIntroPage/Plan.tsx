@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import ResponsiveContainer from "@components/common/ui/Container/ResponsiveContainer";
 import { cardDatas, ServiceIntro8Card } from "../MainPage/ServiceIntro8";
 import { ReactComponent as Symbol } from "@svgs/common/symbol.svg";

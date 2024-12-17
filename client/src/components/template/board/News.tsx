@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
+import { useEffect, useState } from "react";
 import { OuterWrap } from "../commonComponent/Wrap";
 import Title from "../commonComponent/Title";
 import ImageBox from "../commonComponent/ImageBox";
@@ -7,22 +8,33 @@ import ImageBox from "../commonComponent/ImageBox";
 const component_title_ = "news board";
 
 const item_title_ = "lorem ipsum, quia do";
-const item_title_className = "news_item_title";
 
 const item_desc_ = "lorem ipsum, quia do";
-const item_desc_className = "news_item_desc";
 
 export interface InewsText {
   title?: string;
   desc?: string;
 }
 
-interface InewsItem extends InewsText {}
+export interface InewsContent {
+  title?: {
+    text?: string;
+    css?: CSSObject;
+  };
+  desc?: {
+    text?: string;
+    css?: CSSObject;
+  };
+}
 
-interface Inews extends InewsText {}
+interface Inews {
+  content?: InewsContent | null;
+  isEditable?: boolean;
+  onChange?: (content: InewsContent) => void;
+}
 
-function NewsItem(prop: InewsItem) {
-  const { title, desc } = prop;
+function NewsItem(prop: Inews) {
+  const { content, isEditable, onChange } = prop;
 
   return (
     <div css={item_container}>
@@ -38,11 +50,11 @@ function NewsItem(prop: InewsItem) {
       />
       <div css={item_info_container}>
         <p css={number_style}>483</p>
-        <p css={item_title_style} className={item_title_className}>
-          {title || item_title_}
+        <p css={content?.title?.css || news_title_css_}>
+          {content?.title?.text || item_title_}
         </p>
-        <p css={item_desc_style} className={item_desc_className}>
-          {desc || item_desc_}
+        <p css={content?.desc?.css || news_desc_css_}>
+          {content?.desc?.text || item_desc_}
         </p>
       </div>
     </div>
@@ -50,7 +62,42 @@ function NewsItem(prop: InewsItem) {
 }
 
 export default function News(prop: Inews) {
-  const { title, desc } = prop;
+  const { content, isEditable, onChange } = prop;
+
+  const initial = {
+    title: {
+      text: content?.title?.text || item_title_,
+      css: content?.title?.css || news_title_css_,
+    },
+    desc: {
+      text: content?.desc?.text || item_desc_,
+      css: content?.desc?.css || news_desc_css_,
+    },
+  };
+
+  const [edit, setEdit] = useState(initial);
+
+  useEffect(() => {
+    if (content) {
+      setEdit(initial);
+    }
+  }, [content]);
+
+  function handleEdit(
+    field: keyof InewsContent,
+    updatedText: string,
+    updatedCss: CSSObject
+  ) {
+    const updatedState = {
+      ...edit,
+      [field]: {
+        text: updatedText,
+        css: updatedCss,
+      },
+    };
+    setEdit(updatedState);
+    onChange?.(updatedState);
+  }
 
   const count = 4;
 
@@ -66,8 +113,9 @@ export default function News(prop: Inews) {
         {Array.from({ length: count }, (_, index) => (
           <NewsItem
             key={index}
-            title={title || item_title_}
-            desc={desc || item_desc_}
+            content={edit}
+            isEditable={isEditable}
+            onChange={onChange}
           />
         ))}
       </div>
@@ -118,7 +166,7 @@ const number_style = css`
   letter-spacing: -0.15px;
 `;
 
-const item_title_style = css`
+const news_title_css_ = css`
   color: #486284;
 
   /* mall/subject */
@@ -129,7 +177,7 @@ const item_title_style = css`
   line-height: normal;
 `;
 
-const item_desc_style = css`
+const news_desc_css_ = css`
   color: var(--A0A0A0, #a0a0a0);
 
   /* mall/subject_small */

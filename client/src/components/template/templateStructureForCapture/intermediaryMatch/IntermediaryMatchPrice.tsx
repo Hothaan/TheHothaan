@@ -4,12 +4,7 @@ import { useParams } from "react-router-dom";
 /* component */
 import Header, { Iheader } from "@components/template/common/header/Header";
 import Footer from "@components/template/common/footer/Footer";
-import Mainbanner from "@components/template/main/Mainbanner";
-import ProductIntroduceMain from "@components/template/main/ProductIntroduceMain";
-import MatchingServiceIntroduceMain from "@components/template/main/MatchingServiceIntroduceMain";
-import Review from "@components/template/product/Review";
 import PriceMain from "@components/template/main/PriceMain";
-import ExploreServiceMain from "@components/template/main/ExploreServiceMain";
 import Loading from "@components/common/ui/Loading/loading";
 
 /* data */
@@ -20,8 +15,15 @@ import useIsProduction from "@hooks/useIsProduction";
 /* text */
 import { iPriceMainText } from "@components/template/main/PriceMain";
 
-interface IntermediaryMatchPrice {
+/* text */
+import { iPriceMainContent } from "@components/template/main/PriceMain";
+
+interface IntermediaryMatchPriceText {
   PriceMain: iPriceMainText;
+}
+
+interface IntermediaryMatchPriceContent {
+  PriceMain: iPriceMainContent;
 }
 
 export default function IntermediaryMatchPrice() {
@@ -79,6 +81,24 @@ export default function IntermediaryMatchPrice() {
       fetchFeatureData(isProduction, projectIdValue);
     }
   }, [projectIdValue]);
+
+  const [changedContent, setChangedContent] = useState(null);
+  const [pageContent, setPageContent] = useState<IntermediaryMatchPriceContent>(
+    {} as IntermediaryMatchPriceContent
+  );
+
+  function updateSectionContent<T extends keyof IntermediaryMatchPriceContent>(
+    section: T,
+    updatedContent: Partial<IntermediaryMatchPriceContent[T]>
+  ) {
+    setPageContent((prev) => ({
+      ...prev,
+      [section]: {
+        ...prev?.[section],
+        ...updatedContent,
+      },
+    }));
+  }
 
   // if (!generatedText || !headerData) {
   //   return <Loading />;

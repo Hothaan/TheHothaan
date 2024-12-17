@@ -8,7 +8,6 @@ import Footer from "@components/template/common/footer/Footer";
 import Loading from "@components/common/ui/Loading/loading";
 
 /* data */
-import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
 import { IfetchedfeatureResponseData } from "@components/template/types";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
@@ -16,12 +15,15 @@ import useIsProduction from "@hooks/useIsProduction";
 /* text  */
 import { IbrandIntroduceText } from "@components/template/brandIntroduce/BrandIntroduce";
 
+/* content */
+import { IbrandIntroduceContent } from "@components/template/brandIntroduce/BrandIntroduce";
+
 interface IshoppingMallBrandIntroduceText {
   brandIntroduce: IbrandIntroduceText;
 }
 
 interface IshoppingMallBrandIntroduceContent {
-  brandIntroduce: IbrandIntroduceText;
+  brandIntroduce: IbrandIntroduceContent;
 }
 
 export default function ShoppingMallBrandIntroduce() {
@@ -32,9 +34,8 @@ export default function ShoppingMallBrandIntroduce() {
   const { projectId } = useParams();
   const [projectIdValue, setProjectIdValue] = useState<string | null>(null);
   const [headerData, setHeaderData] = useState<Iheader | null>(null);
-  const [generatedText, setGeneratedText] = useState<IgeneratedText | null>(
-    null
-  );
+  const [generatedText, setGeneratedText] =
+    useState<IfetchedfeatureResponseData | null>(null);
 
   async function fetchFeatureData(isProduction: boolean, projectId: string) {
     try {
@@ -64,6 +65,27 @@ export default function ShoppingMallBrandIntroduce() {
       console.error(error);
       window.location.href = "/error";
     }
+  }
+
+  const [changedContent, setChangedContent] = useState(null);
+  const [pageContent, setPageContent] =
+    useState<IshoppingMallBrandIntroduceContent>(
+      {} as IshoppingMallBrandIntroduceContent
+    );
+
+  function updateSectionContent<
+    T extends keyof IshoppingMallBrandIntroduceContent
+  >(
+    section: T,
+    updatedContent: Partial<IshoppingMallBrandIntroduceContent[T]>
+  ) {
+    setPageContent((prev) => ({
+      ...prev,
+      [section]: {
+        ...prev?.[section],
+        ...updatedContent,
+      },
+    }));
   }
 
   useEffect(() => {

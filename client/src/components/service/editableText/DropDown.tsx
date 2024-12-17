@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import { ReactComponent as ArrowDown } from "@svgs/common/buttonArrowBottom.svg";
 
 type TdropdownContainerSize = "140px" | "111px";

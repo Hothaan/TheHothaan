@@ -15,8 +15,15 @@ import useIsProduction from "@hooks/useIsProduction";
 /* text */
 import { IgreetingsText } from "@components/template/companyIntoduce/Greetings";
 
-interface IhomePageBoardGreetings {
+/* content */
+import { IgreetingsContent } from "@components/template/companyIntoduce/Greetings";
+
+interface IhomePageBoardGreetingsText {
   greetings: IgreetingsText;
+}
+
+interface IhomePageBoardGreetingsContent {
+  greetings: IgreetingsContent;
 }
 
 export default function HomePageBoardGreetings() {
@@ -74,6 +81,25 @@ export default function HomePageBoardGreetings() {
       fetchFeatureData(isProduction, projectIdValue);
     }
   }, [projectIdValue]);
+
+  const [changedContent, setChangedContent] = useState(null);
+  const [pageContent, setPageContent] =
+    useState<IhomePageBoardGreetingsContent>(
+      {} as IhomePageBoardGreetingsContent
+    );
+
+  function updateSectionContent<T extends keyof IhomePageBoardGreetingsContent>(
+    section: T,
+    updatedContent: Partial<IhomePageBoardGreetingsContent[T]>
+  ) {
+    setPageContent((prev) => ({
+      ...prev,
+      [section]: {
+        ...prev?.[section],
+        ...updatedContent,
+      },
+    }));
+  }
 
   // if (!generatedText || !headerData) {
   //   return <Loading />;

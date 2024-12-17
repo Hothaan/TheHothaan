@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
+import { useState, useEffect } from "react";
 import { OuterWrap, ContentsWrap } from "../commonComponent/Wrap";
 import Title from "../commonComponent/Title";
 import ImageBox from "../commonComponent/ImageBox";
@@ -9,18 +10,43 @@ const component_desc_ =
 const item_desc_ = "Lorem ipsum dolor";
 const item_price = 3300;
 
-export interface iPriceMainText extends iPriceMainItem {
+export interface iPriceMainText {
   desc?: string;
 }
 
-interface iPriceMainItem {
-  itemDay?: string;
-  itemDesc?: string;
-  itemPrice?: number;
+export interface iPriceMainContent {
+  desc?: {
+    text?: string;
+    css?: CSSObject;
+  };
 }
 
+interface IpriceMain {
+  content?: iPriceMainContent | null;
+  isEditable?: boolean;
+  onChange?: (content: iPriceMainContent) => void;
+}
+
+interface iPriceMainItem extends IpriceMain {
+  itemDay?: string;
+}
+
+export const price_main_item_desc_css_ = css`
+  width: 100%;
+  max-width: 150px;
+  color: #486284;
+  text-align: center;
+
+  /* h2_small */
+  font-family: Inter;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 160%; /* 32px */
+`;
+
 function PriceMainItem(prop: iPriceMainItem) {
-  const { itemDay, itemDesc, itemPrice } = prop;
+  const { content, isEditable, onChange, itemDay } = prop;
 
   return (
     <div css={item_container}>
@@ -39,12 +65,12 @@ function PriceMainItem(prop: iPriceMainItem) {
           <span css={item_bold_text_64_style}>{itemDay}</span>
           <span>day</span>
         </p>
-        <p css={item_desc_text_style}>{itemDesc || item_desc_}</p>
+        <p css={price_main_item_desc_css_}>
+          {content?.desc?.text || item_desc_}
+        </p>
         <p css={item_price_text_style}>
           <span css={item_bold_text_40_style}>
-            {itemPrice
-              ? itemPrice.toLocaleString()
-              : item_price.toLocaleString()}
+            {item_price.toLocaleString()}
           </span>
           <span>won</span>
         </p>
@@ -53,7 +79,40 @@ function PriceMainItem(prop: iPriceMainItem) {
   );
 }
 
-export default function PriceMain() {
+export default function PriceMain(prop: IpriceMain) {
+  const { content, isEditable, onChange } = prop;
+
+  const initial = {
+    desc: {
+      text: content?.desc?.text || item_desc_,
+      css: content?.desc?.css || price_main_item_desc_css_,
+    },
+  };
+
+  const [edit, setEdit] = useState(initial);
+
+  useEffect(() => {
+    if (content) {
+      setEdit(initial);
+    }
+  }, [content]);
+
+  function handleEdit(
+    field: keyof iPriceMainContent,
+    updatedText: string,
+    updatedCss: CSSObject
+  ) {
+    const updatedState = {
+      ...edit,
+      [field]: {
+        text: updatedText,
+        css: updatedCss,
+      },
+    };
+    setEdit(updatedState);
+    onChange?.(updatedState);
+  }
+
   const count = 3;
 
   return (
@@ -66,7 +125,13 @@ export default function PriceMain() {
           </div>
           <div css={item_wrap}>
             {Array.from({ length: count }, (_, index) => (
-              <PriceMainItem key={index} itemDay={(index + 1).toString()} />
+              <PriceMainItem
+                key={index}
+                itemDay={(index + 1).toString()}
+                content={edit}
+                isEditable={isEditable}
+                onChange={onChange}
+              />
             ))}
           </div>
         </div>
@@ -153,20 +218,6 @@ const item_day_text_style = css`
   line-height: normal;
 
   text-transform: uppercase;
-`;
-
-const item_desc_text_style = css`
-  width: 100%;
-  max-width: 150px;
-  color: #486284;
-  text-align: center;
-
-  /* h2_small */
-  font-family: Inter;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 160%; /* 32px */
 `;
 
 const item_price_text_style = css`

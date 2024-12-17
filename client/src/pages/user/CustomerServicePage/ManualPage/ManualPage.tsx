@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import TitleSection from "../TitleSection";
 import Tab from "../Tab";
 import Categories from "../Categories";

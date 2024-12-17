@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import { useState, useEffect } from "react";
 import Title from "../commonComponent/Title";
 import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";
@@ -19,11 +19,11 @@ export interface IproductListText {
 export interface IproductListContent {
   title?: {
     text?: string;
-    css?: Record<string, string>;
+    css?: CSSObject;
   };
   desc?: {
     text?: string;
-    css?: Record<string, string>;
+    css?: CSSObject;
   };
 }
 
@@ -36,7 +36,7 @@ interface IproductList {
   option: "main" | "list";
 }
 
-export const product_list_option_main_title_css: Record<string, string> = {
+export const product_list_option_main_title_css: CSSObject = {
   color: "#486284",
   textAlign: "center",
   fontFamily: "Inter",
@@ -46,7 +46,7 @@ export const product_list_option_main_title_css: Record<string, string> = {
   lineHeight: "normal",
 };
 
-export const product_list_option_list_title_css: Record<string, string> = {
+export const product_list_option_list_title_css: CSSObject = {
   color: "#486284",
   textAlign: "left",
   fontFamily: "Inter",
@@ -56,7 +56,7 @@ export const product_list_option_list_title_css: Record<string, string> = {
   lineHeight: "normal",
 };
 
-export const product_list_option_main_desc_css: Record<string, string> = {
+export const product_list_option_main_desc_css: CSSObject = {
   color: "#a0a0a0",
   textAlign: "center",
   fontFamily: "Inter",
@@ -66,7 +66,7 @@ export const product_list_option_main_desc_css: Record<string, string> = {
   lineHeight: "normal",
 };
 
-export const product_list_option_list_desc_css: Record<string, string> = {
+export const product_list_option_list_desc_css: CSSObject = {
   color: "#a0a0a0",
   textAlign: "left",
   fontFamily: "Inter",
@@ -79,7 +79,7 @@ export const product_list_option_list_desc_css: Record<string, string> = {
 function ProductListItemMain(prop: IproductListItem) {
   const { option, content, isEditable, onChange } = prop;
 
-  const [productListMain, setProductListMain] = useState({
+  const initial = {
     title: {
       text: content?.title?.text || title_,
       css:
@@ -92,48 +92,33 @@ function ProductListItemMain(prop: IproductListItem) {
       text: content?.desc?.text || desc_,
       css:
         content?.desc?.css ||
-        (option === "list"
+        (option === "main"
           ? product_list_option_main_desc_css
           : product_list_option_list_desc_css),
     },
-  });
+  };
+
+  const [edit, setEdit] = useState(initial);
 
   useEffect(() => {
     if (content) {
-      setProductListMain({
-        title: {
-          text: content?.title?.text || title_,
-          css:
-            content?.title?.css ||
-            (option === "main"
-              ? product_list_option_main_title_css
-              : product_list_option_list_title_css),
-        },
-        desc: {
-          text: content?.desc?.text || desc_,
-          css:
-            content?.desc?.css ||
-            (option === "list"
-              ? product_list_option_main_desc_css
-              : product_list_option_list_desc_css),
-        },
-      });
+      setEdit(initial);
     }
   }, [content]);
 
   function handleEdit(
     field: keyof IproductListContent,
     updatedText: string,
-    updatedCss: Record<string, string>
+    updatedCss: CSSObject
   ) {
     const updatedState = {
-      ...productListMain,
+      ...edit,
       [field]: {
         text: updatedText,
         css: updatedCss,
       },
     };
-    setProductListMain(updatedState);
+    setEdit(updatedState);
     onChange?.(updatedState);
   }
 
@@ -147,12 +132,8 @@ function ProductListItemMain(prop: IproductListItem) {
         />
         <div css={text_container}>
           <div css={product_info_container}>
-            <p css={product_list_option_main_title_css}>
-              {content?.title?.text || title_}
-            </p>
-            <p css={product_list_option_main_desc_css}>
-              {content?.desc?.text || desc_}
-            </p>
+            <p css={edit?.title?.css}>{edit?.title?.text || title_}</p>
+            <p css={edit?.desc?.css}>{edit?.desc?.text || desc_}</p>
           </div>
           <div css={product_price_container(option)}>
             <p css={product_price_sale(option)}>50,000원</p>
@@ -172,12 +153,8 @@ function ProductListItemMain(prop: IproductListItem) {
         <div css={info_container}>
           <div css={text_container}>
             <div css={product_info_container}>
-              <p css={product_list_option_list_title_css}>
-                {content?.title?.text || title_}
-              </p>
-              <p css={product_list_option_list_desc_css}>
-                {content?.desc?.text || desc_}
-              </p>
+              <p css={edit?.title?.css}>{edit?.title?.text || title_}</p>
+              <p css={edit?.desc?.css}>{edit?.desc?.text || desc_}</p>
             </div>
             <div css={product_price_container(option)}>
               <p css={product_price_sale(option)}>50,000원</p>

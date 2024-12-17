@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import { ReactElement, useState } from "react";
 import { ReactComponent as MyInformation } from "@svgs/myPage/myInformation.svg";
 import { ReactComponent as MyProject } from "@svgs/myPage/myProject.svg";

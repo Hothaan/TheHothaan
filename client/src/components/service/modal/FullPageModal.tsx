@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import { useState, useEffect } from "react";
 import ToastPopup from "@components/common/ui/ToastPopup/ToastPopup";
 import { ReactComponent as LogoLight } from "@svgs//common/logoLight.svg";

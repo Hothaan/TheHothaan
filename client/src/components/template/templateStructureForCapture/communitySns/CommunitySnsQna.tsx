@@ -1,16 +1,30 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+
+/* component */
 import Header, { Iheader } from "@components/template/common/header/Header";
 import Footer from "@components/template/common/footer/Footer";
 import Qna from "@components/template/board/Qna";
-
-import { IfetchedfeatureResponseData } from "@components/template/types";
 import Loading from "@components/common/ui/Loading/loading";
+
+/* data */
+import { IfetchedfeatureResponseData } from "@components/template/types";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
+
+/* text */
 import { IqnaText } from "@components/template/board/Qna";
 
-interface IcommunitySnsQna extends IqnaText {}
+/* content */
+import { IqnaContent } from "@components/template/board/Qna";
+
+interface IcommunitySnsQnaText {
+  qna: IqnaText;
+}
+
+interface IcommunitySnsQnaContent {
+  qna: IqnaContent;
+}
 
 export default function CommunitySnsQna() {
   const feature = "Q&A 게시판";
@@ -67,6 +81,24 @@ export default function CommunitySnsQna() {
       fetchFeatureData(isProduction, projectIdValue);
     }
   }, [projectIdValue]);
+
+  const [changedContent, setChangedContent] = useState(null);
+  const [pageContent, setPageContent] = useState<IcommunitySnsQnaContent>(
+    {} as IcommunitySnsQnaContent
+  );
+
+  function updateSectionContent<T extends keyof IcommunitySnsQnaContent>(
+    section: T,
+    updatedContent: Partial<IcommunitySnsQnaContent[T]>
+  ) {
+    setPageContent((prev) => ({
+      ...prev,
+      [section]: {
+        ...prev?.[section],
+        ...updatedContent,
+      },
+    }));
+  }
 
   // if (!generatedText || !headerData) {
   //   return <Loading />;

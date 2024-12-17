@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import UserPageWrap from "@components/user/ui/UserPageWrap";
 import { IuserPageTitle } from "@components/user/ui/UserPageTitle";
 import UserPageTitle from "@components/user/ui/UserPageTitle";

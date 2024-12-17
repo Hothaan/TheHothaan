@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import TitleNcategory from "./TitleNcategory";
 import Banner from "./Banner";
 import BestExample from "./BestExample";

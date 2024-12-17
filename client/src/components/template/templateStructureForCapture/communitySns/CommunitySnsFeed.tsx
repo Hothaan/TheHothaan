@@ -15,8 +15,15 @@ import useIsProduction from "@hooks/useIsProduction";
 /* text */
 import { IfeedText } from "@components/template/board/Feed";
 
-interface IcommunitySnsFeed {
+/* content */
+import { IfeedContent } from "@components/template/board/Feed";
+
+interface IcommunitySnsFeedText {
   feed: IfeedText;
+}
+
+interface IcommunitySnsFeedContent {
+  feed: IfeedContent;
 }
 
 export default function CommunitySnsFeed() {
@@ -74,6 +81,24 @@ export default function CommunitySnsFeed() {
       fetchFeatureData(isProduction, projectIdValue);
     }
   }, [projectIdValue]);
+
+  const [changedContent, setChangedContent] = useState(null);
+  const [pageContent, setPageContent] = useState<IcommunitySnsFeedContent>(
+    {} as IcommunitySnsFeedContent
+  );
+
+  function updateSectionContent<T extends keyof IcommunitySnsFeedContent>(
+    section: T,
+    updatedContent: Partial<IcommunitySnsFeedContent[T]>
+  ) {
+    setPageContent((prev) => ({
+      ...prev,
+      [section]: {
+        ...prev?.[section],
+        ...updatedContent,
+      },
+    }));
+  }
 
   // if (!generatedText || !headerData) {
   //   return <Loading />;

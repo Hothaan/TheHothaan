@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import { useEffect, useState } from "react";
 import useLocationControl from "@hooks/useLocationControl";
 import { TcustomerService } from "./types";

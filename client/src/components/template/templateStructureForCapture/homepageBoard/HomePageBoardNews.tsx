@@ -15,7 +15,14 @@ import useIsProduction from "@hooks/useIsProduction";
 /* text */
 import { InewsText } from "@components/template/board/News";
 
-interface IhomePageBoardNews {
+/* content */
+import { InewsContent } from "@components/template/board/News";
+
+interface IhomePageBoardNewsText {
+  news: InewsText;
+}
+
+interface IhomePageBoardNewsContent {
   news: InewsText;
 }
 
@@ -74,6 +81,24 @@ export default function HomePageBoardNews() {
       fetchFeatureData(isProduction, projectIdValue);
     }
   }, [projectIdValue]);
+
+  const [changedContent, setChangedContent] = useState(null);
+  const [pageContent, setPageContent] = useState<IhomePageBoardNewsContent>(
+    {} as IhomePageBoardNewsContent
+  );
+
+  function updateSectionContent<T extends keyof IhomePageBoardNewsContent>(
+    section: T,
+    updatedContent: Partial<IhomePageBoardNewsContent[T]>
+  ) {
+    setPageContent((prev) => ({
+      ...prev,
+      [section]: {
+        ...prev?.[section],
+        ...updatedContent,
+      },
+    }));
+  }
 
   // if (!generatedText || !headerData) {
   //   return <Loading />;

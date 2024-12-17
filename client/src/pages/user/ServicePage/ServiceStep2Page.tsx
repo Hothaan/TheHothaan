@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import { useState, useEffect } from "react";
 import { IbuttonChooseDeviceOption } from "@components/service/button/ButtonChooseDeviceOption";
 import ButtonChooseDeviceOption from "@components/service/button/ButtonChooseDeviceOption";

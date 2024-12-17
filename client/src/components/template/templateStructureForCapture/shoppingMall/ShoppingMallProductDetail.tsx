@@ -13,11 +13,26 @@ import { IfetchedfeatureResponseData } from "@components/template/types";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
+/* css */
+import {
+  product_detail_product_title_css_,
+  product_detail_product_desc_css_,
+  product_detail_more_product__option_main_title_css,
+  product_detail_more_product__option_main_desc_css,
+} from "@components/template/product/ProductDetail";
+
 /* text */
 import { IproductDetailText } from "@components/template/product/ProductDetail";
 
-interface IShoppingMallProductDetail {
+/* content */
+import { IproductDetailContent } from "@components/template/product/ProductDetail";
+
+interface IShoppingMallProductDetailText {
   productDetail: IproductDetailText;
+}
+
+interface IShoppingMallProductDetailContent {
+  productDetail: IproductDetailContent;
 }
 
 export default function ShoppingMallProductDetail() {
@@ -31,6 +46,7 @@ export default function ShoppingMallProductDetail() {
   const [generatedText, setGeneratedText] = useState<IgeneratedText | null>(
     null
   );
+
   async function fetchFeatureData(isProduction: boolean, projectId: string) {
     try {
       const response = await getFeatureData(isProduction, projectId);
@@ -75,6 +91,52 @@ export default function ShoppingMallProductDetail() {
     }
   }, [projectIdValue]);
 
+  const [changedContent, setChangedContent] = useState(null);
+  const [pageContent, setPageContent] =
+    useState<IShoppingMallProductDetailContent>(
+      {} as IShoppingMallProductDetailContent
+    );
+
+  console.log(pageContent);
+
+  const isKeyExist = (
+    data: any,
+    validKeys: string[]
+  ): data is IShoppingMallProductDetailContent => {
+    return validKeys.every((key) => key in data);
+  };
+
+  function updateSectionContent<
+    T extends keyof IShoppingMallProductDetailContent
+  >(section: T, updatedContent: Partial<IShoppingMallProductDetailContent[T]>) {
+    setPageContent((prev) => ({
+      ...prev,
+      [section]: {
+        ...prev?.[section],
+        ...updatedContent,
+      },
+    }));
+  }
+
+  useEffect(() => {
+    if (
+      generatedText &&
+      generatedText.content?.title &&
+      generatedText.content?.desc
+    ) {
+      updateSectionContent("productDetail", {
+        productTitle: {
+          text: generatedText.content?.title,
+          css: product_detail_product_title_css_,
+        },
+        productDesc: {
+          text: generatedText.content?.desc,
+          css: product_detail_product_desc_css_,
+        },
+      });
+    }
+  }, [generatedText]);
+
   if (!generatedText || !headerData) {
     return <Loading />;
   }
@@ -86,7 +148,7 @@ export default function ShoppingMallProductDetail() {
         logo={headerData.logo || undefined}
         serviceType="쇼핑몰"
       />
-      <ProductDetail />
+      <ProductDetail content={pageContent?.productDetail} />
       <Footer logo={headerData.logo} serviceType="쇼핑몰" />
     </div>
   );

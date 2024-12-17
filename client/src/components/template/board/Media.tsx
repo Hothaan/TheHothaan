@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
+import { useEffect, useState } from "react";
 import { OuterWrap } from "../commonComponent/Wrap";
 import Title from "../commonComponent/Title";
 import ImageBox from "../commonComponent/ImageBox";
@@ -7,22 +8,33 @@ import ImageBox from "../commonComponent/ImageBox";
 const component_title_ = "media board";
 
 const item_title_ = "lorem ipsum, quia do";
-const item_title_className = "media_item_title";
 
 const item_desc_ = "lorem ipsum, quia do";
-const item_desc_className = "media_item_desc";
 
 export interface ImediaText {
   title?: string;
   desc?: string;
 }
 
-interface ImediaItem extends ImediaText {}
+export interface ImediaContent {
+  title?: {
+    text?: string;
+    css?: CSSObject;
+  };
+  desc?: {
+    text?: string;
+    css?: CSSObject;
+  };
+}
 
-interface Imedia extends ImediaText {}
+interface Imedia {
+  content?: ImediaContent | null;
+  isEditable?: boolean;
+  onChange?: (update: ImediaContent) => void;
+}
 
-function MediaItem(prop: ImediaItem) {
-  const { title, desc } = prop;
+function MediaItem(prop: Imedia) {
+  const { content, isEditable, onChange } = prop;
 
   return (
     <div css={item_container}>
@@ -38,11 +50,11 @@ function MediaItem(prop: ImediaItem) {
       />
       <div css={item_info_container}>
         <p css={number_style}>483</p>
-        <p css={item_title_style} className={item_title_className}>
-          {title || item_title_}
+        <p css={content?.title?.css || media_title_css_}>
+          {content?.title?.text || item_title_}
         </p>
-        <p css={item_desc_style} className={item_desc_className}>
-          {desc || item_desc_}
+        <p css={content?.desc?.css || media_desc_css_}>
+          {content?.desc?.text || item_desc_}
         </p>
       </div>
     </div>
@@ -50,7 +62,42 @@ function MediaItem(prop: ImediaItem) {
 }
 
 export default function Media(prop: Imedia) {
-  const { title, desc } = prop;
+  const { content, isEditable, onChange } = prop;
+
+  const initial = {
+    title: {
+      text: content?.title?.text || item_title_,
+      css: content?.title?.css || media_title_css_,
+    },
+    desc: {
+      text: content?.desc?.text || item_desc_,
+      css: content?.desc?.css || media_desc_css_,
+    },
+  };
+
+  const [edit, setEdit] = useState(initial);
+
+  useEffect(() => {
+    if (content) {
+      setEdit(initial);
+    }
+  }, [content]);
+
+  function handleEdit(
+    field: keyof ImediaContent,
+    updatedText: string,
+    updatedCss: CSSObject
+  ) {
+    const updatedState = {
+      ...edit,
+      [field]: {
+        text: updatedText,
+        css: updatedCss,
+      },
+    };
+    setEdit(updatedState);
+    onChange?.(updatedState);
+  }
 
   const count = 6;
 
@@ -65,8 +112,9 @@ export default function Media(prop: Imedia) {
         {Array.from({ length: count }, (_, index) => (
           <MediaItem
             key={index}
-            title={title || item_title_}
-            desc={desc || item_desc_}
+            content={edit}
+            onChange={onChange}
+            isEditable
           />
         ))}
       </div>
@@ -109,7 +157,7 @@ const number_style = css`
   letter-spacing: -0.15px;
 `;
 
-const item_title_style = css`
+const media_title_css_ = css`
   color: #486284;
 
   /* mall/subject */
@@ -120,7 +168,7 @@ const item_title_style = css`
   line-height: normal;
 `;
 
-const item_desc_style = css`
+const media_desc_css_ = css`
   color: var(--A0A0A0, #a0a0a0);
 
   /* mall/subject_small */

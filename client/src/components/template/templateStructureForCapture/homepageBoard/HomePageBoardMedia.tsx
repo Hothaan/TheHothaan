@@ -15,8 +15,15 @@ import useIsProduction from "@hooks/useIsProduction";
 /* text */
 import { ImediaText } from "@components/template/board/Media";
 
-interface IhomePageBoardMedia {
+/* content */
+import { ImediaContent } from "@components/template/board/Media";
+
+interface IhomePageBoardMediaText {
   media: ImediaText;
+}
+
+interface IhomePageBoardMediaContent {
+  media: ImediaContent;
 }
 
 export default function HomePageBoardMedia() {
@@ -74,6 +81,24 @@ export default function HomePageBoardMedia() {
       fetchFeatureData(isProduction, projectIdValue);
     }
   }, [projectIdValue]);
+
+  const [changedContent, setChangedContent] = useState(null);
+  const [pageContent, setPageContent] = useState<IhomePageBoardMediaContent>(
+    {} as IhomePageBoardMediaContent
+  );
+
+  function updateSectionContent<T extends keyof IhomePageBoardMediaContent>(
+    section: T,
+    updatedContent: Partial<IhomePageBoardMediaContent[T]>
+  ) {
+    setPageContent((prev) => ({
+      ...prev,
+      [section]: {
+        ...prev?.[section],
+        ...updatedContent,
+      },
+    }));
+  }
 
   // if (!generatedText || !headerData) {
   //   return <Loading />;

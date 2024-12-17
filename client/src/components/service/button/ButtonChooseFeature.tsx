@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import { useState, useRef, useEffect } from "react";
 import { IserviceModal } from "@components/service/modal/ServiceModal";
 import ServiceModal from "@components/service/modal/ServiceModal";

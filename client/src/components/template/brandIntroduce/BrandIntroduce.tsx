@@ -1,22 +1,19 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import { OuterWrap, ContentsWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 import { useEffect, useState } from "react";
+import { on } from "stream";
 
 const banner_title_ = "headline h1";
-const banner_title_className = "brand_introduce_banner_title";
 
 const banner_desc_ =
   "lorem ipsum, quia dolor sit, amet,consectetur, adipisci velit, sed quia non";
-const banner_desc_className = "brand_introduce_banner_desc";
 
 const item_title_ = "headline h1";
-const item_title_className = "brand_introduce_content_title";
 
 const item_desc_ =
   "lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia nonlorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia nonlorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia nonlorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non";
-const item_desc_className = "brand_introduce_content_desc";
 
 export interface IbrandIntroduceText {
   banner?: { title?: string; desc?: string };
@@ -24,28 +21,22 @@ export interface IbrandIntroduceText {
 }
 
 export interface IbrandIntroduceContent {
-  banner?: {
-    title?: string;
-    titleCss?: Record<string, string>;
-    desc?: string;
-    descCss?: Record<string, string>;
+  bannerTitle?: {
+    text?: string;
+    css?: CSSObject;
   };
-  item?: {
-    title?: string;
-    titleCss?: Record<string, string>;
-    desc?: string;
-    descCss?: Record<string, string>;
+  bannerDesc?: {
+    text?: string;
+    css?: CSSObject;
   };
-}
-
-interface IbrandIntroduceItemText {
-  title?: string;
-  desc?: string;
-}
-
-interface IbrandIntroduceItemContent extends IbrandIntroduceItemText {
-  titleCss?: Record<string, string>;
-  descCss?: Record<string, string>;
+  itemTitle?: {
+    text?: string;
+    css?: CSSObject;
+  };
+  itemDesc?: {
+    text?: string;
+    css?: CSSObject;
+  };
 }
 
 interface IbrandIntroduce {
@@ -54,7 +45,7 @@ interface IbrandIntroduce {
   onChange?: (content: IbrandIntroduceContent) => void;
 }
 
-export const brandIntroduce_item_title_css: Record<string, string> = {
+export const brandIntroduce_item_title_css: CSSObject = {
   color: "#486284",
   fontFamily: "Inter",
   fontSize: "96px",
@@ -64,7 +55,7 @@ export const brandIntroduce_item_title_css: Record<string, string> = {
   textTransform: "capitalize",
 };
 
-export const brandIntroduce_item_desc_css: Record<string, string> = {
+export const brandIntroduce_item_desc_css: CSSObject = {
   color: "#486284",
   fontFamily: "Inter",
   fontSize: "32px",
@@ -73,7 +64,7 @@ export const brandIntroduce_item_desc_css: Record<string, string> = {
   lineHeight: "normal",
 };
 
-export const brandIntroduce_banner_title_css: Record<string, string> = {
+export const brandIntroduce_banner_title_css: CSSObject = {
   marginBottom: "30px",
   color: "#486284",
   fontFamily: "Inter",
@@ -84,7 +75,7 @@ export const brandIntroduce_banner_title_css: Record<string, string> = {
   textTransform: "capitalize",
 };
 
-export const brandIntroduce_banner_desc_css: Record<string, string> = {
+export const brandIntroduce_banner_desc_css: CSSObject = {
   textAlign: "center",
   wordBreak: "keep-all",
   color: "#486284",
@@ -96,8 +87,8 @@ export const brandIntroduce_banner_desc_css: Record<string, string> = {
   maxWidth: "676px",
 };
 
-function BrandIntroduceItem(prop: IbrandIntroduceItemContent) {
-  const { title, titleCss, desc, descCss } = prop;
+function BrandIntroduceItem(prop: IbrandIntroduce) {
+  const { content, isEditable, onChange } = prop;
 
   return (
     <div css={item_container}>
@@ -111,11 +102,11 @@ function BrandIntroduceItem(prop: IbrandIntroduceItemContent) {
           icon: "width: 100px; height: 100px;",
         }}
       />
-      <p css={titleCss} className={item_title_className}>
-        {title || item_title_}
+      <p css={content?.itemTitle?.css || brandIntroduce_item_title_css}>
+        {content?.itemTitle?.text || item_title_}
       </p>
-      <p css={descCss} className={item_desc_className}>
-        {desc || item_desc_}
+      <p css={content?.itemDesc?.css || brandIntroduce_item_desc_css}>
+        {content?.itemDesc?.text || item_desc_}
       </p>
     </div>
   );
@@ -126,69 +117,32 @@ export default function BrandIntroduce(prop: IbrandIntroduce) {
 
   const count = 2;
 
-  const [editBannerTitle, setEditBannerTitle] = useState(
-    content?.banner?.title || banner_title_
-  );
-  const [editBannerTitleCss, setEditBannerTitleCss] = useState(
-    content?.banner?.titleCss || brandIntroduce_banner_title_css
-  );
-  const [editBannerDesc, setEditBannerDesc] = useState(
-    content?.banner?.desc || banner_desc_
-  );
-  const [editBannerDescCss, setEditBannerDescCss] = useState(
-    content?.banner?.descCss || brandIntroduce_banner_desc_css
-  );
+  const initial = {
+    bannerTitle: {
+      text: content?.bannerTitle?.text,
+      css: content?.bannerTitle?.css,
+    },
+    bannerDesc: {
+      text: content?.bannerDesc?.text,
+      css: content?.bannerDesc?.css,
+    },
+    itemTitle: {
+      text: content?.itemTitle?.text,
+      css: content?.itemTitle?.css,
+    },
+    itemDesc: {
+      text: content?.itemDesc?.text,
+      css: content?.itemDesc?.css,
+    },
+  };
 
-  const [editItemTitle, setEditItemTitle] = useState(
-    content?.item?.title || item_title_
-  );
-  const [editItemTitleCss, setEditItemTitleCss] = useState(
-    content?.item?.titleCss || brandIntroduce_item_title_css
-  );
-  const [editItemDesc, setEditItemDesc] = useState(
-    content?.item?.desc || item_desc_
-  );
-  const [editItemDescCss, setEditItemDescCss] = useState(
-    content?.item?.descCss || brandIntroduce_item_desc_css
-  );
+  const [edit, setEdit] = useState(initial);
 
   useEffect(() => {
-    if (content && content !== undefined) {
-      setEditBannerTitle(content?.banner?.title || banner_title_);
-      setEditBannerTitleCss(
-        content?.banner?.titleCss || brandIntroduce_banner_title_css
-      );
-      setEditBannerDesc(content?.banner?.desc || banner_desc_);
-      setEditBannerDescCss(
-        content?.banner?.descCss || brandIntroduce_banner_desc_css
-      );
-      setEditItemTitle(content?.item?.title || item_title_);
-      setEditItemTitleCss(
-        content?.item?.titleCss || brandIntroduce_item_title_css
-      );
-      setEditItemDesc(content?.item?.desc || item_desc_);
-      setEditItemDescCss(
-        content?.item?.descCss || brandIntroduce_item_desc_css
-      );
+    if (content) {
+      setEdit(initial);
     }
   }, [content]);
-
-  function handleEditBannerTitle(
-    updatedText: string,
-    updatedCss: Record<string, string>
-  ) {
-    const newContent = {
-      ...content,
-      banner: {
-        ...content?.banner,
-        title: updatedText,
-        titleCss: updatedCss,
-      },
-    };
-    setEditBannerTitle(updatedText);
-    setEditBannerTitleCss(updatedCss);
-    onChange?.(newContent);
-  }
 
   return (
     <OuterWrap padding="0">
@@ -204,17 +158,11 @@ export default function BrandIntroduce(prop: IbrandIntroduce) {
           }}
         />
         <div css={container}>
-          <p
-            css={editBannerTitleCss || brandIntroduce_banner_title_css}
-            className={banner_title_className}
-          >
-            {editBannerTitle || banner_title_}
+          <p css={edit?.bannerTitle?.css || brandIntroduce_banner_title_css}>
+            {edit?.bannerTitle?.text || banner_title_}
           </p>
-          <p
-            css={editBannerDescCss || brandIntroduce_banner_desc_css}
-            className={banner_desc_className}
-          >
-            {editBannerDesc || banner_desc_}
+          <p css={edit?.bannerDesc?.css || brandIntroduce_banner_desc_css}>
+            {edit?.bannerDesc?.text || banner_desc_}
           </p>
         </div>
       </div>
@@ -224,10 +172,9 @@ export default function BrandIntroduce(prop: IbrandIntroduce) {
             {Array.from({ length: count }, (_, index) => (
               <BrandIntroduceItem
                 key={index}
-                title={editItemTitle || item_title_}
-                titleCss={editItemTitleCss || brandIntroduce_item_title_css}
-                desc={editItemDesc || item_desc_}
-                descCss={editItemDescCss || brandIntroduce_item_desc_css}
+                content={content}
+                isEditable={isEditable}
+                onChange={onChange}
               />
             ))}
           </div>

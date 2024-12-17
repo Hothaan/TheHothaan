@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
+import { useState, useEffect } from "react";
 import { OuterWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 
@@ -10,6 +11,31 @@ export interface ImatchingServiceIntroduceMainText {
   itemDesc?: string;
 }
 
+export interface ImatchingServiceIntroduceMainContent {
+  bannerTitle?: {
+    text?: string;
+    css?: CSSObject;
+  };
+  bannerDesc?: {
+    text?: string;
+    css?: CSSObject;
+  };
+  itemTitle?: {
+    text?: string;
+    css?: CSSObject;
+  };
+  itemDesc?: {
+    text?: string;
+    css?: CSSObject;
+  };
+}
+
+interface ImatchingServiceIntroduceMain {
+  content?: ImatchingServiceIntroduceMainContent | null;
+  isEditable?: boolean;
+  onChange?: (content: ImatchingServiceIntroduceMainContent) => void;
+}
+
 const banner_title_ = "Headline H1";
 const banner_desc_ =
   "lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non";
@@ -17,15 +43,78 @@ const banner_desc_ =
 const item_title_ = "Headline H1";
 const item_desc_ =
   "lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non";
+
 const circle_text_ = "lorem ipsum";
 const input_text_ = "lorem ipsum";
 const input_button_ = "lorem ipsum";
 
-function MatchingServiceIntroduceMainItem() {
+export const matching_service_introduce_main_banner_title_css_ = css`
+  color: #486284;
+  text-align: center;
+
+  /* H1 */
+  font-family: Inter;
+  font-size: 96px;
+  font-style: normal;
+  font-weight: 900;
+  line-height: 150%; /* 144px */
+`;
+
+export const matching_service_introduce_main_banner_desc_css_ = css`
+  color: #486284;
+  text-align: center;
+
+  /* h2_middle */
+  font-family: Inter;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+`;
+
+export const matching_service_introduce_main_item_title_css_ = css`
+  color: #486284;
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 60px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 80px; /* 133.333% */
+`;
+
+export const matching_service_introduce_main_item_desc_css_ = css`
+  color: #486284;
+  text-align: center;
+
+  /* h2_middle */
+  font-family: Inter;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+`;
+
+function MatchingServiceIntroduceMainItem(prop: ImatchingServiceIntroduceMain) {
+  const { content, isEditable, onChange } = prop;
+
   return (
     <div css={item_container}>
-      <p css={item_title_css}>{item_title_}</p>
-      <p css={item_desc_css}>{item_desc_}</p>
+      <p
+        css={
+          content?.itemTitle?.css ||
+          matching_service_introduce_main_item_title_css_
+        }
+      >
+        {content?.itemTitle?.text || item_title_}
+      </p>
+      <p
+        css={
+          content?.itemDesc?.css ||
+          matching_service_introduce_main_item_desc_css_
+        }
+      >
+        {content?.itemDesc?.text || item_desc_}
+      </p>
       <div css={circle_wrap}>
         <div css={circle_container}>
           <span css={circle(false)}></span>
@@ -40,7 +129,62 @@ function MatchingServiceIntroduceMainItem() {
   );
 }
 
-export default function MatchingServiceIntroduceMain() {
+export default function MatchingServiceIntroduceMain(
+  prop: ImatchingServiceIntroduceMain
+) {
+  const { content, isEditable, onChange } = prop;
+
+  const initial = {
+    bannerTitle: {
+      text: content?.bannerTitle?.text || banner_title_,
+      css:
+        content?.bannerTitle?.css ||
+        matching_service_introduce_main_banner_title_css_,
+    },
+    bannerDesc: {
+      text: content?.bannerDesc?.text || banner_desc_,
+      css:
+        content?.bannerDesc?.css ||
+        matching_service_introduce_main_banner_desc_css_,
+    },
+    itemTitle: {
+      text: content?.itemTitle?.text || item_title_,
+      css:
+        content?.itemTitle?.css ||
+        matching_service_introduce_main_item_title_css_,
+    },
+    itemDesc: {
+      text: content?.itemDesc?.text || item_desc_,
+      css:
+        content?.itemDesc?.css ||
+        matching_service_introduce_main_item_desc_css_,
+    },
+  };
+
+  const [edit, setEdit] = useState(initial);
+
+  useEffect(() => {
+    if (content) {
+      setEdit(initial);
+    }
+  }, [content]);
+
+  function handleEdit(
+    field: keyof ImatchingServiceIntroduceMainContent,
+    updatedText: string,
+    updatedCss: CSSObject
+  ) {
+    const updatedState = {
+      ...edit,
+      [field]: {
+        text: updatedText,
+        css: updatedCss,
+      },
+    };
+    setEdit(updatedState);
+    onChange?.(updatedState);
+  }
+
   const count = 3;
 
   return (
@@ -58,15 +202,48 @@ export default function MatchingServiceIntroduceMain() {
             }}
           />
           <div css={banner_text_container}>
-            <p css={banner_title_css}>{banner_title_}</p>
-            <p css={banner_desc_css}>{banner_desc_}</p>
-            <p css={banner_desc_css}>{banner_desc_}</p>
-            <p css={banner_desc_css}>{banner_desc_}</p>
+            <p
+              css={
+                edit?.bannerTitle?.css ||
+                matching_service_introduce_main_banner_title_css_
+              }
+            >
+              {edit?.bannerTitle?.text || banner_title_}
+            </p>
+            <p
+              css={
+                edit?.bannerDesc?.css ||
+                matching_service_introduce_main_banner_desc_css_
+              }
+            >
+              {edit?.bannerDesc?.text || banner_desc_}
+            </p>
+            <p
+              css={
+                edit?.bannerDesc?.css ||
+                matching_service_introduce_main_banner_desc_css_
+              }
+            >
+              {edit?.bannerDesc?.text || banner_desc_}
+            </p>
+            <p
+              css={
+                edit?.bannerDesc?.css ||
+                matching_service_introduce_main_banner_desc_css_
+              }
+            >
+              {edit?.bannerDesc?.text || banner_desc_}
+            </p>
           </div>
         </div>
         <div css={item_wrap}>
           {Array.from({ length: count }, (_, index) => (
-            <MatchingServiceIntroduceMainItem key={index} />
+            <MatchingServiceIntroduceMainItem
+              key={index}
+              content={content}
+              isEditable={isEditable}
+              onChange={onChange}
+            />
           ))}
         </div>
         <div css={input_wrap}>
@@ -97,7 +274,6 @@ export default function MatchingServiceIntroduceMain() {
                 />
                 <path d="M3.5 6.5L6.5 9.5L12 4" stroke="black" />
               </svg>
-
               <p css={input_checkbox_label}>{input_text_}</p>
             </div>
           </div>
@@ -134,30 +310,6 @@ const banner_text_container = css`
   gap: 40px;
 `;
 
-const banner_title_css = css`
-  color: #486284;
-  text-align: center;
-
-  /* H1 */
-  font-family: Inter;
-  font-size: 96px;
-  font-style: normal;
-  font-weight: 900;
-  line-height: 150%; /* 144px */
-`;
-
-const banner_desc_css = css`
-  color: #486284;
-  text-align: center;
-
-  /* h2_middle */
-  font-family: Inter;
-  font-size: 32px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-`;
-
 const item_wrap = css`
   display: flex;
   flex-direction: column;
@@ -174,28 +326,6 @@ const item_container = css`
   gap: 30px;
   padding-bottom: 72px;
   border-bottom: 1px solid #d9d9d9;
-`;
-
-const item_title_css = css`
-  color: #486284;
-  text-align: center;
-  font-family: Pretendard;
-  font-size: 60px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: 80px; /* 133.333% */
-`;
-
-const item_desc_css = css`
-  color: #486284;
-  text-align: center;
-
-  /* h2_middle */
-  font-family: Inter;
-  font-size: 32px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
 `;
 
 const circle_wrap = css`

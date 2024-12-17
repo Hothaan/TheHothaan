@@ -1,18 +1,16 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
+import { useState, useEffect } from "react";
 import { OuterWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 
 const image_desc_ =
   "lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non";
-const image_desc_className = "product_introduce_image_desc";
 
 const title_ = "Headline H1";
-const title_className = "product_introduce_title";
 
 const desc_ =
   "lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non";
-const desc_className = "product_introduce_desc";
 
 export interface IproductIntroduceMainText {
   imageDesc?: string;
@@ -20,12 +18,109 @@ export interface IproductIntroduceMainText {
   desc?: string;
 }
 
-interface IproductIntroduceMain extends IproductIntroduceMainText {
-  isEditable?: boolean;
+export interface IproductIntroduceMainContent {
+  imageDesc?: {
+    text?: string;
+    css?: CSSObject;
+  };
+  title?: {
+    text?: string;
+    css?: CSSObject;
+  };
+  desc?: {
+    text?: string;
+    css?: CSSObject;
+  };
 }
 
+interface IproductIntroduceMain {
+  content?: IproductIntroduceMainContent;
+  isEditable?: boolean;
+  onChange?: (content: IproductIntroduceMainContent) => void;
+}
+
+export const product_introduce_image_desc_css_: CSSObject = {
+  width: "calc(100% - 140px)",
+  position: "absolute",
+  bottom: "70px",
+  left: "70px",
+  color: "#486284",
+  wordBreak: "break-all",
+  fontFamily: "Inter",
+  fontSize: "32px",
+  fontStyle: "normal",
+  fontWeight: "400",
+  lineHeight: "normal",
+};
+
+export const product_introduce_title_css_: CSSObject = {
+  color: "#486284",
+  fontFamily: "Inter",
+  fontSize: "96px",
+  fontStyle: "normal",
+  fontWeight: "900",
+  lineHeight: "150%",
+  "@media (max-width: 1000px)": {
+    color: "#486284",
+    fontFamily: "Inter",
+    fontSize: "50px",
+    fontStyle: "normal",
+    fontWeight: "900",
+    lineHeight: "150%",
+  },
+};
+
+export const product_introduce_desc_css_: CSSObject = {
+  color: "#486284",
+  fontFamily: "Inter",
+  fontSize: "32px",
+  fontStyle: "normal",
+  fontWeight: "400",
+  lineHeight: "normal",
+  wordBreak: "break-all",
+};
+
 export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
-  const { imageDesc, title, desc, isEditable } = prop;
+  const { content, isEditable, onChange } = prop;
+
+  const initial = {
+    imageDesc: {
+      text: content?.imageDesc?.text || image_desc_,
+      css: content?.imageDesc?.css || product_introduce_image_desc_css_,
+    },
+    title: {
+      text: content?.title?.text || title_,
+      css: content?.title?.css || product_introduce_title_css_,
+    },
+    desc: {
+      text: content?.desc?.text || desc_,
+      css: content?.desc?.css || product_introduce_desc_css_,
+    },
+  };
+
+  const [edit, setEdit] = useState(initial);
+
+  useEffect(() => {
+    if (content) {
+      setEdit(initial);
+    }
+  }, [content]);
+
+  function handleEdit(
+    field: keyof IproductIntroduceMainContent,
+    updatedText: string,
+    updatedCss: CSSObject
+  ) {
+    const updatedState = {
+      ...edit,
+      [field]: {
+        text: updatedText,
+        css: updatedCss,
+      },
+    };
+    setEdit(updatedState);
+    onChange?.(updatedState);
+  }
 
   return (
     <OuterWrap padding="0">
@@ -41,32 +136,32 @@ export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
               icon: "width: 110px; height: 110px;",
             }}
           />
-          <p css={image_desc} className={image_desc_className}>
-            {imageDesc || image_desc_}
+          <p css={edit?.imageDesc?.css || product_introduce_image_desc_css_}>
+            {edit?.imageDesc?.text || image_desc_}
           </p>
         </div>
         <div css={text_container}>
-          <p css={title_style} className={title_className}>
-            {title || title_}
+          <p css={edit?.title?.css || product_introduce_title_css_}>
+            {edit?.title?.text || title_}
           </p>
-          <p css={desc_style} className={desc_className}>
-            {desc || desc_}
+          <p css={edit?.desc?.css || product_introduce_desc_css_}>
+            {edit?.desc?.text || desc_}
           </p>
-          <p css={desc_style} className={desc_className}>
-            {desc || desc_}
+          <p css={edit?.desc?.css || product_introduce_desc_css_}>
+            {edit?.desc?.text || desc_}
           </p>
         </div>
       </div>
       <div css={container}>
         <div css={text_container}>
-          <p css={title_style} className={title_className}>
-            {title || title_}
+          <p css={edit?.title?.css || product_introduce_title_css_}>
+            {edit?.title?.text || title_}
           </p>
-          <p css={desc_style} className={desc_className}>
-            {desc || desc_}
+          <p css={edit?.desc?.css || product_introduce_desc_css_}>
+            {edit?.desc?.text || desc_}
           </p>
-          <p css={desc_style} className={desc_className}>
-            {desc || desc_}
+          <p css={edit?.desc?.css || product_introduce_desc_css_}>
+            {edit?.desc?.text || desc_}
           </p>
         </div>
         <div css={image_container}>
@@ -80,8 +175,8 @@ export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
               icon: "width: 110px; height: 110px;",
             }}
           />
-          <p css={image_desc} className={image_desc_className}>
-            {imageDesc || image_desc_}
+          <p css={edit?.imageDesc?.css || product_introduce_image_desc_css_}>
+            {edit?.imageDesc?.text || image_desc_}
           </p>
         </div>
       </div>
@@ -99,22 +194,6 @@ const image_container = css`
   position: relative;
 `;
 
-const image_desc = css`
-  width: calc(100% - 140px);
-  position: absolute;
-  bottom: 70px;
-  left: 70px;
-  color: #486284;
-  word-break: break-all;
-
-  /* h2_middle */
-  font-family: Inter;
-  font-size: 32px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-`;
-
 const text_container = css`
   display: flex;
   flex-direction: column;
@@ -129,36 +208,4 @@ const text_container = css`
     padding: 110px 70px;
     gap: 40px;
   }
-`;
-
-const title_style = css`
-  color: #486284;
-
-  /* H1 */
-  font-family: Inter;
-  font-size: 96px;
-  font-style: normal;
-  font-weight: 900;
-  line-height: 150%; /* 144px */
-
-  @media (max-width: 1000px) {
-    color: #486284;
-    font-family: Inter;
-    font-size: 50px;
-    font-style: normal;
-    font-weight: 900;
-    line-height: 150%; /* 75px */
-  }
-`;
-
-const desc_style = css`
-  color: #486284;
-
-  /* h2_middle */
-  font-family: Inter;
-  font-size: 32px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  word-break: break-all;
 `;

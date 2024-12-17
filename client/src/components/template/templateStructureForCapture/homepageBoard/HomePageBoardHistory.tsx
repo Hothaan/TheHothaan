@@ -14,9 +14,14 @@ import useIsProduction from "@hooks/useIsProduction";
 
 /* text */
 import { IhistoryText } from "@components/template/companyIntoduce/History";
+import { IhistoryContent } from "@components/template/companyIntoduce/History";
 
-interface IhomePageBoardHistory {
+interface IhomePageBoardHistoryText {
   history: IhistoryText;
+}
+
+interface IhomePageBoardHistoryContent {
+  history: IhistoryContent;
 }
 
 export default function HomePageBoardHistory() {
@@ -74,6 +79,38 @@ export default function HomePageBoardHistory() {
       fetchFeatureData(isProduction, projectIdValue);
     }
   }, [projectIdValue]);
+
+  useEffect(() => {
+    if (projectId === undefined) {
+      setProjectIdValue(sessionStorage.getItem("projectId"));
+    } else {
+      setProjectIdValue(projectId);
+    }
+  }, [projectId]);
+
+  useEffect(() => {
+    if (projectIdValue) {
+      fetchFeatureData(isProduction, projectIdValue);
+    }
+  }, [projectIdValue]);
+
+  const [changedContent, setChangedContent] = useState(null);
+  const [pageContent, setPageContent] = useState<IhomePageBoardHistoryContent>(
+    {} as IhomePageBoardHistoryContent
+  );
+
+  function updateSectionContent<T extends keyof IhomePageBoardHistoryContent>(
+    section: T,
+    updatedContent: Partial<IhomePageBoardHistoryContent[T]>
+  ) {
+    setPageContent((prev) => ({
+      ...prev,
+      [section]: {
+        ...prev?.[section],
+        ...updatedContent,
+      },
+    }));
+  }
 
   // if (!generatedText || !headerData) {
   //   return <Loading />;

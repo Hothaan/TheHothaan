@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import Logo from "../Header/Logo";
 import CompanyNav from "./CompanyNav";
 import SnsBtnList from "./SnsBtnList";

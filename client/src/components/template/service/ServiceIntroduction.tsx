@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import { useState, useEffect } from "react";
 import Title from "../commonComponent/Title";
 import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";
@@ -21,11 +21,11 @@ export interface IserviceIntroductionText {
 export interface IserviceIntroductionContent {
   title?: {
     text?: string;
-    css?: Record<string, string>;
+    css?: CSSObject;
   };
   desc?: {
     text?: string;
-    css?: Record<string, string>;
+    css?: CSSObject;
   };
 }
 
@@ -35,9 +35,7 @@ interface IserviceIntroduction {
   onChange?: (content: IserviceIntroductionContent) => void;
 }
 
-interface IserviceIntroductionItem extends IserviceIntroduction {}
-
-export const service_introduction_title_css_: Record<string, string> = {
+export const service_introduction_title_css_: CSSObject = {
   width: "100%",
   height: "36px",
   overflow: "hidden",
@@ -51,7 +49,7 @@ export const service_introduction_title_css_: Record<string, string> = {
   lineHeight: "normal",
 };
 
-export const service_introduction_desc_css_: Record<string, string> = {
+export const service_introduction_desc_css_: CSSObject = {
   color: "#7f7f7f",
   fontFamily: "Inter",
   fontSize: "16px",
@@ -60,10 +58,10 @@ export const service_introduction_desc_css_: Record<string, string> = {
   lineHeight: "160%",
 };
 
-function ServiceIntroductionItem(prop: IserviceIntroductionItem) {
+function ServiceIntroductionItem(prop: IserviceIntroduction) {
   const { content, isEditable, onChange } = prop;
 
-  const [serviceIntroduction, setServiceIntroduction] = useState({
+  const initial = {
     title: {
       text: content?.title?.text || item_title_,
       css: content?.title?.css || service_introduction_title_css_,
@@ -72,27 +70,20 @@ function ServiceIntroductionItem(prop: IserviceIntroductionItem) {
       text: content?.desc?.text || item_desc_,
       css: content?.desc?.css || service_introduction_desc_css_,
     },
-  });
+  };
+
+  const [serviceIntroduction, setServiceIntroduction] = useState(initial);
 
   useEffect(() => {
     if (content) {
-      setServiceIntroduction({
-        title: {
-          text: content?.title?.text || item_title_,
-          css: content?.title?.css || service_introduction_title_css_,
-        },
-        desc: {
-          text: content?.desc?.text || item_desc_,
-          css: content?.desc?.css || service_introduction_desc_css_,
-        },
-      });
+      setServiceIntroduction(initial);
     }
   }, [content]);
 
   function handleEdit(
     field: keyof IserviceIntroductionContent,
     updatedText: string,
-    updatedCss: Record<string, string>
+    updatedCss: CSSObject
   ) {
     const updatedState = {
       ...serviceIntroduction,
@@ -119,10 +110,10 @@ function ServiceIntroductionItem(prop: IserviceIntroductionItem) {
       />
       <div css={info_container}>
         <div css={text_container}>
-          <p css={service_introduction_title_css_}>
+          <p css={content?.title?.css || service_introduction_title_css_}>
             {content?.title?.text || item_title_}
           </p>
-          <p css={service_introduction_desc_css_}>
+          <p css={content?.desc?.css || service_introduction_desc_css_}>
             {content?.desc?.text || item_desc_}
           </p>
         </div>

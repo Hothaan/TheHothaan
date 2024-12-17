@@ -1,26 +1,17 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
+import { useEffect, useState } from "react";
 import { OuterWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 import EditableText from "@components/service/editableText/EditableText";
 
-// 수정된 위치 식별자 필요
-// 수정되기 전 텍스트와 수정된 후 텍스트 비교 가능해야함
-// 수정되기 전 css와 수정된 후 css 비교 가능해야함
-// 모달 전체에서 수정 감지해서 수정된 내용 저장
-// 모달에서 저장버튼 클릭시 수정한 내용 db에 업데이트
-
 const title_ = "Lorem ipsum dolorsit amet consectetur";
-const title_className = "explore_service_title";
 
 const button_ = "Lorem ipsum dolor";
-const button_className = "explore_service_button";
 
 const item_title_ = "Explore";
-const item_title_className = "explore_service_title";
 
 const item_button_ = "Explore";
-const item_button_className = "explore_service_button";
 
 export interface IexploreServiceText {
   title?: string;
@@ -29,12 +20,145 @@ export interface IexploreServiceText {
   exploreButton?: string;
 }
 
-interface IexploreService extends IexploreServiceText {
-  isEditable?: boolean;
+export interface IexploreServiceContent {
+  title?: {
+    text?: string;
+    css?: CSSObject;
+  };
+  button?: {
+    text?: string;
+    css?: CSSObject;
+  };
+  exploreTitle?: {
+    text?: string;
+    css?: CSSObject;
+  };
+  exploreButton?: {
+    text?: string;
+    css?: CSSObject;
+  };
 }
 
+interface IexploreService {
+  content?: IexploreServiceContent | null;
+  isEditable?: boolean;
+  onChange?: (content: IexploreServiceContent) => void;
+}
+
+export const explore_service_title_css_: CSSObject = {
+  marginBottom: "30px",
+  color: "#486284",
+  fontFamily: "Inter",
+  fontSize: "50px",
+  fontStyle: "normal",
+  fontWeight: "800",
+  lineHeight: "normal",
+  textTransform: "capitalize",
+  width: "100%",
+  textAlign: "center",
+};
+
+export const explore_service_button_css_: CSSObject = css`
+  display: flex;
+  padding: 12px 20px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+  border-radius: 50px;
+  border: 1px solid var(--Neutral-10, #486284);
+  background: var(--Neutral-10, #486284);
+
+  color: var(--Neutral-0, #fff);
+
+  /* h2_small */
+  font-family: Inter;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 160%; /* 32px */
+`;
+
+export const explore_service_explore_title_css_ = css`
+  color: var(--Neutral-10, #486284);
+
+  /* body/small */
+  font-family: "DM Sans";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px; /* 150% */
+  letter-spacing: 0.5px;
+`;
+
+export const explore_service_explore_button_css_ = css`
+  display: flex;
+  width: 380px;
+  padding: 12px 20px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+  border-radius: 50px;
+  border: 1px solid var(--Neutral-10, #486284);
+  background: #fff;
+
+  color: var(--Neutral-10, #486284);
+
+  /* body/small */
+  font-family: "DM Sans";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px; /* 150% */
+  letter-spacing: 0.5px;
+`;
+
 export default function ExploreServiceMain(prop: IexploreService) {
-  const { isEditable, title, button, exploreTitle, exploreButton } = prop;
+  const { content, isEditable, onChange } = prop;
+
+  const initial = {
+    title: {
+      text: content?.title?.text || title_,
+      css: content?.title?.css || explore_service_title_css_,
+    },
+    button: {
+      text: content?.title?.text || button_,
+      css: content?.title?.css || explore_service_button_css_,
+    },
+    exploreTitle: {
+      text: content?.title?.text || item_title_,
+      css: content?.title?.css || explore_service_explore_title_css_,
+    },
+    exploreButton: {
+      text: content?.title?.text || item_button_,
+      css: content?.title?.css || explore_service_explore_button_css_,
+    },
+  };
+
+  const [edit, setEdit] = useState(initial);
+
+  useEffect(() => {
+    if (content) {
+      setEdit(initial);
+    }
+  }, [content]);
+
+  function handleEdit(
+    field: keyof IexploreServiceContent,
+    updatedText: string,
+    updatedCss: CSSObject
+  ) {
+    const updatedState = {
+      ...edit,
+      [field]: {
+        text: updatedText,
+        css: updatedCss,
+      },
+    };
+    setEdit(updatedState);
+    onChange?.(updatedState);
+  }
 
   const count = 3;
 
@@ -55,30 +179,39 @@ export default function ExploreServiceMain(prop: IexploreService) {
           <div css={text_container}>
             {isEditable ? (
               <EditableText
-                text={title || title_}
+                text={edit?.title?.text || title_}
                 isTextArea={false}
-                defaultCss={pass_h1}
-                className={title_className}
+                defaultCss={edit?.title?.css || explore_service_title_css_}
               />
             ) : (
-              <p css={pass_h1} className={title_className}>
-                {title || title_}
+              <p css={explore_service_title_css_}>
+                {edit?.title?.text || title_}
               </p>
             )}
             <ul css={explore_list}>
               {Array.from({ length: count }, (_, index) => (
                 <li css={explore_item} key={index}>
-                  <p css={explore_title} className={item_title_className}>
-                    {exploreTitle || item_title_}
+                  <p
+                    css={
+                      edit?.exploreTitle?.css ||
+                      explore_service_explore_title_css_
+                    }
+                  >
+                    {edit?.exploreTitle?.text || item_title_}
                   </p>
-                  <p css={explore_button} className={item_button_className}>
-                    {exploreButton || item_button_}
+                  <p
+                    css={
+                      edit?.exploreButton?.css ||
+                      explore_service_explore_button_css_
+                    }
+                  >
+                    {edit?.exploreButton?.text || item_button_}
                   </p>
                 </li>
               ))}
             </ul>
-            <div css={button_style} className={button_className}>
-              {button || button_}
+            <div css={edit?.button?.css || explore_service_button_css_}>
+              {edit?.button?.text || button_}
             </div>
           </div>
         </div>
@@ -118,40 +251,6 @@ const text_container = css`
   justify-content: center;
 `;
 
-const pass_h1: Record<string, string> = {
-  marginBottom: "30px",
-  color: "#486284",
-  fontFamily: "Inter",
-  fontSize: "50px",
-  fontStyle: "normal",
-  fontWeight: "800",
-  lineHeight: "normal",
-  textTransform: "capitalize",
-  width: "100%",
-  textAlign: "center",
-};
-
-const button_style = css`
-  display: flex;
-  padding: 12px 20px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-
-  border-radius: 50px;
-  border: 1px solid var(--Neutral-10, #486284);
-  background: var(--Neutral-10, #486284);
-
-  color: var(--Neutral-0, #fff);
-
-  /* h2_small */
-  font-family: Inter;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 160%; /* 32px */
-`;
-
 const explore_list = css`
   display: flex;
   flex-direction: column;
@@ -166,39 +265,4 @@ const explore_item = css`
   display: flex;
   align-items: center;
   gap: 16px;
-`;
-
-const explore_title = css`
-  color: var(--Neutral-10, #486284);
-
-  /* body/small */
-  font-family: "DM Sans";
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 24px; /* 150% */
-  letter-spacing: 0.5px;
-`;
-
-const explore_button = css`
-  display: flex;
-  width: 380px;
-  padding: 12px 20px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-
-  border-radius: 50px;
-  border: 1px solid var(--Neutral-10, #486284);
-  background: #fff;
-
-  color: var(--Neutral-10, #486284);
-
-  /* body/small */
-  font-family: "DM Sans";
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 24px; /* 150% */
-  letter-spacing: 0.5px;
 `;

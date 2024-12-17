@@ -1,22 +1,19 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
-import { OuterWrap, InnerWrap, ContentsWrap } from "../commonComponent/Wrap";
+import { css, CSSObject } from "@emotion/react";
+import { useState, useEffect } from "react";
+import { OuterWrap, ContentsWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 import BreadCrumble from "../commonComponent/BreadCrumble";
 import TemplateBadge from "../commonComponent/TemplateBadge";
 import TemplateButton from "../commonComponent/TemplateButton";
 import TemplateAccordion from "../commonComponent/TemplateAccordion";
 import Pagination from "../commonComponent/Pagination";
-import { ProductListItemMain } from "../main/ProductListMain";
 import { ReactComponent as Heart } from "@svgs/template/heart.svg";
 import { ReactComponent as Plus } from "@svgs/template/productAmountPlus.svg";
 import { ReactComponent as Minus } from "@svgs/template/productAmountMinus.svg";
 
 const product_title_ = "상품제목입니다";
-const product_title_className = "product_detail_product_title";
-
 const product_desc_ = "상품 설명 내용입니다.";
-const product_desc_className = "product_detail_product_desc";
 
 const more_product_title_ = "lorem ipsum, quia do";
 const more_product_desc_ = "lorem ipsum, quia do";
@@ -26,20 +23,79 @@ export interface IproductDetailText {
   moreProduct?: { title?: string; desc?: string };
 }
 
-interface IproductDetail extends IproductDetailText {}
-
-interface IproductDetailInfo {
-  title?: string;
-  desc?: string;
+export interface IproductDetailContent {
+  productTitle?: {
+    text?: string;
+    css?: CSSObject;
+  };
+  productDesc?: {
+    text?: string;
+    css?: CSSObject;
+  };
+  moreProductTitle?: {
+    text?: string;
+    css?: CSSObject;
+  };
+  moreProductDesc?: {
+    text?: string;
+    css?: CSSObject;
+  };
 }
 
-interface IproductDetailList {
-  title?: string;
-  desc?: string;
+interface IproductDetail {
+  content?: IproductDetailContent | null;
+  isEditable?: boolean;
+  onChange?: (content: IproductDetailContent) => void;
 }
 
-function ProductDetailInfo(prop: IproductDetailInfo) {
-  const { title, desc } = prop;
+export const product_detail_product_title_css_: CSSObject = {
+  color: "#486284",
+  fontFamily: "Inter",
+  fontSize: "32px",
+  fontStyle: "normal",
+  fontWeight: "400",
+  lineHeight: "normal",
+};
+
+export const product_detail_product_desc_css_: CSSObject = {
+  color: "#999",
+  textAlign: "left",
+  fontFamily: "Inter",
+  fontSize: "15px",
+  fontStyle: "normal",
+  fontWeight: "400",
+  lineHeight: "160%",
+};
+
+export const product_detail_more_product__option_main_title_css: Record<
+  string,
+  string
+> = {
+  color: "#486284",
+  textAlign: "center",
+  fontFamily: "Inter",
+  fontSize: "20px",
+  fontStyle: "normal",
+  fontWeight: "400",
+  lineHeight: "normal",
+};
+
+export const product_detail_more_product__option_main_desc_css: Record<
+  string,
+  string
+> = {
+  color: "#a0a0a0",
+  textAlign: "center",
+  fontFamily: "Inter",
+  fontSize: "15px",
+  fontStyle: "normal",
+  fontWeight: "400",
+  lineHeight: "normal",
+};
+
+function ProductDetailInfo(prop: IproductDetail) {
+  const { content, isEditable, onChange } = prop;
+
   const top_container = css`
     width: 100%;
     display: flex;
@@ -68,17 +124,6 @@ function ProductDetailInfo(prop: IproductDetailInfo) {
     flex-direction: column;
     align-items: flex-start;
     gap: 13px;
-  `;
-
-  const product_name = css`
-    color: #486284;
-
-    /* h2_middle */
-    font-family: Inter;
-    font-size: 32px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
   `;
 
   const product_price_container = css`
@@ -110,18 +155,6 @@ function ProductDetailInfo(prop: IproductDetailInfo) {
     font-weight: 500;
     line-height: 160%;
     text-decoration-line: strikethrough;
-  `;
-
-  const product_desc = css`
-    color: #999;
-    text-align: left;
-
-    /* 15 */
-    font-family: Inter;
-    font-size: 15px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 160%; /* 24px */
   `;
 
   const product_amount_container = css`
@@ -233,25 +266,26 @@ function ProductDetailInfo(prop: IproductDetailInfo) {
         </div>
         <div css={prodcut_info_container}>
           <TemplateBadge text="카테고리" />
-          <p css={product_name} className={product_title_className}>
-            {title || product_title_}
+
+          <p css={product_detail_product_title_css_}>
+            {content?.productTitle?.text || product_title_}
           </p>
+
           <div css={product_price_container}>
             <p css={product_price}>32,000원</p>
             <p css={product_price_sale}>32,000원</p>
           </div>
-          <p css={product_desc} className={product_desc_className}>
-            {desc || product_desc_}
+
+          <p css={product_detail_product_desc_css_}>
+            {content?.productDesc?.text || product_desc_}
           </p>
         </div>
         <div css={product_amount_container}>
           <div css={product_amount_controller_container}>
-            <p
-              css={product_amount_name}
-              className={product_title_className + "_cart"}
-            >
-              {title || product_title_}
+            <p css={product_amount_name}>
+              {content?.productTitle?.text || product_title_}
             </p>
+
             <div css={product_amount_controller}>
               <div css={icon_container}>
                 <Minus />
@@ -293,8 +327,8 @@ function ProductDetailAccordion() {
   );
 }
 
-function ProductDetailList(prop: IproductDetailList) {
-  const { title, desc } = prop;
+function ProductDetailList(prop: IproductDetail) {
+  const { content, isEditable, onChange } = prop;
 
   const count = 3;
 
@@ -306,17 +340,84 @@ function ProductDetailList(prop: IproductDetailList) {
     gap: 20px;
   `;
 
+  const slide_item = css`
+    width: 100%;
+    max-width: 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  `;
+
+  const text_container = css`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  `;
+
+  const product_info_container = css`
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  `;
+
+  const product_price_container = (option: string) => css`
+    width: 100%;
+    justify-content: ${option === "main" ? "center" : "start"};
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  `;
+
+  const product_price_sale = (option: string) => css`
+    color: #486284;
+    text-align: ${option === "main" ? "center" : "left"};
+
+    /* mall/price_bold */
+    font-family: Inter;
+    font-size: 17px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+  `;
+
+  const product_price = css`
+    color: var(--A0A0A0, #a0a0a0);
+    text-align: center;
+
+    /* mall/price_small */
+    font-family: Inter;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    text-decoration: line-through;
+  `;
+
   return (
     <div css={container}>
       {Array.from({ length: count }, (_, index) => (
-        <ProductListItemMain
-          option="main"
-          key={index}
-          content={{
-            title: { text: title || more_product_title_ },
-            desc: { text: desc || more_product_desc_ },
-          }}
-        />
+        <div css={slide_item}>
+          <ImageBox
+            container={{ width: "280px", height: "280px" }}
+            icon={{ width: "50px", height: "50px" }}
+            borderRadius="none"
+          />
+          <div css={text_container}>
+            <div css={product_info_container}>
+              <p css={content?.moreProductTitle?.css}>
+                {content?.moreProductTitle?.text || more_product_title_}
+              </p>
+              <p css={content?.moreProductDesc?.css}>
+                {content?.moreProductDesc?.text || more_product_desc_}
+              </p>
+            </div>
+            <div css={product_price_container("main")}>
+              <p css={product_price_sale("main")}>50,000원</p>
+              <p css={product_price}>70,000원</p>
+            </div>
+          </div>
+        </div>
       ))}
     </div>
   );
@@ -336,7 +437,55 @@ function ProductDetailReview() {
 }
 
 export default function ProductDetail(prop: IproductDetail) {
-  const { product, moreProduct } = prop;
+  const { content, isEditable, onChange } = prop;
+
+  const initial = {
+    productTitle: {
+      text: content?.productTitle?.text || product_title_,
+      css: content?.productTitle?.css || product_detail_product_title_css_,
+    },
+    productDesc: {
+      text: content?.productDesc?.text || product_desc_,
+      css: content?.productDesc?.css || product_detail_product_desc_css_,
+    },
+    moreProductTitle: {
+      text: content?.moreProductTitle?.text || more_product_title_,
+      css:
+        content?.moreProductTitle?.css ||
+        product_detail_more_product__option_main_title_css,
+    },
+    moreProductDesc: {
+      text: content?.moreProductDesc?.text || more_product_desc_,
+      css:
+        content?.moreProductDesc?.css ||
+        product_detail_more_product__option_main_desc_css,
+    },
+  };
+
+  const [edit, setEdit] = useState(initial);
+
+  useEffect(() => {
+    if (content) {
+      setEdit(initial);
+    }
+  }, [content]);
+
+  function handleEdit(
+    field: keyof IproductDetailContent,
+    updatedText: string,
+    updatedCss: CSSObject
+  ) {
+    const updatedState = {
+      ...edit,
+      [field]: {
+        text: updatedText,
+        css: updatedCss,
+      },
+    };
+    setEdit(updatedState);
+    onChange?.(updatedState);
+  }
+
   const container = css`
     display: flex;
     flex-direction: column;
@@ -344,18 +493,21 @@ export default function ProductDetail(prop: IproductDetail) {
     align-items: center;
     gap: 50px;
   `;
+
   return (
     <OuterWrap padding="200px 0">
       <ContentsWrap>
         <div css={container}>
           <ProductDetailInfo
-            title={product?.title || product_title_}
-            desc={product?.desc || product_title_}
+            content={edit}
+            isEditable={isEditable}
+            onChange={onChange}
           />
           <ProductDetailAccordion />
           <ProductDetailList
-            title={moreProduct?.title || more_product_title_}
-            desc={moreProduct?.desc || more_product_desc_}
+            content={edit}
+            isEditable={isEditable}
+            onChange={onChange}
           />
           <ProductDetailReview />
           <Pagination />

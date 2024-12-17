@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import React from "react";
 import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";

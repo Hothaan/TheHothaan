@@ -16,8 +16,15 @@ import useNavigation from "@hooks/useNavigation";
 /* text */
 import { IboardText } from "@components/template/board/Board";
 
-interface IcommunitySnsBoard {
+/* content */
+import { IboardContent } from "@components/template/board/Board";
+
+interface IcommunitySnsBoardText {
   board: IboardText;
+}
+
+interface IcommunitySnsBoardContent {
+  board: IboardContent;
 }
 
 export default function CommunitySnsBoard() {
@@ -76,6 +83,24 @@ export default function CommunitySnsBoard() {
       fetchFeatureData(isProduction, projectIdValue);
     }
   }, [projectIdValue]);
+
+  const [changedContent, setChangedContent] = useState(null);
+  const [pageContent, setPageContent] = useState<IcommunitySnsBoardContent>(
+    {} as IcommunitySnsBoardContent
+  );
+
+  function updateSectionContent<T extends keyof IcommunitySnsBoardContent>(
+    section: T,
+    updatedContent: Partial<IcommunitySnsBoardContent[T]>
+  ) {
+    setPageContent((prev) => ({
+      ...prev,
+      [section]: {
+        ...prev?.[section],
+        ...updatedContent,
+      },
+    }));
+  }
 
   // if (!generatedText || !headerData) {
   //   return <Loading />;

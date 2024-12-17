@@ -1,50 +1,126 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
+import { useEffect, useState } from "react";
 import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";
 
 const component_title_ = "공지사항";
 
 const title_ = "공지사항 제목입니다.";
-const title_className = "notice_main_title";
 
-const content_ =
+const desc_ =
   "공지사항 입니다. 공지사항 입니다. 공지사항 입니다. 공지사항 입니다. 공지사항 입니다. 공지사항 입니다. 공지사항 입니다. 공지사항 입니다. 공지사항 입니다. 공지사항 입니다. 공지사항 입니다. ";
-const content_className = "notice_main_content";
 
 const date_ = "2024.11.12";
 
 export interface InoticeMainText {
   title?: string;
-  content?: string;
+  desc?: string;
 }
 
-interface InoticeMain extends InoticeMainText {}
+export interface InoticeMainContent {
+  title?: {
+    text?: string;
+    css?: CSSObject;
+  };
+  desc?: {
+    text?: string;
+    css?: CSSObject;
+  };
+}
 
-interface InoticeMainItem extends InoticeMainText {}
+interface InoticeMain {
+  content?: InoticeMainContent | null;
+  isEditable?: boolean;
+  onChange?: (content: InoticeMainContent) => void;
+}
 
-function NoticeMainItem(prop: InoticeMainItem) {
-  const { title, content } = prop;
+const notice_main_title_css_: CSSObject = css`
+  overflow: hidden;
+  color: #486284;
+  text-overflow: ellipsis;
+
+  /* pretendard/Regular/20px */
+  font-family: Pretendard;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 150%; /* 30px */
+  letter-spacing: -0.4px;
+`;
+
+const notice_main_desc_css_: CSSObject = css`
+  width: 100%;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  color: var(--black-gray-888888, #888);
+  text-overflow: ellipsis;
+
+  /* pretendard/Regular/15px */
+  font-family: Pretendard;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%; /* 22.5px */
+  letter-spacing: -0.15px;
+`;
+
+function NoticeMainItem(prop: InoticeMain) {
+  const { content, isEditable, onChange } = prop;
 
   return (
     <div css={item_container}>
       <div css={title_container}>
         <div css={title_inner_container}>
           <p css={tag}>NEW</p>
-          <p css={item_title_style} className={title_className}>
-            {title || title_}
-          </p>
+          <p css={notice_main_title_css_}>{content?.title?.text || title_}</p>
         </div>
         <p css={date_style}>{date_}</p>
       </div>
-      <p css={content_style} className={content_className}>
-        {content || content_}
-      </p>
+      <p css={notice_main_desc_css_}>{content?.desc?.text || desc_}</p>
     </div>
   );
 }
 
 export default function NoticeMain(prop: InoticeMain) {
-  const { title, content } = prop;
+  const { content, isEditable, onChange } = prop;
+
+  const initial = {
+    title: {
+      text: content?.title?.text || title_,
+      css: content?.title?.css || notice_main_title_css_,
+    },
+    desc: {
+      text: content?.desc?.text || desc_,
+      css: content?.desc?.css || notice_main_desc_css_,
+    },
+  };
+
+  const [edit, setEdit] = useState(initial);
+
+  useEffect(() => {
+    if (content) {
+      setEdit(initial);
+    }
+  }, [content]);
+
+  function handleEdit(
+    field: keyof InoticeMainContent,
+    updatedText: string,
+    updatedCss: CSSObject
+  ) {
+    const updatedState = {
+      ...edit,
+      [field]: {
+        text: updatedText,
+        css: updatedCss,
+      },
+    };
+    setEdit(updatedState);
+    onChange?.(updatedState);
+  }
+
   const count = 3;
 
   return (
@@ -56,8 +132,9 @@ export default function NoticeMain(prop: InoticeMain) {
             {Array.from({ length: count }, (_, index) => (
               <NoticeMainItem
                 key={index}
-                title={title || title_}
-                content={content || content_}
+                content={edit}
+                isEditable={isEditable}
+                onChange={onChange}
               />
             ))}
           </div>
@@ -125,20 +202,6 @@ const tag = css`
   border: 1px solid #486284;
 `;
 
-const item_title_style = css`
-  overflow: hidden;
-  color: #486284;
-  text-overflow: ellipsis;
-
-  /* pretendard/Regular/20px */
-  font-family: Pretendard;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: 150%; /* 30px */
-  letter-spacing: -0.4px;
-`;
-
 const date_style = css`
   color: #7d7d7d;
   font-family: Pretendard;
@@ -147,22 +210,4 @@ const date_style = css`
   font-weight: 400;
   line-height: 150%; /* 24px */
   letter-spacing: -0.32px;
-`;
-
-const content_style = css`
-  width: 100%;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
-  overflow: hidden;
-  color: var(--black-gray-888888, #888);
-  text-overflow: ellipsis;
-
-  /* pretendard/Regular/15px */
-  font-family: Pretendard;
-  font-size: 15px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 150%; /* 22.5px */
-  letter-spacing: -0.15px;
 `;

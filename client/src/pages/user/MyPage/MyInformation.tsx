@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import Button, { Ibutton } from "@components/common/button/Button";
 import MyPageButton from "./MyPageButton";
 import Checkbox, { Icheckbox } from "@components/common/form/Checkbox";

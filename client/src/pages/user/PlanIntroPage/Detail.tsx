@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import ResponsiveContainer from "@components/common/ui/Container/ResponsiveContainer";
 import { ReactComponent as Checked } from "@svgs/planIntro/checked.svg";
 import { ReactComponent as UnChecked } from "@svgs/planIntro/unChecked.svg";

@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import { useState, useEffect } from "react";
 import { MAX_NUM } from "@data/maxNum";
 import ButtonMenuItem from "../button/ButtonMenuItem";

@@ -15,8 +15,15 @@ import useIsProduction from "@hooks/useIsProduction";
 /* text */
 import { IsearchText } from "@components/template/utility/Search";
 
-interface IntermediaryMatchSearch {
+/* content */
+import { IsearchContent } from "@components/template/utility/Search";
+
+interface IntermediaryMatchSearchText {
   Search: IsearchText;
+}
+
+interface IntermediaryMatchSearchContent {
+  Search: IsearchContent;
 }
 
 export default function IntermediaryMatchSearch() {
@@ -74,6 +81,25 @@ export default function IntermediaryMatchSearch() {
       fetchFeatureData(isProduction, projectIdValue);
     }
   }, [projectIdValue]);
+
+  const [changedContent, setChangedContent] = useState(null);
+  const [pageContent, setPageContent] =
+    useState<IntermediaryMatchSearchContent>(
+      {} as IntermediaryMatchSearchContent
+    );
+
+  function updateSectionContent<T extends keyof IntermediaryMatchSearchContent>(
+    section: T,
+    updatedContent: Partial<IntermediaryMatchSearchContent[T]>
+  ) {
+    setPageContent((prev) => ({
+      ...prev,
+      [section]: {
+        ...prev?.[section],
+        ...updatedContent,
+      },
+    }));
+  }
 
   // if (!generatedText || !headerData) {
   //   return <Loading />;

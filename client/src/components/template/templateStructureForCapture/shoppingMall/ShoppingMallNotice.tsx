@@ -16,7 +16,13 @@ import useIsProduction from "@hooks/useIsProduction";
 /* text */
 import { InoticeText } from "@components/template/customerService/Notice";
 
-interface IshoppingMallNotice {
+/* content */
+
+interface IshoppingMallNoticeText {
+  notice: InoticeText;
+}
+
+interface IshoppingMallNoticeContent {
   notice: InoticeText;
 }
 
@@ -75,6 +81,11 @@ export default function ShoppingMallNotice() {
       fetchFeatureData(isProduction, projectIdValue);
     }
   }, [projectIdValue]);
+
+  const [changedContent, setChangedContent] = useState(null);
+  const [pageContent, setPageContent] = useState<IshoppingMallNoticeContent>(
+    {} as IshoppingMallNoticeContent
+  );
 
   if (!generatedText || !headerData) {
     return <Loading />;

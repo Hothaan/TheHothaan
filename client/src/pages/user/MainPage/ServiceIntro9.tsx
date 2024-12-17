@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import MainPageSectionContainer from "./MainPageSectionContainer";
 import Button, { Ibutton } from "@components/common/button/Button";
 

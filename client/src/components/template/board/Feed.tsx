@@ -1,21 +1,42 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
+import { useEffect, useState } from "react";
 import Title from "../commonComponent/Title";
 import ImageBox from "../commonComponent/ImageBox";
 import { OuterWrap } from "../commonComponent/Wrap";
 
 const item_title_ = "lorem ipsum, quia do";
-const item_title_className = "feed_item_title";
 
 export interface IfeedText {
   title?: string;
 }
-export interface Ifeed extends IfeedText {}
 
-interface IfeedItem extends IfeedText {}
+export interface IfeedContent {
+  title?: {
+    text?: string;
+    css?: CSSObject;
+  };
+}
 
-function FeedItem(prop: IfeedItem) {
-  const { title } = prop;
+interface Ifeed {
+  content?: IfeedContent | null;
+  isEditable?: boolean;
+  onChange?: (content: IfeedContent) => void;
+}
+
+export const feed_item_title_css_ = css`
+  color: #486284;
+
+  /* mall/subject */
+  font-family: Inter;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+`;
+
+function FeedItem(prop: Ifeed) {
+  const { content, isEditable, onChange } = prop;
 
   const count = 36;
 
@@ -33,8 +54,8 @@ function FeedItem(prop: IfeedItem) {
               icon: "width: 40px; height: 40px;",
             }}
           />
-          <p css={item_title} className={item_title_className}>
-            {title || item_title_}
+          <p css={content?.title?.css || feed_item_title_css_}>
+            {content?.title?.text || item_title_}
           </p>
         </div>
       ))}
@@ -43,7 +64,38 @@ function FeedItem(prop: IfeedItem) {
 }
 
 export default function Feed(prop: Ifeed) {
-  const { title } = prop;
+  const { content, isEditable, onChange } = prop;
+
+  const initial = {
+    title: {
+      text: content?.title?.text || item_title_,
+      css: content?.title?.css || feed_item_title_css_,
+    },
+  };
+
+  const [edit, setEdit] = useState(initial);
+
+  useEffect(() => {
+    if (content) {
+      setEdit(initial);
+    }
+  }, [content]);
+
+  function handleEdit(
+    field: keyof IfeedContent,
+    updatedText: string,
+    updatedCss: CSSObject
+  ) {
+    const updatedState = {
+      ...edit,
+      [field]: {
+        text: updatedText,
+        css: updatedCss,
+      },
+    };
+    setEdit(updatedState);
+    onChange?.(updatedState);
+  }
 
   return (
     <OuterWrap padding="60px 0">
@@ -53,7 +105,7 @@ export default function Feed(prop: Ifeed) {
         marginBottom={30}
         transform="capitalize"
       />
-      <FeedItem title={title || item_title_} />
+      <FeedItem content={edit} isEditable={isEditable} onChange={onChange} />
     </OuterWrap>
   );
 }
@@ -77,15 +129,4 @@ const image_wrap = css`
     padding: 0 50px;
     grid-template-columns: repeat(3, 1fr);
   }
-`;
-
-const item_title = css`
-  color: #486284;
-
-  /* mall/subject */
-  font-family: Inter;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
 `;

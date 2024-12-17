@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import { ReactComponent as Image } from "@svgs/template/imageTemplate.svg";
 import { ReactComponent as GotoBottom } from "@svgs/template/footerGotoBottom.svg";
 

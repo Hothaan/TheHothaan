@@ -1,7 +1,9 @@
+import { CSSObject } from "@emotion/react";
+
 export type TtemplateType = string;
 
 export interface ItemplateCss {
-  [key: string]: Record<string, string>;
+  [key: string]: CSSObject;
 }
 
 export interface ItemplateType {

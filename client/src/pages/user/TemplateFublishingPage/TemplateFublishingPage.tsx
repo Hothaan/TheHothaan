@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import IntermediaryMatchMain from "@components/template/templateStructureForCapture/intermediaryMatch/IntermediaryMatchMain";
 import IntermediaryMatchPrice from "@components/template/templateStructureForCapture/intermediaryMatch/IntermediaryMatchPrice";
 import IntermediaryMatchServiceIntroduce from "@components/template/templateStructureForCapture/intermediaryMatch/IntermediaryMatchServiceIntroduce";

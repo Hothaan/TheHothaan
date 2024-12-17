@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
+import { useState, useEffect } from "react";
 import { OuterWrap, ContentsWrap } from "../commonComponent/Wrap";
 import Title from "../commonComponent/Title";
 import { ReactComponent as Arrow } from "@svgs/template/processArrow.svg";
@@ -18,7 +19,29 @@ export interface IcartText {
   title?: string;
 }
 
-interface Icart extends IcartText {}
+export interface IcartContent {
+  title?: {
+    text?: string;
+    css?: CSSObject;
+  };
+}
+
+interface Icart {
+  content?: IcartContent | null;
+  isEditable?: boolean;
+  onChange?: (content: IcartContent) => void;
+}
+
+export const cart_title_css = {
+  color: "#486284",
+  leadingTrim: "both",
+  textEdge: "cap",
+  fontFamily: "Inter",
+  fontSize: "13px",
+  fontStyle: "normal",
+  fontWeight: "500",
+  lineHeight: "160%",
+};
 
 function CartTitle() {
   const container = css`
@@ -66,8 +89,8 @@ function CartTitle() {
   );
 }
 
-function CartOrder(prop: IcartText) {
-  const { title } = prop;
+function CartOrder(prop: Icart) {
+  const { content, isEditable, onChange } = prop;
 
   const container = css`
     display: flex;
@@ -370,8 +393,8 @@ function CartOrder(prop: IcartText) {
                   borderRadius="0"
                 />
                 <div css={product_info_container}>
-                  <p css={text_style} className={title_className}>
-                    {title || title_}
+                  <p css={content?.title?.css} className={title_className}>
+                    {content?.title?.text || title_}
                   </p>
                   <p css={text_style}>￦5,600,000</p>
                 </div>
@@ -607,7 +630,38 @@ function CartInfo() {
 }
 
 export default function Cart(prop: Icart) {
-  const { title } = prop;
+  const { content, isEditable, onChange } = prop;
+
+  const initial = {
+    title: {
+      text: content?.title?.text || title_,
+      css: content?.title?.css || cart_title_css,
+    },
+  };
+
+  const [edit, setEdit] = useState(initial);
+
+  useEffect(() => {
+    if (content) {
+      setEdit(initial);
+    }
+  }, [content]);
+
+  function handleEdit(
+    field: keyof IcartContent,
+    updatedText: string,
+    updatedCss: CSSObject
+  ) {
+    const updatedState = {
+      ...edit,
+      [field]: {
+        text: updatedText,
+        css: updatedCss,
+      },
+    };
+    setEdit(updatedState);
+    onChange?.(updatedState);
+  }
 
   const container = css`
     width: 100%;
@@ -618,7 +672,11 @@ export default function Cart(prop: Icart) {
       <ContentsWrap>
         <div css={container}>
           <CartTitle />
-          <CartOrder title={title || title_} />
+          <CartOrder
+            content={edit}
+            isEditable={isEditable}
+            onChange={onChange}
+          />
           <CartInfo />
         </div>
       </ContentsWrap>

@@ -15,8 +15,15 @@ import useIsProduction from "@hooks/useIsProduction";
 /* text */
 import { IintermediaryMatchServiceIntroductionText } from "@components/template/service/IntermediaryMatchServiceIntroduction";
 
-interface IntermediaryMatchServiceIntroduce {
+/* content */
+import { IintermediaryMatchServiceIntroductionContent } from "@components/template/service/IntermediaryMatchServiceIntroduction";
+
+interface IntermediaryMatchServiceIntroduceText {
   IntermediaryMatchServiceIntroduction: IintermediaryMatchServiceIntroductionText;
+}
+
+interface IntermediaryMatchServiceIntroduceContent {
+  IntermediaryMatchServiceIntroduction: IintermediaryMatchServiceIntroductionContent;
 }
 
 export default function IntermediaryMatchServiceIntroduce() {
@@ -74,6 +81,27 @@ export default function IntermediaryMatchServiceIntroduce() {
       fetchFeatureData(isProduction, projectIdValue);
     }
   }, [projectIdValue]);
+
+  const [changedContent, setChangedContent] = useState(null);
+  const [pageContent, setPageContent] =
+    useState<IntermediaryMatchServiceIntroduceContent>(
+      {} as IntermediaryMatchServiceIntroduceContent
+    );
+
+  function updateSectionContent<
+    T extends keyof IntermediaryMatchServiceIntroduceContent
+  >(
+    section: T,
+    updatedContent: Partial<IntermediaryMatchServiceIntroduceContent[T]>
+  ) {
+    setPageContent((prev) => ({
+      ...prev,
+      [section]: {
+        ...prev?.[section],
+        ...updatedContent,
+      },
+    }));
+  }
 
   // if (!generatedText || !headerData) {
   //   return <Loading />;

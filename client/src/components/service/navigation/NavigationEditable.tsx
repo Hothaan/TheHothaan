@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import { useState, Dispatch, useEffect } from "react";
 import { ReactComponent as Edit } from "@svgs/service/edit.svg";
 import { ReactComponent as Preview } from "@svgs/service/previewGray.svg";

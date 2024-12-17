@@ -1,32 +1,85 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
+import { useState, useEffect } from "react";
 import Title from "../commonComponent/Title";
 import { OuterWrap, InnerWrap, ContentsWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
-import NavItem from "../commonComponent/NavItem";
+import { ReactComponent as ChevDown } from "@svgs/template/chevDownTemplate.svg";
 import { ReactComponent as Heart } from "@svgs/template/heart.svg";
 import { ReactComponent as Bag } from "@svgs/template/bag.svg";
 
+const categories_ = [
+  "category",
+  "category",
+  "category",
+  "category",
+  "category",
+  "category",
+];
+
 const product_title_ = "lorem ipsum, quia do";
-const product_title_className = "product_list_item_title";
 
 const product_desc_ = "lorem ipsum, quia do";
-const product_desc_className = "product_list_item_desc";
-
-interface IproductListItem {
-  title?: string;
-  desc?: string;
-}
 
 export interface IproductListText {
   categories?: string[];
-  product?: IproductListItem;
+  productTitle?: string;
+  productDesc?: string;
 }
 
-interface IproductList extends IproductListText {}
+export interface IproductListContent {
+  categories?: {
+    text?: string[];
+    css?: CSSObject;
+  };
+  productTitle?: {
+    text?: string;
+    css?: CSSObject;
+  };
+  productDesc?: {
+    text?: string;
+    css?: CSSObject;
+  };
+}
 
-function ProductListItem(prop: IproductListItem) {
-  const { title, desc } = prop;
+interface IproductList {
+  content?: IproductListContent | null;
+  isEditable?: boolean;
+  onChange?: (content: IproductListContent) => void;
+}
+
+export const product_list_title_css_: CSSObject = {
+  color: "#486284",
+  textAlign: "left",
+  fontFamily: "Inter",
+  fontSize: "20px",
+  fontStyle: "normal",
+  fontWeight: "400",
+  lineHeight: "normal",
+};
+
+export const product_list_desc_css_: CSSObject = {
+  color: "#a0a0a0",
+  textAlign: "left",
+  fontFamily: "Inter",
+  fontSize: "15px",
+  fontStyle: "normal",
+  fontWeight: "400",
+  lineHeight: "normal",
+};
+
+export const product_list_nav_item_css_: CSSObject = {
+  color: "#486284",
+  fontFamily: "Inter",
+  fontSize: "16px",
+  fontStyle: "normal",
+  fontWeight: "500",
+  lineHeight: "normal",
+  textTransform: "capitalize",
+};
+
+function ProductListItem(prop: IproductList) {
+  const { content, isEditable, onChange } = prop;
 
   const slide_item = css`
     width: 100%;
@@ -52,30 +105,6 @@ function ProductListItem(prop: IproductListItem) {
   const info_container = css`
     display: flex;
     gap: 14px;
-  `;
-
-  const product_name = css`
-    color: #486284;
-    text-align: left;
-
-    /* mall/subject */
-    font-family: Inter;
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-  `;
-
-  const product_desc = css`
-    color: var(--A0A0A0, #a0a0a0);
-    text-align: left;
-
-    /* mall/subject_small */
-    font-family: Inter;
-    font-size: 15px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
   `;
 
   const product_price_container = css`
@@ -128,11 +157,11 @@ function ProductListItem(prop: IproductListItem) {
       <div css={info_container}>
         <div css={text_container}>
           <div css={product_info_container}>
-            <p css={product_name} className={product_title_className}>
-              {title || product_title_}
+            <p css={content?.productTitle?.css || product_list_title_css_}>
+              {content?.productTitle?.text || product_title_}
             </p>
-            <p css={product_desc} className={product_desc_className}>
-              {desc || product_desc_}
+            <p css={content?.productDesc?.css || product_list_desc_css_}>
+              {content?.productDesc?.text || product_desc_}
             </p>
           </div>
           <div css={product_price_container}>
@@ -151,7 +180,46 @@ function ProductListItem(prop: IproductListItem) {
 }
 
 export default function ProductList(prop: IproductList) {
-  const { categories, product } = prop;
+  const { content, isEditable, onChange } = prop;
+
+  const initial = {
+    categories: {
+      text: content?.categories?.text || categories_,
+      css: content?.categories?.css || product_list_nav_item_css_,
+    },
+    productTitle: {
+      text: content?.productTitle?.text || product_title_,
+      css: content?.productTitle?.css || product_list_title_css_,
+    },
+    productDesc: {
+      text: content?.productDesc?.text || product_desc_,
+      css: content?.productDesc?.css || product_list_desc_css_,
+    },
+  };
+
+  const [edit, setEdit] = useState(initial);
+
+  useEffect(() => {
+    if (content) {
+      setEdit(initial);
+    }
+  }, [content]);
+
+  function handleEdit(
+    field: keyof IproductListContent,
+    updatedText: string,
+    updatedCss: CSSObject
+  ) {
+    const updatedState = {
+      ...edit,
+      [field]: {
+        text: updatedText,
+        css: updatedCss,
+      },
+    };
+    setEdit(updatedState);
+    onChange?.(updatedState);
+  }
 
   const count = 3;
 
@@ -188,20 +256,31 @@ export default function ProductList(prop: IproductList) {
           <div css={title_wrap}>
             <Title title="category" transform="uppercase" marginBottom={57} />
             <ul css={category_wrap}>
-              {categories ? (
-                categories.map((category, idx) => (
-                  <NavItem key={idx} isOption={false} category={category} />
-                ))
-              ) : (
-                <>
-                  <NavItem isOption={true} />
-                  <NavItem isOption={true} />
-                  <NavItem isOption={false} />
-                  <NavItem isOption={false} />
-                  <NavItem isOption={false} />
-                  <NavItem isOption={false} />
-                </>
-              )}
+              {edit?.categories?.text
+                ? edit?.categories?.text.map((category, idx) => (
+                    <li css={nav_item} key={idx}>
+                      <p
+                        css={
+                          edit?.categories?.css || product_list_nav_item_css_
+                        }
+                      >
+                        {category || "category"}
+                      </p>
+                      <ChevDown />
+                    </li>
+                  ))
+                : categories_.map((category, idx) => (
+                    <li css={nav_item} key={idx}>
+                      <p
+                        css={
+                          edit?.categories?.css || product_list_nav_item_css_
+                        }
+                      >
+                        {category || "category"}
+                      </p>
+                      <ChevDown />
+                    </li>
+                  ))}
             </ul>
           </div>
           <div css={item_rows_container}>
@@ -210,8 +289,9 @@ export default function ProductList(prop: IproductList) {
                 {Array.from({ length: count }, (_, index2) => (
                   <ProductListItem
                     key={index2}
-                    title={product?.title || product_title_}
-                    desc={product?.desc || product_desc_}
+                    content={edit}
+                    isEditable={isEditable}
+                    onChange={onChange}
                   />
                 ))}
               </div>
@@ -222,3 +302,8 @@ export default function ProductList(prop: IproductList) {
     </OuterWrap>
   );
 }
+
+const nav_item = css`
+  display: flex;
+  align-items: center;
+`;

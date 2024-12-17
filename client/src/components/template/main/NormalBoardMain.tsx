@@ -1,14 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
+import { useEffect, useState } from "react";
 import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";
-
-export interface InormalBoardText {
-  title?: string;
-}
-
-interface InormalBoardMain extends InormalBoardText {}
-
-export interface INormalBoardMainItem extends InormalBoardText {}
 
 const component_title_ = "게시판";
 
@@ -18,13 +11,49 @@ const title_className = "normal_board_main_title";
 
 const date_ = "2025.09.31";
 
-export function NormalBoardMainItem(prop: INormalBoardMainItem) {
-  const { title } = prop;
+export interface InormalBoardText {
+  title?: string;
+}
+
+export interface InormalBoardContent {
+  title?: {
+    text?: string;
+    css?: CSSObject;
+  };
+}
+
+interface InormalBoardMain {
+  content?: InormalBoardContent | null;
+  isEditable?: boolean;
+  onChange?: (content: InormalBoardContent) => void;
+}
+
+export const nomal_board_main_title_css_ = css`
+  width: 50%;
+  color: var(--Greys-Blue-Grey-800, #444a6d);
+  font-family: "Noto Sans KR";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px; /* 142.857% */
+
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+`;
+
+export function NormalBoardMainItem(prop: InormalBoardMain) {
+  const { content, isEditable, onChange } = prop;
 
   return (
     <div css={item_container}>
-      <p css={item_title_style} className={title_className}>
-        {title || title_}
+      <p
+        css={content?.title?.css || nomal_board_main_title_css_}
+        className={title_className}
+      >
+        {content?.title?.text || title_}
       </p>
       <div css={inner_container}>
         <p css={date_style}>{date_}</p>
@@ -37,7 +66,38 @@ export function NormalBoardMainItem(prop: INormalBoardMainItem) {
 }
 
 export default function NormalBoardMain(prop: InormalBoardMain) {
-  const { title } = prop;
+  const { content, isEditable, onChange } = prop;
+
+  const initial = {
+    title: {
+      text: content?.title?.text || title_,
+      css: content?.title?.css || nomal_board_main_title_css_,
+    },
+  };
+
+  const [edit, setEdit] = useState(initial);
+
+  useEffect(() => {
+    if (content) {
+      setEdit(initial);
+    }
+  }, [content]);
+
+  function handleEdit(
+    field: keyof InormalBoardContent,
+    updatedText: string,
+    updatedCss: CSSObject
+  ) {
+    const updatedState = {
+      ...edit,
+      [field]: {
+        text: updatedText,
+        css: updatedCss,
+      },
+    };
+    setEdit(updatedState);
+    onChange?.(updatedState);
+  }
 
   const count = 3;
 
@@ -48,7 +108,12 @@ export default function NormalBoardMain(prop: InormalBoardMain) {
           <p css={title_style}>{component_title_}</p>
           <div css={item_wrap}>
             {Array.from({ length: count }, (_, index) => (
-              <NormalBoardMainItem title={title || title_} key={index} />
+              <NormalBoardMainItem
+                content={edit}
+                isEditable={isEditable}
+                onChange={onChange}
+                key={index}
+              />
             ))}
           </div>
         </div>
@@ -89,22 +154,6 @@ const item_container = css`
   align-items: center;
 
   border-bottom: 1px solid #e9e9e9;
-`;
-
-const item_title_style = css`
-  width: 50%;
-  color: var(--Greys-Blue-Grey-800, #444a6d);
-  font-family: "Noto Sans KR";
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 20px; /* 142.857% */
-
-  text-overflow: ellipsis;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
 `;
 
 const inner_container = css`

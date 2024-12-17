@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import TitleNstepSection from "@components/service/titleNstepSection/TitleNstepSection";
 import { Outlet } from "react-router-dom";
 import useLocationControl from "@hooks/useLocationControl";

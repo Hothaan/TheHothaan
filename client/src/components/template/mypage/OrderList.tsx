@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import { OuterWrap, ContentsWrap } from "../commonComponent/Wrap";
 import Pagination from "../commonComponent/Pagination";
 import { ReactComponent as Arrow } from "@svgs/template/selectBoxArrow.svg";

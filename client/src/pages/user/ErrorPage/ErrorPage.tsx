@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import Attention from "@components/common/ui/Attention/Attention";
 
 const bubble_ = "잠시 오류가 난 것 같아요!";

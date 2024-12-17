@@ -27,7 +27,15 @@ import { InewsMainText } from "@components/template/main/NewsMain";
 import { IfaqMainText } from "@components/template/main/FaqMain";
 import { IserviceContactText } from "@components/template/service/ServiceContact";
 
-interface IcommunitySnsMain {
+/* content */
+import { ImainBannerContent } from "@components/template/main/Mainbanner";
+import { InoticeMainContent } from "@components/template/main/NoticeMain";
+import { InormalBoardContent } from "@components/template/main/NormalBoardMain";
+import { InewsMainContent } from "@components/template/main/NewsMain";
+import { IfaqMainContent } from "@components/template/main/FaqMain";
+import { IserviceContactContent } from "@components/template/service/ServiceContact";
+
+interface IcommunitySnsMainText {
   mainBanner: ImainBannerText;
   notice: InoticeMainText;
   board: InormalBoardText;
@@ -35,6 +43,16 @@ interface IcommunitySnsMain {
   feed: null;
   faq: IfaqMainText;
   serviceContact: IserviceContactText;
+}
+
+interface IcommunitySnsMainContent {
+  mainBanner: ImainBannerContent;
+  notice: InoticeMainContent;
+  board: InormalBoardContent;
+  news: InewsMainContent;
+  feed: null;
+  faq: IfaqMainContent;
+  serviceContact: IserviceContactContent;
 }
 
 export default function CommunitySnsMain() {
@@ -92,6 +110,24 @@ export default function CommunitySnsMain() {
       fetchFeatureData(isProduction, projectIdValue);
     }
   }, [projectIdValue]);
+
+  const [changedContent, setChangedContent] = useState(null);
+  const [pageContent, setPageContent] = useState<IcommunitySnsMainContent>(
+    {} as IcommunitySnsMainContent
+  );
+
+  function updateSectionContent<T extends keyof IcommunitySnsMainContent>(
+    section: T,
+    updatedContent: Partial<IcommunitySnsMainContent[T]>
+  ) {
+    setPageContent((prev) => ({
+      ...prev,
+      [section]: {
+        ...prev?.[section],
+        ...updatedContent,
+      },
+    }));
+  }
 
   // if (!generatedText || !headerData) {
   //   return <Loading />;

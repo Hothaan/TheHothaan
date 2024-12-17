@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import useLocationControl from "@hooks/useLocationControl";
 import { Routes, Route } from "react-router-dom";
 import Header from "@components/common/ui/Header/Header";

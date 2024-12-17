@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { ReactElement } from "react";
-import { css } from "@emotion/react";
+import { css, CSSObject } from "@emotion/react";
 import { TbtnSize } from "@components/common/button/Button";
 
 export interface IbuttonIcon {
