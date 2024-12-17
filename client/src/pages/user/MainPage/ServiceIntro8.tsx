@@ -42,38 +42,52 @@ export function ServiceIntro8Card(prop: IserviceIntro8Card) {
   const [periodState, setPeriodState] = useState(period);
 
   const card_wrap = css`
-    display: flex;
-    flex-direction: column;
+    position: relative;
+
+    border-radius: 16px;
+    border: 3px solid transparent;
+
+    &:before {
+      content: "";
+      position: absolute;
+      inset: -3px;
+      border-radius: 16px;
+      padding: 3px;
+      -webkit-mask: linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: destination-out;
+      mask-composite: exclude;
+      pointer-events: none;
+      background: #dedede;
+    }
+
+    &:hover {
+      &:before {
+        background: linear-gradient(to right, #3b82f6, #a855f7);
+      }
+    }
   `;
 
   const card_top = css`
+    border-radius: 16px 16px 0 0;
     position: relative;
     display: flex;
     padding: 50px;
     flex-direction: column;
     align-items: flex-end;
     gap: 20px;
-
-    border-radius: 16px 16px 0 0;
-    border-top: 3px solid var(--DEDEDE, #dedede);
-    border-left: 3px solid var(--DEDEDE, #dedede);
-    border-right: 3px solid var(--DEDEDE, #dedede);
-    border-bottom: 1px solid var(--DEDEDE, #dedede);
     background: var(--FFF, #fff);
   `;
 
   const card_bottom = css`
+    border-radius: 0 0 16px 16px;
     display: flex;
     padding: 50px;
     flex-direction: column;
     gap: 20px;
     align-self: stretch;
-
-    border-radius: 0px 0px 16px 16px;
     background: #f6f6f6;
-    border-left: 3px solid var(--DEDEDE, #dedede);
-    border-right: 3px solid var(--DEDEDE, #dedede);
-    border-bottom: 3px solid var(--DEDEDE, #dedede);
   `;
 
   const plan_style = css`
