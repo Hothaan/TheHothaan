@@ -7,6 +7,7 @@ import { ReactComponent as MyEstimate } from "@svgs/myPage/myEstimate.svg";
 import { ReactComponent as ManagePlan } from "@svgs/myPage/managePlan.svg";
 import { ReactComponent as PersonalInquiry } from "@svgs/myPage/personalInquiry.svg";
 import { ReactComponent as LogOut } from "@svgs/myPage/logOut.svg";
+import { Link } from "react-router-dom";
 
 export type TmypageNavigationMenu =
   | "내 정보"
@@ -18,6 +19,7 @@ export type TmypageNavigationMenu =
 
 export interface ImyPageNavigationMenuButton {
   icon: ReactElement;
+  link: string;
   menu: TmypageNavigationMenu;
   isSelected: boolean;
   onClick: () => void;
@@ -82,6 +84,7 @@ export default function MyPageNavigation() {
   const menuDatas: ImyPageNavigationMenuButton[] = [
     {
       icon: <MyInformation />,
+      link: "/myPage/myInfo",
       menu: "내 정보",
       isSelected: selectedMenu === "내 정보",
       onClick: () => {
@@ -90,6 +93,7 @@ export default function MyPageNavigation() {
     },
     {
       icon: <MyProject />,
+      link: "/myPage/myProject",
       menu: "내 작업",
       isSelected: selectedMenu === "내 작업",
       onClick: () => {
@@ -98,6 +102,7 @@ export default function MyPageNavigation() {
     },
     {
       icon: <MyEstimate />,
+      link: "/myPage/estimate",
       menu: "받은 견적",
       isSelected: selectedMenu === "받은 견적",
       onClick: () => {
@@ -106,6 +111,7 @@ export default function MyPageNavigation() {
     },
     {
       icon: <ManagePlan />,
+      link: "/myPage/manageSubscription",
       menu: "구독 관리",
       isSelected: selectedMenu === "구독 관리",
       onClick: () => {
@@ -114,6 +120,7 @@ export default function MyPageNavigation() {
     },
     {
       icon: <PersonalInquiry />,
+      link: "/myPage/personalInquiry",
       menu: "1:1 문의",
       isSelected: selectedMenu === "1:1 문의",
       onClick: () => {
@@ -122,6 +129,7 @@ export default function MyPageNavigation() {
     },
     {
       icon: <LogOut />,
+      link: "/myPage/logout",
       menu: "로그아웃",
       isSelected: selectedMenu === "로그아웃",
       onClick: () => {
@@ -139,7 +147,9 @@ export default function MyPageNavigation() {
       <p css={title}>마이페이지</p>
       <ul css={menu_container}>
         {menuDatas.map((item, idx) => (
-          <MyPageNavigationMenuButton {...item} key={idx} />
+          <Link to={item.link} key={idx}>
+            <MyPageNavigationMenuButton {...item} />
+          </Link>
         ))}
       </ul>
     </aside>
@@ -174,4 +184,8 @@ const menu_container = css`
   flex-direction: column;
   align-items: flex-start;
   align-self: stretch;
+
+  a {
+    width: 100%;
+  }
 `;

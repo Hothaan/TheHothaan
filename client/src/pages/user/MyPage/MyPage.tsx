@@ -1,15 +1,10 @@
 /** @jsxImportSource @emotion/react */
-import { css, CSSObject } from "@emotion/react";
+import { css } from "@emotion/react";
 import MyPageNavigation from "./MyPageNavigation";
 import MyInformation from "./MyInformation";
 
 export default function MyPage() {
-  return (
-    <div css={container}>
-      <MyPageNavigation />
-      <MyInformation />
-    </div>
-  );
+  return <MyInformation />;
 }
 
 const container = css`

@@ -18,6 +18,13 @@ import ServiceStep4Page from "@pages/user/ServicePage/ServiceStep4Page";
 import ServiceStep5Page from "@pages/user/ServicePage/ServiceStep5Page";
 import ServicePreviewPage from "@pages/user/ServicePage/ServicePreviewPage";
 
+import MypageLayout from "./MypageLayout";
+import MyInformation from "@pages/user/MyPage/MyInformation";
+import MyProject from "@pages/user/MyPage/MyProject";
+import MyProjectEdit from "@pages/user/MyPage/MyProjectEdit";
+import Estimate from "@pages/user/MyPage/Estimate";
+import EstimateDetail from "@pages/user/MyPage/EstimateDetail";
+
 import MyPage from "@pages/user/MyPage/MyPage";
 import LoginPage from "@pages/user/LoginPage/LoginPage";
 import JoinPage from "@pages/user/JoinPage/JoinPage";
@@ -69,7 +76,17 @@ export default function UserLayout() {
           {/* ---- user -------------- */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/join" element={<JoinPage />} />
-          <Route path="/myPage" element={<MyPage />} />
+          {/* my page -------- */}
+          <Route path="/myPage" element={<MypageLayout />}>
+            <Route path="myInfo" element={<MyInformation />} />
+            <Route path="myProject" element={<MyProject />} />
+            <Route path="myProjectEdit" element={<MyProjectEdit />} />
+            <Route path="estimate" element={<Estimate />} />
+            <Route path="estimateDetail" element={<EstimateDetail />} />
+            <Route path="manageSubscription" element={<MyPage />} />
+            <Route path="personalInquiry" element={<MyPage />} />
+            <Route path="logout" element={<MyPage />} />
+          </Route>
           {/* ---- test -------------- */}
           {/* <Route path="/test" element={<TestPage />} /> */}
           <Route path="/fublising" element={<TemplateFublishingPage />} />
