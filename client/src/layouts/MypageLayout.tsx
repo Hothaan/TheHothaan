@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import MyPageNavigation from "@pages/user/MyPage/MyPageNavigation";
+import MyPageNavigation from "@components/common/mypage/MyPageNavigation";
 import { Outlet } from "react-router-dom";
 
 export default function MypageLayout() {

@@ -3,6 +3,7 @@ import { css, CSSObject } from "@emotion/react";
 
 export interface ItextField {
   size: "small" | "normal";
+  type?: string;
   label: string;
   id: string;
   placeholder?: string;
@@ -13,8 +14,17 @@ export interface ItextField {
 }
 
 export default function TextField(prop: ItextField) {
-  const { size, label, id, placeholder, disabled, value, onChange, className } =
-    prop;
+  const {
+    size,
+    label,
+    id,
+    type,
+    placeholder,
+    disabled,
+    value,
+    onChange,
+    className,
+  } = prop;
   return (
     <div css={text_field}>
       <label htmlFor={id} css={none}>
@@ -22,7 +32,7 @@ export default function TextField(prop: ItextField) {
       </label>
       <input
         css={input(size)}
-        type="text"
+        type={type !== undefined ? type : "text"}
         name={id}
         id={id}
         placeholder={placeholder || ""}

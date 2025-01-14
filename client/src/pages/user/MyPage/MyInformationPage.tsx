@@ -2,10 +2,10 @@
 import { css, CSSObject } from "@emotion/react";
 import MyPageContainer from "@components/common/ui/Container/MyPageContainer";
 import Button, { Ibutton } from "@components/common/button/Button";
-import MyPageButton from "./MyPageButton";
+import MyPageButton from "../../../components/common/mypage/MyPageButton";
 import Checkbox, { Icheckbox } from "@components/common/form/Checkbox";
 
-export default function MyInformation() {
+export default function MyInformationPage() {
   const saveButton: Ibutton = {
     size: "L",
     bg: "gray",

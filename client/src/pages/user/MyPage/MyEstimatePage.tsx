@@ -4,26 +4,38 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@components/common/table/Pagination";
 import MyPageContainer from "@components/common/ui/Container/MyPageContainer";
+import Tabs from "@components/common/mypage/Tabs";
+import { TtabsData } from "@components/common/mypage/Tabs";
 
-type Ttabs = "견적요청" | "서비스 견적";
 type Ttags = "전체" | "견적요청" | "견적완료";
 
-export default function Estimate() {
-  const [selectedTab, setSelectedTab] = useState<Ttabs>("견적요청");
+export default function MyEstimatePage() {
+  const [selectedTab, setSelectedTab] = useState<string>("견적요청");
   const [selectedTag, setSelectedTag] = useState<Ttags>("전체");
   const [currentPage, setCurrentPage] = useState(1);
-  const tabsData: Ttabs[] = ["견적요청", "서비스 견적"];
+
+  const tabsData: TtabsData[] = [
+    { isSelected: selectedTab === "견적요청", text: "견적요청" },
+    { isSelected: selectedTab === "서비스 견적", text: "서비스 견적" },
+  ];
+
   const tagsData: Ttags[] = ["전체", "견적요청", "견적완료"];
 
-  function handleChangeSelectedTab(tab: Ttabs) {
-    setSelectedTab(tab);
+  function handleChangeSelectedTag(tag: Ttags) {
+    setSelectedTag(tag);
   }
 
   function handleChangePage(page: number) {
     setCurrentPage(page);
   }
 
-  const table_data = [
+  interface ItableData {
+    title: string;
+    date: string;
+    editStatus: Ttags;
+  }
+
+  const table_data: ItableData[] = [
     {
       title: "견적서 요청 분야 노출",
       date: "YYYY.MM.DD",
@@ -51,24 +63,20 @@ export default function Estimate() {
     },
   ];
 
+  // const table_data: ItableData[] = [];
+
   return (
     <MyPageContainer title="받은 견적">
-      <div css={tabs_container_css}>
-        {tabsData.map((item, idx) => (
-          <p
-            css={tab_css(selectedTab === item)}
-            key={idx}
-            onClick={() => {
-              handleChangeSelectedTab(item);
-            }}
-          >
-            {item}
-          </p>
-        ))}
-      </div>
+      <Tabs tabsData={tabsData} onClick={setSelectedTab} />
       <div css={tag_container}>
         {tagsData.map((item, idx) => (
-          <p css={tag_css(selectedTag === item)} key={idx}>
+          <p
+            css={tag_css(selectedTag === item)}
+            key={idx}
+            onClick={() => {
+              handleChangeSelectedTag(item);
+            }}
+          >
             {item}
           </p>
         ))}
@@ -83,24 +91,36 @@ export default function Estimate() {
             </tr>
           </thead>
           <tbody>
-            {table_data.map((item, idx) => (
-              <tr key={idx}>
-                <td css={[td_title_css, col1_td_pd]}>
-                  <Link to="/myPage/estimateDetail">{item.title}</Link>
-                </td>
-                <td css={[td_date_css, col2_td_pd]}>{item.date}</td>
-                <td css={[td_edit_status_css(item.editStatus), col3_td_pd]}>
-                  {item.editStatus}
+            {table_data.length > 0 &&
+              table_data.map((item, idx) => (
+                <tr key={idx}>
+                  <td css={[td_title_css, col1_td_pd]}>
+                    <Link to="/myPage/estimateDetail">{item.title}</Link>
+                  </td>
+                  <td css={[td_date_css, col2_td_pd]}>{item.date}</td>
+                  <td css={[td_edit_status_css(item.editStatus), col3_td_pd]}>
+                    {item.editStatus}
+                  </td>
+                </tr>
+              ))}
+            {table_data.length === 0 && (
+              <tr>
+                <td colSpan={3} css={empty_table_data_td}>
+                  <p css={empty_table_data_text}>
+                    생성된 프로젝트가 없습니다.
+                    <br />
+                    새로운 프로젝트를 생성해보세요.
+                  </p>
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
       <div css={pagination_container}>
         <Pagination
           paddingTop={0}
-          currentPage={1}
+          currentPage={currentPage}
           totalPages={10}
           onPageChange={handleChangePage}
         />
@@ -113,27 +133,6 @@ const pagination_container = css`
   width: 100%;
   display: flex;
   justify-content: center;
-`;
-
-const tabs_container_css = css`
-  display: flex;
-  width: 100%;
-`;
-const tab_css = (isSelected: boolean) => css`
-  width: 100%;
-  padding: 12px;
-  border-bottom: 2px solid ${isSelected ? "#119cd4" : "#747474"};
-  margin-top: 30px;
-
-  cursor: pointer;
-
-  color: ${isSelected ? "#119cd4" : "#747474"};
-  font-family: Pretendard;
-  font-size: 17px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: normal;
-  text-align: center;
 `;
 
 const tag_container = css`
@@ -152,6 +151,8 @@ const tag_css = (isSelected: boolean) => css`
   border-radius: 50px;
   background: ${isSelected ? "#119CD4" : "#f6f8ff"};
 
+  cursor: pointer;
+
   color: ${isSelected ? "#fff" : "#747474"};
   font-family: Pretendard;
   font-size: 17px;
@@ -162,7 +163,6 @@ const tag_css = (isSelected: boolean) => css`
 
 const data_table_container_css = css`
   width: 100%;
-  max-width: 1520px;
   border-radius: 20px;
   border: 1px solid var(--DEDEDE, #dedede);
 
@@ -244,4 +244,20 @@ const col3_th_pd = css`
 `;
 const col3_td_pd = css`
   padding: 50px 30px 50px 0px;
+`;
+
+const empty_table_data_td = css`
+  padding: 128px 30px;
+`;
+
+const empty_table_data_text = css`
+  // position: absolute;
+  width: 100%;
+  color: var(--747474, #747474);
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 17px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 130%; /* 22.1px */
 `;

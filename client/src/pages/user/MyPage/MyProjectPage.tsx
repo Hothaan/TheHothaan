@@ -3,18 +3,31 @@ import { css, CSSObject } from "@emotion/react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import MyPageContainer from "@components/common/ui/Container/MyPageContainer";
+import Tabs from "@components/common/mypage/Tabs";
 
 type Ttabs = "편집가능" | "다운로드 가능" | "다운로드 기간 만료";
 
-export default function MyProject() {
-  const [selectedTab, setSelectedTab] = useState<Ttabs>("편집가능");
-  const tabsData: Ttabs[] = ["편집가능", "다운로드 가능", "다운로드 기간 만료"];
+export default function MyProjectPage() {
+  const [selectedTab, setSelectedTab] = useState<string>("편집가능");
+  const tabsData = [
+    { isSelected: selectedTab === "편집가능", text: "편집가능" },
+    { isSelected: selectedTab === "다운로드 가능", text: "다운로드 가능" },
+    {
+      isSelected: selectedTab === "다운로드 기간 만료",
+      text: "다운로드 기간 만료",
+    },
+  ];
 
-  function handleChangeSelectedTab(tab: Ttabs) {
-    setSelectedTab(tab);
+  interface ItableData {
+    title: string;
+    lastEditDate: string;
+    registrationDate: string;
+    downloadPeriod: string;
+    download: boolean;
+    editStatus: boolean;
   }
 
-  const table_data = [
+  const table_data: ItableData[] = [
     {
       title:
         "프로젝트명 노출 영역 한줄 초과 시 … 처리 프로젝트명 노출 영역 한줄 초과 시 … 처리  프로젝트명 노출 영역 한줄 초과 시 … 처리",
@@ -58,21 +71,11 @@ export default function MyProject() {
     },
   ];
 
+  // const table_data: ItableData[] = [];
+
   return (
     <MyPageContainer title="내 작업">
-      <div css={tabs_container_css}>
-        {tabsData.map((item, idx) => (
-          <p
-            css={tab_css(selectedTab === item)}
-            key={idx}
-            onClick={() => {
-              handleChangeSelectedTab(item);
-            }}
-          >
-            {item}
-          </p>
-        ))}
-      </div>
+      <Tabs tabsData={tabsData} onClick={setSelectedTab} />
       <div css={data_table_container_css}>
         <table>
           <thead>
@@ -85,37 +88,67 @@ export default function MyProject() {
               <th css={[th_css, col_100, col_100_th_pd]}>작업상태</th>
             </tr>
           </thead>
-          <tbody>
-            {table_data.map((item, idx) => (
-              <tr key={idx}>
-                <td css={[td_border_css, td_title_css, col_641, col_641_td_pd]}>
-                  <Link to="/myPage/myProjectEdit">{item.title}</Link>
-                </td>
-                <td css={[td_border_css, td_date_css, col_150, col_150_td_pd]}>
-                  {item.lastEditDate}
-                </td>
-                <td css={[td_border_css, td_date_css, col_150, col_150_td_pd]}>
-                  {item.registrationDate}
-                </td>
-                <td css={[td_border_css, td_date_css, col_230, col_230_td_pd]}>
-                  {item.downloadPeriod}
-                </td>
-                <td css={[td_border_css, td_title_css, col_92, col_92_td_pd]}>
-                  <button type="button" css={download_btn_css(item.download)}>
-                    다운로드
-                  </button>
-                </td>
-                <td css={[td_border_css, td_title_css, col_100, col_100_td_pd]}>
-                  {item.editStatus && (
-                    <p css={edit_status_css(item.editStatus)}>편집가능</p>
-                  )}
-                  {!item.editStatus && (
-                    <p css={edit_status_css(item.editStatus)}>기간만료</p>
-                  )}
+          {table_data.length > 0 && (
+            <tbody>
+              {table_data.map((item, idx) => (
+                <tr key={idx}>
+                  <td
+                    css={[td_border_css, td_title_css, col_641, col_641_td_pd]}
+                  >
+                    <Link to="/myPage/myProjectEdit">{item.title}</Link>
+                  </td>
+                  <td
+                    css={[td_border_css, td_date_css, col_150, col_150_td_pd]}
+                  >
+                    {item.lastEditDate}
+                  </td>
+                  <td
+                    css={[td_border_css, td_date_css, col_150, col_150_td_pd]}
+                  >
+                    {item.registrationDate}
+                  </td>
+                  <td
+                    css={[td_border_css, td_date_css, col_230, col_230_td_pd]}
+                  >
+                    {item.downloadPeriod}
+                  </td>
+                  <td css={[td_border_css, td_title_css, col_92, col_92_td_pd]}>
+                    <div css={td_button_css}>
+                      <button
+                        type="button"
+                        css={download_btn_css(item.download)}
+                      >
+                        다운로드
+                      </button>
+                    </div>
+                  </td>
+                  <td
+                    css={[td_border_css, td_title_css, col_100, col_100_td_pd]}
+                  >
+                    {item.editStatus && (
+                      <p css={edit_status_css(item.editStatus)}>편집가능</p>
+                    )}
+                    {!item.editStatus && (
+                      <p css={edit_status_css(item.editStatus)}>기간만료</p>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          )}
+          {table_data.length === 0 && (
+            <tbody>
+              <tr>
+                <td colSpan={6} css={empty_table_data_td}>
+                  <p css={empty_table_data_text}>
+                    생성된 프로젝트가 없습니다.
+                    <br />
+                    새로운 프로젝트를 생성해보세요.
+                  </p>
                 </td>
               </tr>
-            ))}
-          </tbody>
+            </tbody>
+          )}
         </table>
       </div>
     </MyPageContainer>
@@ -145,7 +178,6 @@ const tab_css = (isSelected: boolean) => css`
 
 const data_table_container_css = css`
   width: 100%;
-  max-width: 1520px;
   border-radius: 20px;
   border: 1px solid var(--DEDEDE, #dedede);
 
@@ -183,6 +215,12 @@ const td_title_css = css`
   a {
     color: var(--383838, #383838);
   }
+`;
+
+const td_button_css = css`
+  width: 100%;
+  display: flex;
+  justify-content: center;
 `;
 
 const td_date_css = css`
@@ -295,4 +333,20 @@ const edit_status_css = (isAvailable: boolean) => css`
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+`;
+
+const empty_table_data_td = css`
+  padding: 128px 30px;
+`;
+
+const empty_table_data_text = css`
+  // position: absolute;
+  width: 100%;
+  color: var(--747474, #747474);
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 17px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 130%; /* 22.1px */
 `;

@@ -1,13 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { ReactElement, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
+import { useUserInfoStore } from "@store/userInfoStore";
 import { ReactComponent as MyInformation } from "@svgs/myPage/myInformation.svg";
 import { ReactComponent as MyProject } from "@svgs/myPage/myProject.svg";
 import { ReactComponent as MyEstimate } from "@svgs/myPage/myEstimate.svg";
 import { ReactComponent as ManagePlan } from "@svgs/myPage/managePlan.svg";
 import { ReactComponent as PersonalInquiry } from "@svgs/myPage/personalInquiry.svg";
 import { ReactComponent as LogOut } from "@svgs/myPage/logOut.svg";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 export type TmypageNavigationMenu =
   | "내 정보"
@@ -19,7 +20,7 @@ export type TmypageNavigationMenu =
 
 export interface ImyPageNavigationMenuButton {
   icon: ReactElement;
-  link: string;
+  link: string | null;
   menu: TmypageNavigationMenu;
   isSelected: boolean;
   onClick: () => void;
@@ -78,15 +79,24 @@ function MyPageNavigationMenuButton(prop: ImyPageNavigationMenuButton) {
 }
 
 export default function MyPageNavigation() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { removeUserInfo, isLogin } = useUserInfoStore();
   const [selectedMenu, setSelectedMenu] =
     useState<TmypageNavigationMenu>("내 정보");
+
+  useEffect(() => {
+    if (!isLogin) {
+      navigate("/");
+    }
+  }, [isLogin]);
 
   const menuDatas: ImyPageNavigationMenuButton[] = [
     {
       icon: <MyInformation />,
       link: "/myPage/myInfo",
       menu: "내 정보",
-      isSelected: selectedMenu === "내 정보",
+      isSelected: location.pathname === "/myPage/myInfo",
       onClick: () => {
         handleMenuClick("내 정보");
       },
@@ -95,7 +105,9 @@ export default function MyPageNavigation() {
       icon: <MyProject />,
       link: "/myPage/myProject",
       menu: "내 작업",
-      isSelected: selectedMenu === "내 작업",
+      isSelected:
+        location.pathname === "/myPage/myProject" ||
+        location.pathname === "/myPage/myProjectEdit",
       onClick: () => {
         handleMenuClick("내 작업");
       },
@@ -104,7 +116,9 @@ export default function MyPageNavigation() {
       icon: <MyEstimate />,
       link: "/myPage/estimate",
       menu: "받은 견적",
-      isSelected: selectedMenu === "받은 견적",
+      isSelected:
+        location.pathname === "/myPage/estimate" ||
+        location.pathname === "/myPage/estimateDetail",
       onClick: () => {
         handleMenuClick("받은 견적");
       },
@@ -113,7 +127,7 @@ export default function MyPageNavigation() {
       icon: <ManagePlan />,
       link: "/myPage/manageSubscription",
       menu: "구독 관리",
-      isSelected: selectedMenu === "구독 관리",
+      isSelected: location.pathname === "/myPage/manageSubscription",
       onClick: () => {
         handleMenuClick("구독 관리");
       },
@@ -122,18 +136,20 @@ export default function MyPageNavigation() {
       icon: <PersonalInquiry />,
       link: "/myPage/personalInquiry",
       menu: "1:1 문의",
-      isSelected: selectedMenu === "1:1 문의",
+      isSelected:
+        location.pathname === "/myPage/personalInquiry" ||
+        location.pathname === "/myPage/personalInquiryRegister",
       onClick: () => {
         handleMenuClick("1:1 문의");
       },
     },
     {
       icon: <LogOut />,
-      link: "/myPage/logout",
+      link: null,
       menu: "로그아웃",
-      isSelected: selectedMenu === "로그아웃",
+      isSelected: location.pathname === "/myPage/logout",
       onClick: () => {
-        handleMenuClick("로그아웃");
+        removeUserInfo();
       },
     },
   ];
@@ -146,11 +162,17 @@ export default function MyPageNavigation() {
     <aside css={container}>
       <p css={title}>마이페이지</p>
       <ul css={menu_container}>
-        {menuDatas.map((item, idx) => (
-          <Link to={item.link} key={idx}>
-            <MyPageNavigationMenuButton {...item} />
-          </Link>
-        ))}
+        {menuDatas.map((item, idx) => {
+          if (item.link) {
+            return (
+              <Link to={item.link} key={idx}>
+                <MyPageNavigationMenuButton {...item} />
+              </Link>
+            );
+          } else {
+            return <MyPageNavigationMenuButton {...item} />;
+          }
+        })}
       </ul>
     </aside>
   );
@@ -159,7 +181,7 @@ export default function MyPageNavigation() {
 const container = css`
   display: flex;
   width: 300px;
-  height: calc(100vh - 80px);
+  height: calc(100vh - 80px - 211px);
   padding: 50px 20px;
   flex-direction: column;
   align-items: flex-start;

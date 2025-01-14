@@ -17,13 +17,14 @@ export default function MyPageContainer(prop: IMyPageContainer) {
 }
 
 const container = css`
+  position: relative;
+
   width: 100%;
   display: flex;
   padding: 50px;
   flex-direction: column;
   align-items: flex-start;
   gap: 30px;
-  flex: 1 0 0;
   background: var(--FFF, #fff);
 `;
 
