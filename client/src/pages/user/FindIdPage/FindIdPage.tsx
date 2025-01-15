@@ -14,6 +14,20 @@ export default function FindIdPage() {
   const [findUserSwitch, setFindUserSwitch] = useState(false);
   const [isExistUser, setIsExistUser] = useState(true);
 
+  function validateEmail(email: string) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!email) {
+      return false;
+    }
+
+    if (!emailRegex.test(email)) {
+      return false;
+    }
+
+    return true;
+  }
+
   function handleIsLocationHere(pathname: string): boolean {
     if (location.pathname === pathname) {
       return true;
@@ -24,6 +38,7 @@ export default function FindIdPage() {
 
   function handleChangeEmail(e: React.ChangeEvent<HTMLInputElement>) {
     setEmail(e.target.value);
+    validateEmail(e.target.value);
   }
 
   function handleConfirmId() {
