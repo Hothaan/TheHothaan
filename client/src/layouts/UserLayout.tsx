@@ -34,6 +34,7 @@ import JoinSuccessPage from "@pages/user/JoinPage/JoinSuccessPage";
 
 import FindIdPage from "@pages/user/FindIdPage/FindIdPage";
 import FindPwPage from "@pages/user/FindPwPage/FindPwPage";
+import ResetPwPage from "@pages/user/ResetPwPage/ResetPwPage";
 
 import CustomerServiceLayout from "./CustomerServiceLayout";
 import GuidePage from "@pages/user/CustomerServicePage/GuidePage/GuidePage";
@@ -89,6 +90,7 @@ export default function UserLayout() {
           <Route path="/joinSuccess" element={<JoinSuccessPage />} />
           <Route path="/findId" element={<FindIdPage />} />
           <Route path="/findPw" element={<FindPwPage />} />
+          <Route path="/resetPw" element={<ResetPwPage />} />
           {/* my page -------- */}
           <Route path="/myPage" element={<MypageLayout />}>
             <Route path="myInfo" element={<MyInformationPage />} />

@@ -27,6 +27,17 @@ export default function UserConfirmPwTextField(prop: IuserConfirmPwTextField) {
     value,
   } = prop;
   const inputLabel: IuserFormLabel = { label: label };
+
+  function handleIsError() {
+    if (isError) {
+      return true;
+    } else if (!isPwSame && value !== "") {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   return (
     <div css={wrap}>
       <UserFormLabel {...inputLabel} />
@@ -36,7 +47,7 @@ export default function UserConfirmPwTextField(prop: IuserConfirmPwTextField) {
             {label}
           </label>
           <input
-            css={input(size, isError)}
+            css={input(size, handleIsError())}
             type={type !== undefined ? type : "text"}
             name={id}
             id={id}
@@ -47,7 +58,7 @@ export default function UserConfirmPwTextField(prop: IuserConfirmPwTextField) {
             value={value || ""}
           />
 
-          {isError && (
+          {handleIsError() && (
             <div css={error_icon}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -63,11 +74,17 @@ export default function UserConfirmPwTextField(prop: IuserConfirmPwTextField) {
               </svg>
             </div>
           )}
-          {!isPwSame && (
+          {handleIsError() && value !== "" && (
+            <p css={caption(!isPwSame)}>비밀번호가 일치하지 않습니다.</p>
+          )}
+          {handleIsError() && isError && (
             <p css={caption(isError)}>
-              {isError
-                ? "유효성 검사 에러메세지"
-                : "영문,숫자,특수문자 중 2가지 혼합 6~20자"}
+              영문,숫자,특수문자 중 2가지 혼합 6~20자로 입력해주세요.
+            </p>
+          )}
+          {!handleIsError() && (
+            <p css={caption(isError)}>
+              영문,숫자,특수문자 중 2가지 혼합 6~20자
             </p>
           )}
         </div>

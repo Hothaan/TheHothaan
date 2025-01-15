@@ -3,16 +3,18 @@ import { css } from "@emotion/react";
 import { useState } from "react";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import UserPageWrap from "@components/user/ui/UserPageWrap";
-import { ReactComponent as People } from "@svgs/findIdPage/people.svg";
+import { ReactComponent as Lock } from "@svgs/findPwPage/lock.svg";
 import TextField from "@components/common/form/TextField";
 import Button from "@components/common/button/Button";
+import UserEmailTextField from "@components/user/form/UserEmailTextField";
 
 export default function FindPwPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [findUserSwitch, setFindUserSwitch] = useState(false);
-  const [isExistUser, setIsExistUser] = useState(false);
+  const [isExistUser, setIsExistUser] = useState(true);
+  const [isEmailError, setIsEmailError] = useState(false);
 
   function handleIsLocationHere(pathname: string): boolean {
     if (location.pathname === pathname) {
@@ -22,32 +24,36 @@ export default function FindPwPage() {
     }
   }
 
+  function validateEmail(email: string) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!email) {
+      return false;
+    }
+
+    if (!emailRegex.test(email)) {
+      return false;
+    }
+
+    return true;
+  }
+
   function handleChangeEmail(e: React.ChangeEvent<HTMLInputElement>) {
     setEmail(e.target.value);
+    validateEmail(e.target.value);
   }
 
   function handleConfirmId() {
     if (isExistUser) {
       setFindUserSwitch(true);
+      setIsEmailError(false);
     } else {
+      setIsEmailError(true);
     }
   }
 
-  function handleNavigateToJoinPage() {
-    navigate("/join");
-  }
-
-  function handleReset() {
-    setEmail("");
-    setFindUserSwitch(false);
-  }
-
-  function handleNavigateToLoginPage() {
-    navigate("/login");
-  }
-
-  function handleNavigateToFindPwPage() {
-    navigate("/findPw");
+  function handleResendEmail() {
+    console.log("Resend email");
   }
 
   return (
@@ -63,7 +69,7 @@ export default function FindPwPage() {
         </div>
         {!findUserSwitch && (
           <div css={information_container}>
-            <People />
+            <Lock />
             <p css={title}>비밀번호 찾기</p>
             <p css={desc}>
               회원가입 하셨던 <span css={desc_bold}>이메일 계정</span>을
@@ -75,18 +81,17 @@ export default function FindPwPage() {
             </p>
           </div>
         )}
-        {findUserSwitch && !isExistUser && (
-          <div css={information_container}>
-            <p css={title}>계정안내</p>
-            <p css={desc}>더핫한에 등록되어있지 않은 계정입니다.</p>
-            <p css={email_sample}>{email}</p>
-          </div>
-        )}
         {findUserSwitch && isExistUser && (
           <div css={information_container}>
-            <p css={title}>계정안내</p>
-            <p css={desc}>회원가입 하신 이메일은 다음과 같습니다.</p>
-            <p css={email_sample}>{email}</p>
+            <p css={big_title}>
+              재설정 메일이
+              <br />
+              발송되었습니다
+            </p>
+            <p css={desc}>
+              해당 이메일로 비밀번호를 재설정할 수 있는 링크를
+              <br /> 발송했으니 이메일을 확인해주세요.
+            </p>
           </div>
         )}
         {!findUserSwitch && (
@@ -103,40 +108,18 @@ export default function FindPwPage() {
               size="full"
               bg="gradient"
               text="링크발송"
-              disabled={email === ""}
+              disabled={isEmailError ? true : email === ""}
               onClick={handleConfirmId}
             />
           </form>
         )}
-        {findUserSwitch && !isExistUser && (
-          <div css={button_container}>
-            <Button
-              size="L"
-              bg="gradient"
-              text="회원가입"
-              onClick={handleNavigateToJoinPage}
-            />
-            <Button
-              size="L"
-              bg="white"
-              text="다시 확인"
-              onClick={handleReset}
-            />
-          </div>
-        )}
         {findUserSwitch && isExistUser && (
           <div css={button_container}>
             <Button
-              size="L"
-              bg="gradient"
-              text="로그인"
-              onClick={handleNavigateToLoginPage}
-            />
-            <Button
-              size="L"
+              size="full"
               bg="white"
-              text="비밀번호 찾기"
-              onClick={handleNavigateToFindPwPage}
+              text="링크 재발송"
+              onClick={handleResendEmail}
             />
           </div>
         )}
@@ -153,6 +136,16 @@ const container = css`
   justify-content: center;
   align-items: center;
   gap: 50px;
+`;
+
+const big_title = css`
+  color: var(--383838, #383838);
+  text-align: center;
+  font-family: Pretendard;
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 130%; /* 39px */
 `;
 
 const tabs_container = css`

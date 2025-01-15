@@ -1,17 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-
 import UserFormLabel, { IuserFormLabel } from "./UserFormLabel";
 import TextField from "@components/common/form/TextField";
 import { ItextField } from "@components/common/form/TextField";
-import Button from "@components/common/button/Button";
-import { Ibutton } from "@components/common/button/Button";
 
-export interface IuserEmailTextField extends ItextField {
+export interface IuserPwTextField extends ItextField {
   isError: boolean;
 }
 
-export default function UserEmailTextField(prop: IuserEmailTextField) {
+export default function UserPwTextField(prop: IuserPwTextField) {
   const {
     isError,
     id,
@@ -24,7 +21,8 @@ export default function UserEmailTextField(prop: IuserEmailTextField) {
     disabled,
     value,
   } = prop;
-  const inputLabel: IuserFormLabel = { label: label };
+  const inputLabel: IuserFormLabel = { label: prop.label };
+
   return (
     <div css={wrap}>
       <UserFormLabel {...inputLabel} />
@@ -44,6 +42,7 @@ export default function UserEmailTextField(prop: IuserEmailTextField) {
             disabled={disabled || false}
             value={value || ""}
           />
+
           {isError && (
             <div css={error_icon}>
               <svg
@@ -60,23 +59,17 @@ export default function UserEmailTextField(prop: IuserEmailTextField) {
               </svg>
             </div>
           )}
-          {isError && (
-            <p css={caption(isError)}>등록 되어 있지 않은 이메일입니다.</p>
-          )}
+
+          <p css={caption(isError)}>
+            {isError
+              ? "영문,숫자,특수문자 중 2가지 혼합 6~20자로 입력해주세요."
+              : "영문,숫자,특수문자 중 2가지 혼합 6~20자"}
+          </p>
         </div>
       </div>
     </div>
   );
 }
-
-const caption_container = css`
-  margin-top: 10px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  align-self: stretch;
-`;
-
 const caption = (isError: boolean) => css`
   margin-top: 10px;
 

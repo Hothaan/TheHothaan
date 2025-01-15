@@ -6,6 +6,9 @@ import UserPageWrap from "@components/user/ui/UserPageWrap";
 import { IuserPageTitle } from "@components/user/ui/UserPageTitle";
 import UserPageTitle from "@components/user/ui/UserPageTitle";
 import { ItextField } from "@components/common/form/TextField";
+import UserPwTextField, {
+  IuserPwTextField,
+} from "@components/user/form/UserPwTextField";
 import UserTextField from "@components/user/form/UserTextField";
 import UserVerifyTextCodeField from "@components/user/form/UserVerifyTextCodeField";
 import Button from "@components/common/button/Button";
@@ -46,6 +49,7 @@ export default function JoinPage() {
   });
   const navigate = useNavigate();
   const [isAllDone, setIsAllDone] = useState(false);
+  const [isPwError, setIsPwError] = useState(false);
   const [iscodeTimeOut, setisCodeTimeOut] = useState(false);
   const [isPwConformError, setIsPwConformError] = useState(false);
   const [isAllChecked, setIsAllChecked] = useState(false);
@@ -58,6 +62,20 @@ export default function JoinPage() {
   });
   const [time, setTime] = useState<number | null>(null);
 
+  function validateEmail(email: string) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!email) {
+      return false;
+    }
+
+    if (!emailRegex.test(email)) {
+      return false;
+    }
+
+    return true;
+  }
+
   function formatTime(seconds: number) {
     const minutes = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -68,6 +86,7 @@ export default function JoinPage() {
   }
   function handleChangeId(e: React.ChangeEvent<HTMLInputElement>) {
     setFormData({ ...formData, id: e.target.value });
+    validateEmail(e.target.value);
   }
   function handleChangeCode(e: React.ChangeEvent<HTMLInputElement>) {
     setFormData({ ...formData, code: e.target.value });
@@ -80,22 +99,53 @@ export default function JoinPage() {
       setFormCheck((prev) => ({ ...prev, isName: false }));
     }
   }
-  function handleChangePw(e: React.ChangeEvent<HTMLInputElement>) {
-    setFormData({ ...formData, pw: e.target.value });
-  }
-  function handleChangePwConfirmw(e: React.ChangeEvent<HTMLInputElement>) {
-    setFormData({ ...formData, confirmPw: e.target.value });
-    if (e.target.value !== "" && formData.pw !== "") {
-      if (e.target.value === formData.pw) {
-        setFormCheck((prev) => ({ ...prev, isPwSame: true }));
-      } else {
-        setFormCheck((prev) => ({ ...prev, isPwSame: false }));
-      }
+
+  function validatePassword(password: string) {
+    // 길이 검증
+    if (password.length < 6 || password.length > 20) {
+      return false;
+    }
+
+    // 조건 플래그
+    const hasNumber = /[0-9]/.test(password); // 숫자가 포함되었는가
+    const hasLetter = /[A-Za-z]/.test(password); // 영문자가 포함되었는가
+    const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(
+      password
+    ); // 특수문자가 포함되었는가
+
+    // 최소 두 가지 조건 조합 확인
+    const conditionCount = [hasNumber, hasLetter, hasSpecialChar].filter(
+      Boolean
+    ).length;
+
+    console.log(conditionCount);
+
+    if (conditionCount < 2) {
+      return false;
+    } else {
+      return true;
     }
   }
-  function handleCheckIsPwConfirmError() {
-    if (formData.confirmPw !== "" && formData.pw !== "") {
-      if (formData.confirmPw === formData.pw) {
+
+  function handleChangePw(e: React.ChangeEvent<HTMLInputElement>) {
+    setFormData({ ...formData, pw: e.target.value });
+    if (e.target.value !== "") {
+      const result = validatePassword(e.target.value);
+      if (result) {
+        setIsPwError(false);
+      } else {
+        setIsPwError(true);
+      }
+    } else {
+      setIsPwError(false);
+    }
+  }
+
+  function handleChangePwConfirmw(e: React.ChangeEvent<HTMLInputElement>) {
+    setFormData({ ...formData, confirmPw: e.target.value });
+    if (e.target.value !== "") {
+      const result = validatePassword(e.target.value);
+      if (result) {
         setIsPwConformError(false);
       } else {
         setIsPwConformError(true);
@@ -104,6 +154,19 @@ export default function JoinPage() {
       setIsPwConformError(false);
     }
   }
+
+  function handleCheckIsPwConfirmError() {
+    if (formData.confirmPw !== "" && formData.pw !== "") {
+      if (formData.confirmPw === formData.pw) {
+        setFormCheck((prev) => ({ ...prev, isPwSame: true }));
+      } else {
+        setFormCheck((prev) => ({ ...prev, isPwSame: false }));
+      }
+    } else {
+      setFormCheck((prev) => ({ ...prev, isPwSame: false }));
+    }
+  }
+
   function handleVerifyEmail() {
     setVerifySwitch(true);
     setTime(180);
@@ -195,7 +258,7 @@ export default function JoinPage() {
     value: formData.name,
     onChange: handleChangeName,
   };
-  const textFieldPw: ItextField = {
+  const textFieldPw: IuserPwTextField = {
     size: "small",
     label: "비밀번호",
     id: "비밀번호",
@@ -203,6 +266,7 @@ export default function JoinPage() {
     type: "password",
     value: formData.pw,
     onChange: handleChangePw,
+    isError: isPwError,
   };
   const textFieldConfirmPw: IuserConfirmPwTextField = {
     size: "small",
@@ -396,12 +460,9 @@ export default function JoinPage() {
           {verifySwitch && <UserVerifyTextCodeField {...textFieldCode} />}
           <UserTextField {...textFieldName} />
           <div css={pw_container}>
-            <UserTextField {...textFieldPw} />
+            <UserPwTextField {...textFieldPw} />
             <UserConfirmPwTextField {...textFieldConfirmPw} />
           </div>
-          {/* <div css={text_align_left}>
-            <TextCaption {...captionPw} />
-          </div> */}
           <div css={text_align_left}>
             <UserFormLabel {...confirmLabel} />
             <div css={checkAll_container}>

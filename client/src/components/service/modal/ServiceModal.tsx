@@ -49,7 +49,7 @@ export default function ServiceModal(prop: IserviceModal) {
 
 const modal_bg = css`
   position: fixed;
-  z-index: 1;
+  z-index: 6;
   top: 0;
   left: 0;
   right: 0;
