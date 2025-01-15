@@ -170,7 +170,7 @@ export default function MyPageNavigation() {
               </Link>
             );
           } else {
-            return <MyPageNavigationMenuButton {...item} />;
+            return <MyPageNavigationMenuButton {...item} key={idx} />;
           }
         })}
       </ul>

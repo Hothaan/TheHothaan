@@ -1,10 +1,7 @@
 import React from "react";
-import { EmotionJSX } from "@emotion/react/dist/declarations/src/jsx-namespace";
+// import { EmotionJSX } from "@emotion/react/dist/declarations/src/jsx-namespace";
 
-export const renderWithKeys = (
-  content: (string | EmotionJSX.Element)[],
-  key: string
-) => {
+export const renderWithKeys = (content: (string | any)[], key: string) => {
   const flattenArray = (array: any) =>
     array.reduce(
       (acc: any, val: any) =>

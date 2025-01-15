@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Pagination from "@components/common/table/Pagination";
 import MyPageContainer from "@components/common/ui/Container/MyPageContainer";
@@ -8,7 +8,7 @@ import Button from "@components/common/button/Button";
 import Tabs from "@components/common/mypage/Tabs";
 import MyPageButton from "@components/common/mypage/MyPageButton";
 import { renderWithKeys } from "@hooks/renderWidthKeys";
-import { EmotionJSX } from "@emotion/react/dist/declarations/src/jsx-namespace";
+// import { EmotionJSX } from "@emotion/react/dist/declarations/src/jsx-namespace";
 
 export default function PersonalInquiryPage() {
   const initial_table_data: ItableData[] = [
@@ -171,10 +171,10 @@ export default function PersonalInquiryPage() {
     content: {
       category: string;
       title: string;
-      content: (string | EmotionJSX.Element)[];
+      content: (string | any)[];
       isImg: boolean;
     };
-    reply: { title: string; content: (string | EmotionJSX.Element)[] } | null;
+    reply: { title: string; content: (string | any)[] } | null;
   }
 
   return (
@@ -202,7 +202,7 @@ export default function PersonalInquiryPage() {
           <tbody>
             {tableData.length > 0 &&
               tableData.map((item, idx) => (
-                <>
+                <React.Fragment key={idx}>
                   <tr
                     key={idx}
                     css={pointer}
@@ -217,7 +217,7 @@ export default function PersonalInquiryPage() {
                     </td>
                   </tr>
                   {item.isOpen && (
-                    <tr key={idx}>
+                    <tr key={`reply-${idx}`}>
                       <td
                         css={[
                           idx === tableData.length - 1
@@ -233,7 +233,10 @@ export default function PersonalInquiryPage() {
                             </p>
                             <p css={content_title}>{item.content.title}</p>
                             <p css={content_content}>
-                              {renderWithKeys(item.content.content, `content`)}
+                              {/* {renderWithKeys(
+                                  item.content.content,
+                                  `content-${idx}`
+                                )} */}
                             </p>
                             {item.content.isImg && (
                               <p css={content_img}>Image1.png</p>
@@ -259,10 +262,10 @@ export default function PersonalInquiryPage() {
                                 <div css={reply_inner_container}>
                                   <p css={content_title}>{item.reply?.title}</p>
                                   <p css={content_content}>
-                                    {renderWithKeys(
-                                      item.reply?.content,
-                                      `reply-content`
-                                    )}
+                                    {/* {renderWithKeys(
+                                        item.reply?.content,
+                                        `reply-content-${idx}`
+                                      )} */}
                                   </p>
                                 </div>
                               </div>
@@ -272,7 +275,7 @@ export default function PersonalInquiryPage() {
                       </td>
                     </tr>
                   )}
-                </>
+                </React.Fragment>
               ))}
           </tbody>
         </table>
