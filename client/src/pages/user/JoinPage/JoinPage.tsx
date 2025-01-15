@@ -1,13 +1,13 @@
 /** @jsxImportSource @emotion/react */
-import { css, CSSObject } from "@emotion/react";
-import { useState, useEffect, useCallback } from "react";
+import { css } from "@emotion/react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import UserPageWrap from "@components/user/ui/UserPageWrap";
 import { IuserPageTitle } from "@components/user/ui/UserPageTitle";
 import UserPageTitle from "@components/user/ui/UserPageTitle";
 import { ItextField } from "@components/common/form/TextField";
 import UserTextField from "@components/user/form/UserTextField";
 import UserVerifyTextCodeField from "@components/user/form/UserVerifyTextCodeField";
-import TextField from "@components/common/form/TextField";
 import Button from "@components/common/button/Button";
 import { Ibutton } from "@components/common/button/Button";
 import UserFormLabel, {
@@ -18,8 +18,10 @@ import Checkbox from "@components/common/form/Checkbox";
 import UserVerifyTextField, {
   IuserVerifyTextField,
 } from "@components/user/form/UserVerifyTextField";
+import UserConfirmPwTextField, {
+  IuserConfirmPwTextField,
+} from "@components/user/form/UserConfirmPwTextField";
 import { IuserVerifyCodeField } from "@components/user/form/UserVerifyTextCodeField";
-import TextCaption, { ITextCaption } from "@components/common/text/TextCaption";
 import UserCheckboxAccordion, {
   IcheckboxAccordion,
 } from "@components/user/form/UserCheckboxAccordion";
@@ -42,24 +44,18 @@ export default function JoinPage() {
       },
     },
   });
-
+  const navigate = useNavigate();
+  const [isAllDone, setIsAllDone] = useState(false);
+  const [iscodeTimeOut, setisCodeTimeOut] = useState(false);
+  const [isPwConformError, setIsPwConformError] = useState(false);
   const [isAllChecked, setIsAllChecked] = useState(false);
+  const [verifySwitch, setVerifySwitch] = useState(false);
   const [formCheck, setFormCheck] = useState({
-    verifySwitch: false,
+    isName: false,
     isIdVerified: false,
     isPwSame: false,
     isRequiredTermsAllChecked: false,
   });
-
-  useEffect(() => {
-    const allRequiredChecked = Object.values(formData.Terms.required).every(
-      Boolean
-    );
-    const allChecked = allRequiredChecked && formData.Terms.optional.term4;
-
-    setIsAllChecked(allChecked);
-  }, [formData.Terms]);
-
   const [time, setTime] = useState<number | null>(null);
 
   function formatTime(seconds: number) {
@@ -70,7 +66,6 @@ export default function JoinPage() {
       "0"
     )}`;
   }
-
   function handleChangeId(e: React.ChangeEvent<HTMLInputElement>) {
     setFormData({ ...formData, id: e.target.value });
   }
@@ -79,36 +74,63 @@ export default function JoinPage() {
   }
   function handleChangeName(e: React.ChangeEvent<HTMLInputElement>) {
     setFormData({ ...formData, name: e.target.value });
+    if (e.target.value !== "") {
+      setFormCheck({ ...formCheck, isName: true });
+    } else {
+      setFormCheck((prev) => ({ ...prev, isName: false }));
+    }
   }
   function handleChangePw(e: React.ChangeEvent<HTMLInputElement>) {
     setFormData({ ...formData, pw: e.target.value });
   }
   function handleChangePwConfirmw(e: React.ChangeEvent<HTMLInputElement>) {
     setFormData({ ...formData, confirmPw: e.target.value });
+    if (e.target.value !== "" && formData.pw !== "") {
+      if (e.target.value === formData.pw) {
+        setFormCheck((prev) => ({ ...prev, isPwSame: true }));
+      } else {
+        setFormCheck((prev) => ({ ...prev, isPwSame: false }));
+      }
+    }
+  }
+  function handleCheckIsPwConfirmError() {
+    if (formData.confirmPw !== "" && formData.pw !== "") {
+      if (formData.confirmPw === formData.pw) {
+        setIsPwConformError(false);
+      } else {
+        setIsPwConformError(true);
+      }
+    } else {
+      setIsPwConformError(false);
+    }
   }
   function handleVerifyEmail() {
-    setFormCheck((prev) => ({ ...prev, verifySwitch: true }));
+    setVerifySwitch(true);
     setTime(180);
+    setisCodeTimeOut(false);
     console.log("Verify email");
   }
   function handleRemoveEmail() {
     setFormData({ ...formData, id: "" });
-    setFormCheck({ ...formCheck, isIdVerified: false, verifySwitch: false });
+    setFormCheck({ ...formCheck, isIdVerified: false });
+    setVerifySwitch(false);
   }
+  function handleVerifyCode() {
+    if (formData.code !== "")
+      setFormCheck({ ...formCheck, isIdVerified: true });
+    setVerifySwitch(false);
 
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-
-    if (formCheck.verifySwitch && time === null) {
-      setTime(180);
+    console.log("Verify code");
+  }
+  function handleCheckIsAllDone(): boolean {
+    const formCheckArray = Object.values(formCheck);
+    const filterdArray = formCheckArray.filter((item) => item === false);
+    if (filterdArray.length > 0) {
+      return false;
+    } else {
+      return true;
     }
-
-    if (time !== null && time > 0) {
-      timer = setTimeout(() => setTime((prev) => (prev as number) - 1), 1000);
-    }
-
-    return () => clearTimeout(timer);
-  }, [time, formCheck.verifySwitch]);
+  }
 
   const userPageTitle: IuserPageTitle = { title: "회원가입" };
 
@@ -121,18 +143,22 @@ export default function JoinPage() {
       placeholder: "example@thehothan.com",
       onChange: handleChangeId,
       isVerified: formCheck.isIdVerified,
-      disabled: formCheck.verifySwitch,
+      disabled: verifySwitch,
     },
     button: {
       size: "full",
-      bg: formCheck.verifySwitch ? "white" : "gray",
+      bg: formCheck.isIdVerified ? "white" : verifySwitch ? "white" : "gray",
       disabled: formData.id === "",
-      text: formCheck.verifySwitch ? "수정" : "인증",
+      text: formCheck.isIdVerified ? "수정" : verifySwitch ? "수정" : "인증",
       onClick: () => {
-        if (formCheck.verifySwitch) {
+        if (formCheck.isIdVerified) {
           handleRemoveEmail();
         } else {
-          handleVerifyEmail();
+          if (verifySwitch) {
+            handleRemoveEmail();
+          } else {
+            handleVerifyEmail();
+          }
         }
       },
     },
@@ -144,19 +170,20 @@ export default function JoinPage() {
       id: "인증번호",
       value: formData.code,
       placeholder: "인증번호를 입력해주세요.",
+      isCodeTimeOut: iscodeTimeOut,
       onChange: handleChangeCode,
       ms: time ? formatTime(time) : "",
+      onClick: () => {
+        handleVerifyEmail();
+      },
     },
     button: {
       size: "full",
       bg: "gray",
       text: "확인",
+      disabled: time === 0,
       onClick: () => {
-        if (formCheck.verifySwitch) {
-          handleRemoveEmail();
-        } else {
-          handleVerifyEmail();
-        }
+        handleVerifyCode();
       },
     },
   };
@@ -177,7 +204,7 @@ export default function JoinPage() {
     value: formData.pw,
     onChange: handleChangePw,
   };
-  const textFieldConfirmPw: ItextField = {
+  const textFieldConfirmPw: IuserConfirmPwTextField = {
     size: "small",
     label: "비밀번호 확인",
     id: "비밀번호 확인",
@@ -185,16 +212,12 @@ export default function JoinPage() {
     placeholder: "비밀번호를 확인해주세요.",
     value: formData.confirmPw,
     onChange: handleChangePwConfirmw,
-  };
-  const captionPw: ITextCaption = {
-    caption: "영문,숫자,특수문자 중 2가지 혼합 6~20자",
+    isError: isPwConformError,
+    isPwSame: formCheck.isPwSame,
   };
   const confirmLabel: IuserFormLabel = {
     label: "약관 동의",
   };
-
-  console.log(isAllChecked);
-  console.log(formData.Terms);
 
   const handleCheckAllChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { checked } = event.target;
@@ -259,6 +282,10 @@ export default function JoinPage() {
     }));
   };
 
+  function handleNavigateToSuccessPage() {
+    navigate("/joinSuccess");
+  }
+
   const checkAll: Icheckbox = {
     id: "term0",
     name: "term0",
@@ -315,10 +342,50 @@ export default function JoinPage() {
 
   const buttonConfirm: Ibutton = {
     size: "full",
-    bg: "gray",
-    disabled: true,
+    bg: "gradient",
+    disabled: !isAllDone,
     text: "이용약관 동의 후 회원가입",
+    onClick: handleNavigateToSuccessPage,
   };
+
+  useEffect(() => {
+    handleCheckIsPwConfirmError();
+  }, [formData.confirmPw, formData.pw]);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+
+    if (verifySwitch && time === 0) {
+      setisCodeTimeOut(true);
+    }
+
+    if (verifySwitch && time === null) {
+      setTime(180);
+    }
+
+    if (time !== null && time > 0) {
+      timer = setTimeout(() => setTime((prev) => (prev as number) - 1), 1000);
+    }
+
+    return () => clearTimeout(timer);
+  }, [time, verifySwitch]);
+
+  useEffect(() => {
+    const allRequiredChecked = Object.values(formData.Terms.required).every(
+      Boolean
+    );
+    if (allRequiredChecked) {
+      setFormCheck({ ...formCheck, isRequiredTermsAllChecked: true });
+    }
+    const allChecked = allRequiredChecked && formData.Terms.optional.term4;
+
+    setIsAllChecked(allChecked);
+  }, [formData.Terms]);
+
+  useEffect(() => {
+    const result = handleCheckIsAllDone();
+    setIsAllDone(result);
+  }, [formCheck]);
 
   return (
     <UserPageWrap>
@@ -326,15 +393,15 @@ export default function JoinPage() {
         <UserPageTitle {...userPageTitle} />
         <form css={form_container}>
           <UserVerifyTextField {...textFieldId} />
-          {formCheck.verifySwitch && (
-            <UserVerifyTextCodeField {...textFieldCode} />
-          )}
+          {verifySwitch && <UserVerifyTextCodeField {...textFieldCode} />}
           <UserTextField {...textFieldName} />
-          <UserTextField {...textFieldPw} />
-          <TextField {...textFieldConfirmPw} />
-          <div css={text_align_left}>
-            <TextCaption {...captionPw} />
+          <div css={pw_container}>
+            <UserTextField {...textFieldPw} />
+            <UserConfirmPwTextField {...textFieldConfirmPw} />
           </div>
+          {/* <div css={text_align_left}>
+            <TextCaption {...captionPw} />
+          </div> */}
           <div css={text_align_left}>
             <UserFormLabel {...confirmLabel} />
             <div css={checkAll_container}>
@@ -358,8 +425,17 @@ const form_container = css`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
+  gap: 30px;
   align-self: stretch;
+`;
+
+const pw_container = css`
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 `;
 
 const checkAll_container = css`

@@ -30,6 +30,10 @@ import PersonalInquiryRegisterPage from "@pages/user/MyPage/PersonalInquiryRegis
 
 import LoginPage from "@pages/user/LoginPage/LoginPage";
 import JoinPage from "@pages/user/JoinPage/JoinPage";
+import JoinSuccessPage from "@pages/user/JoinPage/JoinSuccessPage";
+
+import FindIdPage from "@pages/user/FindIdPage/FindIdPage";
+import FindPwPage from "@pages/user/FindPwPage/FindPwPage";
 
 import CustomerServiceLayout from "./CustomerServiceLayout";
 import GuidePage from "@pages/user/CustomerServicePage/GuidePage/GuidePage";
@@ -82,6 +86,9 @@ export default function UserLayout() {
           {/* ---- user -------------- */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/join" element={<JoinPage />} />
+          <Route path="/joinSuccess" element={<JoinSuccessPage />} />
+          <Route path="/findId" element={<FindIdPage />} />
+          <Route path="/findPw" element={<FindPwPage />} />
           {/* my page -------- */}
           <Route path="/myPage" element={<MypageLayout />}>
             <Route path="myInfo" element={<MyInformationPage />} />
