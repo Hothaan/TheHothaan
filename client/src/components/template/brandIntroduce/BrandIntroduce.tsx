@@ -21,28 +21,25 @@ export interface IbrandIntroduceText {
 }
 
 export interface IbrandIntroduceContent {
-  bannerTitle?: {
-    text?: string;
-    css?: CSSObject;
-  };
-  bannerDesc?: {
-    text?: string;
-    css?: CSSObject;
-  };
-  itemTitle?: {
-    text?: string;
-    css?: CSSObject;
-  };
-  itemDesc?: {
-    text?: string;
-    css?: CSSObject;
-  };
+  brandIntroduceBannerTitle: string;
+  brandIntroduceBannerDesc: string;
+  brandIntroduceItemTitle: string;
+  brandIntroduceItemDesc: string;
+}
+
+export interface IbrandIntroduceStyle {
+  brandIntroduceBannerTitle: CSSObject;
+  brandIntroduceBannerDesc: CSSObject;
+  brandIntroduceItemTitle: CSSObject;
+  brandIntroduceItemDesc: CSSObject;
 }
 
 interface IbrandIntroduce {
   content?: IbrandIntroduceContent | null;
+  style?: IbrandIntroduceContent | null;
   isEditable?: boolean;
-  onChange?: (content: IbrandIntroduceContent) => void;
+  onChangeContent?: (content: IbrandIntroduceContent) => void;
+  onChangeStyle?: (content: IbrandIntroduceContent) => void;
 }
 
 export const brandIntroduce_item_title_css: CSSObject = {
@@ -88,7 +85,7 @@ export const brandIntroduce_banner_desc_css: CSSObject = {
 };
 
 function BrandIntroduceItem(prop: IbrandIntroduce) {
-  const { content, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   return (
     <div css={item_container}>
@@ -102,37 +99,37 @@ function BrandIntroduceItem(prop: IbrandIntroduce) {
           icon: "width: 100px; height: 100px;",
         }}
       />
-      <p css={content?.itemTitle?.css || brandIntroduce_item_title_css}>
-        {content?.itemTitle?.text || item_title_}
+      <p css={style?.brandIntroduceItemTitle || brandIntroduce_item_title_css}>
+        {content?.brandIntroduceItemTitle || item_title_}
       </p>
-      <p css={content?.itemDesc?.css || brandIntroduce_item_desc_css}>
-        {content?.itemDesc?.text || item_desc_}
+      <p css={style?.brandIntroduceItemDesc || brandIntroduce_item_desc_css}>
+        {content?.brandIntroduceItemDesc || item_desc_}
       </p>
     </div>
   );
 }
 
 export default function BrandIntroduce(prop: IbrandIntroduce) {
-  const { isEditable, content, onChange } = prop;
+  const { isEditable, content, style, onChangeContent, onChangeStyle } = prop;
 
   const count = 2;
 
   const initial = {
-    bannerTitle: {
-      text: content?.bannerTitle?.text,
-      css: content?.bannerTitle?.css,
+    brandIntroduceBannerTitle: {
+      text: content?.brandIntroduceBannerTitle,
+      css: content?.brandIntroduceBannerTitle,
     },
-    bannerDesc: {
-      text: content?.bannerDesc?.text,
-      css: content?.bannerDesc?.css,
+    brandIntroduceBannerDesc: {
+      text: content?.brandIntroduceBannerDesc,
+      css: content?.brandIntroduceBannerDesc,
     },
-    itemTitle: {
-      text: content?.itemTitle?.text,
-      css: content?.itemTitle?.css,
+    brandIntroduceItemTitle: {
+      text: content?.brandIntroduceItemTitle,
+      css: content?.brandIntroduceItemTitle,
     },
-    itemDesc: {
-      text: content?.itemDesc?.text,
-      css: content?.itemDesc?.css,
+    brandIntroduceItemDesc: {
+      text: content?.brandIntroduceItemDesc,
+      css: content?.brandIntroduceItemDesc,
     },
   };
 
@@ -158,11 +155,21 @@ export default function BrandIntroduce(prop: IbrandIntroduce) {
           }}
         />
         <div css={container}>
-          <p css={edit?.bannerTitle?.css || brandIntroduce_banner_title_css}>
-            {edit?.bannerTitle?.text || banner_title_}
+          <p
+            css={
+              edit?.brandIntroduceBannerTitle?.css ||
+              brandIntroduce_banner_title_css
+            }
+          >
+            {edit?.brandIntroduceBannerTitle?.text || banner_title_}
           </p>
-          <p css={edit?.bannerDesc?.css || brandIntroduce_banner_desc_css}>
-            {edit?.bannerDesc?.text || banner_desc_}
+          <p
+            css={
+              edit?.brandIntroduceBannerDesc?.css ||
+              brandIntroduce_banner_desc_css
+            }
+          >
+            {edit?.brandIntroduceBannerDesc?.text || banner_desc_}
           </p>
         </div>
       </div>
@@ -174,7 +181,7 @@ export default function BrandIntroduce(prop: IbrandIntroduce) {
                 key={index}
                 content={content}
                 isEditable={isEditable}
-                onChange={onChange}
+                // onChange={onChange}
               />
             ))}
           </div>

@@ -1,3 +1,5 @@
+/** @jsxImportSource @emotion/react */
+import { css, CSSObject } from "@emotion/react";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
@@ -18,12 +20,18 @@ import { IbrandIntroduceText } from "@components/template/brandIntroduce/BrandIn
 /* content */
 import { IbrandIntroduceContent } from "@components/template/brandIntroduce/BrandIntroduce";
 
-interface IshoppingMallBrandIntroduceText {
-  brandIntroduce: IbrandIntroduceText;
+interface IshoppingMallBrandIntroduceContent {
+  brandIntroduceBannerTitle: string;
+  brandIntroduceBannerDesc: string;
+  brandIntroduceItemTitle: string;
+  brandIntroduceItemDesc: string;
 }
 
-interface IshoppingMallBrandIntroduceContent {
-  brandIntroduce: IbrandIntroduceContent;
+interface IshoppingMallBrandIntroduceStyle {
+  brandIntroduceBannerTitle: CSSObject;
+  brandIntroduceBannerDesc: CSSObject;
+  brandIntroduceItemTitle: CSSObject;
+  brandIntroduceItemDesc: CSSObject;
 }
 
 export default function ShoppingMallBrandIntroduce() {
@@ -72,21 +80,6 @@ export default function ShoppingMallBrandIntroduce() {
     useState<IshoppingMallBrandIntroduceContent>(
       {} as IshoppingMallBrandIntroduceContent
     );
-
-  function updateSectionContent<
-    T extends keyof IshoppingMallBrandIntroduceContent
-  >(
-    section: T,
-    updatedContent: Partial<IshoppingMallBrandIntroduceContent[T]>
-  ) {
-    setPageContent((prev) => ({
-      ...prev,
-      [section]: {
-        ...prev?.[section],
-        ...updatedContent,
-      },
-    }));
-  }
 
   useEffect(() => {
     if (projectId === undefined) {

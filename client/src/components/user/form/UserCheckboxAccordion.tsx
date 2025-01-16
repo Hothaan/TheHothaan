@@ -158,6 +158,7 @@ const labelStyle = (checked: boolean) => css`
 const content_area = css`
   display: flex;
   border: 1px solid var(--DEDEDE, #dedede);
+  padding: 10px;
   background: var(--FFF, #fff);
   max-height: 92px;
   overflow-y: auto;

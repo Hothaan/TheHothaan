@@ -7,36 +7,36 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Install SSH Key
-      uses: webfactory/ssh-agent@v0.5.3
-      with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Install SSH Key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-    - name: Add server to known_hosts
-      run: ssh-keyscan -H 172.234.80.216 >> ~/.ssh/known_hosts
+      - name: Add server to known_hosts
+        run: ssh-keyscan -H 172.234.80.216 >> ~/.ssh/known_hosts
 
-    - name: Set environment variables
-      run: |
-        echo "REACT_APP_API_KEY_DEV=${{ secrets.REACT_APP_API_KEY_DEV }}" >> client/.env
+      - name: Set environment variables
+        run: |
+          echo "REACT_APP_API_KEY_DEV=${{ secrets.REACT_APP_API_KEY_DEV }}" >> client/.env
 
-    - name: Pull latest code, build client, and restart server
-      run: |
-        ssh -o StrictHostKeyChecking=no root@172.234.80.216 '
-          cd /var/www/TheHothaan &&
-          git reset --hard HEAD &&
-          git clean -fd &&
-          git pull origin main &&
-          cd client &&
-          npm install || { echo "npm install failed in client"; exit 1; } &&
-          CI=false npm run build &&
-          cd ../server &&
-          npm install || { echo "npm install failed in server"; exit 1; } &&
-          cd .. &&
-          pm2 restart all
-        '
+      - name: Pull latest code, build client, and restart server
+        run: |
+          ssh -o StrictHostKeyChecking=no root@172.234.80.216 '
+            cd /var/www/TheHothaan &&
+            git reset --hard HEAD &&
+            git clean -fd &&
+            git pull origin main &&
+            cd client &&
+            npm install || { echo "npm install failed in client"; exit 1; } &&
+            CI=false npm run build &&
+            cd ../server &&
+            npm install || { echo "npm install failed in server"; exit 1; } &&
+            cd .. &&
+            pm2 restart all
+          '

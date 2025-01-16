@@ -1,3 +1,6 @@
+/** @jsxImportSource @emotion/react */
+import { css, CSSObject } from "@emotion/react";
+
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 /* component */
@@ -12,18 +15,19 @@ import { IfetchedfeatureResponseData } from "@components/template/types";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
-/* text */
-import { IproductListText } from "@components/template/product/ProductList";
-
 /* content */
 import { IproductListContent } from "@components/template/product/ProductList";
 
-interface IshoppingMallProductListText {
-  productList: IproductListText;
+interface IshoppingMallProductListContent {
+  productListCategories: string[];
+  productListProductTitle: string;
+  productListProductDesc: string;
 }
 
-interface IshoppingMallProductListContent {
-  productList: IproductListContent;
+interface IshoppingMallProductListStyle {
+  productListCategories: CSSObject;
+  productListProductTitle: CSSObject;
+  productListProductDesc: CSSObject;
 }
 
 export default function ShoppingMallProductList() {
@@ -88,17 +92,17 @@ export default function ShoppingMallProductList() {
       {} as IshoppingMallProductListContent
     );
 
-  function updateSectionContent<
-    T extends keyof IshoppingMallProductListContent
-  >(section: T, updatedContent: Partial<IshoppingMallProductListContent[T]>) {
-    setPageContent((prev) => ({
-      ...prev,
-      [section]: {
-        ...prev?.[section],
-        ...updatedContent,
-      },
-    }));
-  }
+  // function updateSectionContent<
+  //   T extends keyof IshoppingMallProductListContent
+  // >(section: T, updatedContent: Partial<IshoppingMallProductListContent[T]>) {
+  //   setPageContent((prev) => ({
+  //     ...prev,
+  //     [section]: {
+  //       ...prev?.[section],
+  //       ...updatedContent,
+  //     },
+  //   }));
+  // }
 
   if (!generatedText || !headerData) {
     return <Loading />;
@@ -114,7 +118,7 @@ export default function ShoppingMallProductList() {
       {generatedText?.content?.categories &&
       generatedText.content.categories.length > 0 ? (
         <ProductList
-          content={{ categories: { text: generatedText.content.categories } }}
+          content={{ productListCategories: generatedText.content.categories }}
         />
       ) : (
         <ProductList />

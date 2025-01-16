@@ -63,7 +63,7 @@ export default function LoginPage() {
         <form css={form_container}>
           <UserTextField {...textFieldId} />
           <UserTextField {...textFieldPw} />
-          <Link to="/" css={text_align_right}>
+          <Link to="/findId" css={text_align_right}>
             <TextCaption {...loginCaption} />
           </Link>
           <Button {...buttonLogin} />
@@ -86,9 +86,11 @@ export default function LoginPage() {
 }
 
 const form_container = css`
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 14px;
   align-self: stretch;
 `;
@@ -132,8 +134,10 @@ const link_gray = css`
 `;
 
 const container = css`
+  width: 100%;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 30px;
 `;
 

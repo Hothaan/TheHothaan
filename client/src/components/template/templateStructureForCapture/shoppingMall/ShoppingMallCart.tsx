@@ -1,3 +1,6 @@
+/** @jsxImportSource @emotion/react */
+import { css, CSSObject } from "@emotion/react";
+
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
@@ -19,12 +22,12 @@ import { IcartText } from "@components/template/mypage/Cart";
 /* content */
 import { IcartContent } from "@components/template/mypage/Cart";
 
-interface IshoppingMallCart {
-  cart: IcartText;
+interface IshoppingMallContent {
+  cartTitle: string;
 }
 
-interface IshoppingMallContent {
-  cart: IcartContent;
+interface IshoppingMallStyle {
+  cartTitle: CSSObject;
 }
 
 export default function ShoppingMallCart() {
@@ -72,8 +75,6 @@ export default function ShoppingMallCart() {
     }
   }
 
-  console.log(generatedText);
-
   useEffect(() => {
     if (projectId === undefined) {
       setProjectIdValue(sessionStorage.getItem("projectId"));
@@ -99,9 +100,7 @@ export default function ShoppingMallCart() {
         logo={headerData.logo || undefined}
         serviceType="쇼핑몰"
       />
-      <Cart
-        content={{ title: { text: generatedText.content.title || undefined } }}
-      />
+      <Cart content={{ cartTitle: generatedText.content.title }} />
       <Footer logo={headerData.logo || undefined} serviceType="쇼핑몰" />
     </div>
   );

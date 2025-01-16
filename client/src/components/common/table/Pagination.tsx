@@ -3,13 +3,14 @@ import React from "react";
 import { css, CSSObject } from "@emotion/react";
 
 interface PaginationProps {
+  paddingTop?: number;
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
 }
 
 export default function Pagination(prop: PaginationProps) {
-  const { currentPage, totalPages, onPageChange } = prop;
+  const { paddingTop, currentPage, totalPages, onPageChange } = prop;
 
   const handlePageClick = (page: number) => {
     if (page >= 1 && page <= totalPages) {
@@ -17,8 +18,8 @@ export default function Pagination(prop: PaginationProps) {
     }
   };
 
-  const paginationContainer = css`
-    padding-top: 50px;
+  const paginationContainer = (paddingTop?: number) => css`
+    padding-top: ${paddingTop !== undefined ? paddingTop : 50}px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -75,7 +76,7 @@ export default function Pagination(prop: PaginationProps) {
   };
 
   return (
-    <div css={paginationContainer}>
+    <div css={paginationContainer(paddingTop)}>
       <button
         css={currentPage === 1 ? disabledButtonStyle : buttonStyle(false)}
         onClick={() => handlePageClick(1)}

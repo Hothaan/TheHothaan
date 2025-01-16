@@ -18,17 +18,35 @@ import ServiceStep4Page from "@pages/user/ServicePage/ServiceStep4Page";
 import ServiceStep5Page from "@pages/user/ServicePage/ServiceStep5Page";
 import ServicePreviewPage from "@pages/user/ServicePage/ServicePreviewPage";
 
-import MyPage from "@pages/user/MyPage/MyPage";
+import MypageLayout from "./MypageLayout";
+import MyInformationPage from "@pages/user/MyPage/MyInformationPage";
+import MyProjectPage from "@pages/user/MyPage/MyProjectPage";
+import MyProjectEditPage from "@pages/user/MyPage/MyProjectEditPage";
+import MyEstimatePage from "@pages/user/MyPage/MyEstimatePage";
+import EstimateDetailPage from "@pages/user/MyPage/EstimateDetailPage";
+import ManageSubscriptionPage from "@pages/user/MyPage/ManageSubscriptionPage";
+import PersonalInquiryPage from "@pages/user/MyPage/PersonalInquiryPage";
+import PersonalInquiryRegisterPage from "@pages/user/MyPage/PersonalInquiryRegisterPage";
+
 import LoginPage from "@pages/user/LoginPage/LoginPage";
 import JoinPage from "@pages/user/JoinPage/JoinPage";
+import JoinSuccessPage from "@pages/user/JoinPage/JoinSuccessPage";
 
-import TemplateFublishingPage from "@pages/user/TemplateFublishingPage/TemplateFublishingPage";
+import FindIdPage from "@pages/user/FindIdPage/FindIdPage";
+import FindPwPage from "@pages/user/FindPwPage/FindPwPage";
+import ResetPwPage from "@pages/user/ResetPwPage/ResetPwPage";
+
 import CustomerServiceLayout from "./CustomerServiceLayout";
 import GuidePage from "@pages/user/CustomerServicePage/GuidePage/GuidePage";
 import ManualPage from "@pages/user/CustomerServicePage/ManualPage/ManualPage";
 import FaqPage from "@pages/user/CustomerServicePage/FaqPage/FaqPage";
 import NoticePage from "@pages/user/CustomerServicePage/NoticePage/NoticePage";
 import SupportPage from "@pages/user/CustomerServicePage/SupportPage/SupportPage";
+
+import IntroduceCompanyPage from "@pages/user/CompanyNav/IntroduceCompanyPage";
+import IntroduceServicePage from "@pages/user/CompanyNav/IntroduceServicePage";
+import PrivacyPolicyPage from "@pages/user/CompanyNav/PrivacyPolicyPage";
+import TermOfUsePage from "@pages/user/CompanyNav/TermOfUsePage";
 
 import PreparePage from "@pages/user/PreparePage/PreparePage";
 import ErrorPage from "@pages/user/ErrorPage/ErrorPage";
@@ -69,10 +87,32 @@ export default function UserLayout() {
           {/* ---- user -------------- */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/join" element={<JoinPage />} />
-          <Route path="/myPage" element={<MyPage />} />
-          {/* ---- test -------------- */}
-          {/* <Route path="/test" element={<TestPage />} /> */}
-          <Route path="/fublising" element={<TemplateFublishingPage />} />
+          <Route path="/joinSuccess" element={<JoinSuccessPage />} />
+          <Route path="/findId" element={<FindIdPage />} />
+          <Route path="/findPw" element={<FindPwPage />} />
+          <Route path="/resetPw" element={<ResetPwPage />} />
+          {/* my page -------- */}
+          <Route path="/myPage" element={<MypageLayout />}>
+            <Route path="myInfo" element={<MyInformationPage />} />
+            <Route path="myProject" element={<MyProjectPage />} />
+            <Route path="myProjectEdit" element={<MyProjectEditPage />} />
+            <Route path="estimate" element={<MyEstimatePage />} />
+            <Route path="estimateDetail" element={<EstimateDetailPage />} />
+            <Route
+              path="manageSubscription"
+              element={<ManageSubscriptionPage />}
+            />
+            <Route path="personalInquiry" element={<PersonalInquiryPage />} />
+            <Route
+              path="personalInquiryRegister"
+              element={<PersonalInquiryRegisterPage />}
+            />
+          </Route>
+          {/* ---- footer company nav ------- */}
+          <Route path="/introduceCompany" element={<IntroduceCompanyPage />} />
+          <Route path="/introduceService" element={<IntroduceServicePage />} />
+          <Route path="/termOfUse" element={<PrivacyPolicyPage />} />
+          <Route path="/privacyPolicy" element={<PrivacyPolicyPage />} />
           {/* error page */}
           <Route path="/prepare" element={<PreparePage />} />
           <Route path="/error" element={<ErrorPage />} />

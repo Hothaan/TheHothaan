@@ -70,41 +70,40 @@ export interface ImainBannerText {
 }
 
 export interface ImainBannerContent {
-  title?: {
-    text?: string;
-    css?: CSSObject;
-  };
-  desc?: {
-    text?: string;
-    css?: CSSObject;
-  };
-  button?: {
-    text?: string;
-    css?: CSSObject;
-  };
+  mainBannerTitle: string;
+  mainBannerDesc: string;
+  mainBannerButton: string;
+}
+
+export interface ImainBannerStyle {
+  mainBannerTitle: CSSObject;
+  mainBannerDesc: CSSObject;
+  mainBannerButton: CSSObject;
 }
 
 interface ImainBanner {
   content?: ImainBannerContent | null;
+  style?: ImainBannerStyle | null;
   isEditable?: boolean;
-  onChange?: (content: ImainBannerContent) => void;
+  onChangeContent?: (content: ImainBannerContent) => void;
+  onChangeStyle?: (content: ImainBannerStyle) => void;
 }
 
 export default function Mainbanner(prop: ImainBanner) {
-  const { isEditable, content, onChange } = prop;
+  const { isEditable, content, style, onChangeContent, onChangeStyle } = prop;
 
   const initial = {
-    title: {
-      text: content?.title?.text || title_,
-      css: content?.title?.css || mainBanner_title_css_,
+    mainBannerTitle: {
+      text: content?.mainBannerTitle || title_,
+      css: style?.mainBannerTitle || mainBanner_title_css_,
     },
-    desc: {
-      text: content?.desc?.text || desc_,
-      css: content?.desc?.css || mainBanner_desc_css_,
+    mainBannerDesc: {
+      text: content?.mainBannerDesc || desc_,
+      css: style?.mainBannerDesc || mainBanner_desc_css_,
     },
-    button: {
-      text: content?.button?.text || button_,
-      css: content?.button?.css || mainBanner_button_css_,
+    mainBannerButton: {
+      text: content?.mainBannerButton || button_,
+      css: style?.mainBannerButton || mainBanner_button_css_,
     },
   };
 
@@ -116,21 +115,35 @@ export default function Mainbanner(prop: ImainBanner) {
     }
   }, [content]);
 
-  function handleEdit(
-    field: keyof ImainBannerContent,
-    updatedText: string,
-    updatedCss: CSSObject
-  ) {
-    const updatedState = {
-      ...edit,
-      [field]: {
-        text: updatedText,
-        css: updatedCss,
-      },
-    };
-    setEdit(updatedState);
-    onChange?.(updatedState);
-  }
+  // function handleEdit(
+  //   field: keyof ImainBannerContent,
+  //   updatedText: string,
+  //   updatedCss: CSSObject
+  // ) {
+  //   const updatedState = {
+  //     ...edit,
+  //     [field]: {
+  //       text: updatedText,
+  //       css: updatedCss,
+  //     },
+  //   };
+  //   const updatedContentState = {
+  //     ...edit,
+  //     [field]: {
+  //       text: updatedText,
+  //       css: updatedCss,
+  //     },
+  //   };
+  //   const updatedStyleState = {
+  //     ...edit,
+  //     [field]:
+  //       text: updatedText,
+
+  //     },
+  //   };
+  //   setEdit(updatedState);
+  //   onChangeContent?.(updatedState);
+  // }
 
   return (
     <OuterWrap padding="0">
@@ -148,30 +161,25 @@ export default function Mainbanner(prop: ImainBanner) {
         <div css={container}>
           {isEditable ? (
             <EditableText
-              text={edit.title.text}
+              text={edit.mainBannerTitle.text}
               isTextArea={false}
-              defaultCss={edit.title.css}
-              onChange={(text, css) => handleEdit("title", text, css)}
+              defaultCss={edit.mainBannerTitle.css}
+              // onChange={(text, css) => handleEdit("mainBannerTitle", text, css)}
             />
           ) : (
-            <p css={edit.title.css}>{edit.title.text}</p>
+            <p css={edit.mainBannerTitle.css}>{edit.mainBannerTitle.text}</p>
           )}
           {isEditable ? (
             <EditableText
-              text={edit.desc.text}
+              text={edit.mainBannerDesc.text}
               isTextArea={true}
-              defaultCss={edit.desc.css}
-              onChange={(text, css) => handleEdit("desc", text, css)}
+              defaultCss={edit.mainBannerDesc.css}
+              // onChange={(text, css) => handleEdit("mainBannerDesc", text, css)}
             />
           ) : (
-            <p css={edit.desc.css}>{edit.desc.text}</p>
+            <p css={edit.mainBannerDesc.css}>{edit.mainBannerDesc.text}</p>
           )}
-          <p css={edit.button.css}>{edit.button.text}</p>
-          {/* <TemplateButton
-            type="default"
-            text={content?.button || button_}
-            className={button_className}
-          /> */}
+          <p css={edit.mainBannerButton.css}>{edit.mainBannerButton.text}</p>
         </div>
       </div>
     </OuterWrap>

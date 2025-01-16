@@ -27,11 +27,11 @@ export default function UserMenu(prop: IuserMenu) {
   const { userInfo, isLogin } = useUserInfoStore();
 
   const userMenu: IuserMenuItem[] = [
-    { text: "내 정보", link: "/myPage" },
-    { text: "내 작업", link: "/myProject" },
-    { text: "받은 견적", link: "/estimateHistory" },
-    { text: "구독 관리", link: "/managePlan" },
-    { text: "1:1 문의", link: "/personalInquiry" },
+    { text: "내 정보", link: "/myPage/myInfo" },
+    { text: "내 작업", link: "/myPage/myProject" },
+    { text: "받은 견적", link: "/myPage/estimate" },
+    { text: "구독 관리", link: "/myPage/manageSubscription" },
+    { text: "1:1 문의", link: "/myPage/personalInquiry" },
     { text: "로그아웃", onClick: removeUserInfo },
   ];
 
@@ -91,8 +91,8 @@ export default function UserMenu(prop: IuserMenu) {
   } else {
     return (
       <div css={user_not_memeber(theme, isMain)}>
-        <Link to="/">로그인</Link>
-        <Link to="/">회원가입</Link>
+        <Link to="/login">로그인</Link>
+        <Link to="/join">회원가입</Link>
       </div>
     );
   }

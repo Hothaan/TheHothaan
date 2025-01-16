@@ -1,3 +1,6 @@
+/** @jsxImportSource @emotion/react */
+import { css, CSSObject } from "@emotion/react";
+
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
@@ -18,12 +21,11 @@ import { InoticeText } from "@components/template/customerService/Notice";
 
 /* content */
 
-interface IshoppingMallNoticeText {
-  notice: InoticeText;
-}
-
 interface IshoppingMallNoticeContent {
-  notice: InoticeText;
+  noticeTitle: string;
+}
+interface IshoppingMallNoticeStyle {
+  noticeTitle: CSSObject;
 }
 
 export default function ShoppingMallNotice() {
@@ -81,11 +83,6 @@ export default function ShoppingMallNotice() {
       fetchFeatureData(isProduction, projectIdValue);
     }
   }, [projectIdValue]);
-
-  const [changedContent, setChangedContent] = useState(null);
-  const [pageContent, setPageContent] = useState<IshoppingMallNoticeContent>(
-    {} as IshoppingMallNoticeContent
-  );
 
   if (!generatedText || !headerData) {
     return <Loading />;

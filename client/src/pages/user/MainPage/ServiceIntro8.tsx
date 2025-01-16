@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
+import { useState } from "react";
 import MainPageSectionContainer from "./MainPageSectionContainer";
 import { Title } from "./Title";
 import Button, { Ibutton } from "@components/common/button/Button";
@@ -7,10 +8,10 @@ import { ReactComponent as EditProject } from "@svgs/serviceIntro8/editProject.s
 import { ReactComponent as ProjectBoard } from "@svgs/serviceIntro8/projectBoard.svg";
 import { ReactComponent as Plugin } from "@svgs/serviceIntro8/plugin.svg";
 import { ReactComponent as Template } from "@svgs/serviceIntro8/template.svg";
-import { useState } from "react";
+import PlanPaymentModal from "@components/plan/PlanPaymentModal";
 
-type Tplan = "FREE" | "Basic" | "Pro";
-type Tperiod = "month" | "year" | "none";
+export type Tplan = "FREE" | "Basic" | "Pro";
+export type Tperiod = "month" | "year" | "none";
 
 interface IserviceIntro8Card {
   isUsing: boolean;
@@ -40,6 +41,7 @@ export function ServiceIntro8Card(prop: IserviceIntro8Card) {
   } = prop;
 
   const [periodState, setPeriodState] = useState(period);
+  const [isModalOepn, setIsModalOpen] = useState(false);
 
   const card_wrap = css`
     position: relative;
@@ -194,13 +196,7 @@ export function ServiceIntro8Card(prop: IserviceIntro8Card) {
     bg: "white",
     text: isUsing === true ? "이용중" : "이용하기",
     onClick: () => {
-      setPeriodState((prev) => {
-        if (prev === "month") {
-          return "year";
-        } else {
-          return "month";
-        }
-      });
+      setIsModalOpen(!isModalOepn);
     },
   };
 
@@ -213,90 +209,99 @@ export function ServiceIntro8Card(prop: IserviceIntro8Card) {
   `;
 
   return (
-    <div css={card_wrap}>
-      <div css={card_top}>
-        <div css={button_plan_container}>
-          <p css={plan_style}>{plan}</p>
-          {periodState !== "none" && (
-            <div css={peroid_button_container}>
-              <button
-                type="button"
-                css={period_button(periodState === "month")}
-                onClick={() => {
-                  setPeriodState("month");
-                }}
-              >
-                월간
-              </button>
-              <button
-                type="button"
-                css={period_button(periodState === "year")}
-                onClick={() => {
-                  setPeriodState("year");
-                }}
-              >
-                연간
-              </button>
+    <>
+      <div css={card_wrap}>
+        <div css={card_top}>
+          <div css={button_plan_container}>
+            <p css={plan_style}>{plan}</p>
+            {periodState !== "none" && (
+              <div css={peroid_button_container}>
+                <button
+                  type="button"
+                  css={period_button(periodState === "month")}
+                  onClick={() => {
+                    setPeriodState("month");
+                  }}
+                >
+                  월간
+                </button>
+                <button
+                  type="button"
+                  css={period_button(periodState === "year")}
+                  onClick={() => {
+                    setPeriodState("year");
+                  }}
+                >
+                  연간
+                </button>
+              </div>
+            )}
+          </div>
+          <div css={price_container}>
+            {periodState === "month" ? (
+              <>
+                <p css={price_style}>
+                  {priceMonth.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                  원
+                </p>
+                <p css={price_period}>/ {period}</p>
+              </>
+            ) : periodState === "year" ? (
+              <>
+                <p css={price_style}>
+                  {priceYear.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원
+                </p>
+                <p css={price_period}>/ {periodState}</p>
+              </>
+            ) : (
+              <>
+                <p css={price_style}>
+                  {priceMonth.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                  원
+                </p>
+              </>
+            )}
+          </div>
+          <p css={desc_style}>{desc}</p>
+          <Button {...button} />
+        </div>
+        <div css={card_bottom}>
+          <div css={info_item}>
+            <div css={info_title_container}>
+              <EditProject />
+              <p css={info_title}>편집 프로젝트</p>
             </div>
-          )}
-        </div>
-        <div css={price_container}>
-          {periodState === "month" ? (
-            <>
-              <p css={price_style}>
-                {priceMonth.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원
+            <p css={number}>{editProject}</p>
+          </div>
+          <div css={info_item}>
+            <div css={info_title_container}>
+              <ProjectBoard />
+              <p css={info_title}>프로젝트 당 보드</p>
+            </div>
+            <p css={number}>{projectBoard}</p>
+          </div>
+          <div css={info_item}>
+            <div css={info_title_container}>
+              <Plugin />
+              <p css={info_title}>더핫한 플러그인 </p>
+            </div>
+            <p css={number}>{plugin}</p>
+          </div>
+          <div css={info_item}>
+            <div css={info_title_container}>
+              <Template />
+              <p css={info_title}>
+                {plan === "FREE" ? "템플릿" : "피그마 변환"}
               </p>
-              <p css={price_period}>/ {period}</p>
-            </>
-          ) : periodState === "year" ? (
-            <>
-              <p css={price_style}>
-                {priceYear.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원
-              </p>
-              <p css={price_period}>/ {periodState}</p>
-            </>
-          ) : (
-            <>
-              <p css={price_style}>
-                {priceMonth.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원
-              </p>
-            </>
-          )}
-        </div>
-        <p css={desc_style}>{desc}</p>
-        <Button {...button} />
-      </div>
-      <div css={card_bottom}>
-        <div css={info_item}>
-          <div css={info_title_container}>
-            <EditProject />
-            <p css={info_title}>편집 프로젝트</p>
+            </div>
+            <p css={number}>{template}</p>
           </div>
-          <p css={number}>{editProject}</p>
-        </div>
-        <div css={info_item}>
-          <div css={info_title_container}>
-            <ProjectBoard />
-            <p css={info_title}>프로젝트 당 보드</p>
-          </div>
-          <p css={number}>{projectBoard}</p>
-        </div>
-        <div css={info_item}>
-          <div css={info_title_container}>
-            <Plugin />
-            <p css={info_title}>더핫한 플러그인 </p>
-          </div>
-          <p css={number}>{plugin}</p>
-        </div>
-        <div css={info_item}>
-          <div css={info_title_container}>
-            <Template />
-            <p css={info_title}>{plan === "FREE" ? "템플릿" : "피그마 변환"}</p>
-          </div>
-          <p css={number}>{template}</p>
         </div>
       </div>
-    </div>
+      {isModalOepn && (
+        <PlanPaymentModal isOpen={isModalOepn} plan={plan} onClick={() => {}} />
+      )}
+    </>
   );
 }
 

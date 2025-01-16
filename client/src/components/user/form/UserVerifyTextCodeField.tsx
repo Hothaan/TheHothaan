@@ -6,17 +6,20 @@ import TextField from "@components/common/form/TextField";
 import { ItextField } from "@components/common/form/TextField";
 import Button from "@components/common/button/Button";
 import { Ibutton } from "@components/common/button/Button";
+import { text } from "stream/consumers";
 
-export interface IuserVerifyTextFieldArea extends ItextField {
-  isVerified: boolean;
+export interface IuserVerifyCodeFieldArea extends ItextField {
+  ms: string;
+  isCodeTimeOut: boolean;
+  onClick: () => void;
 }
 
-export interface IuserVerifyTextField {
-  textField: IuserVerifyTextFieldArea;
+export interface IuserVerifyCodeField {
+  textField: IuserVerifyCodeFieldArea;
   button: Ibutton;
 }
 
-export default function UserVerifyTextField(prop: IuserVerifyTextField) {
+export default function UserVerifyTextCodeField(prop: IuserVerifyCodeField) {
   const { textField, button } = prop;
   const inputLabel: IuserFormLabel = { label: textField.label };
   return (
@@ -28,7 +31,7 @@ export default function UserVerifyTextField(prop: IuserVerifyTextField) {
             {textField.label}
           </label>
           <input
-            css={input(textField.size)}
+            css={input(textField.size, textField.isCodeTimeOut)}
             type={textField.type !== undefined ? textField.type : "text"}
             name={textField.id}
             id={textField.id}
@@ -38,8 +41,9 @@ export default function UserVerifyTextField(prop: IuserVerifyTextField) {
             disabled={textField.disabled || false}
             value={textField.value || ""}
           />
-          {textField.isVerified && (
-            <div css={verified_icon}>
+          <p css={ms(textField.isCodeTimeOut)}>{textField.ms}</p>
+          {textField.isCodeTimeOut && (
+            <div css={error_icon}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
@@ -48,31 +52,26 @@ export default function UserVerifyTextField(prop: IuserVerifyTextField) {
                 fill="none"
               >
                 <path
-                  d="M7.99992 1.33203C4.32392 1.33203 1.33325 4.3227 1.33325 7.9987C1.33325 11.6747 4.32392 14.6654 7.99992 14.6654C11.6759 14.6654 14.6666 11.6747 14.6666 7.9987C14.6666 4.3227 11.6759 1.33203 7.99992 1.33203ZM6.66725 10.9407L4.19192 8.4707L5.13325 7.5267L6.66592 9.0567L10.1953 5.52736L11.1379 6.47003L6.66725 10.9407Z"
-                  fill="#119CD4"
+                  d="M7.96871 1.33203C4.31004 1.33203 1.33337 4.3227 1.33337 7.9987C1.33337 11.6747 4.32404 14.6654 8.00004 14.6654C11.676 14.6654 14.6667 11.6747 14.6667 7.9987C14.6667 4.3227 11.662 1.33203 7.96871 1.33203ZM8.66671 11.332H7.33337V9.9987H8.66671V11.332ZM8.66671 8.66536H7.33337V4.66536H8.66671V8.66536Z"
+                  fill="#D00000"
                 />
               </svg>
             </div>
           )}
-          {textField.isVerified && (
-            <div css={caption_container}>
-              <div css={caption_icon}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                >
-                  <path
-                    d="M9.99997 15.586L6.70697 12.293L5.29297 13.707L9.99997 18.414L19.707 8.70697L18.293 7.29297L9.99997 15.586Z"
-                    fill="white"
-                  />
-                </svg>
-              </div>
-              <p css={caption}>이메일 인증이 완료 되었습니다.</p>
-            </div>
-          )}
+          <div css={caption_container}>
+            {textField.isCodeTimeOut ? (
+              <p css={caption(textField.isCodeTimeOut)}>
+                인증 유효 시간을 초과했습니다.
+              </p>
+            ) : (
+              <p css={caption(textField.isCodeTimeOut)}>
+                인증번호 n자리를 입력하세요.
+              </p>
+            )}
+            <p css={caption_link} onClick={textField.onClick}>
+              인증번호 재발송
+            </p>
+          </div>
         </div>
         <Button {...button} />
       </div>
@@ -80,16 +79,20 @@ export default function UserVerifyTextField(prop: IuserVerifyTextField) {
   );
 }
 
-const caption_container = css`
-  margin-top: 10px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  align-self: stretch;
+const error_icon = css`
+  position: absolute;
+  bottom: calc(45px + 25px);
+  right: 17px;
+  transform: translateY(50%);
 `;
 
-const caption = css`
-  color: var(--119CD4, #119cd4);
+const ms = (isCodeTimeOut: boolean) => css`
+  position: absolute;
+  bottom: calc(45px + 25px);
+  right: ${isCodeTimeOut ? "40px" : "17px"};
+  transform: translateY(50%);
+
+  color: ${isCodeTimeOut ? "#D00000" : "#747474"};
   font-family: Pretendard;
   font-size: 13px;
   font-style: normal;
@@ -97,48 +100,53 @@ const caption = css`
   line-height: normal;
 `;
 
-const caption_icon = css`
+const caption_container = css`
+  margin: 10px 0 20px;
   display: flex;
-  width: 24px;
-  height: 24px;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  gap: 10px;
-
-  border-radius: 50px;
-  background: var(--119CD4, #119cd4);
+  gap: 5px;
+  align-self: stretch;
 `;
 
-const verified_icon = css`
-  position: absolute;
-  width: 16px;
-  height: 16px;
-  right: 17px;
-  top: 25px;
-  transform: translateY(-50%);
+const caption_link = css`
+  cursor: pointer;
+
+  color: var(--747474, #747474);
+  font-family: Pretendard;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  text-decoration-line: underline;
+  text-decoration-style: solid;
+  text-decoration-skip-ink: none;
+  text-decoration-thickness: auto;
+  text-underline-offset: auto;
+  text-underline-position: from-font;
+`;
+
+const caption = (isCodeTimeOut: boolean) => css`
+  color: ${isCodeTimeOut ? "#D00000" : "#747474"};
+  font-family: Pretendard;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
 `;
 
 const wrap = css`
   width: 100%;
-`;
-
-const label = css`
-  margin-bottom: 10px;
-  color: var(--383838, #383838);
-  font-family: Pretendard;
-  font-size: 15px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: normal;
+  margin-bottom: 16px;
 `;
 
 const input_container = css`
   width: 100%;
   display: flex;
+  flex-direction: column;
   gap: 10px;
   button {
     white-space: nowrap;
-    width: 58px;
   }
 `;
 
@@ -151,7 +159,7 @@ const none = css`
   display: none;
 `;
 
-const input = (size: string) => css`
+const input = (size: string, isCodeTimeOut: boolean) => css`
   display: flex;
   width: 100%;
   max-width: 1400px;
@@ -162,7 +170,7 @@ const input = (size: string) => css`
 
   border-radius: ${size === "normal" ? "10px" : "7px"};
   border: ${size === "normal" ? "2px" : "1px"} solid var(--DEDEDE, #dedede);
-  background: var(--FFFFFF, #fff);
+  background: ${isCodeTimeOut ? "rgba(208, 0, 0, 0.10);" : "#fff"};
 
   font-family: "Pretendard";
   color: var(--383838, #383838);

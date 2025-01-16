@@ -7,6 +7,7 @@ export interface IMyPageButton {
 
 export default function MyPageButton(prop: IMyPageButton) {
   const { text } = prop;
+
   return (
     <button type="button" css={container}>
       <p css={text_style}>{text}</p>

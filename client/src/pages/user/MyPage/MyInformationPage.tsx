@@ -1,10 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
+import MyPageContainer from "@components/common/ui/Container/MyPageContainer";
 import Button, { Ibutton } from "@components/common/button/Button";
-import MyPageButton from "./MyPageButton";
+import MyPageButton from "../../../components/common/mypage/MyPageButton";
 import Checkbox, { Icheckbox } from "@components/common/form/Checkbox";
 
-export default function MyInformation() {
+export default function MyInformationPage() {
   const saveButton: Ibutton = {
     size: "L",
     bg: "gray",
@@ -21,8 +22,7 @@ export default function MyInformation() {
   };
 
   return (
-    <div css={container}>
-      <p css={title}>내 정보</p>
+    <MyPageContainer title={"내 정보"}>
       <ul css={information_container}>
         <li css={information_row}>
           <div css={information_inner_container}>
@@ -93,29 +93,9 @@ export default function MyInformation() {
       <div css={button_container}>
         <Button {...saveButton} />
       </div>
-    </div>
+    </MyPageContainer>
   );
 }
-
-const container = css`
-  width: 100%;
-  display: flex;
-  padding: 50px;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 30px;
-  flex: 1 0 0;
-  background: var(--FFF, #fff);
-`;
-
-const title = css`
-  color: var(--383838, #383838);
-  font-family: Pretendard;
-  font-size: 24px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-`;
 
 const information_container = css`
   width: 100%;
