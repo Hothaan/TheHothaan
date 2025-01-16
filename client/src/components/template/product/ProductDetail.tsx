@@ -24,28 +24,24 @@ export interface IproductDetailText {
 }
 
 export interface IproductDetailContent {
-  productTitle?: {
-    text?: string;
-    css?: CSSObject;
-  };
-  productDesc?: {
-    text?: string;
-    css?: CSSObject;
-  };
-  moreProductTitle?: {
-    text?: string;
-    css?: CSSObject;
-  };
-  moreProductDesc?: {
-    text?: string;
-    css?: CSSObject;
-  };
+  productDetailProductTitle: string;
+  productDetailProductDesc: string;
+  productDetailMoreProductTitle: string;
+  productDetailMoreProductDesc: string;
+}
+export interface IproductDetailStyle {
+  productDetailProductTitle: CSSObject;
+  productDetailProductDesc: CSSObject;
+  productDetailMoreProductTitle: CSSObject;
+  productDetailMoreProductDesc: CSSObject;
 }
 
 interface IproductDetail {
   content?: IproductDetailContent | null;
+  style?: IproductDetailStyle | null;
   isEditable?: boolean;
-  onChange?: (content: IproductDetailContent) => void;
+  onChangeContent?: (content: IproductDetailContent) => void;
+  onChangeStyle?: (style: IproductDetailStyle) => void;
 }
 
 export const product_detail_product_title_css_: CSSObject = {
@@ -94,7 +90,7 @@ export const product_detail_more_product__option_main_desc_css: Record<
 };
 
 function ProductDetailInfo(prop: IproductDetail) {
-  const { content, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   const top_container = css`
     width: 100%;
@@ -268,7 +264,7 @@ function ProductDetailInfo(prop: IproductDetail) {
           <TemplateBadge text="카테고리" />
 
           <p css={product_detail_product_title_css_}>
-            {content?.productTitle?.text || product_title_}
+            {content?.productDetailProductTitle || product_title_}
           </p>
 
           <div css={product_price_container}>
@@ -277,13 +273,13 @@ function ProductDetailInfo(prop: IproductDetail) {
           </div>
 
           <p css={product_detail_product_desc_css_}>
-            {content?.productDesc?.text || product_desc_}
+            {content?.productDetailProductDesc || product_desc_}
           </p>
         </div>
         <div css={product_amount_container}>
           <div css={product_amount_controller_container}>
             <p css={product_amount_name}>
-              {content?.productTitle?.text || product_title_}
+              {content?.productDetailProductTitle || product_title_}
             </p>
 
             <div css={product_amount_controller}>
@@ -328,7 +324,7 @@ function ProductDetailAccordion() {
 }
 
 function ProductDetailList(prop: IproductDetail) {
-  const { content, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   const count = 3;
 
@@ -405,11 +401,11 @@ function ProductDetailList(prop: IproductDetail) {
           />
           <div css={text_container}>
             <div css={product_info_container}>
-              <p css={content?.moreProductTitle?.css}>
-                {content?.moreProductTitle?.text || more_product_title_}
+              <p css={style?.productDetailProductTitle}>
+                {content?.productDetailProductTitle || more_product_title_}
               </p>
-              <p css={content?.moreProductDesc?.css}>
-                {content?.moreProductDesc?.text || more_product_desc_}
+              <p css={style?.productDetailProductDesc}>
+                {content?.productDetailProductDesc || more_product_desc_}
               </p>
             </div>
             <div css={product_price_container("main")}>
@@ -437,27 +433,28 @@ function ProductDetailReview() {
 }
 
 export default function ProductDetail(prop: IproductDetail) {
-  const { content, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   const initial = {
-    productTitle: {
-      text: content?.productTitle?.text || product_title_,
-      css: content?.productTitle?.css || product_detail_product_title_css_,
-    },
-    productDesc: {
-      text: content?.productDesc?.text || product_desc_,
-      css: content?.productDesc?.css || product_detail_product_desc_css_,
-    },
-    moreProductTitle: {
-      text: content?.moreProductTitle?.text || more_product_title_,
+    productDetailProductTitle: {
+      text: content?.productDetailProductTitle || product_title_,
       css:
-        content?.moreProductTitle?.css ||
+        style?.productDetailProductTitle || product_detail_product_title_css_,
+    },
+    productDetailProductDesc: {
+      text: content?.productDetailProductDesc || product_desc_,
+      css: style?.productDetailProductDesc || product_detail_product_desc_css_,
+    },
+    productDetailMoreProductTitle: {
+      text: content?.productDetailMoreProductTitle || more_product_title_,
+      css:
+        style?.productDetailMoreProductTitle ||
         product_detail_more_product__option_main_title_css,
     },
-    moreProductDesc: {
-      text: content?.moreProductDesc?.text || more_product_desc_,
+    productDetailMoreProductDesc: {
+      text: content?.productDetailMoreProductDesc || more_product_desc_,
       css:
-        content?.moreProductDesc?.css ||
+        style?.productDetailMoreProductDesc ||
         product_detail_more_product__option_main_desc_css,
     },
   };
@@ -470,21 +467,21 @@ export default function ProductDetail(prop: IproductDetail) {
     }
   }, [content]);
 
-  function handleEdit(
-    field: keyof IproductDetailContent,
-    updatedText: string,
-    updatedCss: CSSObject
-  ) {
-    const updatedState = {
-      ...edit,
-      [field]: {
-        text: updatedText,
-        css: updatedCss,
-      },
-    };
-    setEdit(updatedState);
-    onChange?.(updatedState);
-  }
+  // function handleEdit(
+  //   field: keyof IproductDetailContent,
+  //   updatedText: string,
+  //   updatedCss: CSSObject
+  // ) {
+  //   const updatedState = {
+  //     ...edit,
+  //     [field]: {
+  //       text: updatedText,
+  //       css: updatedCss,
+  //     },
+  //   };
+  //   setEdit(updatedState);
+  //   onChange?.(updatedState);
+  // }
 
   const container = css`
     display: flex;
@@ -499,15 +496,15 @@ export default function ProductDetail(prop: IproductDetail) {
       <ContentsWrap>
         <div css={container}>
           <ProductDetailInfo
-            content={edit}
+            content={content}
             isEditable={isEditable}
-            onChange={onChange}
+            // onChange={onChange}
           />
           <ProductDetailAccordion />
           <ProductDetailList
-            content={edit}
+            content={content}
             isEditable={isEditable}
-            onChange={onChange}
+            // onChange={onChange}
           />
           <ProductDetailReview />
           <Pagination />

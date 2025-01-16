@@ -1,3 +1,6 @@
+/** @jsxImportSource @emotion/react */
+import { css, CSSObject } from "@emotion/react";
+
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
@@ -27,16 +30,23 @@ import { IproductDetailText } from "@components/template/product/ProductDetail";
 /* content */
 import { IproductDetailContent } from "@components/template/product/ProductDetail";
 
-interface IShoppingMallProductDetailText {
-  productDetail: IproductDetailText;
+interface IShoppingMallProductDetailContent {
+  productDetailProductTitle: string;
+  productDetailProductDesc: string;
+  productDetailMoreProductTitle: string;
+  productDetailMoreProductDesc: string;
 }
 
-interface IShoppingMallProductDetailContent {
-  productDetail: IproductDetailContent;
+interface IShoppingMallProductDetailStyle {
+  productDetailProductTitle: CSSObject;
+  productDetailProductDesc: CSSObject;
+  productDetailMoreProductTitle: CSSObject;
+  productDetailMoreProductDesc: CSSObject;
 }
 
 export default function ShoppingMallProductDetail() {
   const feature = "상품 상세";
+  const featureKey = "shoppingMallProductDetail";
 
   /* only projectId */
   const { isProduction } = useIsProduction();
@@ -106,34 +116,59 @@ export default function ShoppingMallProductDetail() {
     return validKeys.every((key) => key in data);
   };
 
-  function updateSectionContent<
-    T extends keyof IShoppingMallProductDetailContent
-  >(section: T, updatedContent: Partial<IShoppingMallProductDetailContent[T]>) {
-    setPageContent((prev) => ({
-      ...prev,
-      [section]: {
-        ...prev?.[section],
-        ...updatedContent,
-      },
-    }));
-  }
+  // function updateSectionContent<
+  //   T extends keyof IShoppingMallProductDetailContent
+  // >(section: T, updatedContent: Partial<IShoppingMallProductDetailContent[T]>) {
+  //   setPageContent((prev) => ({
+  //     ...prev,
+  //     [section]: {
+  //       ...prev?.[section],
+  //       ...updatedContent,
+  //     },
+  //   }));
+  // }
 
-  useEffect(() => {
+  function updateInitial() {
     if (
       generatedText &&
       generatedText.content?.title &&
       generatedText.content?.desc
     ) {
-      updateSectionContent("productDetail", {
-        productTitle: {
-          text: generatedText.content?.title,
-          css: product_detail_product_title_css_,
-        },
-        productDesc: {
-          text: generatedText.content?.desc,
-          css: product_detail_product_desc_css_,
-        },
-      });
+      const initialContent = {
+        productDetailProductTitle: generatedText.content?.title,
+        productDetailProductDesc: generatedText.content?.desc,
+      };
+
+      localStorage.setItem(
+        "changedContent",
+        JSON.stringify({ [featureKey]: initialContent })
+      );
+      setPageContent({ ...pageContent, ...initialContent });
+    }
+  }
+
+  useEffect(() => {
+    const localData = localStorage.getItem("changedContent");
+    let parsedData: any = null;
+    if (localData) {
+      try {
+        parsedData = JSON.parse(localData);
+      } catch (e) {
+        localStorage.removeItem("changedContent");
+        return;
+      }
+
+      if (featureKey in parsedData) {
+        setChangedContent(parsedData[featureKey]);
+        setPageContent((prev) => ({
+          ...prev,
+          ...parsedData[featureKey].structure,
+        }));
+      } else {
+        updateInitial();
+      }
+    } else {
+      updateInitial();
     }
   }, [generatedText]);
 
@@ -148,7 +183,7 @@ export default function ShoppingMallProductDetail() {
         logo={headerData.logo || undefined}
         serviceType="쇼핑몰"
       />
-      <ProductDetail content={pageContent?.productDetail} />
+      <ProductDetail content={pageContent} />
       <Footer logo={headerData.logo} serviceType="쇼핑몰" />
     </div>
   );

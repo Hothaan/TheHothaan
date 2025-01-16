@@ -20,16 +20,19 @@ export interface IcartText {
 }
 
 export interface IcartContent {
-  title?: {
-    text?: string;
-    css?: CSSObject;
-  };
+  cartTitle: string;
+}
+
+export interface IcartStyle {
+  cartTitle: CSSObject;
 }
 
 interface Icart {
   content?: IcartContent | null;
+  style?: IcartStyle | null;
   isEditable?: boolean;
-  onChange?: (content: IcartContent) => void;
+  onChangeContent?: (content: IcartContent) => void;
+  onChangeStyle?: (style: IcartStyle) => void;
 }
 
 export const cart_title_css = {
@@ -90,7 +93,7 @@ function CartTitle() {
 }
 
 function CartOrder(prop: Icart) {
-  const { content, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   const container = css`
     display: flex;
@@ -393,8 +396,8 @@ function CartOrder(prop: Icart) {
                   borderRadius="0"
                 />
                 <div css={product_info_container}>
-                  <p css={content?.title?.css} className={title_className}>
-                    {content?.title?.text || title_}
+                  <p css={style?.cartTitle} className={title_className}>
+                    {content?.cartTitle || title_}
                   </p>
                   <p css={text_style}>￦5,600,000</p>
                 </div>
@@ -630,12 +633,12 @@ function CartInfo() {
 }
 
 export default function Cart(prop: Icart) {
-  const { content, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   const initial = {
-    title: {
-      text: content?.title?.text || title_,
-      css: content?.title?.css || cart_title_css,
+    cartTitle: {
+      text: content?.cartTitle || title_,
+      css: content?.cartTitle || cart_title_css,
     },
   };
 
@@ -647,21 +650,21 @@ export default function Cart(prop: Icart) {
     }
   }, [content]);
 
-  function handleEdit(
-    field: keyof IcartContent,
-    updatedText: string,
-    updatedCss: CSSObject
-  ) {
-    const updatedState = {
-      ...edit,
-      [field]: {
-        text: updatedText,
-        css: updatedCss,
-      },
-    };
-    setEdit(updatedState);
-    onChange?.(updatedState);
-  }
+  // function handleEdit(
+  //   field: keyof IcartContent,
+  //   updatedText: string,
+  //   updatedCss: CSSObject
+  // ) {
+  //   const updatedState = {
+  //     ...edit,
+  //     [field]: {
+  //       text: updatedText,
+  //       css: updatedCss,
+  //     },
+  //   };
+  //   setEdit(updatedState);
+  //   onChange?.(updatedState);
+  // }
 
   const container = css`
     width: 100%;
@@ -673,9 +676,9 @@ export default function Cart(prop: Icart) {
         <div css={container}>
           <CartTitle />
           <CartOrder
-            content={edit}
+            content={content}
             isEditable={isEditable}
-            onChange={onChange}
+            // onChange={onChange}
           />
           <CartInfo />
         </div>

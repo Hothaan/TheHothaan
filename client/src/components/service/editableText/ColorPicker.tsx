@@ -39,6 +39,7 @@ export default function ColorPicker(prop: IcolorPicker) {
 
 const container = css`
   position: relative;
+  z-index: 10;
 `;
 
 const selected_color = (selected: string) => css`
@@ -54,6 +55,7 @@ const option_container = css`
   position: absolute;
   right: 0;
   bottom: calc(100% + 40px);
+  z-index: 10;
 
   display: flex;
   width: 400px;

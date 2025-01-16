@@ -21,31 +21,24 @@ const product_title_ = "lorem ipsum, quia do";
 
 const product_desc_ = "lorem ipsum, quia do";
 
-export interface IproductListText {
-  categories?: string[];
-  productTitle?: string;
-  productDesc?: string;
+export interface IproductListContent {
+  productListCategories?: string[];
+  productListProductTitle?: string;
+  productListProductDesc?: string;
 }
 
-export interface IproductListContent {
-  categories?: {
-    text?: string[];
-    css?: CSSObject;
-  };
-  productTitle?: {
-    text?: string;
-    css?: CSSObject;
-  };
-  productDesc?: {
-    text?: string;
-    css?: CSSObject;
-  };
+export interface IproductListStyle {
+  productListCategories?: CSSObject;
+  productListProductTitle?: CSSObject;
+  productListProductDesc?: CSSObject;
 }
 
 interface IproductList {
   content?: IproductListContent | null;
+  style?: IproductListStyle | null;
   isEditable?: boolean;
-  onChange?: (content: IproductListContent) => void;
+  onChangeContent?: (content: IproductListContent) => void;
+  onChangeStyle?: (style: IproductListStyle) => void;
 }
 
 export const product_list_title_css_: CSSObject = {
@@ -79,7 +72,7 @@ export const product_list_nav_item_css_: CSSObject = {
 };
 
 function ProductListItem(prop: IproductList) {
-  const { content, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   const slide_item = css`
     width: 100%;
@@ -157,11 +150,11 @@ function ProductListItem(prop: IproductList) {
       <div css={info_container}>
         <div css={text_container}>
           <div css={product_info_container}>
-            <p css={content?.productTitle?.css || product_list_title_css_}>
-              {content?.productTitle?.text || product_title_}
+            <p css={style?.productListProductTitle || product_list_title_css_}>
+              {content?.productListProductTitle || product_title_}
             </p>
-            <p css={content?.productDesc?.css || product_list_desc_css_}>
-              {content?.productDesc?.text || product_desc_}
+            <p css={style?.productListProductDesc || product_list_desc_css_}>
+              {content?.productListProductDesc || product_desc_}
             </p>
           </div>
           <div css={product_price_container}>
@@ -180,20 +173,20 @@ function ProductListItem(prop: IproductList) {
 }
 
 export default function ProductList(prop: IproductList) {
-  const { content, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   const initial = {
-    categories: {
-      text: content?.categories?.text || categories_,
-      css: content?.categories?.css || product_list_nav_item_css_,
+    productListCategories: {
+      text: content?.productListCategories || categories_,
+      css: style?.productListCategories || product_list_nav_item_css_,
     },
-    productTitle: {
-      text: content?.productTitle?.text || product_title_,
-      css: content?.productTitle?.css || product_list_title_css_,
+    productListProductTitle: {
+      text: content?.productListProductTitle || product_title_,
+      css: style?.productListProductTitle || product_list_title_css_,
     },
-    productDesc: {
-      text: content?.productDesc?.text || product_desc_,
-      css: content?.productDesc?.css || product_list_desc_css_,
+    productListProductDesc: {
+      text: content?.productListProductDesc || product_desc_,
+      css: style?.productListProductDesc || product_list_desc_css_,
     },
   };
 
@@ -205,21 +198,21 @@ export default function ProductList(prop: IproductList) {
     }
   }, [content]);
 
-  function handleEdit(
-    field: keyof IproductListContent,
-    updatedText: string,
-    updatedCss: CSSObject
-  ) {
-    const updatedState = {
-      ...edit,
-      [field]: {
-        text: updatedText,
-        css: updatedCss,
-      },
-    };
-    setEdit(updatedState);
-    onChange?.(updatedState);
-  }
+  // function handleEdit(
+  //   field: keyof IproductListContent,
+  //   updatedText: string,
+  //   updatedCss: CSSObject
+  // ) {
+  //   const updatedState = {
+  //     ...edit,
+  //     [field]: {
+  //       text: updatedText,
+  //       css: updatedCss,
+  //     },
+  //   };
+  //   setEdit(updatedState);
+  //   onChange?.(updatedState);
+  // }
 
   const count = 3;
 
@@ -256,12 +249,13 @@ export default function ProductList(prop: IproductList) {
           <div css={title_wrap}>
             <Title title="category" transform="uppercase" marginBottom={57} />
             <ul css={category_wrap}>
-              {edit?.categories?.text
-                ? edit?.categories?.text.map((category, idx) => (
+              {edit?.productListCategories
+                ? edit?.productListCategories?.text.map((category, idx) => (
                     <li css={nav_item} key={idx}>
                       <p
                         css={
-                          edit?.categories?.css || product_list_nav_item_css_
+                          style?.productListCategories ||
+                          product_list_nav_item_css_
                         }
                       >
                         {category || "category"}
@@ -273,7 +267,8 @@ export default function ProductList(prop: IproductList) {
                     <li css={nav_item} key={idx}>
                       <p
                         css={
-                          edit?.categories?.css || product_list_nav_item_css_
+                          style?.productListCategories ||
+                          product_list_nav_item_css_
                         }
                       >
                         {category || "category"}
@@ -289,9 +284,9 @@ export default function ProductList(prop: IproductList) {
                 {Array.from({ length: count }, (_, index2) => (
                   <ProductListItem
                     key={index2}
-                    content={edit}
+                    content={content}
                     isEditable={isEditable}
-                    onChange={onChange}
+                    // onChange={onChange}
                   />
                 ))}
               </div>

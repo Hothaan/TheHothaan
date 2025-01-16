@@ -17,18 +17,20 @@ export interface InoticeText {
 }
 
 export interface InoticeContent {
-  title?: {
-    text?: string;
-    css?: CSSObject;
-  };
+  noticeTitle?: string;
+}
+export interface InoticeStyle {
+  noticeTitle?: CSSObject;
 }
 
 export type Tnotice = "텍스트형" | "이미지형";
 
 interface Inotice {
   content?: InoticeContent | null;
+  style?: InoticeStyle | null;
   isEditable?: boolean;
-  onChange?: (content: InoticeContent) => void;
+  onChangeContent?: (content: InoticeContent) => void;
+  onChangeStyle?: (style: InoticeStyle) => void;
   option?: Tnotice;
 }
 
@@ -84,7 +86,7 @@ function NoticeTitle() {
 }
 
 function NoticeTable(prop: Inotice) {
-  const { content, isEditable, onChange } = prop;
+  const { content, isEditable, onChangeContent, onChangeStyle, style } = prop;
 
   const count = 10;
 
@@ -163,7 +165,7 @@ function NoticeTable(prop: Inotice) {
                 text_align_left,
               ]}
             >
-              {content?.title?.text || title_}
+              {content?.noticeTitle || title_}
             </td>
             <td css={[cellStyle, text_style, col3]}>{"YYYY.MM.DD"}</td>
             <td css={[cellStyle, text_style, col4]}>{1}</td>
@@ -175,7 +177,7 @@ function NoticeTable(prop: Inotice) {
 }
 
 function NoticeGalleryBoard(prop: Inotice) {
-  const { content, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   const count = 8;
 
@@ -203,7 +205,7 @@ function NoticeGalleryBoard(prop: Inotice) {
             borderRadius="0"
           />
           <p css={notice_title_option_image_css_}>
-            {content?.title?.text || title_}
+            {content?.noticeTitle || title_}
           </p>
         </div>
       ))}
@@ -242,13 +244,14 @@ function NoticeSearch() {
 }
 
 export default function Notice(prop: Inotice) {
-  const { option, content, isEditable, onChange } = prop;
+  const { option, style, content, isEditable, onChangeContent, onChangeStyle } =
+    prop;
 
   const initial = {
     title: {
-      text: content?.title?.text || title_,
+      text: content?.noticeTitle || title_,
       css:
-        content?.title?.css ||
+        style?.noticeTitle?.css ||
         (option === "텍스트형"
           ? notice_title_option_text_css_
           : notice_title_option_image_css_),
@@ -263,21 +266,21 @@ export default function Notice(prop: Inotice) {
     }
   }, [content]);
 
-  function handleEdit(
-    field: keyof InoticeContent,
-    updatedText: string,
-    updatedCss: CSSObject
-  ) {
-    const updatedState = {
-      ...edit,
-      [field]: {
-        text: updatedText,
-        css: updatedCss,
-      },
-    };
-    setEdit(updatedState);
-    onChange?.(updatedState);
-  }
+  // function handleEdit(
+  //   field: keyof InoticeContent,
+  //   updatedText: string,
+  //   updatedCss: CSSObject
+  // ) {
+  //   const updatedState = {
+  //     ...edit,
+  //     [field]: {
+  //       text: updatedText,
+  //       css: updatedCss,
+  //     },
+  //   };
+  //   setEdit(updatedState);
+  //   onChange?.(updatedState);
+  // }
 
   const container = css`
     width: 100%;
@@ -294,9 +297,9 @@ export default function Notice(prop: Inotice) {
           <div css={container}>
             <NoticeTitle />
             <NoticeTable
-              content={edit}
+              content={content}
               isEditable={isEditable}
-              onChange={onChange}
+              // onChange={onChange}
             />
             <NoticeSearch />
           </div>
@@ -310,9 +313,9 @@ export default function Notice(prop: Inotice) {
           <div css={container}>
             <NoticeTitle />
             <NoticeGalleryBoard
-              content={edit}
+              content={content}
               isEditable={isEditable}
-              onChange={onChange}
+              // onChange={onChange}
             />
             <NoticeSearch />
           </div>

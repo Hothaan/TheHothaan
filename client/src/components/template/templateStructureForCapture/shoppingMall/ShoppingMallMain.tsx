@@ -1,3 +1,6 @@
+/** @jsxImportSource @emotion/react */
+import { css, CSSObject } from "@emotion/react";
+
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
@@ -44,20 +47,36 @@ import {
   product_list_option_main_title_css,
 } from "@components/template/main/ProductListMain";
 
-interface IshoppingMallMainText {
-  mainBanner: ImainBannerText;
-  productList: IproductListText;
-  review: IreviewText;
-  serviceIntroduction: IserviceIntroductionText;
-  serviceContact: IserviceContactText;
+interface IshoppingMallMainContent {
+  mainBannerTitle: string;
+  mainBannerDesc: string;
+  mainBannerButton: string;
+  productListTitle: string;
+  productListDesc: string;
+  reviewTitle: string;
+  reviewDesc: string;
+  reviewName: string;
+  reviewRole: string;
+  serviceIntroductionTitle: string;
+  serviceIntroductionDesc: string;
+  serviceContactTitle: string;
+  serviceContactButton: string;
 }
 
-interface IshoppingMallMainContent {
-  mainBanner: ImainBannerContent;
-  productList: IproductListContent;
-  review: IreviewContent;
-  serviceIntroduction: IserviceIntroductionContent;
-  serviceContact: IserviceContactContent;
+interface IshoppingMallMainStyle {
+  mainBannerTitle: CSSObject;
+  mainBannerDesc: CSSObject;
+  mainBannerButton: CSSObject;
+  productListTitle: CSSObject;
+  productListDesc: CSSObject;
+  reviewTitle: CSSObject;
+  reviewDesc: CSSObject;
+  reviewName: CSSObject;
+  reviewRole: CSSObject;
+  serviceIntroductionTitle: CSSObject;
+  serviceIntroductionDesc: CSSObject;
+  serviceContactTitle: CSSObject;
+  serviceContactButton: CSSObject;
 }
 
 export default function ShoppingMallMain() {
@@ -120,19 +139,9 @@ export default function ShoppingMallMain() {
   const [pageContent, setPageContent] = useState<IshoppingMallMainContent>(
     {} as IshoppingMallMainContent
   );
-
-  function updateSectionContent<T extends keyof IshoppingMallMainContent>(
-    section: T,
-    updatedContent: Partial<IshoppingMallMainContent[T]>
-  ) {
-    setPageContent((prev) => ({
-      ...prev,
-      [section]: {
-        ...prev?.[section],
-        ...updatedContent,
-      },
-    }));
-  }
+  const [pageStyle, setPageStyle] = useState<IshoppingMallMainStyle>(
+    {} as IshoppingMallMainStyle
+  );
 
   function updateInitial() {
     if (
@@ -141,22 +150,15 @@ export default function ShoppingMallMain() {
       generatedText.content?.desc
     ) {
       const initialContent = {
-        mainBanner: {
-          title: {
-            text: generatedText.content.title,
-            css: mainBanner_title_css_,
-          },
-          desc: {
-            text: generatedText.content.desc,
-            css: mainBanner_desc_css_,
-          },
-        },
+        mainBannerTitle: generatedText.content.title,
+        mainBannerDesc: generatedText.content.desc,
       };
+
       localStorage.setItem(
         "changedContent",
         JSON.stringify({ [featureKey]: initialContent })
       );
-      updateSectionContent("mainBanner", initialContent.mainBanner);
+      setPageContent({ ...pageContent, ...initialContent });
     }
   }
 
@@ -195,7 +197,7 @@ export default function ShoppingMallMain() {
           shoppingMallMain: {
             featureId: generatedText?.feature_id,
             structure: {
-              mainBanner: pageContent?.mainBanner,
+              ...pageContent,
             },
           },
         };
@@ -216,11 +218,15 @@ export default function ShoppingMallMain() {
         serviceType="쇼핑몰"
       />
       <Mainbanner
-        content={pageContent?.mainBanner}
+        content={{
+          mainBannerTitle: pageContent?.mainBannerTitle,
+          mainBannerDesc: pageContent?.mainBannerDesc,
+          mainBannerButton: pageContent?.mainBannerButton,
+        }}
         isEditable={true}
-        onChange={(updatedContent) =>
-          updateSectionContent("mainBanner", updatedContent)
-        }
+        // onChange={(updatedContent) =>
+        //   updateSectionContent("mainBanner", updatedContent)
+        // }
       />
       <ProductListMain option="main" />
       <Review />
