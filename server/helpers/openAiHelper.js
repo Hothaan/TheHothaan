@@ -8,6 +8,7 @@ const productListValidator = require('./openAiResponseValidators/productListVali
 const validateProductDetail = require('./openAiResponseValidators/productDetailValidator.js');
 const validateCartText = require('./openAiResponseValidators/cartValidator.js');
 const validateNotice = require('./openAiResponseValidators/noticeValidator.js');
+const validateBrandIntroduce = require('./openAiResponseValidators/brandIntroduceValidator.js');
 
 async function generateOpenAiText(
   service,
@@ -82,7 +83,7 @@ async function generateOpenAiText(
           {
             "menu": "${depth1}",
             "feature": "${depth2}",
-            "content": ${structure},
+            "content": ${content},
           }
           
           Only include the specified fields in JSON format. Answer in Korean, without additional text.`;
@@ -151,6 +152,8 @@ async function generateOpenAiText(
     } else if (depth2 === '장바구니' && validateCartText(responseData)) {
       isValidResponse = true;
     } else if (depth2 === '공지사항' && validateNotice(responseData)) {
+      isValidResponse = true;
+    } else if (depth2 === '브랜드 소개' && validateBrandIntroduce(responseData)) {
       isValidResponse = true;
     }
 
