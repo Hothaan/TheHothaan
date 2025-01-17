@@ -33,7 +33,7 @@ jobs:
             git clean -fd &&
             git pull origin main &&
             cd client &&
-            npm install —legacy-peer-deps || { echo "npm install failed in client"; exit 1; } &&
+            npm install --legacy-peer-deps || { echo "npm install failed in client"; exit 1; } &&
             CI=false npm run build &&
             cd ../server &&
             npm install || { echo "npm install failed in server"; exit 1; } &&
