@@ -6,6 +6,7 @@ const logger = require('../config/logger');
 const mainValidator = require('./openAiResponseValidators/mainValidator.js');
 const productListValidator = require('./openAiResponseValidators/productListValidator.js');
 const validateProductDetail = require('./openAiResponseValidators/productDetailValidator.js');
+const validateCartText = require('./openAiResponseValidators/cartValidator.js');
 
 async function generateOpenAiText(
   service,
@@ -39,16 +40,19 @@ async function generateOpenAiText(
         }
         
         Do not add any additional text or explanation. Only include the specified fields in JSON format. Answer in Korean.`;
-    } else if (structure === '{title: string;}') {
+    } else if (depth2 === '장바구니') {
       // 장바구니에 담길 상품명 생성
       userPrompt = `For the '${depth1}' menu and '${depth2}' feature on the '${component}' component of a ${service} website titled '${serviceTitle}', generate a virtual product name that could be added to the shopping cart.
-        The purpose of this feature is: ${serviceDesc}. Here is the expected format:
+        The purpose of this feature is: ${serviceDesc}. 
+
+        Follow this structure: ${JSON.stringify(structure)}.         
+        Here is the expected format:
         
         {
           "menu": "${depth1}",
           "feature": "${depth2}",
           "content": {
-            "title": "Generated Product Name"
+            "cartTitle": "${content.cartTitle}"
           }
         }
         
@@ -135,12 +139,6 @@ async function generateOpenAiText(
     } else if (depth2 === '상품 목록' && productListValidator(responseData, cnt)) {
       isValidResponse = true;
     } else if (
-      structure === '{title: string;}' &&
-      responseData.content &&
-      typeof responseData.content.title === 'string'
-    ) {
-      isValidResponse = true;
-    } else if (
       responseData.menu &&
       responseData.feature &&
       responseData.content &&
@@ -151,6 +149,8 @@ async function generateOpenAiText(
     } else if (depth2 === '메인' && mainValidator(responseData)) {
       isValidResponse = true;
     } else if (depth2 === '상품 상세' && validateProductDetail(responseData)) {
+      isValidResponse = true;
+    } else if (depth2 === '장바구니' && validateCartText(responseData)) {
       isValidResponse = true;
     }
 
