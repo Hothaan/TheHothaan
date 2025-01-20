@@ -16,26 +16,20 @@ const item_num_ = "483";
 const item_title_ = "lorem ipsum, quia do";
 const item_desc_ = "lorem ipsum, quia do";
 
-export interface IboardText {
-  title?: string;
-  desc?: string;
-}
-
 export interface IboardContent {
-  title?: {
-    text?: string;
-    css?: CSSObject;
-  };
-  desc?: {
-    text?: string;
-    css?: CSSObject;
-  };
+  boardTitle: string;
+  boardDesc: string;
+}
+export interface IboardStyle {
+  boardTitle: CSSObject;
+  boardDesc: CSSObject;
 }
 
 export type Tboard = "이미지형" | "텍스트형" | "동영상형";
 
 export interface Iboard {
   content?: IboardContent | null;
+  style?: IboardStyle | null;
   isEditable?: boolean;
   onChange?: (content: IboardContent) => void;
   option?: Tboard;
@@ -75,7 +69,7 @@ const board_item_option_text_title_css_ = css`
 `;
 
 function TextTable(prop: Iboard) {
-  const { content, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChange } = prop;
 
   const count = 10;
   const col1 = css`
@@ -170,7 +164,7 @@ function TextTable(prop: Iboard) {
               </td>
               <td css={[td, col2]}>
                 <p css={[board_item_option_text_title_css_, col2_text]}>
-                  {content?.title?.text || col2_}
+                  {content?.boardTitle || col2_}
                 </p>
               </td>
               <td css={[td]}>
@@ -189,7 +183,7 @@ function TextTable(prop: Iboard) {
 }
 
 function ImageItem(prop: Iboard) {
-  const { content, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChange } = prop;
   const count = 6;
 
   const item_container = css`
@@ -245,11 +239,11 @@ function ImageItem(prop: Iboard) {
           />
           <div css={info_container}>
             <p css={item_num}>{item_num_}</p>
-            <p css={content?.title?.css || board_item_option_image_title_css_}>
-              {content?.title?.text || item_title_}
+            <p css={style?.boardTitle || board_item_option_image_title_css_}>
+              {content?.boardTitle || item_title_}
             </p>
-            <p css={content?.desc?.css || board_item_option_image_desc_css_}>
-              {content?.desc?.text || item_desc_}
+            <p css={style?.boardDesc || board_item_option_image_desc_css_}>
+              {content?.boardDesc || item_desc_}
             </p>
           </div>
         </div>
@@ -259,20 +253,20 @@ function ImageItem(prop: Iboard) {
 }
 
 export default function Board(prop: Iboard) {
-  const { option, content, isEditable, onChange } = prop;
+  const { option, style, content, isEditable, onChange } = prop;
 
   const initial = {
-    title: {
-      text: content?.title?.text || item_title_,
+    boardTitle: {
+      text: content?.boardTitle || item_title_,
       css:
-        content?.title?.css ||
+        style?.boardTitle ||
         (option === "텍스트형"
           ? board_item_option_text_title_css_
           : board_item_option_image_title_css_),
     },
-    desc: {
-      text: content?.desc?.text || item_desc_,
-      css: content?.desc?.css || board_item_option_image_desc_css_,
+    boardDesc: {
+      text: content?.boardDesc || item_desc_,
+      css: style?.boardDesc || board_item_option_image_desc_css_,
     },
   };
 
@@ -284,21 +278,21 @@ export default function Board(prop: Iboard) {
     }
   }, [content]);
 
-  function handleEdit(
-    field: keyof IboardContent,
-    updatedText: string,
-    updatedCss: CSSObject
-  ) {
-    const updatedState = {
-      ...edit,
-      [field]: {
-        text: updatedText,
-        css: updatedCss,
-      },
-    };
-    setEdit(updatedState);
-    onChange?.(updatedState);
-  }
+  // function handleEdit(
+  //   field: keyof IboardContent,
+  //   updatedText: string,
+  //   updatedCss: CSSObject
+  // ) {
+  //   const updatedState = {
+  //     ...edit,
+  //     [field]: {
+  //       text: updatedText,
+  //       css: updatedCss,
+  //     },
+  //   };
+  //   setEdit(updatedState);
+  //   onChange?.(updatedState);
+  // }
 
   return (
     <OuterWrap padding="70px 0">
@@ -312,13 +306,13 @@ export default function Board(prop: Iboard) {
           />
           {option === "텍스트형" ? (
             <TextTable
-              content={edit}
+              content={content}
               isEditable={isEditable}
               onChange={onChange}
             />
           ) : option === "이미지형" ? (
             <ImageItem
-              content={edit}
+              content={content}
               isEditable={isEditable}
               onChange={onChange}
             />

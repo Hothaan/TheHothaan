@@ -1,3 +1,6 @@
+/** @jsxImportSource @emotion/react */
+import { css, CSSObject } from "@emotion/react";
+
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
@@ -28,13 +31,43 @@ import { InewsMainContent } from "@components/template/main/NewsMain";
 import { IexploreServiceContent } from "@components/template/main/ExploreServiceMain";
 
 interface IlandingIntroduceMainContent {
-  mainBanner: ImainBannerContent;
-  serviceIntroduce: IserviceIntroduceContent;
-  productIntroduce: IproductIntroduceMainContent;
-  notice: InoticeMainContent;
-  recruit: IrecruitMainContent;
-  news: InewsMainContent;
-  exploreService: IexploreServiceContent;
+  mainBannerTitle: string;
+  mainBannerDesc: string;
+  mainBannerButton: string;
+  serviceIntroduceTitle: string;
+  serviceIntroduceDesc: string;
+  productIntroduceImageDesc: string;
+  productIntroduceTitle: string;
+  productIntroduceDesc: string;
+  noticeTitle: string;
+  noticeDesc: string;
+  recruitTitle: string;
+  recruitDesc: string;
+  newsTitle: string;
+  exploreServiceTitle: string;
+  exploreServiceButton: string;
+  exploreServiceExploreTitle: string;
+  exploreServiceExploreButton: string;
+}
+
+interface IlandingIntroduceMainStyle {
+  mainBannerTitle: CSSObject;
+  mainBannerDesc: CSSObject;
+  mainBannerButton: CSSObject;
+  serviceIntroduceTitle: CSSObject;
+  serviceIntroduceDesc: CSSObject;
+  productIntroduceImageDesc: CSSObject;
+  productIntroduceTitle: CSSObject;
+  productIntroduceDesc: CSSObject;
+  noticeTitle: CSSObject;
+  noticeDesc: CSSObject;
+  recruitTitle: CSSObject;
+  recruitDesc: CSSObject;
+  newsTitle: CSSObject;
+  exploreServiceTitle: CSSObject;
+  exploreServiceButton: CSSObject;
+  exploreServiceExploreTitle: CSSObject;
+  exploreServiceExploreButton: CSSObject;
 }
 
 export default function LandingIntroduceMain() {
@@ -98,18 +131,18 @@ export default function LandingIntroduceMain() {
     {} as IlandingIntroduceMainContent
   );
 
-  function updateSectionContent<T extends keyof IlandingIntroduceMainContent>(
-    section: T,
-    updatedContent: Partial<IlandingIntroduceMainContent[T]>
-  ) {
-    setPageContent((prev) => ({
-      ...prev,
-      [section]: {
-        ...prev?.[section],
-        ...updatedContent,
-      },
-    }));
-  }
+  // function updateSectionContent<T extends keyof IlandingIntroduceMainContent>(
+  //   section: T,
+  //   updatedContent: Partial<IlandingIntroduceMainContent[T]>
+  // ) {
+  //   setPageContent((prev) => ({
+  //     ...prev,
+  //     [section]: {
+  //       ...prev?.[section],
+  //       ...updatedContent,
+  //     },
+  //   }));
+  // }
 
   // if (!generatedText || !headerData) {
   //   return <Loading />;

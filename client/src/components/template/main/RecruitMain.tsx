@@ -13,60 +13,54 @@ const desc_ =
 
 const date_ = "2024.11.12";
 
-export interface IrecruitMainText {
-  title?: string;
-  desc?: string;
-}
-
 export interface IrecruitMainContent {
-  title?: {
-    text?: string;
-    css?: CSSObject;
-  };
-  desc?: {
-    text?: string;
-    css?: CSSObject;
-  };
+  recruitTitle: string;
+  recruitDesc: string;
+}
+export interface IrecruitMainStyle {
+  recruitTitle: CSSObject;
+  recruitDesc: CSSObject;
 }
 
 interface IrecruitMain {
   content?: IrecruitMainContent | null;
+  style?: IrecruitMainStyle | null;
   isEditable?: boolean;
   onChange?: (content: IrecruitMainContent) => void;
 }
 
 function RecruitMainItem(prop: IrecruitMain) {
-  const { content, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChange } = prop;
 
   return (
     <div css={item_container}>
       <div css={title_container}>
         <div css={title_inner_container}>
           <p css={tag}>NEW</p>
-          <p css={content?.title?.css || recruit_item_title_css_}>
-            {content?.title?.text || title_}
+          <p css={style?.recruitTitle || recruit_item_title_css_}>
+            {content?.recruitTitle || title_}
           </p>
         </div>
         <p css={date_style}>{date_}</p>
       </div>
-      <p css={content?.desc?.css || recruit_item_desc_css_}>
-        {content?.desc?.text || desc_}
+      <p css={style?.recruitDesc || recruit_item_desc_css_}>
+        {content?.recruitDesc || desc_}
       </p>
     </div>
   );
 }
 
 export default function RecruitMain(prop: IrecruitMain) {
-  const { content, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChange } = prop;
 
   const initial = {
-    title: {
-      text: content?.title?.text || title_,
-      css: content?.title?.css || recruit_item_title_css_,
+    recruitTitle: {
+      text: content?.recruitTitle || title_,
+      css: style?.recruitTitle || recruit_item_title_css_,
     },
-    desc: {
-      text: content?.desc?.text || desc_,
-      css: content?.desc?.css || recruit_item_desc_css_,
+    recruitDesc: {
+      text: content?.recruitDesc || desc_,
+      css: style?.recruitDesc || recruit_item_desc_css_,
     },
   };
 
@@ -78,21 +72,21 @@ export default function RecruitMain(prop: IrecruitMain) {
     }
   }, [content]);
 
-  function handleEdit(
-    field: keyof IrecruitMainContent,
-    updatedText: string,
-    updatedCss: CSSObject
-  ) {
-    const updatedState = {
-      ...edit,
-      [field]: {
-        text: updatedText,
-        css: updatedCss,
-      },
-    };
-    setEdit(updatedState);
-    onChange?.(updatedState);
-  }
+  // function handleEdit(
+  //   field: keyof IrecruitMainContent,
+  //   updatedText: string,
+  //   updatedCss: CSSObject
+  // ) {
+  //   const updatedState = {
+  //     ...edit,
+  //     [field]: {
+  //       text: updatedText,
+  //       css: updatedCss,
+  //     },
+  //   };
+  //   setEdit(updatedState);
+  //   onChange?.(updatedState);
+  // }
 
   const count = 3;
 
@@ -106,7 +100,7 @@ export default function RecruitMain(prop: IrecruitMain) {
               {Array.from({ length: count }, (_, index) => (
                 <RecruitMainItem
                   key={index}
-                  content={edit}
+                  content={content}
                   isEditable={isEditable}
                   onChange={onChange}
                 />

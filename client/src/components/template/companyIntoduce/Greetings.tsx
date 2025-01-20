@@ -10,34 +10,23 @@ const title_ = "Headline H1";
 const desc_ =
   "lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non";
 
-export interface IgreetingsText {
-  halfTitle?: string;
-  halfDesc?: string;
-  fullTitle?: string;
-  fullDesc?: string;
+export interface IgreetingsContent {
+  greetingsHalfTitle: string;
+  greetingsHalfDesc: string;
+  greetingsFullTitle: string;
+  greetingsFullDesc: string;
 }
 
-export interface IgreetingsContent {
-  halfTitle?: {
-    text?: string;
-    css?: CSSObject;
-  };
-  halfDesc?: {
-    text?: string;
-    css?: CSSObject;
-  };
-  fullTitle?: {
-    text?: string;
-    css?: CSSObject;
-  };
-  fullDesc?: {
-    text?: string;
-    css?: CSSObject;
-  };
+export interface IgreetingsStyle {
+  greetingsHalfTitle: CSSObject;
+  greetingsHalfDesc: CSSObject;
+  greetingsFullTitle: CSSObject;
+  greetingsFullDesc: CSSObject;
 }
 
 interface Igreetings {
   content?: IgreetingsContent | null;
+  style?: IgreetingsStyle | null;
   isEditable?: boolean;
   onChange?: (content: IgreetingsContent) => void;
 }
@@ -109,24 +98,24 @@ const greetings_half_desc_css_ = css`
 `;
 
 export default function Greetings(prop: Igreetings) {
-  const { content, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChange } = prop;
 
   const initial = {
-    halfTitle: {
-      text: content?.halfTitle?.text || title_,
-      css: content?.halfTitle?.css || greetings_half_title_css_,
+    greetingsHalfTitle: {
+      text: content?.greetingsHalfTitle || title_,
+      css: style?.greetingsHalfTitle || greetings_half_title_css_,
     },
-    halfDesc: {
-      text: content?.halfDesc?.text || desc_,
-      css: content?.halfDesc?.css || greetings_half_desc_css_,
+    greetingsHalfDesc: {
+      text: content?.greetingsHalfDesc || desc_,
+      css: style?.greetingsHalfDesc || greetings_half_desc_css_,
     },
-    fullTitle: {
-      text: content?.fullTitle?.text || title_,
-      css: content?.fullTitle?.css || greetings_full_title_css_,
+    greetingsFullTitle: {
+      text: content?.greetingsFullTitle || title_,
+      css: style?.greetingsFullTitle || greetings_full_title_css_,
     },
-    fullDesc: {
-      text: content?.fullDesc?.text || desc_,
-      css: content?.fullDesc?.css || greetings_full_desc_css_,
+    greetingsFullDesc: {
+      text: content?.greetingsFullDesc || desc_,
+      css: style?.greetingsFullDesc || greetings_full_desc_css_,
     },
   };
 
@@ -138,21 +127,21 @@ export default function Greetings(prop: Igreetings) {
     }
   }, [content]);
 
-  function handleEdit(
-    field: keyof IgreetingsContent,
-    updatedText: string,
-    updatedCss: CSSObject
-  ) {
-    const updatedState = {
-      ...edit,
-      [field]: {
-        text: updatedText,
-        css: updatedCss,
-      },
-    };
-    setEdit(updatedState);
-    onChange?.(updatedState);
-  }
+  // function handleEdit(
+  //   field: keyof IgreetingsContent,
+  //   updatedText: string,
+  //   updatedCss: CSSObject
+  // ) {
+  //   const updatedState = {
+  //     ...edit,
+  //     [field]: {
+  //       text: updatedText,
+  //       css: updatedCss,
+  //     },
+  //   };
+  //   setEdit(updatedState);
+  //   onChange?.(updatedState);
+  // }
 
   return (
     <OuterWrap padding="0 0 100px 0">
@@ -171,11 +160,11 @@ export default function Greetings(prop: Igreetings) {
             />
           </div>
           <div css={text_container}>
-            <p css={edit?.halfTitle?.css || greetings_half_title_css_}>
-              {edit?.halfTitle?.text || title_}
+            <p css={edit?.greetingsHalfTitle?.css || greetings_half_title_css_}>
+              {edit?.greetingsHalfTitle?.text || title_}
             </p>
-            <p css={edit?.halfDesc?.css || greetings_half_desc_css_}>
-              {edit?.halfDesc?.text || desc_}
+            <p css={edit?.greetingsHalfDesc?.css || greetings_half_desc_css_}>
+              {edit?.greetingsHalfDesc?.text || desc_}
             </p>
           </div>
         </div>
@@ -191,24 +180,24 @@ export default function Greetings(prop: Igreetings) {
             }}
           />
           <div css={inner_container}>
-            <p css={edit?.fullTitle?.css || greetings_full_title_css_}>
-              {edit?.fullTitle?.text || title_}
+            <p css={edit?.greetingsFullTitle?.css || greetings_full_title_css_}>
+              {edit?.greetingsFullTitle?.text || title_}
             </p>
-            <p css={edit?.fullDesc?.css || greetings_full_desc_css_}>
-              {edit?.fullDesc?.text || desc_}
+            <p css={edit?.greetingsFullDesc?.css || greetings_full_desc_css_}>
+              {edit?.greetingsFullDesc?.text || desc_}
             </p>
-            <p css={edit?.fullDesc?.css || greetings_full_desc_css_}>
-              {edit?.fullDesc?.text || desc_}
+            <p css={edit?.greetingsFullDesc?.css || greetings_full_desc_css_}>
+              {edit?.greetingsFullDesc?.text || desc_}
             </p>
           </div>
         </div>
         <div css={container}>
           <div css={text_container}>
-            <p css={edit?.halfTitle?.css || greetings_half_title_css_}>
-              {edit?.halfTitle?.text || title_}
+            <p css={edit?.greetingsHalfTitle?.css || greetings_half_title_css_}>
+              {edit?.greetingsHalfTitle?.text || title_}
             </p>
-            <p css={edit?.halfDesc?.css || greetings_half_desc_css_}>
-              {edit?.halfDesc?.text || desc_}
+            <p css={edit?.greetingsHalfDesc?.css || greetings_half_desc_css_}>
+              {edit?.greetingsHalfDesc?.text || desc_}
             </p>
           </div>
           <div css={image_container}>

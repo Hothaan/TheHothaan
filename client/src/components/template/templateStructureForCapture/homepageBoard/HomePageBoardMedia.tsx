@@ -1,3 +1,6 @@
+/** @jsxImportSource @emotion/react */
+import { css, CSSObject } from "@emotion/react";
+
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
@@ -12,18 +15,16 @@ import { IfetchedfeatureResponseData } from "@components/template/types";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
-/* text */
-import { ImediaText } from "@components/template/board/Media";
-
 /* content */
 import { ImediaContent } from "@components/template/board/Media";
 
-interface IhomePageBoardMediaText {
-  media: ImediaText;
-}
-
 interface IhomePageBoardMediaContent {
-  media: ImediaContent;
+  mediaTitle: string;
+  mediaDesc: string;
+}
+interface IhomePageBoardMediaStyle {
+  mediaTitle: CSSObject;
+  mediaDesc: CSSObject;
 }
 
 export default function HomePageBoardMedia() {
@@ -87,18 +88,18 @@ export default function HomePageBoardMedia() {
     {} as IhomePageBoardMediaContent
   );
 
-  function updateSectionContent<T extends keyof IhomePageBoardMediaContent>(
-    section: T,
-    updatedContent: Partial<IhomePageBoardMediaContent[T]>
-  ) {
-    setPageContent((prev) => ({
-      ...prev,
-      [section]: {
-        ...prev?.[section],
-        ...updatedContent,
-      },
-    }));
-  }
+  // function updateSectionContent<T extends keyof IhomePageBoardMediaContent>(
+  //   section: T,
+  //   updatedContent: Partial<IhomePageBoardMediaContent[T]>
+  // ) {
+  //   setPageContent((prev) => ({
+  //     ...prev,
+  //     [section]: {
+  //       ...prev?.[section],
+  //       ...updatedContent,
+  //     },
+  //   }));
+  // }
 
   // if (!generatedText || !headerData) {
   //   return <Loading />;

@@ -19,11 +19,11 @@ import useIsProduction from "@hooks/useIsProduction";
 import { iPriceMainContent } from "@components/template/main/PriceMain";
 
 interface IntermediaryMatchPriceContent {
-  PriceMainDesc: iPriceMainContent;
+  priceMainDesc: string;
 }
 
 interface IntermediaryMatchPriceStyle {
-  PriceMainDesc: CSSObject;
+  priceMainDesc: CSSObject;
 }
 
 export default function IntermediaryMatchPrice() {
@@ -87,18 +87,18 @@ export default function IntermediaryMatchPrice() {
     {} as IntermediaryMatchPriceContent
   );
 
-  function updateSectionContent<T extends keyof IntermediaryMatchPriceContent>(
-    section: T,
-    updatedContent: Partial<IntermediaryMatchPriceContent[T]>
-  ) {
-    setPageContent((prev) => ({
-      ...prev,
-      [section]: {
-        ...prev?.[section],
-        ...updatedContent,
-      },
-    }));
-  }
+  // function updateSectionContent<T extends keyof IntermediaryMatchPriceContent>(
+  //   section: T,
+  //   updatedContent: Partial<IntermediaryMatchPriceContent[T]>
+  // ) {
+  //   setPageContent((prev) => ({
+  //     ...prev,
+  //     [section]: {
+  //       ...prev?.[section],
+  //       ...updatedContent,
+  //     },
+  //   }));
+  // }
 
   // if (!generatedText || !headerData) {
   //   return <Loading />;

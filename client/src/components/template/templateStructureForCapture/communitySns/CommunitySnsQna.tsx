@@ -1,3 +1,6 @@
+/** @jsxImportSource @emotion/react */
+import { css, CSSObject } from "@emotion/react";
+
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
@@ -12,18 +15,14 @@ import { IfetchedfeatureResponseData } from "@components/template/types";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
-/* text */
-import { IqnaText } from "@components/template/board/Qna";
-
 /* content */
 import { IqnaContent } from "@components/template/board/Qna";
 
-interface IcommunitySnsQnaText {
-  qna: IqnaText;
-}
-
 interface IcommunitySnsQnaContent {
-  qna: IqnaContent;
+  qnaTitle: string;
+}
+interface IcommunitySnsQnaStyle {
+  qnaTitle: CSSObject;
 }
 
 export default function CommunitySnsQna() {
@@ -87,18 +86,18 @@ export default function CommunitySnsQna() {
     {} as IcommunitySnsQnaContent
   );
 
-  function updateSectionContent<T extends keyof IcommunitySnsQnaContent>(
-    section: T,
-    updatedContent: Partial<IcommunitySnsQnaContent[T]>
-  ) {
-    setPageContent((prev) => ({
-      ...prev,
-      [section]: {
-        ...prev?.[section],
-        ...updatedContent,
-      },
-    }));
-  }
+  // function updateSectionContent<T extends keyof IcommunitySnsQnaContent>(
+  //   section: T,
+  //   updatedContent: Partial<IcommunitySnsQnaContent[T]>
+  // ) {
+  //   setPageContent((prev) => ({
+  //     ...prev,
+  //     [section]: {
+  //       ...prev?.[section],
+  //       ...updatedContent,
+  //     },
+  //   }));
+  // }
 
   // if (!generatedText || !headerData) {
   //   return <Loading />;

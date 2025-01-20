@@ -1,3 +1,6 @@
+/** @jsxImportSource @emotion/react */
+import { css, CSSObject } from "@emotion/react";
+
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
@@ -19,40 +22,32 @@ import { IfetchedfeatureResponseData } from "@components/template/types";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
-/* text */
-import { ImainBannerText } from "@components/template/main/Mainbanner";
-import { InoticeMainText } from "@components/template/main/NoticeMain";
-import { InormalBoardText } from "@components/template/main/NormalBoardMain";
-import { InewsMainText } from "@components/template/main/NewsMain";
-import { IfaqMainText } from "@components/template/main/FaqMain";
-import { IserviceContactText } from "@components/template/service/ServiceContact";
-
-/* content */
-import { ImainBannerContent } from "@components/template/main/Mainbanner";
-import { InoticeMainContent } from "@components/template/main/NoticeMain";
-import { InormalBoardContent } from "@components/template/main/NormalBoardMain";
-import { InewsMainContent } from "@components/template/main/NewsMain";
-import { IfaqMainContent } from "@components/template/main/FaqMain";
-import { IserviceContactContent } from "@components/template/service/ServiceContact";
-
-interface IcommunitySnsMainText {
-  mainBanner: ImainBannerText;
-  notice: InoticeMainText;
-  board: InormalBoardText;
-  news: InewsMainText;
-  feed: null;
-  faq: IfaqMainText;
-  serviceContact: IserviceContactText;
+interface IcommunitySnsMainContent {
+  mainBannerTitle: string;
+  mainBannerDesc: string;
+  mainBannerButton: string;
+  noticeTitle: string;
+  noticeDesc: string;
+  boardTitle: string;
+  newsTitle: string;
+  faqTitle: string;
+  faqDesc: string;
+  serviceContactTitle: string;
+  serviceContactButton: string;
 }
 
-interface IcommunitySnsMainContent {
-  mainBanner: ImainBannerContent;
-  notice: InoticeMainContent;
-  board: InormalBoardContent;
-  news: InewsMainContent;
-  feed: null;
-  faq: IfaqMainContent;
-  serviceContact: IserviceContactContent;
+interface IcommunitySnsMainStyle {
+  mainBannerTitle: CSSObject;
+  mainBannerDesc: CSSObject;
+  mainBannerButton: CSSObject;
+  noticeTitle: CSSObject;
+  noticeDesc: CSSObject;
+  boardTitle: CSSObject;
+  newsTitle: CSSObject;
+  faqTitle: CSSObject;
+  faqDesc: CSSObject;
+  serviceContactTitle: CSSObject;
+  serviceContactButton: CSSObject;
 }
 
 export default function CommunitySnsMain() {
@@ -116,18 +111,18 @@ export default function CommunitySnsMain() {
     {} as IcommunitySnsMainContent
   );
 
-  function updateSectionContent<T extends keyof IcommunitySnsMainContent>(
-    section: T,
-    updatedContent: Partial<IcommunitySnsMainContent[T]>
-  ) {
-    setPageContent((prev) => ({
-      ...prev,
-      [section]: {
-        ...prev?.[section],
-        ...updatedContent,
-      },
-    }));
-  }
+  // function updateSectionContent<T extends keyof IcommunitySnsMainContent>(
+  //   section: T,
+  //   updatedContent: Partial<IcommunitySnsMainContent[T]>
+  // ) {
+  //   setPageContent((prev) => ({
+  //     ...prev,
+  //     [section]: {
+  //       ...prev?.[section],
+  //       ...updatedContent,
+  //     },
+  //   }));
+  // }
 
   // if (!generatedText || !headerData) {
   //   return <Loading />;

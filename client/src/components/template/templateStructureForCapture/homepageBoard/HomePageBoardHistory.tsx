@@ -1,3 +1,6 @@
+/** @jsxImportSource @emotion/react */
+import { css, CSSObject } from "@emotion/react";
+
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
@@ -13,15 +16,13 @@ import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
 /* text */
-import { IhistoryText } from "@components/template/companyIntoduce/History";
 import { IhistoryContent } from "@components/template/companyIntoduce/History";
 
-interface IhomePageBoardHistoryText {
-  history: IhistoryText;
-}
-
 interface IhomePageBoardHistoryContent {
-  history: IhistoryContent;
+  historyDesc: string;
+}
+interface IhomePageBoardHistoryStyle {
+  historyDesc: CSSObject;
 }
 
 export default function HomePageBoardHistory() {
@@ -99,18 +100,18 @@ export default function HomePageBoardHistory() {
     {} as IhomePageBoardHistoryContent
   );
 
-  function updateSectionContent<T extends keyof IhomePageBoardHistoryContent>(
-    section: T,
-    updatedContent: Partial<IhomePageBoardHistoryContent[T]>
-  ) {
-    setPageContent((prev) => ({
-      ...prev,
-      [section]: {
-        ...prev?.[section],
-        ...updatedContent,
-      },
-    }));
-  }
+  // function updateSectionContent<T extends keyof IhomePageBoardHistoryContent>(
+  //   section: T,
+  //   updatedContent: Partial<IhomePageBoardHistoryContent[T]>
+  // ) {
+  //   setPageContent((prev) => ({
+  //     ...prev,
+  //     [section]: {
+  //       ...prev?.[section],
+  //       ...updatedContent,
+  //     },
+  //   }));
+  // }
 
   // if (!generatedText || !headerData) {
   //   return <Loading />;

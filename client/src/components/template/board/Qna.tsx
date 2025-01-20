@@ -17,19 +17,16 @@ const item_title = "Q&A 제목";
 
 export type Tqna = "텍스트형" | "이미지형";
 
-export interface IqnaText {
-  title?: string;
-}
-
 export interface IqnaContent {
-  title?: {
-    text?: string;
-    css?: CSSObject;
-  };
+  qnaTitle: string;
+}
+export interface IqnaStyle {
+  qnaTitle: CSSObject;
 }
 
 export interface Iqna {
   content?: IqnaContent | null;
+  style?: IqnaStyle | null;
   isEditable?: boolean;
   onChange?: (content: IqnaContent) => void;
   option?: Tqna;
@@ -78,7 +75,7 @@ function QnaTitle() {
 }
 
 function QnaTable(prop: Iqna) {
-  const { content, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChange } = prop;
 
   const count = 10;
 
@@ -169,14 +166,14 @@ function QnaTable(prop: Iqna) {
             <td
               css={[
                 cellStyle,
-                content?.title?.css || qna_item_title_css_,
+                style?.qnaTitle || qna_item_title_css_,
                 col2,
                 text_align_left,
               ]}
             >
               <div css={inner_container}>
                 {(index + 1) % 2 === 0 && <Reply />}
-                {content?.title?.text || item_title}
+                {content?.qnaTitle || item_title}
               </div>
             </td>
             <td css={[cellStyle, text_style, col3]}>{date_}</td>
@@ -313,12 +310,12 @@ function QnaSearch() {
 }
 
 export default function Qna(prop: Iqna) {
-  const { content, isEditable, onChange, option } = prop;
+  const { content, style, isEditable, onChange, option } = prop;
 
   const initial = {
-    title: {
-      text: content?.title?.text || title_,
-      css: content?.title?.css || qna_item_title_css_,
+    qnaTitle: {
+      text: content?.qnaTitle || title_,
+      css: style?.qnaTitle || qna_item_title_css_,
     },
   };
 
@@ -330,21 +327,21 @@ export default function Qna(prop: Iqna) {
     }
   }, [content]);
 
-  function handleEdit(
-    field: keyof IqnaContent,
-    updatedText: string,
-    updatedCss: CSSObject
-  ) {
-    const updatedState = {
-      ...edit,
-      [field]: {
-        text: updatedText,
-        css: updatedCss,
-      },
-    };
-    setEdit(updatedState);
-    onChange?.(updatedState);
-  }
+  // function handleEdit(
+  //   field: keyof IqnaContent,
+  //   updatedText: string,
+  //   updatedCss: CSSObject
+  // ) {
+  //   const updatedState = {
+  //     ...edit,
+  //     [field]: {
+  //       text: updatedText,
+  //       css: updatedCss,
+  //     },
+  //   };
+  //   setEdit(updatedState);
+  //   onChange?.(updatedState);
+  // }
 
   const container = css`
     width: 100%;

@@ -10,24 +10,18 @@ const title_ = "Headline H1";
 const desc_ =
   "lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non";
 
-export interface IserviceIntroduceText {
-  title?: string;
-  desc?: string;
-}
-
 export interface IserviceIntroduceContent {
-  title?: {
-    text?: string;
-    css?: CSSObject;
-  };
-  desc?: {
-    text?: string;
-    css?: CSSObject;
-  };
+  serviceIntroduceTitle: string;
+  serviceIntroduceDesc: string;
+}
+export interface IserviceIntroduceStyle {
+  serviceIntroduceTitle: CSSObject;
+  serviceIntroduceDesc: CSSObject;
 }
 
 export interface IserviceIntroduce {
   content?: IserviceIntroduceContent | null;
+  style?: IserviceIntroduceStyle | null;
   isEditable?: boolean;
   onChange?: (content: IserviceIntroduceContent) => void;
 }
@@ -64,16 +58,16 @@ const service_introduce_desc_css: CSSObject = {
 };
 
 export default function ServiceIntroduce(prop: IserviceIntroduce) {
-  const { content, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChange } = prop;
 
   const initial = {
-    title: {
-      text: content?.title?.text || title_,
-      css: content?.title?.css || service_introduce_title_css,
+    serviceIntroduceTitle: {
+      text: content?.serviceIntroduceTitle || title_,
+      css: style?.serviceIntroduceTitle || service_introduce_title_css,
     },
-    desc: {
-      text: content?.desc?.text || desc_,
-      css: content?.desc?.css || service_introduce_desc_css,
+    serviceIntroduceDesc: {
+      text: content?.serviceIntroduceDesc || desc_,
+      css: style?.serviceIntroduceDesc || service_introduce_desc_css,
     },
   };
 
@@ -85,21 +79,21 @@ export default function ServiceIntroduce(prop: IserviceIntroduce) {
     }
   }, [content]);
 
-  function handleEdit(
-    field: keyof IserviceIntroduceContent,
-    updatedText: string,
-    updatedCss: CSSObject
-  ) {
-    const updatedState = {
-      ...edit,
-      [field]: {
-        text: updatedText,
-        css: updatedCss,
-      },
-    };
-    setEdit(updatedState);
-    onChange?.(updatedState);
-  }
+  // function handleEdit(
+  //   field: keyof IserviceIntroduceContent,
+  //   updatedText: string,
+  //   updatedCss: CSSObject
+  // ) {
+  //   const updatedState = {
+  //     ...edit,
+  //     [field]: {
+  //       text: updatedText,
+  //       css: updatedCss,
+  //     },
+  //   };
+  //   setEdit(updatedState);
+  //   onChange?.(updatedState);
+  // }
 
   return (
     <OuterWrap padding="0">
@@ -117,50 +111,78 @@ export default function ServiceIntroduce(prop: IserviceIntroduce) {
         <div css={container}>
           {isEditable ? (
             <EditableText
-              text={edit?.title?.text || title_}
+              text={edit?.serviceIntroduceTitle?.text || title_}
               isTextArea={false}
-              defaultCss={edit?.title?.css || service_introduce_title_css}
+              defaultCss={
+                edit?.serviceIntroduceTitle?.css || service_introduce_title_css
+              }
             />
           ) : (
-            <p css={edit?.title?.css || service_introduce_title_css}>
-              {edit?.title?.text || title_}
+            <p
+              css={
+                edit?.serviceIntroduceTitle?.css || service_introduce_title_css
+              }
+            >
+              {edit?.serviceIntroduceTitle?.text || title_}
             </p>
           )}
           {isEditable ? (
             <EditableText
-              text={edit?.desc?.text || desc_}
+              text={edit?.serviceIntroduceDesc?.text || desc_}
               isTextArea={true}
-              defaultCss={edit?.desc?.css || service_introduce_desc_css}
+              defaultCss={
+                edit?.serviceIntroduceDesc?.css || service_introduce_desc_css
+              }
             />
           ) : (
-            <p css={edit?.desc?.css || service_introduce_desc_css}>
-              {edit?.desc?.text || desc_}
+            <p
+              css={
+                edit?.serviceIntroduceDesc?.css || service_introduce_desc_css
+              }
+            >
+              {edit?.serviceIntroduceDesc?.text || desc_}
             </p>
           )}
           {isEditable ? (
             <EditableText
-              text={edit?.desc?.text || desc_}
+              text={edit?.serviceIntroduceDesc?.text || desc_}
               isTextArea={true}
-              defaultCss={edit?.desc?.css || service_introduce_desc_css}
+              defaultCss={
+                edit?.serviceIntroduceDesc?.css || service_introduce_desc_css
+              }
             />
           ) : (
-            <p css={edit?.desc?.css || service_introduce_desc_css}>
-              {edit?.desc?.text || desc_}
+            <p
+              css={
+                edit?.serviceIntroduceDesc?.css || service_introduce_desc_css
+              }
+            >
+              {edit?.serviceIntroduceDesc?.text || desc_}
             </p>
           )}
           {isEditable ? (
             <EditableText
-              text={edit?.desc?.text || desc_}
+              text={edit?.serviceIntroduceDesc?.text || desc_}
               isTextArea={true}
-              defaultCss={edit?.desc?.css || service_introduce_desc_css}
+              defaultCss={
+                edit?.serviceIntroduceDesc?.css || service_introduce_desc_css
+              }
             />
           ) : (
-            <p css={edit?.desc?.css || service_introduce_desc_css}>
-              {edit?.desc?.text || desc_}
+            <p
+              css={
+                edit?.serviceIntroduceDesc?.css || service_introduce_desc_css
+              }
+            >
+              {edit?.serviceIntroduceDesc?.text || desc_}
             </p>
           )}
-          <p css={pass_desc_line}>{edit?.desc?.text || desc_}</p>
-          <p css={pass_desc_line}>{edit?.desc?.text || desc_}</p>
+          <p css={pass_desc_line}>
+            {edit?.serviceIntroduceDesc?.text || desc_}
+          </p>
+          <p css={pass_desc_line}>
+            {edit?.serviceIntroduceDesc?.text || desc_}
+          </p>
         </div>
       </div>
     </OuterWrap>

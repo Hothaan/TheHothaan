@@ -12,24 +12,18 @@ const item_title_ =
 const item_desc_ =
   "FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. ";
 
-export interface IfaqMainText {
-  title?: string;
-  desc?: string;
-}
-
 export interface IfaqMainContent {
-  title?: {
-    text?: string;
-    css?: CSSObject;
-  };
-  desc?: {
-    text?: string;
-    css?: CSSObject;
-  };
+  faqTitle: string;
+  faqDesc: string;
+}
+export interface IfaqMainStyle {
+  faqTitle: CSSObject;
+  faqDesc: CSSObject;
 }
 
 interface IfaqMain {
   content?: IfaqMainContent | null;
+  style?: IfaqMainStyle | null;
   isEditable?: boolean;
   onChange?: (content: IfaqMainContent) => void;
 }
@@ -60,7 +54,7 @@ export const faq_main_item_desc_css_ = css`
 `;
 
 function FaqMainItem(prop: IfaqMain) {
-  const { content, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChange } = prop;
 
   const count = 6;
 
@@ -90,14 +84,14 @@ function FaqMainItem(prop: IfaqMain) {
           return (
             <div css={item}>
               <div css={title_container}>
-                <p css={content?.title?.css || faq_main_item_title_css_(true)}>
-                  {content?.title?.text || item_title_}
+                <p css={style?.faqTitle || faq_main_item_title_css_(true)}>
+                  {content?.faqTitle || item_title_}
                 </p>
                 <ChevUp css={icon(true)} />
               </div>
               {
                 <p css={faq_main_item_desc_css_}>
-                  {content?.desc?.text || item_desc_}
+                  {content?.faqDesc || item_desc_}
                 </p>
               }
             </div>
@@ -106,8 +100,8 @@ function FaqMainItem(prop: IfaqMain) {
           return (
             <div css={item}>
               <div css={title_container}>
-                <p css={content?.title?.css || faq_main_item_title_css_(false)}>
-                  {content?.title?.text || item_title_}
+                <p css={style?.faqTitle || faq_main_item_title_css_(false)}>
+                  {content?.faqTitle || item_title_}
                 </p>
                 <ChevUp css={icon(false)} />
               </div>
@@ -120,16 +114,16 @@ function FaqMainItem(prop: IfaqMain) {
 }
 
 export default function FaqMain(prop: IfaqMain) {
-  const { content, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChange } = prop;
 
   const initial = {
-    title: {
-      text: content?.title?.text || item_title_,
-      css: content?.title?.css || faq_main_item_title_css_(false),
+    faqTitle: {
+      text: content?.faqTitle || item_title_,
+      css: style?.faqTitle || faq_main_item_title_css_(false),
     },
-    desc: {
-      text: content?.desc?.text || item_desc_,
-      css: content?.desc?.css || faq_main_item_desc_css_,
+    faqDesc: {
+      text: content?.faqDesc || item_desc_,
+      css: style?.faqDesc || faq_main_item_desc_css_,
     },
   };
 
@@ -141,21 +135,21 @@ export default function FaqMain(prop: IfaqMain) {
     }
   }, [content]);
 
-  function handleEdit(
-    field: keyof IfaqMainContent,
-    updatedText: string,
-    updatedCss: CSSObject
-  ) {
-    const updatedState = {
-      ...edit,
-      [field]: {
-        text: updatedText,
-        css: updatedCss,
-      },
-    };
-    setEdit(updatedState);
-    onChange?.(updatedState);
-  }
+  // function handleEdit(
+  //   field: keyof IfaqMainContent,
+  //   updatedText: string,
+  //   updatedCss: CSSObject
+  // ) {
+  //   const updatedState = {
+  //     ...edit,
+  //     [field]: {
+  //       text: updatedText,
+  //       css: updatedCss,
+  //     },
+  //   };
+  //   setEdit(updatedState);
+  //   onChange?.(updatedState);
+  // }
 
   return (
     <OuterWrap padding="114px 0">
@@ -163,7 +157,7 @@ export default function FaqMain(prop: IfaqMain) {
         <div css={container}>
           <p css={title_style}>{title_}</p>
           <FaqMainItem
-            content={edit}
+            content={content}
             isEditable={isEditable}
             onChange={onChange}
           />

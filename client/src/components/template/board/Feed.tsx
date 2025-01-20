@@ -7,19 +7,16 @@ import { OuterWrap } from "../commonComponent/Wrap";
 
 const item_title_ = "lorem ipsum, quia do";
 
-export interface IfeedText {
-  title?: string;
-}
-
 export interface IfeedContent {
-  title?: {
-    text?: string;
-    css?: CSSObject;
-  };
+  feedTitle: string;
+}
+export interface IfeedStyle {
+  feedTitle: CSSObject;
 }
 
 interface Ifeed {
   content?: IfeedContent | null;
+  style?: IfeedStyle | null;
   isEditable?: boolean;
   onChange?: (content: IfeedContent) => void;
 }
@@ -36,7 +33,7 @@ export const feed_item_title_css_ = css`
 `;
 
 function FeedItem(prop: Ifeed) {
-  const { content, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChange } = prop;
 
   const count = 36;
 
@@ -54,8 +51,8 @@ function FeedItem(prop: Ifeed) {
               icon: "width: 40px; height: 40px;",
             }}
           />
-          <p css={content?.title?.css || feed_item_title_css_}>
-            {content?.title?.text || item_title_}
+          <p css={style?.feedTitle || feed_item_title_css_}>
+            {content?.feedTitle || item_title_}
           </p>
         </div>
       ))}
@@ -64,12 +61,12 @@ function FeedItem(prop: Ifeed) {
 }
 
 export default function Feed(prop: Ifeed) {
-  const { content, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChange } = prop;
 
   const initial = {
     title: {
-      text: content?.title?.text || item_title_,
-      css: content?.title?.css || feed_item_title_css_,
+      text: content?.feedTitle || item_title_,
+      css: style?.feedTitle || feed_item_title_css_,
     },
   };
 
@@ -81,21 +78,21 @@ export default function Feed(prop: Ifeed) {
     }
   }, [content]);
 
-  function handleEdit(
-    field: keyof IfeedContent,
-    updatedText: string,
-    updatedCss: CSSObject
-  ) {
-    const updatedState = {
-      ...edit,
-      [field]: {
-        text: updatedText,
-        css: updatedCss,
-      },
-    };
-    setEdit(updatedState);
-    onChange?.(updatedState);
-  }
+  // function handleEdit(
+  //   field: keyof IfeedContent,
+  //   updatedText: string,
+  //   updatedCss: CSSObject
+  // ) {
+  //   const updatedState = {
+  //     ...edit,
+  //     [field]: {
+  //       text: updatedText,
+  //       css: updatedCss,
+  //     },
+  //   };
+  //   setEdit(updatedState);
+  //   onChange?.(updatedState);
+  // }
 
   return (
     <OuterWrap padding="60px 0">
@@ -105,7 +102,7 @@ export default function Feed(prop: Ifeed) {
         marginBottom={30}
         transform="capitalize"
       />
-      <FeedItem content={edit} isEditable={isEditable} onChange={onChange} />
+      <FeedItem content={content} isEditable={isEditable} onChange={onChange} />
     </OuterWrap>
   );
 }
