@@ -235,7 +235,7 @@ exports.generateProjectText = async (req, res) => {
         const { feature, option: featureOption, feature_id } = featureObj; // feature_id 추가
 
         try {
-          const featureDetails = await componentModel.getComponentDetails(menu, feature);
+          const featureDetails = await componentModel.getComponentDetails(menu, feature, serviceType);
           console.log('featureDetails ==>', featureDetails);
 
           if (!featureDetails || featureDetails.length === 0) {
