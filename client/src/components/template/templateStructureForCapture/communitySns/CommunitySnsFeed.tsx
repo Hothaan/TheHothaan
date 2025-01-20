@@ -1,3 +1,6 @@
+/** @jsxImportSource @emotion/react */
+import { css, CSSObject } from "@emotion/react";
+
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
@@ -12,18 +15,14 @@ import { IfetchedfeatureResponseData } from "@components/template/types";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
-/* text */
-import { IfeedText } from "@components/template/board/Feed";
-
 /* content */
 import { IfeedContent } from "@components/template/board/Feed";
 
-interface IcommunitySnsFeedText {
-  feed: IfeedText;
-}
-
 interface IcommunitySnsFeedContent {
-  feed: IfeedContent;
+  feedTitle: string;
+}
+interface IcommunitySnsFeedStyle {
+  feedTitle: CSSObject;
 }
 
 export default function CommunitySnsFeed() {
@@ -87,18 +86,18 @@ export default function CommunitySnsFeed() {
     {} as IcommunitySnsFeedContent
   );
 
-  function updateSectionContent<T extends keyof IcommunitySnsFeedContent>(
-    section: T,
-    updatedContent: Partial<IcommunitySnsFeedContent[T]>
-  ) {
-    setPageContent((prev) => ({
-      ...prev,
-      [section]: {
-        ...prev?.[section],
-        ...updatedContent,
-      },
-    }));
-  }
+  // function updateSectionContent<T extends keyof IcommunitySnsFeedContent>(
+  //   section: T,
+  //   updatedContent: Partial<IcommunitySnsFeedContent[T]>
+  // ) {
+  //   setPageContent((prev) => ({
+  //     ...prev,
+  //     [section]: {
+  //       ...prev?.[section],
+  //       ...updatedContent,
+  //     },
+  //   }));
+  // }
 
   // if (!generatedText || !headerData) {
   //   return <Loading />;

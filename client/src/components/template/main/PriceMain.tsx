@@ -11,10 +11,10 @@ const item_desc_ = "Lorem ipsum dolor";
 const item_price = 3300;
 
 export interface iPriceMainContent {
-  PriceMainDesc: string;
+  priceMainDesc: string;
 }
 export interface iPriceMainStyle {
-  PriceMainDesc: CSSObject;
+  priceMainDesc: CSSObject;
 }
 
 interface IpriceMain {
@@ -63,7 +63,7 @@ function PriceMainItem(prop: iPriceMainItem) {
           <span>day</span>
         </p>
         <p css={price_main_item_desc_css_}>
-          {content?.PriceMainDesc || item_desc_}
+          {content?.priceMainDesc || item_desc_}
         </p>
         <p css={item_price_text_style}>
           <span css={item_bold_text_40_style}>
@@ -81,8 +81,8 @@ export default function PriceMain(prop: IpriceMain) {
 
   const initial = {
     desc: {
-      text: content?.PriceMainDesc || item_desc_,
-      css: style?.PriceMainDesc || price_main_item_desc_css_,
+      text: content?.priceMainDesc || item_desc_,
+      css: style?.priceMainDesc || price_main_item_desc_css_,
     },
   };
 

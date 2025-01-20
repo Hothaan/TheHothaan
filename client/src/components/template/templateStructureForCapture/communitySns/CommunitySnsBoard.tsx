@@ -1,3 +1,6 @@
+/** @jsxImportSource @emotion/react */
+import { css, CSSObject } from "@emotion/react";
+
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
@@ -13,18 +16,16 @@ import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 import useNavigation from "@hooks/useNavigation";
 
-/* text */
-import { IboardText } from "@components/template/board/Board";
-
 /* content */
 import { IboardContent } from "@components/template/board/Board";
 
-interface IcommunitySnsBoardText {
-  board: IboardText;
-}
-
 interface IcommunitySnsBoardContent {
-  board: IboardContent;
+  boardTitle: string;
+  boardDesc: string;
+}
+interface IcommunitySnsBoardStyle {
+  boardTitle: CSSObject;
+  boardDesc: CSSObject;
 }
 
 export default function CommunitySnsBoard() {
@@ -89,18 +90,18 @@ export default function CommunitySnsBoard() {
     {} as IcommunitySnsBoardContent
   );
 
-  function updateSectionContent<T extends keyof IcommunitySnsBoardContent>(
-    section: T,
-    updatedContent: Partial<IcommunitySnsBoardContent[T]>
-  ) {
-    setPageContent((prev) => ({
-      ...prev,
-      [section]: {
-        ...prev?.[section],
-        ...updatedContent,
-      },
-    }));
-  }
+  // function updateSectionContent<T extends keyof IcommunitySnsBoardContent>(
+  //   section: T,
+  //   updatedContent: Partial<IcommunitySnsBoardContent[T]>
+  // ) {
+  //   setPageContent((prev) => ({
+  //     ...prev,
+  //     [section]: {
+  //       ...prev?.[section],
+  //       ...updatedContent,
+  //     },
+  //   }));
+  // }
 
   // if (!generatedText || !headerData) {
   //   return <Loading />;
