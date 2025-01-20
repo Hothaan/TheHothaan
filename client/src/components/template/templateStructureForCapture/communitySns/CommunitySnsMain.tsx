@@ -19,14 +19,6 @@ import { IfetchedfeatureResponseData } from "@components/template/types";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
-/* text */
-import { ImainBannerText } from "@components/template/main/Mainbanner";
-import { InoticeMainText } from "@components/template/main/NoticeMain";
-import { InormalBoardText } from "@components/template/main/NormalBoardMain";
-import { InewsMainText } from "@components/template/main/NewsMain";
-import { IfaqMainText } from "@components/template/main/FaqMain";
-import { IserviceContactText } from "@components/template/service/ServiceContact";
-
 /* content */
 import { ImainBannerContent } from "@components/template/main/Mainbanner";
 import { InoticeMainContent } from "@components/template/main/NoticeMain";
@@ -34,16 +26,6 @@ import { InormalBoardContent } from "@components/template/main/NormalBoardMain";
 import { InewsMainContent } from "@components/template/main/NewsMain";
 import { IfaqMainContent } from "@components/template/main/FaqMain";
 import { IserviceContactContent } from "@components/template/service/ServiceContact";
-
-interface IcommunitySnsMainText {
-  mainBanner: ImainBannerText;
-  notice: InoticeMainText;
-  board: InormalBoardText;
-  news: InewsMainText;
-  feed: null;
-  faq: IfaqMainText;
-  serviceContact: IserviceContactText;
-}
 
 interface IcommunitySnsMainContent {
   mainBanner: ImainBannerContent;
