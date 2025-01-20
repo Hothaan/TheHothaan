@@ -1,4 +1,5 @@
 function productListValidator(response, contentLength) {
+  contentLength ? contentLength : 5;
   if (response.menu && response.feature && response.content) {
     if (
       response.content?.productListCategories &&
