@@ -3,7 +3,7 @@ import { css } from "@emotion/react";
 import { useState } from "react";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import UserPageWrap from "@components/user/ui/UserPageWrap";
-import { ReactComponent as People } from "@svgs/findIdPage/people.svg";
+// import { ReactComponent as People } from "@svgs/findIdPage/people.svg";
 import TextField from "@components/common/form/TextField";
 import Button from "@components/common/button/Button";
 
@@ -75,7 +75,25 @@ export default function FindIdPage() {
         </div>
         {!findUserSwitch && (
           <div css={information_container}>
-            <People />
+            <svg
+              width="50"
+              height="50"
+              viewBox="0 0 50 50"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect width="50" height="50" rx="25" fill="#F6F8FF" />
+              <path
+                d="M22.5 25C24.706 25 26.5 23.206 26.5 21C26.5 18.794 24.706 17 22.5 17C20.294 17 18.5 18.794 18.5 21C18.5 23.206 20.294 25 22.5 25ZM24 26H21C17.691 26 15 28.691 15 32V33H30V32C30 28.691 27.309 26 24 26Z"
+                fill="#119CD4"
+              />
+              <path
+                d="M29.6041 24.048C30.2131 23.0101 30.4761 21.8053 30.3551 20.608C30.1761 18.824 29.1801 17.247 27.5521 16.168L26.4471 17.834C27.5661 18.576 28.2471 19.633 28.3651 20.808C28.4195 21.3541 28.3515 21.9054 28.1661 22.422C27.9806 22.9385 27.6824 23.4072 27.2931 23.794L26.1011 24.986L27.7191 25.461C31.9511 26.701 32.0001 30.957 32.0001 31H34.0001C34.0001 29.211 33.0441 25.715 29.6041 24.048Z"
+                fill="#119CD4"
+              />
+            </svg>
+
+            {/* <People /> */}
             <p css={title}>아이디 찾기</p>
             <p css={desc}>
               더핫한은 이메일을 <span css={desc_bold}>아이디</span>로
