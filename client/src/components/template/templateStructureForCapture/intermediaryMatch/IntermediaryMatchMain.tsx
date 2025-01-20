@@ -1,3 +1,6 @@
+/** @jsxImportSource @emotion/react */
+import { css, CSSObject } from "@emotion/react";
+
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
@@ -17,38 +20,44 @@ import { IfetchedfeatureResponseData } from "@components/template/types";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
-/* text */
-import { ImainBannerText } from "@components/template/main/Mainbanner";
-import { ImatchingServiceIntroduceMainText } from "@components/template/main/MatchingServiceIntroduceMain";
-import { IproductIntroduceMainText } from "@components/template/main/ProductIntroduceMain";
-import { IreviewText } from "@components/template/product/Review";
-import { IexploreServiceText } from "@components/template/main/ExploreServiceMain";
-import { iPriceMainText } from "@components/template/main/PriceMain";
-
-/* content */
-import { ImainBannerContent } from "@components/template/main/Mainbanner";
-import { ImatchingServiceIntroduceMainContent } from "@components/template/main/MatchingServiceIntroduceMain";
-import { IproductIntroduceMainContent } from "@components/template/main/ProductIntroduceMain";
-import { IreviewContent } from "@components/template/product/Review";
-import { iPriceMainContent } from "@components/template/main/PriceMain";
-import { IexploreServiceContent } from "@components/template/main/ExploreServiceMain";
-
-interface IntermediaryMatchMainText {
-  mainBanner: ImainBannerText;
-  MatchingServiceIntroduceMain: ImatchingServiceIntroduceMainText;
-  productIntroduce: IproductIntroduceMainText;
-  Review: IreviewText;
-  PriceMain: iPriceMainText;
-  exploreService: IexploreServiceText;
+interface IntermediaryMatchMainContent {
+  mainBannerTitle: string;
+  mainBannerDesc: string;
+  mainBannerButton: string;
+  MatchingServiceIntroduceMainBannerTitle: string;
+  MatchingServiceIntroduceMainBannerDesc: string;
+  MatchingServiceIntroduceMainItemTitle: string;
+  MatchingServiceIntroduceMainItemDesc: string;
+  productIntroduce: string;
+  ReviewTitle: string;
+  ReviewDesc: string;
+  ReviewName: string;
+  ReviewRole: string;
+  PriceMain: string;
+  exploreServiceTitle: string;
+  exploreServiceButton: string;
+  exploreServiceExploreTitle: string;
+  exploreServiceExploreButton: string;
 }
 
-interface IntermediaryMatchMainContent {
-  mainBanner: ImainBannerContent;
-  MatchingServiceIntroduceMain: ImatchingServiceIntroduceMainContent;
-  productIntroduce: IproductIntroduceMainContent;
-  Review: IreviewContent;
-  PriceMain: IexploreServiceContent;
-  exploreService: iPriceMainContent;
+interface IntermediaryMatchMainStyle {
+  mainBannerTitle: CSSObject;
+  mainBannerDesc: CSSObject;
+  mainBannerButton: CSSObject;
+  MatchingServiceIntroduceMainBannerTitle: CSSObject;
+  MatchingServiceIntroduceMainBannerDesc: CSSObject;
+  MatchingServiceIntroduceMainItemTitle: CSSObject;
+  MatchingServiceIntroduceMainItemDesc: CSSObject;
+  productIntroduce: CSSObject;
+  ReviewTitle: CSSObject;
+  ReviewDesc: CSSObject;
+  ReviewName: CSSObject;
+  ReviewRole: CSSObject;
+  PriceMain: CSSObject;
+  exploreServiceTitle: CSSObject;
+  exploreServiceButton: CSSObject;
+  exploreServiceExploreTitle: CSSObject;
+  exploreServiceExploreButton: CSSObject;
 }
 
 export default function IntermediaryMatchMain() {
@@ -112,18 +121,18 @@ export default function IntermediaryMatchMain() {
     {} as IntermediaryMatchMainContent
   );
 
-  function updateSectionContent<T extends keyof IntermediaryMatchMainContent>(
-    section: T,
-    updatedContent: Partial<IntermediaryMatchMainContent[T]>
-  ) {
-    setPageContent((prev) => ({
-      ...prev,
-      [section]: {
-        ...prev?.[section],
-        ...updatedContent,
-      },
-    }));
-  }
+  // function updateSectionContent<T extends keyof IntermediaryMatchMainContent>(
+  //   section: T,
+  //   updatedContent: Partial<IntermediaryMatchMainContent[T]>
+  // ) {
+  //   setPageContent((prev) => ({
+  //     ...prev,
+  //     [section]: {
+  //       ...prev?.[section],
+  //       ...updatedContent,
+  //     },
+  //   }));
+  // }
 
   // if (!generatedText || !headerData) {
   //   return <Loading />;

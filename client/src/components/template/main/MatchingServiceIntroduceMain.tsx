@@ -4,34 +4,23 @@ import { useState, useEffect } from "react";
 import { OuterWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 
-export interface ImatchingServiceIntroduceMainText {
-  bannerTitle?: string;
-  bannerDesc?: string;
-  itemTitle?: string;
-  itemDesc?: string;
+export interface ImatchingServiceIntroduceMainContent {
+  MatchingServiceIntroduceMainBannerTitle: string;
+  MatchingServiceIntroduceMainBannerDesc: string;
+  MatchingServiceIntroduceMainItemTitle: string;
+  MatchingServiceIntroduceMainItemDesc: string;
 }
 
-export interface ImatchingServiceIntroduceMainContent {
-  bannerTitle?: {
-    text?: string;
-    css?: CSSObject;
-  };
-  bannerDesc?: {
-    text?: string;
-    css?: CSSObject;
-  };
-  itemTitle?: {
-    text?: string;
-    css?: CSSObject;
-  };
-  itemDesc?: {
-    text?: string;
-    css?: CSSObject;
-  };
+export interface ImatchingServiceIntroduceMainStyle {
+  MatchingServiceIntroduceMainBannerTitle: CSSObject;
+  MatchingServiceIntroduceMainBannerDesc: CSSObject;
+  MatchingServiceIntroduceMainItemTitle: CSSObject;
+  MatchingServiceIntroduceMainItemDesc: CSSObject;
 }
 
 interface ImatchingServiceIntroduceMain {
   content?: ImatchingServiceIntroduceMainContent | null;
+  style?: ImatchingServiceIntroduceMainStyle | null;
   isEditable?: boolean;
   onChange?: (content: ImatchingServiceIntroduceMainContent) => void;
 }
@@ -95,25 +84,25 @@ export const matching_service_introduce_main_item_desc_css_ = css`
 `;
 
 function MatchingServiceIntroduceMainItem(prop: ImatchingServiceIntroduceMain) {
-  const { content, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChange } = prop;
 
   return (
     <div css={item_container}>
       <p
         css={
-          content?.itemTitle?.css ||
+          style?.MatchingServiceIntroduceMainItemTitle ||
           matching_service_introduce_main_item_title_css_
         }
       >
-        {content?.itemTitle?.text || item_title_}
+        {content?.MatchingServiceIntroduceMainItemTitle || item_title_}
       </p>
       <p
         css={
-          content?.itemDesc?.css ||
+          style?.MatchingServiceIntroduceMainItemDesc ||
           matching_service_introduce_main_item_desc_css_
         }
       >
-        {content?.itemDesc?.text || item_desc_}
+        {content?.MatchingServiceIntroduceMainItemDesc || item_desc_}
       </p>
       <div css={circle_wrap}>
         <div css={circle_container}>
@@ -132,31 +121,31 @@ function MatchingServiceIntroduceMainItem(prop: ImatchingServiceIntroduceMain) {
 export default function MatchingServiceIntroduceMain(
   prop: ImatchingServiceIntroduceMain
 ) {
-  const { content, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChange } = prop;
 
   const initial = {
     bannerTitle: {
-      text: content?.bannerTitle?.text || banner_title_,
+      text: content?.MatchingServiceIntroduceMainBannerTitle || banner_title_,
       css:
-        content?.bannerTitle?.css ||
+        style?.MatchingServiceIntroduceMainBannerTitle ||
         matching_service_introduce_main_banner_title_css_,
     },
     bannerDesc: {
-      text: content?.bannerDesc?.text || banner_desc_,
+      text: content?.MatchingServiceIntroduceMainBannerDesc || banner_desc_,
       css:
-        content?.bannerDesc?.css ||
+        style?.MatchingServiceIntroduceMainBannerDesc ||
         matching_service_introduce_main_banner_desc_css_,
     },
     itemTitle: {
-      text: content?.itemTitle?.text || item_title_,
+      text: content?.MatchingServiceIntroduceMainItemTitle || item_title_,
       css:
-        content?.itemTitle?.css ||
+        style?.MatchingServiceIntroduceMainItemTitle ||
         matching_service_introduce_main_item_title_css_,
     },
     itemDesc: {
-      text: content?.itemDesc?.text || item_desc_,
+      text: content?.MatchingServiceIntroduceMainItemDesc || item_desc_,
       css:
-        content?.itemDesc?.css ||
+        style?.MatchingServiceIntroduceMainItemDesc ||
         matching_service_introduce_main_item_desc_css_,
     },
   };
@@ -169,21 +158,21 @@ export default function MatchingServiceIntroduceMain(
     }
   }, [content]);
 
-  function handleEdit(
-    field: keyof ImatchingServiceIntroduceMainContent,
-    updatedText: string,
-    updatedCss: CSSObject
-  ) {
-    const updatedState = {
-      ...edit,
-      [field]: {
-        text: updatedText,
-        css: updatedCss,
-      },
-    };
-    setEdit(updatedState);
-    onChange?.(updatedState);
-  }
+  // function handleEdit(
+  //   field: keyof ImatchingServiceIntroduceMainContent,
+  //   updatedText: string,
+  //   updatedCss: CSSObject
+  // ) {
+  //   const updatedState = {
+  //     ...edit,
+  //     [field]: {
+  //       text: updatedText,
+  //       css: updatedCss,
+  //     },
+  //   };
+  //   setEdit(updatedState);
+  //   onChange?.(updatedState);
+  // }
 
   const count = 3;
 

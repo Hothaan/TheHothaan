@@ -19,20 +19,6 @@ import { IfetchedfeatureResponseData } from "@components/template/types";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
-/* text */
-import { ImainBannerText } from "@components/template/main/Mainbanner";
-import { IproductListText } from "@components/template/main/ProductListMain";
-import { IserviceContactText } from "@components/template/service/ServiceContact";
-import { IreviewText } from "@components/template/product/Review";
-import { IserviceIntroductionText } from "@components/template/service/ServiceIntroduction";
-
-/* content */
-import { ImainBannerContent } from "@components/template/main/Mainbanner";
-import { IproductListContent } from "@components/template/main/ProductListMain";
-import { IreviewContent } from "@components/template/product/Review";
-import { IserviceIntroductionContent } from "@components/template/service/ServiceIntroduction";
-import { IserviceContactContent } from "@components/template/service/ServiceContact";
-
 /* css */
 import {
   mainBanner_title_css_,
