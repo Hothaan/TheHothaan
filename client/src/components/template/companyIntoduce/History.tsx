@@ -11,14 +11,15 @@ export interface IhistoryText {
 }
 
 export interface IhistoryContent {
-  desc?: {
-    text?: string;
-    css?: CSSObject;
-  };
+  historyDesc: string;
+}
+export interface IhistoryStyle {
+  historyDesc: CSSObject;
 }
 
 interface Ihistory {
   content?: IhistoryContent | null;
+  style?: IhistoryStyle | null;
   isEditable?: boolean;
   onChange?: (content: IhistoryContent) => void;
 }
@@ -54,12 +55,12 @@ export const history_desc_css_ = (
 `;
 
 export default function History(prop: Ihistory) {
-  const { content, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChange } = prop;
 
   const initial = {
-    desc: {
-      text: content?.desc?.text || desc_,
-      css: content?.desc?.css || history_desc_css_,
+    historyDesc: {
+      text: content?.historyDesc || desc_,
+      css: style?.historyDesc || history_desc_css_,
     },
   };
 
@@ -71,21 +72,21 @@ export default function History(prop: Ihistory) {
     }
   }, [content]);
 
-  function handleEdit(
-    field: keyof IhistoryContent,
-    updatedText: string,
-    updatedCss: CSSObject
-  ) {
-    const updatedState = {
-      ...edit,
-      [field]: {
-        text: updatedText,
-        css: updatedCss,
-      },
-    };
-    setEdit(updatedState);
-    onChange?.(updatedState);
-  }
+  // function handleEdit(
+  //   field: keyof IhistoryContent,
+  //   updatedText: string,
+  //   updatedCss: CSSObject
+  // ) {
+  //   const updatedState = {
+  //     ...edit,
+  //     [field]: {
+  //       text: updatedText,
+  //       css: updatedCss,
+  //     },
+  //   };
+  //   setEdit(updatedState);
+  //   onChange?.(updatedState);
+  // }
 
   const count = 6;
 
@@ -105,7 +106,7 @@ export default function History(prop: Ihistory) {
                   index === count - 1 ? true : false
                 )}
               >
-                {content?.desc?.text || desc_}
+                {content?.historyDesc || desc_}
               </p>
             </li>
           ))}

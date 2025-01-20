@@ -11,30 +11,25 @@ const item_title_ = "lorem ipsum, quia do";
 
 const item_desc_ = "lorem ipsum, quia do";
 
-export interface ImediaText {
-  title?: string;
-  desc?: string;
+export interface ImediaContent {
+  mediaTitle: string;
+  mediaDesc: string;
 }
 
-export interface ImediaContent {
-  title?: {
-    text?: string;
-    css?: CSSObject;
-  };
-  desc?: {
-    text?: string;
-    css?: CSSObject;
-  };
+export interface ImediaStyle {
+  mediaTitle: CSSObject;
+  mediaDesc: CSSObject;
 }
 
 interface Imedia {
   content?: ImediaContent | null;
+  style?: ImediaStyle | null;
   isEditable?: boolean;
   onChange?: (update: ImediaContent) => void;
 }
 
 function MediaItem(prop: Imedia) {
-  const { content, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChange } = prop;
 
   return (
     <div css={item_container}>
@@ -50,11 +45,11 @@ function MediaItem(prop: Imedia) {
       />
       <div css={item_info_container}>
         <p css={number_style}>483</p>
-        <p css={content?.title?.css || media_title_css_}>
-          {content?.title?.text || item_title_}
+        <p css={style?.mediaTitle || media_title_css_}>
+          {content?.mediaTitle || item_title_}
         </p>
-        <p css={content?.desc?.css || media_desc_css_}>
-          {content?.desc?.text || item_desc_}
+        <p css={style?.mediaDesc || media_desc_css_}>
+          {content?.mediaDesc || item_desc_}
         </p>
       </div>
     </div>
@@ -62,16 +57,16 @@ function MediaItem(prop: Imedia) {
 }
 
 export default function Media(prop: Imedia) {
-  const { content, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChange } = prop;
 
   const initial = {
-    title: {
-      text: content?.title?.text || item_title_,
-      css: content?.title?.css || media_title_css_,
+    mediaTitle: {
+      text: content?.mediaTitle || item_title_,
+      css: style?.mediaTitle || media_title_css_,
     },
-    desc: {
-      text: content?.desc?.text || item_desc_,
-      css: content?.desc?.css || media_desc_css_,
+    mediaDesc: {
+      text: content?.mediaDesc || item_desc_,
+      css: style?.mediaDesc || media_desc_css_,
     },
   };
 
@@ -83,21 +78,21 @@ export default function Media(prop: Imedia) {
     }
   }, [content]);
 
-  function handleEdit(
-    field: keyof ImediaContent,
-    updatedText: string,
-    updatedCss: CSSObject
-  ) {
-    const updatedState = {
-      ...edit,
-      [field]: {
-        text: updatedText,
-        css: updatedCss,
-      },
-    };
-    setEdit(updatedState);
-    onChange?.(updatedState);
-  }
+  // function handleEdit(
+  //   field: keyof ImediaContent,
+  //   updatedText: string,
+  //   updatedCss: CSSObject
+  // ) {
+  //   const updatedState = {
+  //     ...edit,
+  //     [field]: {
+  //       text: updatedText,
+  //       css: updatedCss,
+  //     },
+  //   };
+  //   setEdit(updatedState);
+  //   onChange?.(updatedState);
+  // }
 
   const count = 6;
 
@@ -112,7 +107,7 @@ export default function Media(prop: Imedia) {
         {Array.from({ length: count }, (_, index) => (
           <MediaItem
             key={index}
-            content={edit}
+            content={content}
             onChange={onChange}
             isEditable
           />

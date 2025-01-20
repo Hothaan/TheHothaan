@@ -1,3 +1,6 @@
+/** @jsxImportSource @emotion/react */
+import { css, CSSObject } from "@emotion/react";
+
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
@@ -12,18 +15,20 @@ import { IfetchedfeatureResponseData } from "@components/template/types";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
-/* text */
-import { IgreetingsText } from "@components/template/companyIntoduce/Greetings";
-
 /* content */
 import { IgreetingsContent } from "@components/template/companyIntoduce/Greetings";
 
-interface IhomePageBoardGreetingsText {
-  greetings: IgreetingsText;
-}
-
 interface IhomePageBoardGreetingsContent {
-  greetings: IgreetingsContent;
+  greetingsHalfTitle: string;
+  greetingsHalfDesc: string;
+  greetingsFullTitle: string;
+  greetingsFullDesc: string;
+}
+interface IhomePageBoardGreetingsStyle {
+  greetingsHalfTitle: CSSObject;
+  greetingsHalfDesc: CSSObject;
+  greetingsFullTitle: CSSObject;
+  greetingsFullDesc: CSSObject;
 }
 
 export default function HomePageBoardGreetings() {
@@ -88,18 +93,18 @@ export default function HomePageBoardGreetings() {
       {} as IhomePageBoardGreetingsContent
     );
 
-  function updateSectionContent<T extends keyof IhomePageBoardGreetingsContent>(
-    section: T,
-    updatedContent: Partial<IhomePageBoardGreetingsContent[T]>
-  ) {
-    setPageContent((prev) => ({
-      ...prev,
-      [section]: {
-        ...prev?.[section],
-        ...updatedContent,
-      },
-    }));
-  }
+  // function updateSectionContent<T extends keyof IhomePageBoardGreetingsContent>(
+  //   section: T,
+  //   updatedContent: Partial<IhomePageBoardGreetingsContent[T]>
+  // ) {
+  //   setPageContent((prev) => ({
+  //     ...prev,
+  //     [section]: {
+  //       ...prev?.[section],
+  //       ...updatedContent,
+  //     },
+  //   }));
+  // }
 
   // if (!generatedText || !headerData) {
   //   return <Loading />;

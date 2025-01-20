@@ -10,25 +10,23 @@ const item_title_ = "뉴스 제목입니다. 뉴스 제목입니다. 뉴스 제�
 
 const item_tag_ = "뉴스 카테고리";
 
-export interface InewsMainText {
-  title?: string;
+export interface InewsMainContent {
+  newsTitle: string;
 }
 
-export interface InewsMainContent {
-  title?: {
-    text?: string;
-    css?: CSSObject;
-  };
+export interface InewsMainStyle {
+  newsTitle: CSSObject;
 }
 
 interface InewsMain {
   content?: InewsMainContent | null;
+  style?: InewsMainStyle | null;
   isEditable?: boolean;
   onChange?: (content: InewsMainContent) => void;
 }
 
 function NewsMainItem(prop: InewsMain) {
-  const { content, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChange } = prop;
 
   return (
     <div css={item}>
@@ -44,8 +42,8 @@ function NewsMainItem(prop: InewsMain) {
       />
       <div css={info_container}>
         <p css={item_tag}>{item_tag_}</p>
-        <p css={content?.title?.css || news_main_item_title_css_}>
-          {content?.title?.text || item_title_}
+        <p css={style?.newsTitle || news_main_item_title_css_}>
+          {content?.newsTitle || item_title_}
         </p>
       </div>
     </div>
@@ -53,12 +51,12 @@ function NewsMainItem(prop: InewsMain) {
 }
 
 export default function NewsMain(prop: InewsMain) {
-  const { content, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChange } = prop;
 
   const initial = {
     title: {
-      text: content?.title?.text || item_title_,
-      css: content?.title?.css || news_main_item_title_css_,
+      text: content?.newsTitle || item_title_,
+      css: style?.newsTitle || news_main_item_title_css_,
     },
   };
 
@@ -70,21 +68,21 @@ export default function NewsMain(prop: InewsMain) {
     }
   }, [content]);
 
-  function handleEdit(
-    field: keyof InewsMainContent,
-    updatedText: string,
-    updatedCss: CSSObject
-  ) {
-    const updatedState = {
-      ...edit,
-      [field]: {
-        text: updatedText,
-        css: updatedCss,
-      },
-    };
-    setEdit(updatedState);
-    onChange?.(updatedState);
-  }
+  // function handleEdit(
+  //   field: keyof InewsMainContent,
+  //   updatedText: string,
+  //   updatedCss: CSSObject
+  // ) {
+  //   const updatedState = {
+  //     ...edit,
+  //     [field]: {
+  //       text: updatedText,
+  //       css: updatedCss,
+  //     },
+  //   };
+  //   setEdit(updatedState);
+  //   onChange?.(updatedState);
+  // }
 
   const count = 6;
 
@@ -94,7 +92,7 @@ export default function NewsMain(prop: InewsMain) {
         <p css={title_style}>{component_title_}</p>
         <div css={item_container}>
           {Array.from({ length: count }, (_, index) => (
-            <NewsMainItem key={index} content={edit} />
+            <NewsMainItem key={index} content={content} />
           ))}
         </div>
       </div>

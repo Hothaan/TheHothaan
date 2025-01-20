@@ -12,29 +12,20 @@ const title_ = "Headline H1";
 const desc_ =
   "lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non";
 
-export interface IproductIntroduceMainText {
-  imageDesc?: string;
-  title?: string;
-  desc?: string;
-}
-
 export interface IproductIntroduceMainContent {
-  imageDesc?: {
-    text?: string;
-    css?: CSSObject;
-  };
-  title?: {
-    text?: string;
-    css?: CSSObject;
-  };
-  desc?: {
-    text?: string;
-    css?: CSSObject;
-  };
+  productIntroduceImageDesc: string;
+  productIntroduceTitle: string;
+  productIntroduceDesc: string;
+}
+export interface IproductIntroduceMainStyle {
+  productIntroduceImageDesc: CSSObject;
+  productIntroduceTitle: CSSObject;
+  productIntroduceDesc: CSSObject;
 }
 
 interface IproductIntroduceMain {
-  content?: IproductIntroduceMainContent;
+  content?: IproductIntroduceMainContent | null;
+  style?: IproductIntroduceMainStyle | null;
   isEditable?: boolean;
   onChange?: (content: IproductIntroduceMainContent) => void;
 }
@@ -81,20 +72,21 @@ export const product_introduce_desc_css_: CSSObject = {
 };
 
 export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
-  const { content, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChange } = prop;
 
   const initial = {
-    imageDesc: {
-      text: content?.imageDesc?.text || image_desc_,
-      css: content?.imageDesc?.css || product_introduce_image_desc_css_,
+    productIntroduceImageDesc: {
+      text: content?.productIntroduceImageDesc || image_desc_,
+      css:
+        style?.productIntroduceImageDesc || product_introduce_image_desc_css_,
     },
-    title: {
-      text: content?.title?.text || title_,
-      css: content?.title?.css || product_introduce_title_css_,
+    productIntroduceTitle: {
+      text: content?.productIntroduceTitle || title_,
+      css: style?.productIntroduceTitle || product_introduce_title_css_,
     },
-    desc: {
-      text: content?.desc?.text || desc_,
-      css: content?.desc?.css || product_introduce_desc_css_,
+    productIntroduceDesc: {
+      text: content?.productIntroduceDesc || desc_,
+      css: style?.productIntroduceDesc || product_introduce_desc_css_,
     },
   };
 
@@ -106,21 +98,21 @@ export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
     }
   }, [content]);
 
-  function handleEdit(
-    field: keyof IproductIntroduceMainContent,
-    updatedText: string,
-    updatedCss: CSSObject
-  ) {
-    const updatedState = {
-      ...edit,
-      [field]: {
-        text: updatedText,
-        css: updatedCss,
-      },
-    };
-    setEdit(updatedState);
-    onChange?.(updatedState);
-  }
+  // function handleEdit(
+  //   field: keyof IproductIntroduceMainContent,
+  //   updatedText: string,
+  //   updatedCss: CSSObject
+  // ) {
+  //   const updatedState = {
+  //     ...edit,
+  //     [field]: {
+  //       text: updatedText,
+  //       css: updatedCss,
+  //     },
+  //   };
+  //   setEdit(updatedState);
+  //   onChange?.(updatedState);
+  // }
 
   return (
     <OuterWrap padding="0">
@@ -136,32 +128,53 @@ export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
               icon: "width: 110px; height: 110px;",
             }}
           />
-          <p css={edit?.imageDesc?.css || product_introduce_image_desc_css_}>
-            {edit?.imageDesc?.text || image_desc_}
+          <p
+            css={
+              edit?.productIntroduceImageDesc?.css ||
+              product_introduce_image_desc_css_
+            }
+          >
+            {edit?.productIntroduceImageDesc?.text || image_desc_}
           </p>
         </div>
         <div css={text_container}>
-          <p css={edit?.title?.css || product_introduce_title_css_}>
-            {edit?.title?.text || title_}
+          <p
+            css={
+              edit?.productIntroduceTitle?.css || product_introduce_title_css_
+            }
+          >
+            {edit?.productIntroduceTitle?.text || title_}
           </p>
-          <p css={edit?.desc?.css || product_introduce_desc_css_}>
-            {edit?.desc?.text || desc_}
+          <p
+            css={edit?.productIntroduceDesc?.css || product_introduce_desc_css_}
+          >
+            {edit?.productIntroduceDesc?.text || desc_}
           </p>
-          <p css={edit?.desc?.css || product_introduce_desc_css_}>
-            {edit?.desc?.text || desc_}
+          <p
+            css={edit?.productIntroduceDesc?.css || product_introduce_desc_css_}
+          >
+            {edit?.productIntroduceDesc?.text || desc_}
           </p>
         </div>
       </div>
       <div css={container}>
         <div css={text_container}>
-          <p css={edit?.title?.css || product_introduce_title_css_}>
-            {edit?.title?.text || title_}
+          <p
+            css={
+              edit?.productIntroduceTitle?.css || product_introduce_title_css_
+            }
+          >
+            {edit?.productIntroduceTitle?.text || title_}
           </p>
-          <p css={edit?.desc?.css || product_introduce_desc_css_}>
-            {edit?.desc?.text || desc_}
+          <p
+            css={edit?.productIntroduceDesc?.css || product_introduce_desc_css_}
+          >
+            {edit?.productIntroduceDesc?.text || desc_}
           </p>
-          <p css={edit?.desc?.css || product_introduce_desc_css_}>
-            {edit?.desc?.text || desc_}
+          <p
+            css={edit?.productIntroduceDesc?.css || product_introduce_desc_css_}
+          >
+            {edit?.productIntroduceDesc?.text || desc_}
           </p>
         </div>
         <div css={image_container}>
@@ -175,8 +188,13 @@ export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
               icon: "width: 110px; height: 110px;",
             }}
           />
-          <p css={edit?.imageDesc?.css || product_introduce_image_desc_css_}>
-            {edit?.imageDesc?.text || image_desc_}
+          <p
+            css={
+              edit?.productIntroduceImageDesc?.css ||
+              product_introduce_image_desc_css_
+            }
+          >
+            {edit?.productIntroduceImageDesc?.text || image_desc_}
           </p>
         </div>
       </div>

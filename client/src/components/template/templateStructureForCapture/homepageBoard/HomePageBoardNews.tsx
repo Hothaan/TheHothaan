@@ -1,3 +1,6 @@
+/** @jsxImportSource @emotion/react */
+import { css, CSSObject } from "@emotion/react";
+
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
@@ -12,18 +15,16 @@ import { IfetchedfeatureResponseData } from "@components/template/types";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
-/* text */
-import { InewsText } from "@components/template/board/News";
-
 /* content */
 import { InewsContent } from "@components/template/board/News";
 
-interface IhomePageBoardNewsText {
-  news: InewsText;
-}
-
 interface IhomePageBoardNewsContent {
-  news: InewsText;
+  newsTitle: string;
+  newsDesc: string;
+}
+interface IhomePageBoardNewsStyle {
+  newsTitle: CSSObject;
+  newsDesc: CSSObject;
 }
 
 export default function HomePageBoardNews() {
@@ -87,18 +88,18 @@ export default function HomePageBoardNews() {
     {} as IhomePageBoardNewsContent
   );
 
-  function updateSectionContent<T extends keyof IhomePageBoardNewsContent>(
-    section: T,
-    updatedContent: Partial<IhomePageBoardNewsContent[T]>
-  ) {
-    setPageContent((prev) => ({
-      ...prev,
-      [section]: {
-        ...prev?.[section],
-        ...updatedContent,
-      },
-    }));
-  }
+  // function updateSectionContent<T extends keyof IhomePageBoardNewsContent>(
+  //   section: T,
+  //   updatedContent: Partial<IhomePageBoardNewsContent[T]>
+  // ) {
+  //   setPageContent((prev) => ({
+  //     ...prev,
+  //     [section]: {
+  //       ...prev?.[section],
+  //       ...updatedContent,
+  //     },
+  //   }));
+  // }
 
   // if (!generatedText || !headerData) {
   //   return <Loading />;

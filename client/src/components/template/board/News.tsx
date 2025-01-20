@@ -11,30 +11,24 @@ const item_title_ = "lorem ipsum, quia do";
 
 const item_desc_ = "lorem ipsum, quia do";
 
-export interface InewsText {
-  title?: string;
-  desc?: string;
-}
-
 export interface InewsContent {
-  title?: {
-    text?: string;
-    css?: CSSObject;
-  };
-  desc?: {
-    text?: string;
-    css?: CSSObject;
-  };
+  newsTitle: string;
+  newsDesc: string;
+}
+export interface InewsStyle {
+  newsTitle: CSSObject;
+  newsDesc: CSSObject;
 }
 
 interface Inews {
   content?: InewsContent | null;
+  style?: InewsStyle | null;
   isEditable?: boolean;
   onChange?: (content: InewsContent) => void;
 }
 
 function NewsItem(prop: Inews) {
-  const { content, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChange } = prop;
 
   return (
     <div css={item_container}>
@@ -50,11 +44,11 @@ function NewsItem(prop: Inews) {
       />
       <div css={item_info_container}>
         <p css={number_style}>483</p>
-        <p css={content?.title?.css || news_title_css_}>
-          {content?.title?.text || item_title_}
+        <p css={style?.newsTitle || news_title_css_}>
+          {content?.newsTitle || item_title_}
         </p>
-        <p css={content?.desc?.css || news_desc_css_}>
-          {content?.desc?.text || item_desc_}
+        <p css={style?.newsDesc || news_desc_css_}>
+          {content?.newsDesc || item_desc_}
         </p>
       </div>
     </div>
@@ -62,16 +56,16 @@ function NewsItem(prop: Inews) {
 }
 
 export default function News(prop: Inews) {
-  const { content, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChange } = prop;
 
   const initial = {
-    title: {
-      text: content?.title?.text || item_title_,
-      css: content?.title?.css || news_title_css_,
+    newsTitle: {
+      text: content?.newsTitle || item_title_,
+      css: style?.newsTitle || news_title_css_,
     },
-    desc: {
-      text: content?.desc?.text || item_desc_,
-      css: content?.desc?.css || news_desc_css_,
+    newsDesc: {
+      text: content?.newsDesc || item_desc_,
+      css: style?.newsDesc || news_desc_css_,
     },
   };
 
@@ -83,21 +77,21 @@ export default function News(prop: Inews) {
     }
   }, [content]);
 
-  function handleEdit(
-    field: keyof InewsContent,
-    updatedText: string,
-    updatedCss: CSSObject
-  ) {
-    const updatedState = {
-      ...edit,
-      [field]: {
-        text: updatedText,
-        css: updatedCss,
-      },
-    };
-    setEdit(updatedState);
-    onChange?.(updatedState);
-  }
+  // function handleEdit(
+  //   field: keyof InewsContent,
+  //   updatedText: string,
+  //   updatedCss: CSSObject
+  // ) {
+  //   const updatedState = {
+  //     ...edit,
+  //     [field]: {
+  //       text: updatedText,
+  //       css: updatedCss,
+  //     },
+  //   };
+  //   setEdit(updatedState);
+  //   onChange?.(updatedState);
+  // }
 
   const count = 4;
 
@@ -113,7 +107,7 @@ export default function News(prop: Inews) {
         {Array.from({ length: count }, (_, index) => (
           <NewsItem
             key={index}
-            content={edit}
+            content={content}
             isEditable={isEditable}
             onChange={onChange}
           />

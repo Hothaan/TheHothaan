@@ -12,24 +12,18 @@ const desc_ =
 
 const date_ = "2024.11.12";
 
-export interface InoticeMainText {
-  title?: string;
-  desc?: string;
-}
-
 export interface InoticeMainContent {
-  title?: {
-    text?: string;
-    css?: CSSObject;
-  };
-  desc?: {
-    text?: string;
-    css?: CSSObject;
-  };
+  noticeTitle: string;
+  noticeDesc: string;
+}
+export interface InoticeMainStyle {
+  noticeTitle: CSSObject;
+  noticeDesc: CSSObject;
 }
 
 interface InoticeMain {
   content?: InoticeMainContent | null;
+  style?: InoticeMainStyle | null;
   isEditable?: boolean;
   onChange?: (content: InoticeMainContent) => void;
 }
@@ -67,33 +61,33 @@ const notice_main_desc_css_: CSSObject = css`
 `;
 
 function NoticeMainItem(prop: InoticeMain) {
-  const { content, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChange } = prop;
 
   return (
     <div css={item_container}>
       <div css={title_container}>
         <div css={title_inner_container}>
           <p css={tag}>NEW</p>
-          <p css={notice_main_title_css_}>{content?.title?.text || title_}</p>
+          <p css={notice_main_title_css_}>{content?.noticeTitle || title_}</p>
         </div>
         <p css={date_style}>{date_}</p>
       </div>
-      <p css={notice_main_desc_css_}>{content?.desc?.text || desc_}</p>
+      <p css={notice_main_desc_css_}>{content?.noticeDesc || desc_}</p>
     </div>
   );
 }
 
 export default function NoticeMain(prop: InoticeMain) {
-  const { content, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChange } = prop;
 
   const initial = {
-    title: {
-      text: content?.title?.text || title_,
-      css: content?.title?.css || notice_main_title_css_,
+    noticeTitle: {
+      text: content?.noticeTitle || title_,
+      css: style?.noticeTitle || notice_main_title_css_,
     },
-    desc: {
-      text: content?.desc?.text || desc_,
-      css: content?.desc?.css || notice_main_desc_css_,
+    noticeDesc: {
+      text: content?.noticeDesc || desc_,
+      css: style?.noticeDesc || notice_main_desc_css_,
     },
   };
 
@@ -105,21 +99,21 @@ export default function NoticeMain(prop: InoticeMain) {
     }
   }, [content]);
 
-  function handleEdit(
-    field: keyof InoticeMainContent,
-    updatedText: string,
-    updatedCss: CSSObject
-  ) {
-    const updatedState = {
-      ...edit,
-      [field]: {
-        text: updatedText,
-        css: updatedCss,
-      },
-    };
-    setEdit(updatedState);
-    onChange?.(updatedState);
-  }
+  // function handleEdit(
+  //   field: keyof InoticeMainContent,
+  //   updatedText: string,
+  //   updatedCss: CSSObject
+  // ) {
+  //   const updatedState = {
+  //     ...edit,
+  //     [field]: {
+  //       text: updatedText,
+  //       css: updatedCss,
+  //     },
+  //   };
+  //   setEdit(updatedState);
+  //   onChange?.(updatedState);
+  // }
 
   const count = 3;
 
@@ -132,7 +126,7 @@ export default function NoticeMain(prop: InoticeMain) {
             {Array.from({ length: count }, (_, index) => (
               <NoticeMainItem
                 key={index}
-                content={edit}
+                content={content}
                 isEditable={isEditable}
                 onChange={onChange}
               />
