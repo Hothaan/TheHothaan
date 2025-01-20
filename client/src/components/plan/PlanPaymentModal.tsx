@@ -3,7 +3,7 @@ import { css, CSSObject } from "@emotion/react";
 import { Ibutton } from "@components/common/button/Button";
 import Button from "@components/common/button/Button";
 import { Tplan } from "@pages/user/MainPage/ServiceIntro8";
-import { ReactComponent as ModalClose } from "@svgs/planIntro/modalClose.svg";
+// import { ReactComponent as ModalClose } from "@svgs/planIntro/modalClose.svg";
 
 export interface Imodal {
   isOpen: boolean;
@@ -26,7 +26,27 @@ export default function PlanPaymentModal(prop: Imodal) {
       >
         <div css={top_container}>
           <p css={modal_title}>플랜 결제하기</p>
-          <ModalClose onClick={() => {}} />
+          <svg
+            width="30"
+            height="30"
+            viewBox="0 0 30 30"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect width="30" height="30" rx="15" fill="#F6F8FF" />
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M9.91846 19.4418L19.362 9.99822L19.9185 10.5547L10.4749 19.9982L9.91846 19.4418Z"
+              fill="#747474"
+            />
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M10.6378 10L20.0814 19.4435L19.5249 20L10.0814 10.5565L10.6378 10Z"
+              fill="#747474"
+            />
+          </svg>
         </div>
         <div css={bottom_container}>
           <div css={left_container}>
