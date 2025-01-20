@@ -36,8 +36,8 @@ async function generateOpenAiText(
           "feature": "${depth2}",
           "content": {
             "productListCategories": ["카테고리1", "카테고리2", ..., "카테고리${cnt}"]
-            "productListProductTitle": ["상품이름1", "상품이름2", ..., "상품이름${cnt}"]
-            "productListProductDesc": ["상품설명1", "상품설명2", ..., "상품설명${cnt}"]
+            "productListProductTitle": "상품이름"
+            "productListProductDesc": "상품설명"
           }
         }
         
