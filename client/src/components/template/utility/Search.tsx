@@ -10,26 +10,21 @@ const search_result_item_title_ = "PRICE";
 const search_result_item_desc_ =
   "Lorem ipsum dolor sit amet consectetur adipiscing eli mattis sit phasellus mollis sit aliquam sit nullam.";
 
-export interface IsearchText {
-  title?: string;
-  desc?: string;
+export interface IsearchContent {
+  SearchTitle: string;
+  SearchDesc: string;
 }
 
-export interface IsearchContent {
-  title?: {
-    text?: string;
-    css?: CSSObject;
-  };
-  desc?: {
-    text?: string;
-    css?: CSSObject;
-  };
+export interface IsearchStyle {
+  SearchTitle: CSSObject;
+  SearchDesc: CSSObject;
 }
 
 type TsearchOption = "일반 검색" | "통합 검색";
 
 interface Isearch {
   content?: IsearchContent | null;
+  style?: IsearchStyle | null;
   isEditable?: boolean;
   onChange?: (content: IsearchContent) => void;
   option?: TsearchOption;
@@ -58,16 +53,16 @@ export const search_result_item_desc_css_ = css`
 `;
 
 export default function Search(prop: Isearch) {
-  const { content, isEditable, onChange, option } = prop;
+  const { content, style, isEditable, onChange, option } = prop;
 
   const initial = {
-    title: {
-      text: content?.title?.text || search_result_item_title_,
-      css: content?.title?.css || search_result_item_title_css_,
+    SearchTitle: {
+      text: content?.SearchTitle || search_result_item_title_,
+      css: style?.SearchTitle || search_result_item_title_css_,
     },
-    desc: {
-      text: content?.desc?.text || search_result_item_desc_,
-      css: content?.desc?.css || search_result_item_desc_css_,
+    SearchDesc: {
+      text: content?.SearchDesc || search_result_item_desc_,
+      css: style?.SearchDesc || search_result_item_desc_css_,
     },
   };
 
@@ -79,21 +74,21 @@ export default function Search(prop: Isearch) {
     }
   }, [content]);
 
-  function handleEdit(
-    field: keyof IsearchContent,
-    updatedText: string,
-    updatedCss: CSSObject
-  ) {
-    const updatedState = {
-      ...edit,
-      [field]: {
-        text: updatedText,
-        css: updatedCss,
-      },
-    };
-    setEdit(updatedState);
-    onChange?.(updatedState);
-  }
+  // function handleEdit(
+  //   field: keyof IsearchContent,
+  //   updatedText: string,
+  //   updatedCss: CSSObject
+  // ) {
+  //   const updatedState = {
+  //     ...edit,
+  //     [field]: {
+  //       text: updatedText,
+  //       css: updatedCss,
+  //     },
+  //   };
+  //   setEdit(updatedState);
+  //   onChange?.(updatedState);
+  // }
 
   return (
     <OuterWrap padding="100px 0">
@@ -111,27 +106,27 @@ export default function Search(prop: Isearch) {
               {search_result_title_}
             </p>
             <div css={search_result_item_container}>
-              <p css={edit?.title?.css || search_result_item_title_css_}>
-                {edit?.title?.text || search_result_item_title_}
+              <p css={edit?.SearchTitle?.css || search_result_item_title_css_}>
+                {edit?.SearchTitle?.text || search_result_item_title_}
               </p>
-              <p css={edit?.desc?.css || search_result_item_desc_css_}>
-                {edit?.desc?.text || search_result_item_desc_}
-              </p>
-            </div>
-            <div css={search_result_item_container}>
-              <p css={edit?.title?.css || search_result_item_title_css_}>
-                {edit?.title?.text || search_result_item_title_}
-              </p>
-              <p css={edit?.desc?.css || search_result_item_desc_css_}>
-                {edit?.desc?.text || search_result_item_desc_}
+              <p css={edit?.SearchDesc?.css || search_result_item_desc_css_}>
+                {edit?.SearchDesc?.text || search_result_item_desc_}
               </p>
             </div>
             <div css={search_result_item_container}>
-              <p css={edit?.title?.css || search_result_item_title_css_}>
-                {edit?.title?.text || search_result_item_title_}
+              <p css={edit?.SearchTitle?.css || search_result_item_title_css_}>
+                {edit?.SearchTitle?.text || search_result_item_title_}
               </p>
-              <p css={edit?.desc?.css || search_result_item_desc_css_}>
-                {edit?.desc?.text || search_result_item_desc_}
+              <p css={edit?.SearchDesc?.css || search_result_item_desc_css_}>
+                {edit?.SearchDesc?.text || search_result_item_desc_}
+              </p>
+            </div>
+            <div css={search_result_item_container}>
+              <p css={edit?.SearchTitle?.css || search_result_item_title_css_}>
+                {edit?.SearchTitle?.text || search_result_item_title_}
+              </p>
+              <p css={edit?.SearchDesc?.css || search_result_item_desc_css_}>
+                {edit?.SearchDesc?.text || search_result_item_desc_}
               </p>
             </div>
           </div>

@@ -124,25 +124,25 @@ export default function MatchingServiceIntroduceMain(
   const { content, style, isEditable, onChange } = prop;
 
   const initial = {
-    bannerTitle: {
+    MatchingServiceIntroduceMainBannerTitle: {
       text: content?.MatchingServiceIntroduceMainBannerTitle || banner_title_,
       css:
         style?.MatchingServiceIntroduceMainBannerTitle ||
         matching_service_introduce_main_banner_title_css_,
     },
-    bannerDesc: {
+    MatchingServiceIntroduceMainBannerDesc: {
       text: content?.MatchingServiceIntroduceMainBannerDesc || banner_desc_,
       css:
         style?.MatchingServiceIntroduceMainBannerDesc ||
         matching_service_introduce_main_banner_desc_css_,
     },
-    itemTitle: {
+    MatchingServiceIntroduceMainItemTitle: {
       text: content?.MatchingServiceIntroduceMainItemTitle || item_title_,
       css:
         style?.MatchingServiceIntroduceMainItemTitle ||
         matching_service_introduce_main_item_title_css_,
     },
-    itemDesc: {
+    MatchingServiceIntroduceMainItemDesc: {
       text: content?.MatchingServiceIntroduceMainItemDesc || item_desc_,
       css:
         style?.MatchingServiceIntroduceMainItemDesc ||
@@ -193,35 +193,39 @@ export default function MatchingServiceIntroduceMain(
           <div css={banner_text_container}>
             <p
               css={
-                edit?.bannerTitle?.css ||
+                edit?.MatchingServiceIntroduceMainBannerTitle?.css ||
                 matching_service_introduce_main_banner_title_css_
               }
             >
-              {edit?.bannerTitle?.text || banner_title_}
+              {edit?.MatchingServiceIntroduceMainBannerTitle?.text ||
+                banner_title_}
             </p>
             <p
               css={
-                edit?.bannerDesc?.css ||
+                edit?.MatchingServiceIntroduceMainBannerDesc?.css ||
                 matching_service_introduce_main_banner_desc_css_
               }
             >
-              {edit?.bannerDesc?.text || banner_desc_}
+              {edit?.MatchingServiceIntroduceMainBannerDesc?.text ||
+                banner_desc_}
             </p>
             <p
               css={
-                edit?.bannerDesc?.css ||
+                edit?.MatchingServiceIntroduceMainBannerDesc?.css ||
                 matching_service_introduce_main_banner_desc_css_
               }
             >
-              {edit?.bannerDesc?.text || banner_desc_}
+              {edit?.MatchingServiceIntroduceMainBannerDesc?.text ||
+                banner_desc_}
             </p>
             <p
               css={
-                edit?.bannerDesc?.css ||
+                edit?.MatchingServiceIntroduceMainBannerDesc?.css ||
                 matching_service_introduce_main_banner_desc_css_
               }
             >
-              {edit?.bannerDesc?.text || banner_desc_}
+              {edit?.MatchingServiceIntroduceMainBannerDesc?.text ||
+                banner_desc_}
             </p>
           </div>
         </div>

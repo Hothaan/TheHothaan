@@ -13,34 +13,23 @@ const item_title_ = "Explore";
 
 const item_button_ = "Explore";
 
-export interface IexploreServiceText {
-  title?: string;
-  button?: string;
-  exploreTitle?: string;
-  exploreButton?: string;
+export interface IexploreServiceContent {
+  exploreServiceTitle: string;
+  exploreServiceButton: string;
+  exploreServiceExploreTitle: string;
+  exploreServiceExploreButton: string;
 }
 
-export interface IexploreServiceContent {
-  title?: {
-    text?: string;
-    css?: CSSObject;
-  };
-  button?: {
-    text?: string;
-    css?: CSSObject;
-  };
-  exploreTitle?: {
-    text?: string;
-    css?: CSSObject;
-  };
-  exploreButton?: {
-    text?: string;
-    css?: CSSObject;
-  };
+export interface IexploreServiceStyle {
+  exploreServiceTitle: CSSObject;
+  exploreServiceButton: CSSObject;
+  exploreServiceExploreTitle: CSSObject;
+  exploreServiceExploreButton: CSSObject;
 }
 
 interface IexploreService {
   content?: IexploreServiceContent | null;
+  style?: IexploreServiceStyle | null;
   isEditable?: boolean;
   onChange?: (content: IexploreServiceContent) => void;
 }
@@ -115,24 +104,27 @@ export const explore_service_explore_button_css_ = css`
 `;
 
 export default function ExploreServiceMain(prop: IexploreService) {
-  const { content, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChange } = prop;
 
   const initial = {
-    title: {
-      text: content?.title?.text || title_,
-      css: content?.title?.css || explore_service_title_css_,
+    exploreServiceTitle: {
+      text: content?.exploreServiceTitle || title_,
+      css: style?.exploreServiceTitle || explore_service_title_css_,
     },
-    button: {
-      text: content?.title?.text || button_,
-      css: content?.title?.css || explore_service_button_css_,
+    exploreServiceButton: {
+      text: content?.exploreServiceButton || button_,
+      css: style?.exploreServiceButton || explore_service_button_css_,
     },
-    exploreTitle: {
-      text: content?.title?.text || item_title_,
-      css: content?.title?.css || explore_service_explore_title_css_,
+    exploreServiceExploreTitle: {
+      text: content?.exploreServiceExploreTitle || item_title_,
+      css:
+        style?.exploreServiceExploreTitle || explore_service_explore_title_css_,
     },
-    exploreButton: {
-      text: content?.title?.text || item_button_,
-      css: content?.title?.css || explore_service_explore_button_css_,
+    exploreServiceExploreButton: {
+      text: content?.exploreServiceExploreButton || item_button_,
+      css:
+        style?.exploreServiceExploreButton ||
+        explore_service_explore_button_css_,
     },
   };
 
@@ -144,21 +136,21 @@ export default function ExploreServiceMain(prop: IexploreService) {
     }
   }, [content]);
 
-  function handleEdit(
-    field: keyof IexploreServiceContent,
-    updatedText: string,
-    updatedCss: CSSObject
-  ) {
-    const updatedState = {
-      ...edit,
-      [field]: {
-        text: updatedText,
-        css: updatedCss,
-      },
-    };
-    setEdit(updatedState);
-    onChange?.(updatedState);
-  }
+  // function handleEdit(
+  //   field: keyof IexploreServiceContent,
+  //   updatedText: string,
+  //   updatedCss: CSSObject
+  // ) {
+  //   const updatedState = {
+  //     ...edit,
+  //     [field]: {
+  //       text: updatedText,
+  //       css: updatedCss,
+  //     },
+  //   };
+  //   setEdit(updatedState);
+  //   onChange?.(updatedState);
+  // }
 
   const count = 3;
 
@@ -179,13 +171,15 @@ export default function ExploreServiceMain(prop: IexploreService) {
           <div css={text_container}>
             {isEditable ? (
               <EditableText
-                text={edit?.title?.text || title_}
+                text={edit?.exploreServiceTitle?.text || title_}
                 isTextArea={false}
-                defaultCss={edit?.title?.css || explore_service_title_css_}
+                defaultCss={
+                  edit?.exploreServiceTitle?.css || explore_service_title_css_
+                }
               />
             ) : (
               <p css={explore_service_title_css_}>
-                {edit?.title?.text || title_}
+                {edit?.exploreServiceTitle?.text || title_}
               </p>
             )}
             <ul css={explore_list}>
@@ -193,25 +187,29 @@ export default function ExploreServiceMain(prop: IexploreService) {
                 <li css={explore_item} key={index}>
                   <p
                     css={
-                      edit?.exploreTitle?.css ||
+                      edit?.exploreServiceExploreTitle?.css ||
                       explore_service_explore_title_css_
                     }
                   >
-                    {edit?.exploreTitle?.text || item_title_}
+                    {edit?.exploreServiceExploreTitle?.text || item_title_}
                   </p>
                   <p
                     css={
-                      edit?.exploreButton?.css ||
+                      edit?.exploreServiceExploreButton?.css ||
                       explore_service_explore_button_css_
                     }
                   >
-                    {edit?.exploreButton?.text || item_button_}
+                    {edit?.exploreServiceExploreButton?.text || item_button_}
                   </p>
                 </li>
               ))}
             </ul>
-            <div css={edit?.button?.css || explore_service_button_css_}>
-              {edit?.button?.text || button_}
+            <div
+              css={
+                edit?.exploreServiceButton?.css || explore_service_button_css_
+              }
+            >
+              {edit?.exploreServiceButton?.text || button_}
             </div>
           </div>
         </div>

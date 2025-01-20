@@ -1,3 +1,6 @@
+/** @jsxImportSource @emotion/react */
+import { css, CSSObject } from "@emotion/react";
+
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
@@ -12,18 +15,17 @@ import { IfetchedfeatureResponseData } from "@components/template/types";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
-/* text */
-import { IsearchText } from "@components/template/utility/Search";
-
 /* content */
 import { IsearchContent } from "@components/template/utility/Search";
 
-interface IntermediaryMatchSearchText {
-  Search: IsearchText;
+interface IntermediaryMatchSearchContent {
+  SearchTitle: string;
+  SearchDesc: string;
 }
 
-interface IntermediaryMatchSearchContent {
-  Search: IsearchContent;
+interface IntermediaryMatchSearchStyle {
+  SearchTitle: CSSObject;
+  SearchDesc: CSSObject;
 }
 
 export default function IntermediaryMatchSearch() {
@@ -88,18 +90,18 @@ export default function IntermediaryMatchSearch() {
       {} as IntermediaryMatchSearchContent
     );
 
-  function updateSectionContent<T extends keyof IntermediaryMatchSearchContent>(
-    section: T,
-    updatedContent: Partial<IntermediaryMatchSearchContent[T]>
-  ) {
-    setPageContent((prev) => ({
-      ...prev,
-      [section]: {
-        ...prev?.[section],
-        ...updatedContent,
-      },
-    }));
-  }
+  // function updateSectionContent<T extends keyof IntermediaryMatchSearchContent>(
+  //   section: T,
+  //   updatedContent: Partial<IntermediaryMatchSearchContent[T]>
+  // ) {
+  //   setPageContent((prev) => ({
+  //     ...prev,
+  //     [section]: {
+  //       ...prev?.[section],
+  //       ...updatedContent,
+  //     },
+  //   }));
+  // }
 
   // if (!generatedText || !headerData) {
   //   return <Loading />;

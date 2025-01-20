@@ -1,3 +1,6 @@
+/** @jsxImportSource @emotion/react */
+import { css, CSSObject } from "@emotion/react";
+
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
@@ -13,17 +16,14 @@ import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
 /* text */
-import { iPriceMainText } from "@components/template/main/PriceMain";
-
-/* text */
 import { iPriceMainContent } from "@components/template/main/PriceMain";
 
-interface IntermediaryMatchPriceText {
-  PriceMain: iPriceMainText;
+interface IntermediaryMatchPriceContent {
+  PriceMainDesc: iPriceMainContent;
 }
 
-interface IntermediaryMatchPriceContent {
-  PriceMain: iPriceMainContent;
+interface IntermediaryMatchPriceStyle {
+  PriceMainDesc: CSSObject;
 }
 
 export default function IntermediaryMatchPrice() {

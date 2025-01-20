@@ -33,7 +33,7 @@ interface IntermediaryMatchMainContent {
   ReviewDesc: string;
   ReviewName: string;
   ReviewRole: string;
-  PriceMain: string;
+  PriceMainDesc: string;
   exploreServiceTitle: string;
   exploreServiceButton: string;
   exploreServiceExploreTitle: string;
@@ -53,7 +53,7 @@ interface IntermediaryMatchMainStyle {
   ReviewDesc: CSSObject;
   ReviewName: CSSObject;
   ReviewRole: CSSObject;
-  PriceMain: CSSObject;
+  PriceMainDesc: CSSObject;
   exploreServiceTitle: CSSObject;
   exploreServiceButton: CSSObject;
   exploreServiceExploreTitle: CSSObject;

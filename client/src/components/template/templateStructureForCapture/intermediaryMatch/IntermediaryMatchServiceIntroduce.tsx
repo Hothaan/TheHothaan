@@ -1,3 +1,6 @@
+/** @jsxImportSource @emotion/react */
+import { css, CSSObject } from "@emotion/react";
+
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
@@ -12,18 +15,17 @@ import { IfetchedfeatureResponseData } from "@components/template/types";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
-/* text */
-import { IintermediaryMatchServiceIntroductionText } from "@components/template/service/IntermediaryMatchServiceIntroduction";
-
 /* content */
 import { IintermediaryMatchServiceIntroductionContent } from "@components/template/service/IntermediaryMatchServiceIntroduction";
 
-interface IntermediaryMatchServiceIntroduceText {
-  IntermediaryMatchServiceIntroduction: IintermediaryMatchServiceIntroductionText;
+interface IntermediaryMatchServiceIntroduceContent {
+  IntermediaryMatchServiceIntroductionTitle: string;
+  IntermediaryMatchServiceIntroductionDesc: string;
 }
 
-interface IntermediaryMatchServiceIntroduceContent {
-  IntermediaryMatchServiceIntroduction: IintermediaryMatchServiceIntroductionContent;
+interface IntermediaryMatchServiceIntroduceStyle {
+  IntermediaryMatchServiceIntroductionTitle: CSSObject;
+  IntermediaryMatchServiceIntroductionDesc: CSSObject;
 }
 
 export default function IntermediaryMatchServiceIntroduce() {
@@ -88,20 +90,20 @@ export default function IntermediaryMatchServiceIntroduce() {
       {} as IntermediaryMatchServiceIntroduceContent
     );
 
-  function updateSectionContent<
-    T extends keyof IntermediaryMatchServiceIntroduceContent
-  >(
-    section: T,
-    updatedContent: Partial<IntermediaryMatchServiceIntroduceContent[T]>
-  ) {
-    setPageContent((prev) => ({
-      ...prev,
-      [section]: {
-        ...prev?.[section],
-        ...updatedContent,
-      },
-    }));
-  }
+  // function updateSectionContent<
+  //   T extends keyof IntermediaryMatchServiceIntroduceContent
+  // >(
+  //   section: T,
+  //   updatedContent: Partial<IntermediaryMatchServiceIntroduceContent[T]>
+  // ) {
+  //   setPageContent((prev) => ({
+  //     ...prev,
+  //     [section]: {
+  //       ...prev?.[section],
+  //       ...updatedContent,
+  //     },
+  //   }));
+  // }
 
   // if (!generatedText || !headerData) {
   //   return <Loading />;
