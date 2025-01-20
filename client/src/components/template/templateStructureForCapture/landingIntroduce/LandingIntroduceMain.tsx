@@ -18,15 +18,6 @@ import { IfetchedfeatureResponseData } from "@components/template/types";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
-/* text */
-import { ImainBannerText } from "@components/template/main/Mainbanner";
-import { IserviceIntroduceText } from "@components/template/main/ServiceIntroduceMain";
-import { IproductIntroduceMainText } from "@components/template/main/ProductIntroduceMain";
-import { InoticeMainText } from "@components/template/main/NoticeMain";
-import { IrecruitMainText } from "@components/template/main/RecruitMain";
-import { InewsMainText } from "@components/template/main/NewsMain";
-import { IexploreServiceText } from "@components/template/main/ExploreServiceMain";
-
 /* content */
 import { ImainBannerContent } from "@components/template/main/Mainbanner";
 import { IserviceIntroduceContent } from "@components/template/main/ServiceIntroduceMain";
@@ -35,16 +26,6 @@ import { InoticeMainContent } from "@components/template/main/NoticeMain";
 import { IrecruitMainContent } from "@components/template/main/RecruitMain";
 import { InewsMainContent } from "@components/template/main/NewsMain";
 import { IexploreServiceContent } from "@components/template/main/ExploreServiceMain";
-
-interface IlandingIntroduceMainText {
-  mainBanner: ImainBannerText;
-  serviceIntroduce: IserviceIntroduceText;
-  productIntroduce: IproductIntroduceMainText;
-  notice: InoticeMainText;
-  recruit: IrecruitMainText;
-  news: InewsMainText;
-  exploreService: IexploreServiceText;
-}
 
 interface IlandingIntroduceMainContent {
   mainBanner: ImainBannerContent;
