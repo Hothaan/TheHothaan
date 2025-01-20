@@ -23,7 +23,9 @@ async function generateOpenAiText(
   try {
     let userPrompt;
 
-    if ((service = '쇼핑몰')) {
+    if (service === '쇼핑몰') {
+      userPrompt = generatePrompt(serviceDetails);
+    } else if (service === '중개·매칭') {
       userPrompt = generatePrompt(serviceDetails);
     } else {
       if (depth2 === '상품 목록' && cnt) {

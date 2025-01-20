@@ -2,6 +2,9 @@ const pool = require('../config/dbConfig');
 
 // components 테이블에서 component 구조 정보 가져오기
 exports.getComponentDetails = async (menuName, featureName, serviceType) => {
+  console.log('menuName: ', menuName);
+  console.log('featureName: ', featureName);
+  console.log('serviceType: ', serviceType);
   const [rows] = await pool.query(
     `SELECT c.structure, c.service_type, c.content, c.feature_name as depth2, s.name as depth1, c.cnt
          FROM components c
