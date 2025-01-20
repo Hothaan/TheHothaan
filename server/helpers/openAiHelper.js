@@ -3,12 +3,7 @@ const axios = require('axios');
 const apiKey = process.env.API_KEY_DEV;
 const { assistantConfig } = require('../shared/assistantconfig.js');
 const logger = require('../config/logger');
-const mainValidator = require('./openAiResponseValidators/shoppingMall/mainValidator.js');
-const productListValidator = require('./openAiResponseValidators/shoppingMall/productListValidator.js');
-const validateProductDetail = require('./openAiResponseValidators/shoppingMall/productDetailValidator.js');
-const validateCartText = require('./openAiResponseValidators/shoppingMall/cartValidator.js');
-const validateNotice = require('./openAiResponseValidators/shoppingMall/noticeValidator.js');
-const validateBrandIntroduce = require('./openAiResponseValidators/shoppingMall/brandIntroduceValidator.js');
+
 const generatePrompt = require('./prompts/generatePrompt.js');
 const validateResponse = require('./openAiResponseValidators/validateResponse.js');
 
