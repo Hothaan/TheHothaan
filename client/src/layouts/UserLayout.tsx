@@ -115,7 +115,7 @@ export default function UserLayout() {
           <Route path="/privacyPolicy" element={<PrivacyPolicyPage />} />
           {/* error page */}
           <Route path="/prepare" element={<PreparePage />} />
-          <Route path="/error" element={<ErrorPage />} />
+          {/* <Route path="/error" element={<ErrorPage />} /> */}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>

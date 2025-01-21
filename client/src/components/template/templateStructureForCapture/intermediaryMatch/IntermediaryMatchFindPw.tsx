@@ -52,7 +52,7 @@ export default function IntermediaryMatchFindPw() {
       }
     } catch (error) {
       console.error(error);
-      window.location.href = "/error";
+      // window.location.href = "/error";
     }
   }
 
