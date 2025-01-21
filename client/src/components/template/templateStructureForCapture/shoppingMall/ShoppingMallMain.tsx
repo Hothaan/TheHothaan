@@ -125,9 +125,9 @@ export default function ShoppingMallMain() {
   const [pageContent, setPageContent] = useState<IshoppingMallMainContent>(
     {} as IshoppingMallMainContent
   );
-  const [pageStyle, setPageStyle] = useState<IshoppingMallMainStyle>(
-    {} as IshoppingMallMainStyle
-  );
+  // const [pageStyle, setPageStyle] = useState<IshoppingMallMainStyle>(
+  //   {} as IshoppingMallMainStyle
+  // );
 
   function updateInitial() {
     if (generatedText && generatedText.content) {
@@ -175,7 +175,7 @@ export default function ShoppingMallMain() {
   useEffect(() => {
     if (pageContent) {
       const localData = localStorage.getItem("changedContent");
-      console.log(pageContent);
+
       if (localData) {
         const parsed = JSON.parse(localData);
         const updatedData = {
