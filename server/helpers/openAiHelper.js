@@ -4,8 +4,8 @@ const apiKey = process.env.API_KEY_DEV;
 const { assistantConfig } = require('../shared/assistantconfig.js');
 const logger = require('../config/logger');
 
-const generatePrompt = require('./prompts/generatePrompt.js');
-const validateResponse = require('./openAiResponseValidators/validateResponse.js');
+const { generatePrompt } = require('./prompts/generatePrompt.js');
+const { validateResponse } = require('./openAiResponseValidators/validateResponse.js');
 
 async function generateOpenAiText(
   service,
