@@ -29,9 +29,9 @@ interface Inotice {
   content?: InoticeContent | null;
   style?: InoticeStyle | null;
   isEditable?: boolean;
-  onChangeContent?: (content: InoticeContent) => void;
-  onChangeStyle?: (style: InoticeStyle) => void;
   option?: Tnotice;
+  onChangeContent?: (key: string, value: string) => void;
+  onChangeStyle?: (key: string, value: CSSObject) => void;
 }
 
 export const notice_title_option_text_css_: CSSObject = {

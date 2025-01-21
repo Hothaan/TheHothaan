@@ -118,8 +118,6 @@ export default function JoinPage() {
       Boolean
     ).length;
 
-    console.log(conditionCount);
-
     if (conditionCount < 2) {
       return false;
     } else {
@@ -171,7 +169,6 @@ export default function JoinPage() {
     setVerifySwitch(true);
     setTime(180);
     setisCodeTimeOut(false);
-    console.log("Verify email");
   }
   function handleRemoveEmail() {
     setFormData({ ...formData, id: "" });
@@ -182,8 +179,6 @@ export default function JoinPage() {
     if (formData.code !== "")
       setFormCheck({ ...formCheck, isIdVerified: true });
     setVerifySwitch(false);
-
-    console.log("Verify code");
   }
   function handleCheckIsAllDone(): boolean {
     const formCheckArray = Object.values(formCheck);

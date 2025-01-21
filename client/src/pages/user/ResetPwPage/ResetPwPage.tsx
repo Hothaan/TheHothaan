@@ -31,9 +31,7 @@ export default function ResetPwPage() {
     isPwSame: false,
   });
 
-  function handleResetPw() {
-    console.log("reset password");
-  }
+  function handleResetPw() {}
 
   function handleChangePw(e: React.ChangeEvent<HTMLInputElement>) {
     setFormData({ ...formData, pw: e.target.value });
@@ -90,9 +88,6 @@ export default function ResetPwPage() {
     onChange: handleChangePw,
     isError: isPwError,
   };
-
-  console.log(formData.pw);
-  console.log(isPwError);
 
   const textFieldConfirmPw: IuserConfirmPwTextField = {
     size: "small",

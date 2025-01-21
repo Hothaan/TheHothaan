@@ -15,21 +15,25 @@ import { IfetchedfeatureResponseData } from "@components/template/types";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
-/* content */
-import { IintermediaryMatchServiceIntroductionContent } from "@components/template/service/IntermediaryMatchServiceIntroduction";
+/* css */
+import {
+  intermediary_match_service_introduction_desc_css_,
+  intermediary_match_service_introduction_title_css_,
+} from "@components/template/service/IntermediaryMatchServiceIntroduction";
 
 interface IntermediaryMatchServiceIntroduceContent {
-  IntermediaryMatchServiceIntroductionTitle: string;
-  IntermediaryMatchServiceIntroductionDesc: string;
+  intermediaryMatchServiceIntroductionTitle?: string;
+  intermediaryMatchServiceIntroductionDesc?: string;
 }
 
 interface IntermediaryMatchServiceIntroduceStyle {
-  IntermediaryMatchServiceIntroductionTitle: CSSObject;
-  IntermediaryMatchServiceIntroductionDesc: CSSObject;
+  intermediaryMatchServiceIntroductionTitle?: CSSObject;
+  intermediaryMatchServiceIntroductionDesc?: CSSObject;
 }
 
 export default function IntermediaryMatchServiceIntroduce() {
-  const feature = "메인";
+  const feature = "서비스 소개";
+  const featureKey = "intermediaryMatchServiceIntroduction";
 
   /* only projectId */
   const { isProduction } = useIsProduction();
@@ -84,35 +88,145 @@ export default function IntermediaryMatchServiceIntroduce() {
     }
   }, [projectIdValue]);
 
-  const [changedContent, setChangedContent] = useState(null);
   const [pageContent, setPageContent] =
     useState<IntermediaryMatchServiceIntroduceContent>(
       {} as IntermediaryMatchServiceIntroduceContent
     );
+  const [pageStyle, setPageStyle] =
+    useState<IntermediaryMatchServiceIntroduceStyle>(
+      {} as IntermediaryMatchServiceIntroduceStyle
+    );
 
-  // function updateSectionContent<
-  //   T extends keyof IntermediaryMatchServiceIntroduceContent
-  // >(
-  //   section: T,
-  //   updatedContent: Partial<IntermediaryMatchServiceIntroduceContent[T]>
-  // ) {
-  //   setPageContent((prev) => ({
-  //     ...prev,
-  //     [section]: {
-  //       ...prev?.[section],
-  //       ...updatedContent,
-  //     },
-  //   }));
-  // }
+  function updateInitialContent() {
+    if (generatedText && generatedText.content) {
+      const initialContent = {
+        intermediaryMatchServiceIntroductionTitle:
+          generatedText.content.intermediaryMatchServiceIntroductionTitle ||
+          undefined,
+        intermediaryMatchServiceIntroductionDesc:
+          generatedText.content.intermediaryMatchServiceIntroductionDesc ||
+          undefined,
+      };
+      setPageContent({ ...initialContent });
+    }
+  }
 
-  // if (!generatedText || !headerData) {
-  //   return <Loading />;
-  // }
+  //페이지에 적용될 초기 스타일 저장
+  function updateInitialStyle() {
+    const initialStyle = {
+      intermediaryMatchServiceIntroductionTitle:
+        intermediary_match_service_introduction_title_css_ || undefined,
+      intermediaryMatchServiceIntroductionDesc:
+        intermediary_match_service_introduction_desc_css_ || undefined,
+    };
+    setPageStyle({ ...initialStyle });
+  }
+
+  //featureData가 들어오면 초기 콘텐츠와 스타일 업데이트
+  useEffect(() => {
+    if (generatedText) {
+      updateInitialContent();
+      updateInitialStyle();
+    }
+  }, [generatedText]);
+
+  //pageContent가 변경될 때마다 localStorage에 업데이트
+  useEffect(() => {
+    if (pageContent) {
+      const localContent = localStorage.getItem("changedContent");
+
+      if (localContent) {
+        const parsed = JSON.parse(localContent);
+        const updatedData = {
+          ...parsed,
+          [featureKey]: {
+            featureId: generatedText?.feature_id,
+            content: {
+              ...pageContent,
+            },
+          },
+        };
+        localStorage.setItem("changedContent", JSON.stringify(updatedData));
+      } else {
+        const data = {
+          [featureKey]: {
+            featureId: generatedText?.feature_id,
+            content: {
+              ...pageContent,
+            },
+          },
+        };
+        localStorage.setItem("changedContent", JSON.stringify(data));
+      }
+    }
+  }, [pageContent]);
+
+  function handleChangeContent(key: string, value: string) {
+    setPageContent({ ...pageContent, [key]: value });
+  }
+
+  function handleChangeStyle(key: string, value: CSSObject) {
+    setPageStyle({ ...pageStyle, [key]: value });
+  }
+
+  useEffect(() => {
+    if (pageStyle) {
+      const localStyle = localStorage.getItem("changedStyle");
+
+      if (localStyle) {
+        const parsed = JSON.parse(localStyle);
+        const updatedData = {
+          ...parsed,
+          [featureKey]: {
+            featureId: generatedText?.feature_id,
+            style: {
+              ...pageStyle,
+            },
+          },
+        };
+        localStorage.setItem("changedStyle", JSON.stringify(updatedData));
+      } else {
+        const data = {
+          [featureKey]: {
+            featureId: generatedText?.feature_id,
+            style: {
+              ...pageContent,
+            },
+          },
+        };
+        localStorage.setItem("changedStyle", JSON.stringify(data));
+      }
+    }
+  }, [pageStyle]);
+
+  console.log(generatedText);
+
+  console.log(pageContent);
+
+  if (!generatedText || !headerData || Object.keys(pageContent).length === 0) {
+    return <Loading />;
+  }
 
   return (
     <div className="templateImage">
       <Header serviceType="중개·매칭" />
-      <IntermediaryMatchServiceIntroduction />
+      <IntermediaryMatchServiceIntroduction
+        content={{
+          IntermediaryMatchServiceIntroductionTitle:
+            pageContent?.intermediaryMatchServiceIntroductionTitle,
+          IntermediaryMatchServiceIntroductionDesc:
+            pageContent?.intermediaryMatchServiceIntroductionDesc,
+        }}
+        style={{
+          IntermediaryMatchServiceIntroductionTitle:
+            pageStyle?.intermediaryMatchServiceIntroductionTitle,
+          IntermediaryMatchServiceIntroductionDesc:
+            pageStyle?.intermediaryMatchServiceIntroductionDesc,
+        }}
+        isEditable={true}
+        onChangeContent={handleChangeContent}
+        onChangeStyle={handleChangeStyle}
+      />
       <Footer serviceType="중개·매칭" />
     </div>
   );

@@ -13,26 +13,21 @@ const item_title_ = "lorem ipsum, quia do ddd";
 
 const item_desc_ = "lorem ipsum";
 
-export interface IserviceIntroductionText {
-  title?: string;
-  desc?: string;
-}
-
 export interface IserviceIntroductionContent {
-  title?: {
-    text?: string;
-    css?: CSSObject;
-  };
-  desc?: {
-    text?: string;
-    css?: CSSObject;
-  };
+  serviceIntroductionTitle?: string;
+  serviceIntroductionDesc?: string;
+}
+export interface IserviceIntroductionStyle {
+  serviceIntroductionTitle?: CSSObject;
+  serviceIntroductionDesc?: CSSObject;
 }
 
 interface IserviceIntroduction {
   content?: IserviceIntroductionContent | null;
+  style?: IserviceIntroductionStyle | null;
   isEditable?: boolean;
-  onChange?: (content: IserviceIntroductionContent) => void;
+  onChangeContent?: (key: string, value: string) => void;
+  onChangeStyle?: (key: string, value: CSSObject) => void;
 }
 
 export const service_introduction_title_css_: CSSObject = {
@@ -59,16 +54,16 @@ export const service_introduction_desc_css_: CSSObject = {
 };
 
 function ServiceIntroductionItem(prop: IserviceIntroduction) {
-  const { content, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   const initial = {
-    title: {
-      text: content?.title?.text || item_title_,
-      css: content?.title?.css || service_introduction_title_css_,
+    serviceIntroductionTitle: {
+      text: content?.serviceIntroductionTitle || item_title_,
+      css: style?.serviceIntroductionTitle || service_introduction_title_css_,
     },
-    desc: {
-      text: content?.desc?.text || item_desc_,
-      css: content?.desc?.css || service_introduction_desc_css_,
+    serviceIntroductionDesc: {
+      text: content?.serviceIntroductionDesc || item_desc_,
+      css: style?.serviceIntroductionDesc || service_introduction_desc_css_,
     },
   };
 
@@ -80,21 +75,21 @@ function ServiceIntroductionItem(prop: IserviceIntroduction) {
     }
   }, [content]);
 
-  function handleEdit(
-    field: keyof IserviceIntroductionContent,
-    updatedText: string,
-    updatedCss: CSSObject
-  ) {
-    const updatedState = {
-      ...serviceIntroduction,
-      [field]: {
-        text: updatedText,
-        css: updatedCss,
-      },
-    };
-    setServiceIntroduction(updatedState);
-    onChange?.(updatedState);
-  }
+  // function handleEdit(
+  //   field: keyof IserviceIntroductionContent,
+  //   updatedText: string,
+  //   updatedCss: CSSObject
+  // ) {
+  //   const updatedState = {
+  //     ...serviceIntroduction,
+  //     [field]: {
+  //       text: updatedText,
+  //       css: updatedCss,
+  //     },
+  //   };
+  //   setServiceIntroduction(updatedState);
+  //   onChange?.(updatedState);
+  // }
 
   return (
     <div css={item}>
@@ -110,11 +105,19 @@ function ServiceIntroductionItem(prop: IserviceIntroduction) {
       />
       <div css={info_container}>
         <div css={text_container}>
-          <p css={content?.title?.css || service_introduction_title_css_}>
-            {content?.title?.text || item_title_}
+          <p
+            css={
+              style?.serviceIntroductionTitle || service_introduction_title_css_
+            }
+          >
+            {content?.serviceIntroductionTitle || item_title_}
           </p>
-          <p css={content?.desc?.css || service_introduction_desc_css_}>
-            {content?.desc?.text || item_desc_}
+          <p
+            css={
+              style?.serviceIntroductionDesc || service_introduction_desc_css_
+            }
+          >
+            {content?.serviceIntroductionDesc || item_desc_}
           </p>
         </div>
         <GotoLink css={icon} />
@@ -124,7 +127,7 @@ function ServiceIntroductionItem(prop: IserviceIntroduction) {
 }
 
 export default function ServiceIntroduction(prop: IserviceIntroduction) {
-  const { content, isEditable, onChange } = prop;
+  const { content, isEditable, onChangeContent, onChangeStyle } = prop;
 
   const count = 3;
   return (
@@ -144,7 +147,8 @@ export default function ServiceIntroduction(prop: IserviceIntroduction) {
               key={index}
               content={content}
               isEditable={isEditable}
-              onChange={onChange}
+              onChangeContent={onChangeContent}
+              onChangeStyle={onChangeStyle}
             />
           ))}
         </div>

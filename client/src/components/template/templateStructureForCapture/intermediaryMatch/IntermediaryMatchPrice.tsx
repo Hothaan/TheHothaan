@@ -15,8 +15,8 @@ import { IfetchedfeatureResponseData } from "@components/template/types";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
-/* text */
-import { iPriceMainContent } from "@components/template/main/PriceMain";
+/* css */
+import { price_main_item_desc_css_ } from "@components/template/main/PriceMain";
 
 interface IntermediaryMatchPriceContent {
   priceMainDesc: string;
@@ -28,6 +28,7 @@ interface IntermediaryMatchPriceStyle {
 
 export default function IntermediaryMatchPrice() {
   const feature = "이용 요금";
+  const featureKey = "intermediaryMatchPrice";
 
   /* only projectId */
   const { isProduction } = useIsProduction();
@@ -82,32 +83,121 @@ export default function IntermediaryMatchPrice() {
     }
   }, [projectIdValue]);
 
-  const [changedContent, setChangedContent] = useState(null);
   const [pageContent, setPageContent] = useState<IntermediaryMatchPriceContent>(
     {} as IntermediaryMatchPriceContent
   );
+  const [pageStyle, setPageStyle] = useState<IntermediaryMatchPriceStyle>(
+    {} as IntermediaryMatchPriceStyle
+  );
 
-  // function updateSectionContent<T extends keyof IntermediaryMatchPriceContent>(
-  //   section: T,
-  //   updatedContent: Partial<IntermediaryMatchPriceContent[T]>
-  // ) {
-  //   setPageContent((prev) => ({
-  //     ...prev,
-  //     [section]: {
-  //       ...prev?.[section],
-  //       ...updatedContent,
-  //     },
-  //   }));
-  // }
+  function updateInitialContent() {
+    if (generatedText && generatedText.content) {
+      const initialContent = {
+        priceMainDesc: generatedText.content.priceMainDesc || undefined,
+      };
+      setPageContent({ ...initialContent });
+    }
+  }
 
-  // if (!generatedText || !headerData) {
-  //   return <Loading />;
-  // }
+  //페이지에 적용될 초기 스타일 저장
+  function updateInitialStyle() {
+    const initialStyle = {
+      priceMainDesc: price_main_item_desc_css_ || undefined,
+    };
+    setPageStyle({ ...initialStyle });
+  }
+
+  //featureData가 들어오면 초기 콘텐츠와 스타일 업데이트
+  useEffect(() => {
+    if (generatedText) {
+      updateInitialContent();
+      updateInitialStyle();
+    }
+  }, [generatedText]);
+
+  //pageContent가 변경될 때마다 localStorage에 업데이트
+  useEffect(() => {
+    if (pageContent) {
+      const localContent = localStorage.getItem("changedContent");
+
+      if (localContent) {
+        const parsed = JSON.parse(localContent);
+        const updatedData = {
+          ...parsed,
+          [featureKey]: {
+            featureId: generatedText?.feature_id,
+            content: {
+              ...pageContent,
+            },
+          },
+        };
+        localStorage.setItem("changedContent", JSON.stringify(updatedData));
+      } else {
+        const data = {
+          [featureKey]: {
+            featureId: generatedText?.feature_id,
+            content: {
+              ...pageContent,
+            },
+          },
+        };
+        localStorage.setItem("changedContent", JSON.stringify(data));
+      }
+    }
+  }, [pageContent]);
+
+  function handleChangeContent(key: string, value: string) {
+    setPageContent({ ...pageContent, [key]: value });
+  }
+
+  function handleChangeStyle(key: string, value: CSSObject) {
+    setPageStyle({ ...pageStyle, [key]: value });
+  }
+
+  useEffect(() => {
+    if (pageStyle) {
+      const localStyle = localStorage.getItem("changedStyle");
+
+      if (localStyle) {
+        const parsed = JSON.parse(localStyle);
+        const updatedData = {
+          ...parsed,
+          [featureKey]: {
+            featureId: generatedText?.feature_id,
+            style: {
+              ...pageStyle,
+            },
+          },
+        };
+        localStorage.setItem("changedStyle", JSON.stringify(updatedData));
+      } else {
+        const data = {
+          [featureKey]: {
+            featureId: generatedText?.feature_id,
+            style: {
+              ...pageContent,
+            },
+          },
+        };
+        localStorage.setItem("changedStyle", JSON.stringify(data));
+      }
+    }
+  }, [pageStyle]);
+
+  if (!generatedText || !headerData || Object.keys(pageContent).length === 0) {
+    return <Loading />;
+  }
 
   return (
     <div className="templateImage">
       <Header serviceType="중개·매칭" />
-      <PriceMain />
+      <PriceMain
+        content={{ priceMainDesc: pageContent?.priceMainDesc }}
+        style={{ priceMainDesc: pageStyle?.priceMainDesc }}
+        isEditable={true}
+        onChangeContent={handleChangeContent}
+        onChangeStyle={handleChangeStyle}
+      />
       <Footer serviceType="중개·매칭" />
     </div>
   );

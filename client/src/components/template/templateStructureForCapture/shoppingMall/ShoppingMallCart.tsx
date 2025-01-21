@@ -16,11 +16,9 @@ import { IfetchedfeatureResponseData } from "@components/template/types";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
-/* text */
-import { IcartText } from "@components/template/mypage/Cart";
+/* css */
 
-/* content */
-import { IcartContent } from "@components/template/mypage/Cart";
+import { cart_title_css } from "@components/template/mypage/Cart";
 
 interface IshoppingMallContent {
   cartTitle: string;
@@ -32,6 +30,7 @@ interface IshoppingMallStyle {
 
 export default function ShoppingMallCart() {
   const feature = "장바구니";
+  const featureKey = "shoppingMallCart";
 
   const { isProduction } = useIsProduction();
   const { projectId } = useParams();
@@ -84,12 +83,113 @@ export default function ShoppingMallCart() {
   }, [projectId]);
 
   useEffect(() => {
-    if (projectIdValue && isProduction !== undefined) {
+    if (projectIdValue) {
       fetchFeatureData(isProduction, projectIdValue);
     }
-  }, [projectIdValue, isProduction]);
+  }, [projectIdValue]);
 
-  if (!generatedText || !headerData) {
+  const [pageContent, setPageContent] = useState<IshoppingMallContent>(
+    {} as IshoppingMallContent
+  );
+  const [pageStyle, setPageStyle] = useState<IshoppingMallStyle>(
+    {} as IshoppingMallStyle
+  );
+
+  function updateInitialContent() {
+    if (generatedText && generatedText.content) {
+      const initialContent = {
+        cartTitle: generatedText.content.cartTitle || undefined,
+      };
+      setPageContent({ ...initialContent });
+    }
+  }
+
+  //페이지에 적용될 초기 스타일 저장
+  function updateInitialStyle() {
+    const initialStyle = {
+      cartTitle: cart_title_css || undefined,
+    };
+    setPageStyle({ ...initialStyle });
+  }
+
+  //featureData가 들어오면 초기 콘텐츠와 스타일 업데이트
+  useEffect(() => {
+    if (generatedText) {
+      updateInitialContent();
+      updateInitialStyle();
+    }
+  }, [generatedText]);
+
+  //pageContent가 변경될 때마다 localStorage에 업데이트
+  useEffect(() => {
+    if (pageContent) {
+      const localContent = localStorage.getItem("changedContent");
+
+      if (localContent) {
+        const parsed = JSON.parse(localContent);
+        const updatedData = {
+          ...parsed,
+          shoppingMallMain: {
+            featureId: generatedText?.feature_id,
+            content: {
+              ...pageContent,
+            },
+          },
+        };
+        localStorage.setItem("changedContent", JSON.stringify(updatedData));
+      } else {
+        const data = {
+          shoppingMallMain: {
+            featureId: generatedText?.feature_id,
+            content: {
+              ...pageContent,
+            },
+          },
+        };
+        localStorage.setItem("changedContent", JSON.stringify(data));
+      }
+    }
+  }, [pageContent]);
+
+  function handleChangeContent(key: string, value: string) {
+    setPageContent({ ...pageContent, [key]: value });
+  }
+
+  function handleChangeStyle(key: string, value: CSSObject) {
+    setPageStyle({ ...pageStyle, [key]: value });
+  }
+
+  useEffect(() => {
+    if (pageStyle) {
+      const localStyle = localStorage.getItem("changedStyle");
+
+      if (localStyle) {
+        const parsed = JSON.parse(localStyle);
+        const updatedData = {
+          ...parsed,
+          [featureKey]: {
+            featureId: generatedText?.feature_id,
+            style: {
+              ...pageStyle,
+            },
+          },
+        };
+        localStorage.setItem("changedStyle", JSON.stringify(updatedData));
+      } else {
+        const data = {
+          [featureKey]: {
+            featureId: generatedText?.feature_id,
+            style: {
+              ...pageContent,
+            },
+          },
+        };
+        localStorage.setItem("changedStyle", JSON.stringify(data));
+      }
+    }
+  }, [pageStyle]);
+
+  if (!generatedText || !headerData || Object.keys(pageContent).length === 0) {
     return <Loading />;
   }
 
@@ -100,7 +200,13 @@ export default function ShoppingMallCart() {
         logo={headerData.logo || undefined}
         serviceType="쇼핑몰"
       />
-      <Cart content={{ cartTitle: generatedText.content.title }} />
+      <Cart
+        content={{ cartTitle: pageContent?.cartTitle }}
+        style={{ cartTitle: pageStyle?.cartTitle }}
+        isEditable={true}
+        onChangeContent={handleChangeContent}
+        onChangeStyle={handleChangeStyle}
+      />
       <Footer logo={headerData.logo || undefined} serviceType="쇼핑몰" />
     </div>
   );

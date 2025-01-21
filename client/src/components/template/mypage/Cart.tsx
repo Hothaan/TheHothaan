@@ -31,8 +31,8 @@ interface Icart {
   content?: IcartContent | null;
   style?: IcartStyle | null;
   isEditable?: boolean;
-  onChangeContent?: (content: IcartContent) => void;
-  onChangeStyle?: (style: IcartStyle) => void;
+  onChangeContent?: (key: string, value: string) => void;
+  onChangeStyle?: (key: string, value: CSSObject) => void;
 }
 
 export const cart_title_css = {

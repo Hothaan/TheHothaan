@@ -391,7 +391,6 @@ export default function ServiceStep3Page() {
           }
         );
         setFeatureData(data);
-        console.log(data);
       } else {
         console.error("getFeatureData error", response.status);
       }
@@ -403,9 +402,6 @@ export default function ServiceStep3Page() {
 
   async function saveImages() {
     const projectId = sessionStorage.getItem("projectId");
-    console.log(projectId);
-    console.log(featureData);
-    console.log(serviceDefaultData);
     if (
       !projectId ||
       !featureData ||
@@ -421,8 +417,6 @@ export default function ServiceStep3Page() {
     const parameterArr = featureData.map(
       (item) => `${projectType}-${item.feature}`
     );
-    console.log(parameterArr);
-
     try {
       const responses = await Promise.allSettled(
         parameterArr.map((url, idx) =>

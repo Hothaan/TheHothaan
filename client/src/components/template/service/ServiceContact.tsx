@@ -8,28 +8,24 @@ import TemplateButton from "../commonComponent/TemplateButton";
 const title_ = [`Lorem ipsum dolor`, <br key="1" />, `sit amet consectetur`];
 const button_ = "Lorem ipsum dolor";
 
-export interface IserviceContactText {
-  title?: any;
-  button?: string;
-}
-
 export interface IserviceContactContent {
-  title?: {
-    text?: any;
-    css?: CSSObject;
-  };
-  button?: {
-    text?: string;
-  };
+  serviceContactTitle?: string;
+  serviceContactButton?: string;
+}
+export interface IserviceContactStyle {
+  serviceContactTitle?: CSSObject;
+  serviceContactButton?: CSSObject;
 }
 
 interface IserviceContact {
   content?: IserviceContactContent | null;
+  style?: IserviceContactStyle | null;
   isEditable?: boolean;
-  onChange?: (content: IserviceContactContent) => void;
+  onChangeContent?: (key: string, value: string) => void;
+  onChangeStyle?: (key: string, value: CSSObject) => void;
 }
 
-const service_contact_title_css_: CSSObject = {
+export const service_contact_title_css_: CSSObject = {
   width: "100%",
   color: "#486284",
   textAlign: "center",
@@ -41,47 +37,23 @@ const service_contact_title_css_: CSSObject = {
 };
 
 export default function ServiceContact(prop: IserviceContact) {
-  const { content, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
-  const [edit, setEdit] = useState({
-    title: {
-      text: content?.title?.text || title_,
-      css: content?.title?.css || service_contact_title_css_,
+  const initialContent = {
+    serviceContactTitle: {
+      text: content?.serviceContactTitle || title_,
+      css: style?.serviceContactTitle || service_contact_title_css_,
     },
-    button: {
-      text: content?.button?.text || button_,
+    serviceContactButton: {
+      text: content?.serviceContactButton || button_,
     },
-  });
+  };
+
+  const [edit, setEdit] = useState(initialContent);
 
   useEffect(() => {
-    if (content) {
-      setEdit({
-        title: {
-          text: content?.title?.text || title_,
-          css: content?.title?.css || service_contact_title_css_,
-        },
-        button: {
-          text: content?.button?.text || button_,
-        },
-      });
-    }
+    setEdit(initialContent);
   }, [content]);
-
-  function handleEdit(
-    field: keyof IserviceContactContent,
-    updatedText: string,
-    updatedCss: CSSObject
-  ) {
-    const updatedState = {
-      ...edit,
-      [field]: {
-        text: updatedText,
-        css: updatedCss,
-      },
-    };
-    setEdit(updatedState);
-    onChange?.(updatedState);
-  }
 
   return (
     <OuterWrap padding="0">
@@ -97,8 +69,13 @@ export default function ServiceContact(prop: IserviceContact) {
           }}
         />
         <div css={contents_container}>
-          <p css={edit?.title?.css}>{edit?.title?.text || title_}</p>
-          <TemplateButton type="round" text={edit?.button?.text || button_} />
+          <p css={edit?.serviceContactTitle?.css}>
+            {edit?.serviceContactTitle?.text || title_}
+          </p>
+          <TemplateButton
+            type="round"
+            text={edit?.serviceContactButton?.text || button_}
+          />
         </div>
       </div>
     </OuterWrap>

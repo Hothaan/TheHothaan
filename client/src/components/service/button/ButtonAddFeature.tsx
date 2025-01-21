@@ -101,12 +101,6 @@ export default function ButtonAddFeature(prop: IbuttonAddFeature) {
     options: options,
   };
 
-  useEffect(() => {
-    if (isModalOpen) {
-      console.log(updateDepth2);
-    }
-  }, [isModalOpen]);
-
   return (
     <div
       css={wrap}

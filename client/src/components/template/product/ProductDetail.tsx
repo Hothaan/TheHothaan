@@ -18,30 +18,25 @@ const product_desc_ = "상품 설명 내용입니다.";
 const more_product_title_ = "lorem ipsum, quia do";
 const more_product_desc_ = "lorem ipsum, quia do";
 
-export interface IproductDetailText {
-  product?: { title?: string; desc?: string };
-  moreProduct?: { title?: string; desc?: string };
-}
-
 export interface IproductDetailContent {
-  productDetailProductTitle: string;
-  productDetailProductDesc: string;
-  productDetailMoreProductTitle: string;
-  productDetailMoreProductDesc: string;
+  productDetailProductTitle?: string;
+  productDetailProductDesc?: string;
+  productDetailMoreProductTitle?: string;
+  productDetailMoreProductDesc?: string;
 }
 export interface IproductDetailStyle {
-  productDetailProductTitle: CSSObject;
-  productDetailProductDesc: CSSObject;
-  productDetailMoreProductTitle: CSSObject;
-  productDetailMoreProductDesc: CSSObject;
+  productDetailProductTitle?: CSSObject;
+  productDetailProductDesc?: CSSObject;
+  productDetailMoreProductTitle?: CSSObject;
+  productDetailMoreProductDesc?: CSSObject;
 }
 
 interface IproductDetail {
   content?: IproductDetailContent | null;
   style?: IproductDetailStyle | null;
   isEditable?: boolean;
-  onChangeContent?: (content: IproductDetailContent) => void;
-  onChangeStyle?: (style: IproductDetailStyle) => void;
+  onChangeContent?: (key: string, value: string) => void;
+  onChangeStyle?: (key: string, value: CSSObject) => void;
 }
 
 export const product_detail_product_title_css_: CSSObject = {

@@ -14,24 +14,25 @@ const name_ = "Lorem ipsum";
 const role_ = "Lorem ipsum";
 
 export interface IreviewContent {
-  ReviewTitle: string;
-  ReviewDesc: string;
-  ReviewName: string;
-  ReviewRole: string;
+  reviewTitle?: string;
+  reviewDesc?: string;
+  reviewName?: string;
+  reviewRole?: string;
 }
 
 export interface IreviewStyle {
-  ReviewTitle: CSSObject;
-  ReviewDesc: CSSObject;
-  ReviewName: CSSObject;
-  ReviewRole: CSSObject;
+  reviewTitle?: CSSObject;
+  reviewDesc?: CSSObject;
+  reviewName?: CSSObject;
+  reviewRole?: CSSObject;
 }
 
 interface Ireview {
   content?: IreviewContent | null;
   style?: IreviewStyle | null;
   isEditable?: boolean;
-  onChange?: (content: IreviewContent) => void;
+  onChangeContent?: (key: string, value: string) => void;
+  onChangeStyle?: (key: string, value: CSSObject) => void;
 }
 
 export const review_item_title_css: CSSObject = {
@@ -64,7 +65,7 @@ export const review_item_desc_css: CSSObject = {
   lineHeight: "24px",
 };
 
-export const review_item_caption_title_css: CSSObject = {
+export const review_item_caption_name_css: CSSObject = {
   color: "#6d758f",
   fontFamily: "Inter",
   fontSize: "16px",
@@ -73,7 +74,7 @@ export const review_item_caption_title_css: CSSObject = {
   lineHeight: "16px",
 };
 
-export const review_item_caption_desc_css: CSSObject = {
+export const review_item_caption_role_css: CSSObject = {
   color: "#b4b9c9",
   fontFamily: "Inter",
   fontSize: "16px",
@@ -83,33 +84,31 @@ export const review_item_caption_desc_css: CSSObject = {
 };
 
 function ReviewItem(prop: Ireview) {
-  const { content, style, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   const initial = {
-    ReviewTitle: {
-      text: content?.ReviewTitle || title_,
-      css: style?.ReviewTitle || review_item_title_css,
+    reviewTitle: {
+      text: content?.reviewTitle || title_,
+      css: style?.reviewTitle || review_item_title_css,
     },
-    ReviewDesc: {
-      text: content?.ReviewDesc || desc_,
-      css: style?.ReviewDesc || review_item_desc_css,
+    reviewDesc: {
+      text: content?.reviewDesc || desc_,
+      css: style?.reviewDesc || review_item_desc_css,
     },
-    ReviewName: {
-      text: content?.ReviewName || name_,
-      css: style?.ReviewName || review_item_caption_title_css,
+    reviewName: {
+      text: content?.reviewName || name_,
+      css: style?.reviewName || review_item_caption_name_css,
     },
-    ReviewRole: {
-      text: content?.ReviewRole || role_,
-      css: style?.ReviewRole || review_item_caption_desc_css,
+    reviewRole: {
+      text: content?.reviewRole || role_,
+      css: style?.reviewRole || review_item_caption_role_css,
     },
   };
 
   const [edit, setEdit] = useState(initial);
 
   useEffect(() => {
-    if (content) {
-      setEdit(initial);
-    }
+    setEdit(initial);
   }, [content]);
 
   // function handleEdit(
@@ -143,11 +142,11 @@ function ReviewItem(prop: Ireview) {
           <Star />
           <Star />
         </div>
-        <p css={edit?.ReviewTitle?.css}>{edit?.ReviewTitle?.text || title_}</p>
-        <p css={edit?.ReviewDesc?.css}>{edit?.ReviewDesc?.text || desc_}</p>
+        <p css={edit?.reviewTitle?.css}>{edit?.reviewTitle?.text || title_}</p>
+        <p css={edit?.reviewDesc?.css}>{edit?.reviewDesc?.text || desc_}</p>
         <div css={item_caption_container}>
-          <p css={edit?.ReviewName?.css}>{edit?.ReviewName?.text || name_}</p>
-          <p css={edit?.ReviewRole?.css}>{edit?.ReviewRole?.text || role_}</p>
+          <p css={edit?.reviewName?.css}>{edit?.reviewName?.text || name_}</p>
+          <p css={edit?.reviewRole?.css}>{edit?.reviewRole?.text || role_}</p>
         </div>
       </div>
     </div>
@@ -155,7 +154,7 @@ function ReviewItem(prop: Ireview) {
 }
 
 export default function Review(prop: Ireview) {
-  const { content, style, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   const count = 7;
 

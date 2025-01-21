@@ -11,17 +11,18 @@ const item_desc_ = "Lorem ipsum dolor";
 const item_price = 3300;
 
 export interface iPriceMainContent {
-  priceMainDesc: string;
+  priceMainDesc?: string;
 }
 export interface iPriceMainStyle {
-  priceMainDesc: CSSObject;
+  priceMainDesc?: CSSObject;
 }
 
 interface IpriceMain {
   content?: iPriceMainContent | null;
   style?: iPriceMainStyle | null;
   isEditable?: boolean;
-  onChange?: (content: iPriceMainContent) => void;
+  onChangeContent?: (key: string, value: string) => void;
+  onChangeStyle?: (key: string, value: CSSObject) => void;
 }
 
 interface iPriceMainItem extends IpriceMain {
@@ -40,10 +41,23 @@ export const price_main_item_desc_css_ = css`
   font-style: normal;
   font-weight: 400;
   line-height: 160%; /* 32px */
+
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 3;
 `;
 
 function PriceMainItem(prop: iPriceMainItem) {
-  const { content, style, isEditable, onChange, itemDay } = prop;
+  const {
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    itemDay,
+  } = prop;
 
   return (
     <div css={item_container}>
@@ -77,7 +91,7 @@ function PriceMainItem(prop: iPriceMainItem) {
 }
 
 export default function PriceMain(prop: IpriceMain) {
-  const { content, style, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   const initial = {
     desc: {
@@ -93,22 +107,6 @@ export default function PriceMain(prop: IpriceMain) {
       setEdit(initial);
     }
   }, [content]);
-
-  // function handleEdit(
-  //   field: keyof iPriceMainContent,
-  //   updatedText: string,
-  //   updatedCss: CSSObject
-  // ) {
-  //   const updatedState = {
-  //     ...edit,
-  //     [field]: {
-  //       text: updatedText,
-  //       css: updatedCss,
-  //     },
-  //   };
-  //   setEdit(updatedState);
-  //   onChange?.(updatedState);
-  // }
 
   const count = 3;
 
@@ -127,7 +125,8 @@ export default function PriceMain(prop: IpriceMain) {
                 itemDay={(index + 1).toString()}
                 content={content}
                 isEditable={isEditable}
-                onChange={onChange}
+                onChangeContent={onChangeContent}
+                onChangeStyle={onChangeStyle}
               />
             ))}
           </div>
@@ -178,7 +177,9 @@ const item_text_container = css`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 24px;
+  height: 100%;
 `;
 
 const item_bold_text_64_style = css`

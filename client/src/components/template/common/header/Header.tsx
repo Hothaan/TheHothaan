@@ -15,8 +15,6 @@ export interface Iheader {
 export default function Header(prop: Iheader) {
   const { serviceType, logo, categories } = prop;
 
-  console.log(categories);
-
   return (
     <div css={wrap}>
       <div css={logo_wrap}>

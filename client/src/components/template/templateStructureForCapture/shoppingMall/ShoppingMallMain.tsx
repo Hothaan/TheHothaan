@@ -33,36 +33,50 @@ import {
   product_list_option_main_title_css,
 } from "@components/template/main/ProductListMain";
 
+import {
+  review_item_caption_name_css,
+  review_item_caption_role_css,
+  review_item_desc_css,
+  review_item_title_css,
+} from "@components/template/product/Review";
+
+import {
+  service_introduction_desc_css_,
+  service_introduction_title_css_,
+} from "@components/template/service/ServiceIntroduction";
+
+import { service_contact_title_css_ } from "@components/template/service/ServiceContact";
+
 interface IshoppingMallMainContent {
-  mainBannerTitle: string;
-  mainBannerDesc: string;
-  mainBannerButton: string;
-  productListTitle: string;
-  productListDesc: string;
-  reviewTitle: string;
-  reviewDesc: string;
-  reviewName: string;
-  reviewRole: string;
-  serviceIntroductionTitle: string;
-  serviceIntroductionDesc: string;
-  serviceContactTitle: string;
-  serviceContactButton: string;
+  mainBannerTitle?: string;
+  mainBannerDesc?: string;
+  mainBannerButton?: string;
+  productListTitle?: string;
+  productListDesc?: string;
+  reviewTitle?: string;
+  reviewDesc?: string;
+  reviewName?: string;
+  reviewRole?: string;
+  serviceIntroductionTitle?: string;
+  serviceIntroductionDesc?: string;
+  serviceContactTitle?: string;
+  serviceContactButton?: string;
 }
 
 interface IshoppingMallMainStyle {
-  mainBannerTitle: CSSObject;
-  mainBannerDesc: CSSObject;
-  mainBannerButton: CSSObject;
-  productListTitle: CSSObject;
-  productListDesc: CSSObject;
-  reviewTitle: CSSObject;
-  reviewDesc: CSSObject;
-  reviewName: CSSObject;
-  reviewRole: CSSObject;
-  serviceIntroductionTitle: CSSObject;
-  serviceIntroductionDesc: CSSObject;
-  serviceContactTitle: CSSObject;
-  serviceContactButton: CSSObject;
+  mainBannerTitle?: CSSObject;
+  mainBannerDesc?: CSSObject;
+  mainBannerButton?: CSSObject;
+  productListTitle?: CSSObject;
+  productListDesc?: CSSObject;
+  reviewTitle?: CSSObject;
+  reviewDesc?: CSSObject;
+  reviewName?: CSSObject;
+  reviewRole?: CSSObject;
+  serviceIntroductionTitle?: CSSObject;
+  serviceIntroductionDesc?: CSSObject;
+  serviceContactTitle?: CSSObject;
+  serviceContactButton?: CSSObject;
 }
 
 export default function ShoppingMallMain() {
@@ -121,63 +135,77 @@ export default function ShoppingMallMain() {
     }
   }, [projectIdValue]);
 
-  // const [changedContent, setChangedContent] = useState(null);
   const [pageContent, setPageContent] = useState<IshoppingMallMainContent>(
     {} as IshoppingMallMainContent
   );
-  // const [pageStyle, setPageStyle] = useState<IshoppingMallMainStyle>(
-  //   {} as IshoppingMallMainStyle
-  // );
+  const [pageStyle, setPageStyle] = useState<IshoppingMallMainStyle>(
+    {} as IshoppingMallMainStyle
+  );
 
-  function updateInitial() {
+  function updateInitialContent() {
     if (generatedText && generatedText.content) {
       const initialContent = {
-        mainBannerTitle: generatedText.content.mainBannerTitle,
-        mainBannerDesc: generatedText.content.mainBannerDesc,
-        mainBannerButton: generatedText.content.mainBannerButton,
+        mainBannerTitle: generatedText.content.mainBannerTitle || undefined,
+        mainBannerDesc: generatedText.content.mainBannerDesc || undefined,
+        mainBannerButton: generatedText.content.mainBannerButton || undefined,
+        productListTitle: generatedText.content.productListTitle || undefined,
+        productListDesc: generatedText.content.productListDesc || undefined,
+        reviewTitle: generatedText.content.reviewTitle || undefined,
+        reviewDesc: generatedText.content.reviewDesc || undefined,
+        reviewName: generatedText.content.reviewName || undefined,
+        reviewRole: generatedText.content.reviewRole || undefined,
+        serviceIntroductionTitle:
+          generatedText.content.serviceIntroductionTitle || undefined,
+        serviceIntroductionDesc:
+          generatedText.content.serviceIntroductionDesc || undefined,
+        serviceContactTitle:
+          generatedText.content.serviceContactTitle || undefined,
+        serviceContactButton:
+          generatedText.content.serviceContactButton || undefined,
       };
-
-      localStorage.setItem(
-        "changedContent",
-        JSON.stringify({ [featureKey]: initialContent })
-      );
-      setPageContent({ ...pageContent, ...initialContent });
+      setPageContent({ ...initialContent });
     }
   }
 
+  //페이지에 적용될 초기 스타일 저장
+  function updateInitialStyle() {
+    const initialStyle = {
+      mainBannerTitle: mainBanner_title_css_ || undefined,
+      mainBannerDesc: mainBanner_desc_css_ || undefined,
+      mainBannerButton: mainBanner_button_css_ || undefined,
+
+      productListTitle: product_list_option_main_title_css || undefined,
+      productListDesc: product_list_option_main_desc_css || undefined,
+
+      reviewTitle: review_item_title_css || undefined,
+      reviewDesc: review_item_desc_css || undefined,
+      reviewName: review_item_caption_name_css || undefined,
+      reviewRole: review_item_caption_role_css || undefined,
+
+      serviceIntroductionTitle: service_introduction_title_css_ || undefined,
+      serviceIntroductionDesc: service_introduction_desc_css_ || undefined,
+
+      serviceContactTitle: service_contact_title_css_ || undefined,
+      serviceContactButton: undefined,
+    };
+    setPageStyle({ ...initialStyle });
+  }
+
+  //featureData가 들어오면 초기 콘텐츠와 스타일 업데이트
   useEffect(() => {
-    const localData = localStorage.getItem("changedContent"); //변경된 콘텐츠
-    let parsedData: any = null;
-
-    if (localData) {
-      try {
-        parsedData = JSON.parse(localData); //변경된 콘텐츠 파싱
-      } catch (e) {
-        localStorage.removeItem("changedContent");
-        return;
-      }
-
-      if (featureKey in parsedData) {
-        //변경된 콘텐츠 중 현재 페이지 featureKey가 있다면
-        // setChangedContent(parsedData[featureKey]); //changedContent 의 값을 변경된 현재 페이지 값으로 변경
-        setPageContent((prev) => ({
-          ...prev,
-          ...parsedData[featureKey].structure,
-        })); //페이지 콘텐츠에 변경된 현재 페이지 값을 저장
-      } else {
-        updateInitial(); //변경된 부분이 없다면 기존 값으로 업데이트
-      }
-    } else {
-      updateInitial(); //로컬 데이터가 없다면 (최초 렌더링이라면)최초 generatedText에서 가져온 값으로 업데이트
+    if (generatedText) {
+      updateInitialContent();
+      updateInitialStyle();
     }
   }, [generatedText]);
 
+  //pageContent가 변경될 때마다 localStorage에 업데이트
   useEffect(() => {
     if (pageContent) {
-      const localData = localStorage.getItem("changedContent");
+      const localContent = localStorage.getItem("changedContent");
 
-      if (localData) {
-        const parsed = JSON.parse(localData);
+      if (localContent) {
+        const parsed = JSON.parse(localContent);
         const updatedData = {
           ...parsed,
           shoppingMallMain: {
@@ -188,11 +216,59 @@ export default function ShoppingMallMain() {
           },
         };
         localStorage.setItem("changedContent", JSON.stringify(updatedData));
+      } else {
+        const data = {
+          shoppingMallMain: {
+            featureId: generatedText?.feature_id,
+            content: {
+              ...pageContent,
+            },
+          },
+        };
+        localStorage.setItem("changedContent", JSON.stringify(data));
       }
     }
   }, [pageContent]);
 
-  if (!generatedText || !headerData) {
+  function handleChangeContent(key: string, value: string) {
+    setPageContent({ ...pageContent, [key]: value });
+  }
+
+  function handleChangeStyle(key: string, value: CSSObject) {
+    setPageStyle({ ...pageStyle, [key]: value });
+  }
+
+  useEffect(() => {
+    if (pageStyle) {
+      const localStyle = localStorage.getItem("changedStyle");
+
+      if (localStyle) {
+        const parsed = JSON.parse(localStyle);
+        const updatedData = {
+          ...parsed,
+          [featureKey]: {
+            featureId: generatedText?.feature_id,
+            style: {
+              ...pageStyle,
+            },
+          },
+        };
+        localStorage.setItem("changedStyle", JSON.stringify(updatedData));
+      } else {
+        const data = {
+          [featureKey]: {
+            featureId: generatedText?.feature_id,
+            style: {
+              ...pageContent,
+            },
+          },
+        };
+        localStorage.setItem("changedStyle", JSON.stringify(data));
+      }
+    }
+  }, [pageStyle]);
+
+  if (!generatedText || !headerData || Object.keys(pageContent).length === 0) {
     return <Loading />;
   }
 
@@ -209,16 +285,86 @@ export default function ShoppingMallMain() {
           mainBannerDesc: pageContent?.mainBannerDesc,
           mainBannerButton: pageContent?.mainBannerButton,
         }}
+        style={{
+          mainBannerTitle: pageStyle?.mainBannerTitle,
+          mainBannerDesc: pageStyle?.mainBannerDesc,
+          mainBannerButton: pageStyle?.mainBannerButton,
+        }}
         isEditable={true}
-        // onChange={(updatedContent) =>
-        //   updateSectionContent("mainBanner", updatedContent)
-        // }
+        onChangeContent={handleChangeContent}
+        onChangeStyle={handleChangeStyle}
       />
-      <ProductListMain option="main" />
-      <Review />
-      <ServiceIntroduction />
-      <ProductListMain option="list" />
-      <ServiceContact />
+      <ProductListMain
+        content={{
+          productListTitle: pageContent?.productListTitle,
+          productListDesc: pageContent?.productListDesc,
+        }}
+        style={{
+          productListTitle: pageStyle?.productListTitle,
+          productListDesc: pageStyle?.productListDesc,
+        }}
+        option="main"
+        isEditable={true}
+        onChangeContent={handleChangeContent}
+        onChangeStyle={handleChangeStyle}
+      />
+      <Review
+        content={{
+          reviewTitle: pageContent?.reviewTitle,
+          reviewDesc: pageContent?.reviewDesc,
+          reviewName: pageContent?.reviewName,
+          reviewRole: pageContent?.reviewRole,
+        }}
+        style={{
+          reviewTitle: pageStyle?.reviewTitle,
+          reviewDesc: pageStyle?.reviewDesc,
+          reviewName: pageStyle?.reviewName,
+          reviewRole: pageStyle?.reviewRole,
+        }}
+        isEditable={true}
+        onChangeContent={handleChangeContent}
+        onChangeStyle={handleChangeStyle}
+      />
+      <ServiceIntroduction
+        content={{
+          serviceIntroductionTitle: pageContent?.serviceIntroductionTitle,
+          serviceIntroductionDesc: pageContent?.serviceIntroductionDesc,
+        }}
+        style={{
+          serviceIntroductionTitle: pageStyle?.serviceIntroductionTitle,
+          serviceIntroductionDesc: pageStyle?.serviceIntroductionDesc,
+        }}
+        isEditable={true}
+        onChangeContent={handleChangeContent}
+        onChangeStyle={handleChangeStyle}
+      />
+      <ProductListMain
+        content={{
+          productListTitle: pageContent?.productListTitle,
+          productListDesc: pageContent?.productListDesc,
+        }}
+        style={{
+          productListTitle: product_list_option_list_title_css,
+          productListDesc: product_list_option_list_desc_css,
+        }}
+        option="list"
+        isEditable={true}
+        onChangeContent={handleChangeContent}
+        onChangeStyle={handleChangeStyle}
+      />
+      <ServiceContact
+        content={{
+          serviceContactTitle: pageContent?.serviceContactButton,
+          serviceContactButton: pageContent?.serviceContactButton,
+        }}
+        style={{
+          serviceContactTitle: pageStyle?.serviceContactButton,
+          serviceContactButton: pageStyle?.serviceContactButton,
+        }}
+        isEditable={true}
+        onChangeContent={handleChangeContent}
+        onChangeStyle={handleChangeStyle}
+      />
       <Footer logo={headerData.logo} serviceType="쇼핑몰" />
     </div>
   );

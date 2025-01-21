@@ -24,24 +24,18 @@ import {
   product_detail_more_product__option_main_desc_css,
 } from "@components/template/product/ProductDetail";
 
-/* text */
-import { IproductDetailText } from "@components/template/product/ProductDetail";
-
-/* content */
-import { IproductDetailContent } from "@components/template/product/ProductDetail";
-
 interface IShoppingMallProductDetailContent {
-  productDetailProductTitle: string;
-  productDetailProductDesc: string;
-  productDetailMoreProductTitle: string;
-  productDetailMoreProductDesc: string;
+  productDetailProductTitle?: string;
+  productDetailProductDesc?: string;
+  productDetailMoreProductTitle?: string;
+  productDetailMoreProductDesc?: string;
 }
 
 interface IShoppingMallProductDetailStyle {
-  productDetailProductTitle: CSSObject;
-  productDetailProductDesc: CSSObject;
-  productDetailMoreProductTitle: CSSObject;
-  productDetailMoreProductDesc: CSSObject;
+  productDetailProductTitle?: CSSObject;
+  productDetailProductDesc?: CSSObject;
+  productDetailMoreProductTitle?: CSSObject;
+  productDetailMoreProductDesc?: CSSObject;
 }
 
 export default function ShoppingMallProductDetail() {
@@ -101,78 +95,121 @@ export default function ShoppingMallProductDetail() {
     }
   }, [projectIdValue]);
 
-  const [changedContent, setChangedContent] = useState(null);
   const [pageContent, setPageContent] =
     useState<IShoppingMallProductDetailContent>(
       {} as IShoppingMallProductDetailContent
     );
+  const [pageStyle, setPageStyle] = useState<IShoppingMallProductDetailStyle>(
+    {} as IShoppingMallProductDetailStyle
+  );
 
-  console.log(pageContent);
-
-  const isKeyExist = (
-    data: any,
-    validKeys: string[]
-  ): data is IShoppingMallProductDetailContent => {
-    return validKeys.every((key) => key in data);
-  };
-
-  // function updateSectionContent<
-  //   T extends keyof IShoppingMallProductDetailContent
-  // >(section: T, updatedContent: Partial<IShoppingMallProductDetailContent[T]>) {
-  //   setPageContent((prev) => ({
-  //     ...prev,
-  //     [section]: {
-  //       ...prev?.[section],
-  //       ...updatedContent,
-  //     },
-  //   }));
-  // }
-
-  function updateInitial() {
-    if (
-      generatedText &&
-      generatedText.content?.title &&
-      generatedText.content?.desc
-    ) {
+  function updateInitialContent() {
+    if (generatedText && generatedText.content) {
       const initialContent = {
-        productDetailProductTitle: generatedText.content?.title,
-        productDetailProductDesc: generatedText.content?.desc,
+        productDetailProductTitle:
+          generatedText.content.productDetailProductTitle || undefined,
+        productDetailProductDesc:
+          generatedText.content.productDetailProductDesc || undefined,
+        productDetailMoreProductTitle:
+          generatedText.content.productDetailMoreProductTitle || undefined,
+        productDetailMoreProductDesc:
+          generatedText.content.productDetailMoreProductDesc || undefined,
       };
-
-      localStorage.setItem(
-        "changedContent",
-        JSON.stringify({ [featureKey]: initialContent })
-      );
-      setPageContent({ ...pageContent, ...initialContent });
+      setPageContent({ ...initialContent });
     }
   }
 
-  useEffect(() => {
-    const localData = localStorage.getItem("changedContent");
-    let parsedData: any = null;
-    if (localData) {
-      try {
-        parsedData = JSON.parse(localData);
-      } catch (e) {
-        localStorage.removeItem("changedContent");
-        return;
-      }
+  //페이지에 적용될 초기 스타일 저장
+  function updateInitialStyle() {
+    const initialStyle = {
+      productDetailProductTitle: product_detail_product_title_css_ || undefined,
+      productDetailProductDesc: product_detail_product_desc_css_ || undefined,
+      productDetailMoreProductTitle:
+        product_detail_more_product__option_main_title_css || undefined,
+      productDetailMoreProductDesc:
+        product_detail_more_product__option_main_desc_css || undefined,
+    };
+    setPageStyle({ ...initialStyle });
+  }
 
-      if (featureKey in parsedData) {
-        setChangedContent(parsedData[featureKey]);
-        setPageContent((prev) => ({
-          ...prev,
-          ...parsedData[featureKey].structure,
-        }));
-      } else {
-        updateInitial();
-      }
-    } else {
-      updateInitial();
+  //featureData가 들어오면 초기 콘텐츠와 스타일 업데이트
+  useEffect(() => {
+    if (generatedText) {
+      updateInitialContent();
+      updateInitialStyle();
     }
   }, [generatedText]);
 
-  if (!generatedText || !headerData) {
+  //pageContent가 변경될 때마다 localStorage에 업데이트
+  useEffect(() => {
+    if (pageContent) {
+      const localContent = localStorage.getItem("changedContent");
+
+      if (localContent) {
+        const parsed = JSON.parse(localContent);
+        const updatedData = {
+          ...parsed,
+          shoppingMallProductDetail: {
+            featureId: generatedText?.feature_id,
+            content: {
+              ...pageContent,
+            },
+          },
+        };
+        localStorage.setItem("changedContent", JSON.stringify(updatedData));
+      } else {
+        const data = {
+          shoppingMallProductDetail: {
+            featureId: generatedText?.feature_id,
+            content: {
+              ...pageContent,
+            },
+          },
+        };
+        localStorage.setItem("changedContent", JSON.stringify(data));
+      }
+    }
+  }, [pageContent]);
+
+  function handleChangeContent(key: string, value: string) {
+    setPageContent({ ...pageContent, [key]: value });
+  }
+
+  function handleChangeStyle(key: string, value: CSSObject) {
+    setPageStyle({ ...pageStyle, [key]: value });
+  }
+
+  useEffect(() => {
+    if (pageStyle) {
+      const localStyle = localStorage.getItem("changedStyle");
+
+      if (localStyle) {
+        const parsed = JSON.parse(localStyle);
+        const updatedData = {
+          ...parsed,
+          shoppingMallProductDetail: {
+            featureId: generatedText?.feature_id,
+            style: {
+              ...pageStyle,
+            },
+          },
+        };
+        localStorage.setItem("changedStyle", JSON.stringify(updatedData));
+      } else {
+        const data = {
+          shoppingMallProductDetail: {
+            featureId: generatedText?.feature_id,
+            style: {
+              ...pageContent,
+            },
+          },
+        };
+        localStorage.setItem("changedStyle", JSON.stringify(data));
+      }
+    }
+  }, [pageStyle]);
+
+  if (!generatedText || !headerData || Object.keys(pageContent).length === 0) {
     return <Loading />;
   }
 
@@ -183,7 +220,26 @@ export default function ShoppingMallProductDetail() {
         logo={headerData.logo || undefined}
         serviceType="쇼핑몰"
       />
-      <ProductDetail content={pageContent} />
+      <ProductDetail
+        content={{
+          productDetailProductTitle: pageContent?.productDetailProductTitle,
+          productDetailProductDesc: pageContent?.productDetailProductDesc,
+          productDetailMoreProductTitle:
+            pageContent?.productDetailMoreProductTitle,
+          productDetailMoreProductDesc:
+            pageContent?.productDetailMoreProductDesc,
+        }}
+        style={{
+          productDetailProductTitle: pageStyle?.productDetailProductTitle,
+          productDetailProductDesc: pageStyle?.productDetailProductDesc,
+          productDetailMoreProductTitle:
+            pageStyle?.productDetailMoreProductTitle,
+          productDetailMoreProductDesc: pageStyle?.productDetailMoreProductDesc,
+        }}
+        isEditable={true}
+        onChangeContent={handleChangeContent}
+        onChangeStyle={handleChangeStyle}
+      />
       <Footer logo={headerData.logo} serviceType="쇼핑몰" />
     </div>
   );

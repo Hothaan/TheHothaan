@@ -7,7 +7,7 @@ export interface IbuttonStep {
   status: TbuttonStepStatus;
   step: number;
   text: string;
-  title?: React.ReactNode;
+  title?: any[];
 }
 
 export default function ButtonStep(prop: IbuttonStep) {

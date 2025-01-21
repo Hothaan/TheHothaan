@@ -14,24 +14,25 @@ const item_title_ = "Explore";
 const item_button_ = "Explore";
 
 export interface IexploreServiceContent {
-  exploreServiceTitle: string;
-  exploreServiceButton: string;
-  exploreServiceExploreTitle: string;
-  exploreServiceExploreButton: string;
+  exploreServiceTitle?: string;
+  exploreServiceButton?: string;
+  exploreServiceExploreTitle?: string;
+  exploreServiceExploreButton?: string;
 }
 
 export interface IexploreServiceStyle {
-  exploreServiceTitle: CSSObject;
-  exploreServiceButton: CSSObject;
-  exploreServiceExploreTitle: CSSObject;
-  exploreServiceExploreButton: CSSObject;
+  exploreServiceTitle?: CSSObject;
+  exploreServiceButton?: CSSObject;
+  exploreServiceExploreTitle?: CSSObject;
+  exploreServiceExploreButton?: CSSObject;
 }
 
 interface IexploreService {
   content?: IexploreServiceContent | null;
   style?: IexploreServiceStyle | null;
   isEditable?: boolean;
-  onChange?: (content: IexploreServiceContent) => void;
+  onChangeContent?: (key: string, value: string) => void;
+  onChangeStyle?: (key: string, value: CSSObject) => void;
 }
 
 export const explore_service_title_css_: CSSObject = {
@@ -104,7 +105,7 @@ export const explore_service_explore_button_css_ = css`
 `;
 
 export default function ExploreServiceMain(prop: IexploreService) {
-  const { content, style, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   const initial = {
     exploreServiceTitle: {

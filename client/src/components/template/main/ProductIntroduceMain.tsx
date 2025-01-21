@@ -13,21 +13,22 @@ const desc_ =
   "lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non";
 
 export interface IproductIntroduceMainContent {
-  productIntroduceImageDesc: string;
-  productIntroduceTitle: string;
-  productIntroduceDesc: string;
+  productIntroduceImageDesc?: string;
+  productIntroduceTitle?: string;
+  productIntroduceDesc?: string;
 }
 export interface IproductIntroduceMainStyle {
-  productIntroduceImageDesc: CSSObject;
-  productIntroduceTitle: CSSObject;
-  productIntroduceDesc: CSSObject;
+  productIntroduceImageDesc?: CSSObject;
+  productIntroduceTitle?: CSSObject;
+  productIntroduceDesc?: CSSObject;
 }
 
 interface IproductIntroduceMain {
   content?: IproductIntroduceMainContent | null;
   style?: IproductIntroduceMainStyle | null;
   isEditable?: boolean;
-  onChange?: (content: IproductIntroduceMainContent) => void;
+  onChangeContent?: (key: string, value: string) => void;
+  onChangeStyle?: (key: string, value: CSSObject) => void;
 }
 
 export const product_introduce_image_desc_css_: CSSObject = {
@@ -72,7 +73,7 @@ export const product_introduce_desc_css_: CSSObject = {
 };
 
 export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
-  const { content, style, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   const initial = {
     productIntroduceImageDesc: {
