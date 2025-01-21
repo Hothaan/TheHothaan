@@ -98,7 +98,7 @@ export default function IntermediaryMatchMain() {
       }
     } catch (error) {
       console.error(error);
-      window.location.href = "/error";
+      // window.location.href = "/error";
     }
   }
 

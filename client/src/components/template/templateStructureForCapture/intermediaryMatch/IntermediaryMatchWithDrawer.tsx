@@ -51,7 +51,7 @@ export default function IntermediaryMatchWithDrawer() {
       }
     } catch (error) {
       console.error(error);
-      window.location.href = "/error";
+      // window.location.href = "/error";
     }
   }
 

@@ -103,7 +103,7 @@ export default function ShoppingMallMain() {
       }
     } catch (error) {
       console.error(error);
-      window.location.href = "/error";
+      // window.location.href = "/error";
     }
   }
 
@@ -121,7 +121,7 @@ export default function ShoppingMallMain() {
     }
   }, [projectIdValue]);
 
-  const [changedContent, setChangedContent] = useState(null);
+  // const [changedContent, setChangedContent] = useState(null);
   const [pageContent, setPageContent] = useState<IshoppingMallMainContent>(
     {} as IshoppingMallMainContent
   );
@@ -130,14 +130,11 @@ export default function ShoppingMallMain() {
   );
 
   function updateInitial() {
-    if (
-      generatedText &&
-      generatedText.content?.title &&
-      generatedText.content?.desc
-    ) {
+    if (generatedText && generatedText.content) {
       const initialContent = {
-        mainBannerTitle: generatedText.content.title,
-        mainBannerDesc: generatedText.content.desc,
+        mainBannerTitle: generatedText.content.mainBannerTitle,
+        mainBannerDesc: generatedText.content.mainBannerDesc,
+        mainBannerButton: generatedText.content.mainBannerButton,
       };
 
       localStorage.setItem(
@@ -149,40 +146,43 @@ export default function ShoppingMallMain() {
   }
 
   useEffect(() => {
-    const localData = localStorage.getItem("changedContent");
+    const localData = localStorage.getItem("changedContent"); //변경된 콘텐츠
     let parsedData: any = null;
+
     if (localData) {
       try {
-        parsedData = JSON.parse(localData);
+        parsedData = JSON.parse(localData); //변경된 콘텐츠 파싱
       } catch (e) {
         localStorage.removeItem("changedContent");
         return;
       }
 
       if (featureKey in parsedData) {
-        setChangedContent(parsedData[featureKey]);
+        //변경된 콘텐츠 중 현재 페이지 featureKey가 있다면
+        // setChangedContent(parsedData[featureKey]); //changedContent 의 값을 변경된 현재 페이지 값으로 변경
         setPageContent((prev) => ({
           ...prev,
           ...parsedData[featureKey].structure,
-        }));
+        })); //페이지 콘텐츠에 변경된 현재 페이지 값을 저장
       } else {
-        updateInitial();
+        updateInitial(); //변경된 부분이 없다면 기존 값으로 업데이트
       }
     } else {
-      updateInitial();
+      updateInitial(); //로컬 데이터가 없다면 (최초 렌더링이라면)최초 generatedText에서 가져온 값으로 업데이트
     }
   }, [generatedText]);
 
   useEffect(() => {
     if (pageContent) {
       const localData = localStorage.getItem("changedContent");
+      console.log(pageContent);
       if (localData) {
         const parsed = JSON.parse(localData);
         const updatedData = {
           ...parsed,
           shoppingMallMain: {
             featureId: generatedText?.feature_id,
-            structure: {
+            content: {
               ...pageContent,
             },
           },

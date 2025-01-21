@@ -64,7 +64,7 @@ export default function IntermediaryMatchPrice() {
       }
     } catch (error) {
       console.error(error);
-      window.location.href = "/error";
+      // window.location.href = "/error";
     }
   }
 
