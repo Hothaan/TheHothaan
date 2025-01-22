@@ -137,22 +137,6 @@ export default function ExploreServiceMain(prop: IexploreService) {
     }
   }, [content]);
 
-  // function handleEdit(
-  //   field: keyof IexploreServiceContent,
-  //   updatedText: string,
-  //   updatedCss: CSSObject
-  // ) {
-  //   const updatedState = {
-  //     ...edit,
-  //     [field]: {
-  //       text: updatedText,
-  //       css: updatedCss,
-  //     },
-  //   };
-  //   setEdit(updatedState);
-  //   onChange?.(updatedState);
-  // }
-
   const count = 3;
 
   return (
