@@ -53,7 +53,7 @@ export const mainBanner_button_css_: CSSObject = {
   alignItems: "center",
 
   borderRadius: "10px",
-  background: "#486284",
+  backgroundColor: "#486284",
   color: "var(--FFFFFF, #fff)",
 
   fontFamily: "Inter",
@@ -61,89 +61,90 @@ export const mainBanner_button_css_: CSSObject = {
   fontStyle: "normal",
   fontWeight: "400",
   lineHeight: "normal",
+  textAlign: "center",
 };
 
-export interface ImainBannerText {
-  title?: string;
-  desc?: string;
-  button?: string;
-}
-
 export interface ImainBannerContent {
-  mainBannerTitle: string;
-  mainBannerDesc: string;
-  mainBannerButton: string;
+  mainBannerTitle?: string;
+  mainBannerDesc?: string;
+  mainBannerButton?: string;
 }
 
 export interface ImainBannerStyle {
-  mainBannerTitle: CSSObject;
-  mainBannerDesc: CSSObject;
-  mainBannerButton: CSSObject;
+  mainBannerTitle?: CSSObject;
+  mainBannerDesc?: CSSObject;
+  mainBannerButton?: CSSObject;
 }
 
 interface ImainBanner {
   content?: ImainBannerContent | null;
   style?: ImainBannerStyle | null;
   isEditable?: boolean;
-  onChangeContent?: (content: ImainBannerContent) => void;
-  onChangeStyle?: (content: ImainBannerStyle) => void;
+  onChangeContent: (key: string, value: string) => void;
+  onChangeStyle: (key: string, value: CSSObject) => void;
 }
 
 export default function Mainbanner(prop: ImainBanner) {
   const { isEditable, content, style, onChangeContent, onChangeStyle } = prop;
 
-  const initial = {
-    mainBannerTitle: {
-      text: content?.mainBannerTitle || title_,
-      css: style?.mainBannerTitle || mainBanner_title_css_,
-    },
-    mainBannerDesc: {
-      text: content?.mainBannerDesc || desc_,
-      css: style?.mainBannerDesc || mainBanner_desc_css_,
-    },
-    mainBannerButton: {
-      text: content?.mainBannerButton || button_,
-      css: style?.mainBannerButton || mainBanner_button_css_,
-    },
+  const initialContent = {
+    mainBannerTitle: content?.mainBannerTitle || title_,
+    mainBannerDesc: content?.mainBannerDesc || desc_,
+    mainBannerButton: content?.mainBannerDesc || button_,
   };
 
-  const [edit, setEdit] = useState(initial);
+  const initialStyle = {
+    mainBannerTitle: style?.mainBannerTitle || mainBanner_title_css_,
+    mainBannerDesc: style?.mainBannerDesc || mainBanner_desc_css_,
+    mainBannerButton: style?.mainBannerButton || mainBanner_button_css_,
+  };
+
+  const [editableContent, setEditableContent] = useState<any>(null);
+  const [editableStyle, setEditableStyle] = useState<any>(null);
 
   useEffect(() => {
     if (content) {
-      setEdit(initial);
+      if (content?.mainBannerTitle) {
+        setEditableContent({
+          ...initialContent,
+          mainBannerTitle: content.mainBannerTitle,
+        });
+      }
+      if (content?.mainBannerDesc) {
+        setEditableContent({
+          ...initialContent,
+          mainBannerDesc: content.mainBannerDesc,
+        });
+      }
+      if (content?.mainBannerButton) {
+        setEditableContent({
+          ...initialContent,
+          mainBannerButton: content.mainBannerButton,
+        });
+      }
+      setEditableStyle(initialStyle);
     }
   }, [content]);
 
-  // function handleEdit(
-  //   field: keyof ImainBannerContent,
-  //   updatedText: string,
-  //   updatedCss: CSSObject
-  // ) {
-  //   const updatedState = {
-  //     ...edit,
-  //     [field]: {
-  //       text: updatedText,
-  //       css: updatedCss,
-  //     },
-  //   };
-  //   const updatedContentState = {
-  //     ...edit,
-  //     [field]: {
-  //       text: updatedText,
-  //       css: updatedCss,
-  //     },
-  //   };
-  //   const updatedStyleState = {
-  //     ...edit,
-  //     [field]:
-  //       text: updatedText,
+  function handleEditContent(key: string, value: string) {
+    setEditableContent({
+      ...editableContent,
+      [key]: value,
+    });
+    onChangeContent?.(key, value);
+  }
 
-  //     },
-  //   };
-  //   setEdit(updatedState);
-  //   onChangeContent?.(updatedState);
-  // }
+  function handleEditStyle(key: string, value: CSSObject) {
+    setEditableStyle({
+      ...editableStyle,
+      [key]: value,
+    });
+    onChangeStyle?.(key, value);
+  }
+
+  if (!editableContent) {
+    return <></>;
+  }
 
   return (
     <OuterWrap padding="0">
@@ -161,25 +162,47 @@ export default function Mainbanner(prop: ImainBanner) {
         <div css={container}>
           {isEditable ? (
             <EditableText
-              text={edit.mainBannerTitle.text}
+              text={editableContent.mainBannerTitle}
+              className="mainBannerTitle"
               isTextArea={false}
-              defaultCss={edit.mainBannerTitle.css}
-              // onChange={(text, css) => handleEdit("mainBannerTitle", text, css)}
+              defaultCss={editableStyle.mainBannerTitle}
+              onChangeText={(key, value) => handleEditContent(key, value)}
+              onChangeCss={(key, value) => handleEditStyle(key, value)}
             />
           ) : (
-            <p css={edit.mainBannerTitle.css}>{edit.mainBannerTitle.text}</p>
+            <p css={editableStyle.mainBannerTitle}>
+              {editableContent.mainBannerTitle}
+            </p>
           )}
           {isEditable ? (
             <EditableText
-              text={edit.mainBannerDesc.text}
+              text={editableContent.mainBannerDesc}
+              className="mainBannerDesc"
               isTextArea={true}
-              defaultCss={edit.mainBannerDesc.css}
-              // onChange={(text, css) => handleEdit("mainBannerDesc", text, css)}
+              defaultCss={editableStyle.mainBannerDesc}
+              onChangeText={(key, value) => handleEditContent(key, value)}
+              onChangeCss={(key, value) => handleEditStyle(key, value)}
             />
           ) : (
-            <p css={edit.mainBannerDesc.css}>{edit.mainBannerDesc.text}</p>
+            <p css={editableStyle.mainBannerDesc}>
+              {editableContent.mainBannerDesc}
+            </p>
           )}
-          <p css={edit.mainBannerButton.css}>{edit.mainBannerButton.text}</p>
+          {isEditable ? (
+            <EditableText
+              text={editableContent.mainBannerButton}
+              className="mainBannerButton"
+              isTextArea={false}
+              defaultCss={editableStyle.mainBannerButton}
+              hasBg={true}
+              onChangeText={(key, value) => handleEditContent(key, value)}
+              onChangeCss={(key, value) => handleEditStyle(key, value)}
+            />
+          ) : (
+            <p css={editableStyle.mainBannerButton}>
+              {editableContent.mainBannerButton}
+            </p>
+          )}
         </div>
       </div>
     </OuterWrap>

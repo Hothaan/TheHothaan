@@ -8,31 +8,39 @@ const component_title_ = "게시판";
 const item_title_ = "일반게시판(이미지형) 게시판입니다.";
 const item_title_className = "image_board_main_item_title";
 
-export interface IimageBoardText {
-  title?: string;
+interface IimageBoardMainContent {
+  imageBoardTitle?: string;
 }
 
-interface IimageBoardMain extends IimageBoardText {}
+interface IimageBoardMainStyle {
+  imageBoardTitle?: CSSObject;
+}
 
-interface IimageBoardMainItem extends IimageBoardText {}
+interface IimageBoardMain {
+  content?: IimageBoardMainContent | null;
+  style?: IimageBoardMainStyle | null;
+  isEditable?: boolean;
+  onChangeContent?: (key: string, value: string) => void;
+  onChangeStyle?: (key: string, value: CSSObject) => void;
+}
 
-function ImageBoardMainItem(prop: IimageBoardMainItem) {
-  const { title } = prop;
+export const image_board_title_css_ = css`
+  color: #486284;
+  font-family: Pretendard;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  text-transform: capitalize;
+`;
+
+function ImageBoardMainItem(prop: IimageBoardMain) {
+  const { content, style } = prop;
 
   const container = css`
     display: flex;
     flex-direction: column;
     gap: 20px;
-  `;
-
-  const item_title = css`
-    color: #486284;
-    font-family: Pretendard;
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: normal;
-    text-transform: capitalize;
   `;
 
   return (
@@ -47,15 +55,18 @@ function ImageBoardMainItem(prop: IimageBoardMainItem) {
           icon: "width: 50px; height: 50px;",
         }}
       />
-      <p css={item_title} className={item_title_className}>
-        {title || item_title_}
+      <p
+        css={style?.imageBoardTitle || image_board_title_css_}
+        className={item_title_className}
+      >
+        {content?.imageBoardTitle || item_title_}
       </p>
     </div>
   );
 }
 
 export default function ImageBoardMain(prop: IimageBoardMain) {
-  const { title } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   const count = 4;
 
@@ -66,7 +77,7 @@ export default function ImageBoardMain(prop: IimageBoardMain) {
           <p css={title_style}>{component_title_}</p>
           <div css={item_container}>
             {Array.from({ length: count }, (_, index) => (
-              <ImageBoardMainItem key={index} title={title || item_title_} />
+              <ImageBoardMainItem key={index} content={content} style={style} />
             ))}
           </div>
         </div>

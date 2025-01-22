@@ -19,8 +19,6 @@ export const saveImageDb = async (
         feature_id: featureId,
       }
     );
-
-    console.log(response);
     return response;
   } catch (error) {
     console.error("서버 요청 중 오류가 발생했습니다: ", error);

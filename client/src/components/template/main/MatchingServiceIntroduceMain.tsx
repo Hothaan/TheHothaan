@@ -5,24 +5,25 @@ import { OuterWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 
 export interface ImatchingServiceIntroduceMainContent {
-  MatchingServiceIntroduceMainBannerTitle: string;
-  MatchingServiceIntroduceMainBannerDesc: string;
-  MatchingServiceIntroduceMainItemTitle: string;
-  MatchingServiceIntroduceMainItemDesc: string;
+  MatchingServiceIntroduceMainBannerTitle?: string;
+  MatchingServiceIntroduceMainBannerDesc?: string;
+  MatchingServiceIntroduceMainItemTitle?: string;
+  MatchingServiceIntroduceMainItemDesc?: string;
 }
 
 export interface ImatchingServiceIntroduceMainStyle {
-  MatchingServiceIntroduceMainBannerTitle: CSSObject;
-  MatchingServiceIntroduceMainBannerDesc: CSSObject;
-  MatchingServiceIntroduceMainItemTitle: CSSObject;
-  MatchingServiceIntroduceMainItemDesc: CSSObject;
+  MatchingServiceIntroduceMainBannerTitle?: CSSObject;
+  MatchingServiceIntroduceMainBannerDesc?: CSSObject;
+  MatchingServiceIntroduceMainItemTitle?: CSSObject;
+  MatchingServiceIntroduceMainItemDesc?: CSSObject;
 }
 
 interface ImatchingServiceIntroduceMain {
   content?: ImatchingServiceIntroduceMainContent | null;
   style?: ImatchingServiceIntroduceMainStyle | null;
   isEditable?: boolean;
-  onChange?: (content: ImatchingServiceIntroduceMainContent) => void;
+  onChangeContent?: (key: string, value: string) => void;
+  onChangeStyle?: (key: string, value: CSSObject) => void;
 }
 
 const banner_title_ = "Headline H1";
@@ -84,7 +85,7 @@ export const matching_service_introduce_main_item_desc_css_ = css`
 `;
 
 function MatchingServiceIntroduceMainItem(prop: ImatchingServiceIntroduceMain) {
-  const { content, style, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   return (
     <div css={item_container}>
@@ -121,7 +122,7 @@ function MatchingServiceIntroduceMainItem(prop: ImatchingServiceIntroduceMain) {
 export default function MatchingServiceIntroduceMain(
   prop: ImatchingServiceIntroduceMain
 ) {
-  const { content, style, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   const initial = {
     MatchingServiceIntroduceMainBannerTitle: {
@@ -157,22 +158,6 @@ export default function MatchingServiceIntroduceMain(
       setEdit(initial);
     }
   }, [content]);
-
-  // function handleEdit(
-  //   field: keyof ImatchingServiceIntroduceMainContent,
-  //   updatedText: string,
-  //   updatedCss: CSSObject
-  // ) {
-  //   const updatedState = {
-  //     ...edit,
-  //     [field]: {
-  //       text: updatedText,
-  //       css: updatedCss,
-  //     },
-  //   };
-  //   setEdit(updatedState);
-  //   onChange?.(updatedState);
-  // }
 
   const count = 3;
 
@@ -235,7 +220,8 @@ export default function MatchingServiceIntroduceMain(
               key={index}
               content={content}
               isEditable={isEditable}
-              onChange={onChange}
+              onChangeContent={onChangeContent}
+              onChangeStyle={onChangeStyle}
             />
           ))}
         </div>

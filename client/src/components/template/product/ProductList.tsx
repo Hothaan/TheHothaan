@@ -7,22 +7,16 @@ import ImageBox from "../commonComponent/ImageBox";
 import { ReactComponent as ChevDown } from "@svgs/template/chevDownTemplate.svg";
 import { ReactComponent as Heart } from "@svgs/template/heart.svg";
 import { ReactComponent as Bag } from "@svgs/template/bag.svg";
+import EditableText from "@components/service/editableText/EditableText";
 
-const categories_ = [
-  "category",
-  "category",
-  "category",
-  "category",
-  "category",
-  "category",
-];
+const categories_ = "category";
 
 const product_title_ = "lorem ipsum, quia do";
 
 const product_desc_ = "lorem ipsum, quia do";
 
 export interface IproductListContent {
-  productListCategories?: string[];
+  productListCategories?: string;
   productListProductTitle?: string;
   productListProductDesc?: string;
 }
@@ -37,8 +31,8 @@ interface IproductList {
   content?: IproductListContent | null;
   style?: IproductListStyle | null;
   isEditable?: boolean;
-  onChangeContent?: (content: IproductListContent) => void;
-  onChangeStyle?: (style: IproductListStyle) => void;
+  onChangeContent: (key: string, value: string) => void;
+  onChangeStyle: (key: string, value: CSSObject) => void;
 }
 
 export const product_list_title_css_: CSSObject = {
@@ -140,6 +134,15 @@ function ProductListItem(prop: IproductList) {
     gap: 10px;
   `;
 
+  if (
+    content?.productListProductTitle === undefined ||
+    content?.productListProductDesc === undefined ||
+    style?.productListProductTitle === undefined ||
+    style?.productListProductDesc === undefined
+  ) {
+    return <></>;
+  }
+
   return (
     <div css={slide_item}>
       <ImageBox
@@ -150,12 +153,36 @@ function ProductListItem(prop: IproductList) {
       <div css={info_container}>
         <div css={text_container}>
           <div css={product_info_container}>
-            <p css={style?.productListProductTitle || product_list_title_css_}>
-              {content?.productListProductTitle || product_title_}
-            </p>
-            <p css={style?.productListProductDesc || product_list_desc_css_}>
-              {content?.productListProductDesc || product_desc_}
-            </p>
+            {isEditable ? (
+              <EditableText
+                text={content.productListProductTitle}
+                className="reviewTitle"
+                isTextArea={false}
+                defaultCss={style.productListProductTitle}
+                onChangeText={(key, value) => onChangeContent(key, value)}
+                onChangeCss={(key, value) => onChangeStyle(key, value)}
+              />
+            ) : (
+              <p
+                css={style?.productListProductTitle || product_list_title_css_}
+              >
+                {content?.productListProductTitle || product_title_}
+              </p>
+            )}
+            {isEditable ? (
+              <EditableText
+                text={content.productListProductTitle}
+                className="reviewTitle"
+                isTextArea={false}
+                defaultCss={style.productListProductTitle}
+                onChangeText={(key, value) => onChangeContent(key, value)}
+                onChangeCss={(key, value) => onChangeStyle(key, value)}
+              />
+            ) : (
+              <p css={style?.productListProductDesc || product_list_desc_css_}>
+                {content?.productListProductDesc || product_desc_}
+              </p>
+            )}
           </div>
           <div css={product_price_container}>
             <p css={product_price_sale}>50,000원</p>
@@ -175,46 +202,68 @@ function ProductListItem(prop: IproductList) {
 export default function ProductList(prop: IproductList) {
   const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
-  const initial = {
-    productListCategories: {
-      text: content?.productListCategories || categories_,
-      css: style?.productListCategories || product_list_nav_item_css_,
-    },
-    productListProductTitle: {
-      text: content?.productListProductTitle || product_title_,
-      css: style?.productListProductTitle || product_list_title_css_,
-    },
-    productListProductDesc: {
-      text: content?.productListProductDesc || product_desc_,
-      css: style?.productListProductDesc || product_list_desc_css_,
-    },
+  const initialContent = {
+    productListCategories: content?.productListCategories || categories_,
+    productListProductTitle: content?.productListProductTitle || product_title_,
+    productListProductDesc: content?.productListProductDesc || product_desc_,
   };
 
-  const [edit, setEdit] = useState(initial);
+  const initialStyle = {
+    productListCategories:
+      style?.productListCategories || product_list_nav_item_css_,
+    productListProductTitle:
+      style?.productListProductTitle || product_list_title_css_,
+    productListProductDesc:
+      style?.productListProductDesc || product_list_desc_css_,
+  };
+
+  const [editableContent, setEditableContent] = useState<any>(null);
+  const [editableStyle, setEditableStyle] = useState<any>(null);
 
   useEffect(() => {
     if (content) {
-      setEdit(initial);
+      if (content?.productListCategories) {
+        setEditableContent({
+          ...initialContent,
+          productListCategories: content.productListCategories,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          productListCategories: initialContent.productListCategories,
+        });
+      }
+      if (content?.productListProductTitle) {
+        setEditableContent({
+          ...initialContent,
+          productListProductTitle: content.productListProductTitle,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          productListProductTitle: initialContent.productListProductTitle,
+        });
+      }
+      if (content?.productListProductDesc) {
+        setEditableContent({
+          ...initialContent,
+          productListProductDesc: content.productListProductDesc,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          productListProductDesc: initialContent.productListProductDesc,
+        });
+      }
+      setEditableStyle(initialStyle);
     }
   }, [content]);
 
-  // function handleEdit(
-  //   field: keyof IproductListContent,
-  //   updatedText: string,
-  //   updatedCss: CSSObject
-  // ) {
-  //   const updatedState = {
-  //     ...edit,
-  //     [field]: {
-  //       text: updatedText,
-  //       css: updatedCss,
-  //     },
-  //   };
-  //   setEdit(updatedState);
-  //   onChange?.(updatedState);
-  // }
+  console.log(editableContent);
 
   const count = 3;
+
+  const nav_count = 6;
 
   const item_rows_container = css`
     display: flex;
@@ -242,6 +291,26 @@ export default function ProductList(prop: IproductList) {
     justify-content: space-between;
   `;
 
+  function handleEditContent(key: string, value: string) {
+    setEditableContent({
+      ...editableContent,
+      [key]: value,
+    });
+    onChangeContent?.(key, value);
+  }
+
+  function handleEditStyle(key: string, value: CSSObject) {
+    setEditableStyle({
+      ...editableStyle,
+      [key]: value,
+    });
+    onChangeStyle?.(key, value);
+  }
+
+  if (!editableContent) {
+    return <></>;
+  }
+
   return (
     <OuterWrap padding="135px 0">
       <InnerWrap>
@@ -249,33 +318,25 @@ export default function ProductList(prop: IproductList) {
           <div css={title_wrap}>
             <Title title="category" transform="uppercase" marginBottom={57} />
             <ul css={category_wrap}>
-              {edit?.productListCategories
-                ? edit?.productListCategories?.text.map((category, idx) => (
-                    <li css={nav_item} key={idx}>
-                      <p
-                        css={
-                          style?.productListCategories ||
-                          product_list_nav_item_css_
-                        }
-                      >
-                        {category || "category"}
-                      </p>
-                      <ChevDown />
-                    </li>
-                  ))
-                : categories_.map((category, idx) => (
-                    <li css={nav_item} key={idx}>
-                      <p
-                        css={
-                          style?.productListCategories ||
-                          product_list_nav_item_css_
-                        }
-                      >
-                        {category || "category"}
-                      </p>
-                      <ChevDown />
-                    </li>
-                  ))}
+              {Array.from({ length: nav_count }, (_, index) => (
+                <li css={nav_item} key={index}>
+                  {isEditable ? (
+                    <EditableText
+                      text={editableContent.productListCategories}
+                      className="productListCategories"
+                      isTextArea={false}
+                      defaultCss={editableStyle.productListCategories}
+                      onChangeText={(key, value) => onChangeContent(key, value)}
+                      onChangeCss={(key, value) => onChangeStyle(key, value)}
+                    />
+                  ) : (
+                    <p css={editableStyle?.productListCategories}>
+                      {editableContent?.productListCategories}
+                    </p>
+                  )}
+                  <ChevDown />
+                </li>
+              ))}
             </ul>
           </div>
           <div css={item_rows_container}>
@@ -284,9 +345,11 @@ export default function ProductList(prop: IproductList) {
                 {Array.from({ length: count }, (_, index2) => (
                   <ProductListItem
                     key={index2}
-                    content={content}
+                    content={editableContent}
+                    style={editableStyle}
                     isEditable={isEditable}
-                    // onChange={onChange}
+                    onChangeContent={handleEditContent}
+                    onChangeStyle={handleEditStyle}
                   />
                 ))}
               </div>

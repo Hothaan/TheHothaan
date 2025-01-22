@@ -15,20 +15,24 @@ import { IfetchedfeatureResponseData } from "@components/template/types";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
-/* content */
-import { InewsContent } from "@components/template/board/News";
+/* css */
+import {
+  news_title_css_,
+  news_desc_css_,
+} from "@components/template/board/News";
 
 interface IhomePageBoardNewsContent {
-  newsTitle: string;
-  newsDesc: string;
+  newsTitle?: string;
+  newsDesc?: string;
 }
 interface IhomePageBoardNewsStyle {
-  newsTitle: CSSObject;
-  newsDesc: CSSObject;
+  newsTitle?: CSSObject;
+  newsDesc?: CSSObject;
 }
 
 export default function HomePageBoardNews() {
   const feature = "뉴스";
+  const featureKey = "homePageBoardNews";
 
   /* only projectId */
   const { isProduction } = useIsProduction();
@@ -83,32 +87,129 @@ export default function HomePageBoardNews() {
     }
   }, [projectIdValue]);
 
-  const [changedContent, setChangedContent] = useState(null);
   const [pageContent, setPageContent] = useState<IhomePageBoardNewsContent>(
     {} as IhomePageBoardNewsContent
   );
+  const [pageStyle, setPageStyle] = useState<IhomePageBoardNewsStyle>(
+    {} as IhomePageBoardNewsStyle
+  );
 
-  // function updateSectionContent<T extends keyof IhomePageBoardNewsContent>(
-  //   section: T,
-  //   updatedContent: Partial<IhomePageBoardNewsContent[T]>
-  // ) {
-  //   setPageContent((prev) => ({
-  //     ...prev,
-  //     [section]: {
-  //       ...prev?.[section],
-  //       ...updatedContent,
-  //     },
-  //   }));
-  // }
+  function updateInitialContent() {
+    if (generatedText && generatedText.content) {
+      const initialContent = {
+        newsTitle: generatedText.content.newsTitle || undefined,
+        newsDesc: generatedText.content.newsDesc || undefined,
+      };
+      setPageContent({ ...initialContent });
+    }
+  }
 
-  // if (!generatedText || !headerData) {
-  //   return <Loading />;
-  // }
+  //페이지에 적용될 초기 스타일 저장
+  function updateInitialStyle() {
+    const initialStyle = {
+      newsTitle: news_title_css_ || undefined,
+      newsDesc: news_desc_css_ || undefined,
+    };
+    setPageStyle({ ...initialStyle });
+  }
+
+  //featureData가 들어오면 초기 콘텐츠와 스타일 업데이트
+  useEffect(() => {
+    if (generatedText) {
+      updateInitialContent();
+      updateInitialStyle();
+    }
+  }, [generatedText]);
+
+  //pageContent가 변경될 때마다 localStorage에 업데이트
+  useEffect(() => {
+    if (pageContent) {
+      const localContent = localStorage.getItem("changedContent");
+
+      if (localContent) {
+        const parsed = JSON.parse(localContent);
+        const updatedData = {
+          ...parsed,
+          [featureKey]: {
+            featureId: generatedText?.feature_id,
+            content: {
+              ...pageContent,
+            },
+          },
+        };
+        localStorage.setItem("changedContent", JSON.stringify(updatedData));
+      } else {
+        const data = {
+          [featureKey]: {
+            featureId: generatedText?.feature_id,
+            content: {
+              ...pageContent,
+            },
+          },
+        };
+        localStorage.setItem("changedContent", JSON.stringify(data));
+      }
+    }
+  }, [pageContent]);
+
+  function handleChangeContent(key: string, value: string) {
+    setPageContent({ ...pageContent, [key]: value });
+  }
+
+  function handleChangeStyle(key: string, value: CSSObject) {
+    setPageStyle({ ...pageStyle, [key]: value });
+  }
+
+  useEffect(() => {
+    if (pageStyle) {
+      const localStyle = localStorage.getItem("changedStyle");
+
+      if (localStyle) {
+        const parsed = JSON.parse(localStyle);
+        const updatedData = {
+          ...parsed,
+          [featureKey]: {
+            featureId: generatedText?.feature_id,
+            style: {
+              ...pageStyle,
+            },
+          },
+        };
+        localStorage.setItem("changedStyle", JSON.stringify(updatedData));
+      } else {
+        const data = {
+          [featureKey]: {
+            featureId: generatedText?.feature_id,
+            style: {
+              ...pageContent,
+            },
+          },
+        };
+        localStorage.setItem("changedStyle", JSON.stringify(data));
+      }
+    }
+  }, [pageStyle]);
+
+  if (!generatedText || !headerData) {
+    return <Loading />;
+  }
 
   return (
     <div className="templateImage">
       <Header serviceType="홈페이지·게시판" />
-      <News />
+      <News
+        content={{
+          newsTitle: pageContent?.newsTitle,
+          newsDesc: pageContent?.newsDesc,
+        }}
+        style={{
+          newsTitle: pageStyle?.newsTitle,
+          newsDesc: pageStyle?.newsDesc,
+        }}
+        isEditable={true}
+        onChangeContent={handleChangeContent}
+        onChangeStyle={handleChangeStyle}
+      />
       <Footer serviceType="홈페이지·게시판" />
     </div>
   );

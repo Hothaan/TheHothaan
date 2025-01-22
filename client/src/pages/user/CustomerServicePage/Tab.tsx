@@ -26,9 +26,6 @@ export default function Tab() {
       : "공지사항";
   }
 
-  console.log(currentLocation);
-  console.log(menu);
-
   useEffect(() => {
     const result = getCurrentMenu();
     setMenu(result);

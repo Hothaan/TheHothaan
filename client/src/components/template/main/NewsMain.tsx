@@ -11,22 +11,37 @@ const item_title_ = "뉴스 제목입니다. 뉴스 제목입니다. 뉴스 제�
 const item_tag_ = "뉴스 카테고리";
 
 export interface InewsMainContent {
-  newsTitle: string;
+  newsTitle?: string;
 }
 
 export interface InewsMainStyle {
-  newsTitle: CSSObject;
+  newsTitle?: CSSObject;
 }
 
 interface InewsMain {
   content?: InewsMainContent | null;
   style?: InewsMainStyle | null;
   isEditable?: boolean;
-  onChange?: (content: InewsMainContent) => void;
+  onChangeContent?: (key: string, value: string) => void;
+  onChangeStyle?: (key: string, value: CSSObject) => void;
 }
 
+export const news_main_item_title_css_ = css`
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  color: #486284;
+  font-family: Pretendard;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  text-transform: capitalize;
+`;
+
 function NewsMainItem(prop: InewsMain) {
-  const { content, style, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   return (
     <div css={item}>
@@ -51,7 +66,7 @@ function NewsMainItem(prop: InewsMain) {
 }
 
 export default function NewsMain(prop: InewsMain) {
-  const { content, style, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   const initial = {
     title: {
@@ -161,18 +176,4 @@ const item_tag = css`
   line-height: normal;
   text-transform: capitalize;
   white-space: nowrap;
-`;
-
-const news_main_item_title_css_ = css`
-  width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-
-  color: #486284;
-  font-family: Pretendard;
-  font-size: 24px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: normal;
-  text-transform: capitalize;
 `;

@@ -13,7 +13,7 @@ function OuterWrap(prop: IouterWrap) {
 
 const outerWrap = (padding: string) => css`
   width: 100%;
-  overflow: hidden;
+  // overflow: hidden;
   max-width: 1920px;
   min-width: 1000px;
   padding: ${padding};

@@ -41,60 +41,82 @@ interface IeditableText {
   text: string;
   isTextArea: boolean;
   defaultCss: CSSObject;
-  onChange?: (text: string, css: CSSObject) => void;
+  hasBg?: boolean;
+  onChangeText?: (key: string, text: string) => void;
+  onChangeCss?: (key: string, css: CSSObject) => void;
 }
 
 export default function EditableText(prop: IeditableText) {
-  const { className, text, isTextArea, defaultCss, onChange } = prop;
+  const {
+    className,
+    text,
+    isTextArea,
+    defaultCss,
+    hasBg,
+    onChangeText,
+    onChangeCss,
+  } = prop;
 
   const divRef = useRef<HTMLDivElement>(null);
   const toolbarRef = useRef<HTMLDivElement>(null);
   const [toolbarPosition, setToolbarPosition] = useState({ top: 0, left: 0 });
+  const [colorPickerPosition, setColorPickerPosition] = useState("top");
   const [isEditing, setIsEditing] = useState(false);
-  const [textContent, setTextContent] = useState(text);
-  const [styles, setStyles] = useState<CSSObject>({
-    ...defaultCss,
-  });
+  // const [styles, setStyles] = useState<CSSObject>({
+  //   ...defaultCss,
+  // });
 
   useEffect(() => {
-    setTextContent(text);
+    if (onChangeText && className && text) {
+      onChangeText(className, text);
+    }
   }, [text]);
 
   useEffect(() => {
-    if (onChange) {
-      onChange(textContent, styles);
+    if (onChangeCss && className) {
+      onChangeCss(className, defaultCss);
     }
-  }, [textContent, styles]);
+  }, [defaultCss]);
 
   useLayoutEffect(() => {
     if (isEditing && divRef.current && toolbarRef.current) {
       const divRect = divRef.current.getBoundingClientRect();
       const toolbarRect = toolbarRef.current.getBoundingClientRect();
+
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
 
+      const colorPickerWidth = 400;
+      const colorPickerHeight = 350;
+
       const minimalPadding: number = 20;
-      const needHeightSpace = toolbarRect.height - minimalPadding;
-      const needWidthSpace = toolbarRect.width - minimalPadding;
+
+      const needHeightSpace =
+        toolbarRect.height - minimalPadding + colorPickerHeight;
+      const needWidthSpace =
+        toolbarRect.width - minimalPadding + colorPickerWidth;
 
       let top = 0;
 
       if (divRect.top <= needHeightSpace) {
         // 위쪽 공간이 없을 때 아래 배치
-        top = minimalPadding + toolbarRect.height;
+        top = minimalPadding + divRect.height;
+        setColorPickerPosition("bottom");
       } else if (divRect.bottom + toolbarRect.height > viewportHeight) {
         // 아래쪽 공간이 부족할 때 위에 배치
         top = -minimalPadding - toolbarRect.height;
+        setColorPickerPosition("top");
       } else {
         // 기본적으로 위에 배치
         top = -minimalPadding - toolbarRect.height;
+        setColorPickerPosition("top");
       }
 
       let left = divRect.left;
 
       if (divRect.left <= needWidthSpace) {
         // 왼쪽 공간이 부족할 때 오른쪽에 배치
-        left = minimalPadding;
+        left = 0;
       } else if (divRect.right + toolbarRect.width > viewportWidth) {
         // 오른쪽 공간이 부족할 때 화면 끝에 맞추기
         left = viewportWidth - toolbarRect.width - minimalPadding;
@@ -107,7 +129,7 @@ export default function EditableText(prop: IeditableText) {
   }, [isEditing]);
 
   const updateStyles = (newStyle: Partial<Istyles>) => {
-    setStyles((prevStyles) => ({ ...prevStyles, ...newStyle }));
+    onChangeCss?.(className as string, { ...defaultCss, ...newStyle });
   };
 
   const [showFontFamilyOptions, setShowFontFamilyOptions] =
@@ -119,7 +141,7 @@ export default function EditableText(prop: IeditableText) {
     show: showFontFamilyOptions,
     isFontFamily: true,
     size: "140px",
-    selected: styles.fontFamily as string,
+    selected: defaultCss.fontFamily as string,
     options: fontFamilyArr,
     onClick: () => {
       setShowFontFamilyOptions(!showFontFamilyOptions);
@@ -134,7 +156,7 @@ export default function EditableText(prop: IeditableText) {
     show: showFontSizeOptions,
     isFontFamily: false,
     size: "111px",
-    selected: styles.fontSize as string,
+    selected: defaultCss.fontSize as string,
     options: selectableFontSizeArr,
     onClick: () => {
       setShowFontSizeOptions(!showFontSizeOptions);
@@ -148,7 +170,7 @@ export default function EditableText(prop: IeditableText) {
   };
 
   function handleChangeStyle(type: string, normal: string, change: string) {
-    styles[type as keyof Istyles] === change
+    defaultCss[type as keyof Istyles] === change
       ? updateStyles({ [type as keyof Istyles]: normal })
       : updateStyles({ [type as keyof Istyles]: change });
   }
@@ -158,7 +180,8 @@ export default function EditableText(prop: IeditableText) {
 
   const colorPicker: IcolorPicker = {
     show: showColorPickerOptions,
-    selected: styles.color as string,
+    direction: colorPickerPosition,
+    selected: defaultCss.color as string,
     options: selectableColorArr,
     onClick: () => {
       setShowColorPickerOptions(!showColorPickerOptions);
@@ -245,8 +268,12 @@ export default function EditableText(prop: IeditableText) {
     </div>
   );
 
+  if (!text) {
+    return <></>;
+  }
+
   return (
-    <div style={{ position: "relative", width: "100%" }} ref={divRef}>
+    <div style={{ position: "relative", width: "auto" }} ref={divRef}>
       {isEditing && (
         <div
           ref={toolbarRef}
@@ -254,6 +281,7 @@ export default function EditableText(prop: IeditableText) {
             position: "absolute",
             top: `${toolbarPosition.top}px`,
             left: `${toolbarPosition.left}px`,
+            zIndex: 1,
           }}
         >
           <Toolbar />
@@ -261,19 +289,32 @@ export default function EditableText(prop: IeditableText) {
       )}
       {isTextArea ? (
         <textarea
-          css={[styles, input_style(isEditing)]}
-          value={textContent}
+          css={[defaultCss, input_style(isEditing)]}
+          value={text}
           onClick={() => setIsEditing(!isEditing)}
-          onChange={(e) => setTextContent(e.target.value)}
+          onChange={(e) => onChangeText?.(className as string, e.target.value)}
           className={className}
         />
+      ) : hasBg ? (
+        <div css={[defaultCss, width_fit_content]}>
+          <input
+            type="text"
+            css={[defaultCss, input_style(isEditing), width_fit_auto]}
+            value={text}
+            onClick={() => setIsEditing(!isEditing)}
+            onChange={(e) =>
+              onChangeText?.(className as string, e.target.value)
+            }
+            className={className}
+          />
+        </div>
       ) : (
         <input
           type="text"
-          css={[styles, input_style(isEditing)]}
-          value={textContent}
+          css={[defaultCss, input_style(isEditing)]}
+          value={text}
           onClick={() => setIsEditing(!isEditing)}
-          onChange={(e) => setTextContent(e.target.value)}
+          onChange={(e) => onChangeText?.(className as string, e.target.value)}
           className={className}
         />
       )}
@@ -281,13 +322,25 @@ export default function EditableText(prop: IeditableText) {
   );
 }
 
+const width_fit_content = css`
+  display: flex;
+  justify-content: center;
+  width: fit-content;
+  // margin: 0 auto;
+`;
+
+const width_fit_auto = css`
+  flex: 0 1 auto;
+`;
+
 const input_style = (isEditing: boolean) => css`
   cursor: ${isEditing ? "text" : "pointer"};
   border: none;
-  box-shadow: ${isEditing ? "0 0 0 1px #486284" : "none"};
+  box-shadow: ${isEditing ? "0 0 0 1px #000" : "none"};
+  border-radius: 0;
   outline: none;
   width: 100%;
-  background: transparent;
+  background-color: transparent;
   padding: 0;
 `;
 

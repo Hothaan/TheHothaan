@@ -335,6 +335,7 @@ export default function ServiceStep3Page() {
 
   async function fetchGeneratedText() {
     const projectId = sessionStorage.getItem("projectId");
+
     if (!projectId || isNaN(parseInt(projectId))) {
       console.error("Invalid or missing projectId:", projectId);
       return;
@@ -348,14 +349,14 @@ export default function ServiceStep3Page() {
         const data = response.data.featureResponseData
           .map((item: IgeneratedText) => {
             const { menu, feature, feature_id, content } = item || {};
-            if (!menu || !feature || !feature_id) {
+            if (!menu || !feature) {
               console.error("Invalid featureResponseData:", item);
               return null;
             }
             return {
               menu,
               feature: feature.split(" ").join(""),
-              feature_id: feature_id,
+              feature_id: feature_id || null,
               content,
             };
           })
@@ -390,7 +391,6 @@ export default function ServiceStep3Page() {
           }
         );
         setFeatureData(data);
-        console.log(data);
       } else {
         console.error("getFeatureData error", response.status);
       }
@@ -415,10 +415,8 @@ export default function ServiceStep3Page() {
     const projectType = serviceDefaultData.serviceType.text as string;
     const featureId = featureData.map((item) => item.feature_id);
     const parameterArr = featureData.map(
-      // (item) => `${projectType}-${item.feature.split(" ").join("")}`
       (item) => `${projectType}-${item.feature}`
     );
-
     try {
       const responses = await Promise.allSettled(
         parameterArr.map((url, idx) =>

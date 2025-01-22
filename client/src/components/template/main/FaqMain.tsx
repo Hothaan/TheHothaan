@@ -13,29 +13,30 @@ const item_desc_ =
   "FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. ";
 
 export interface IfaqMainContent {
-  faqTitle: string;
-  faqDesc: string;
+  faqTitle?: string;
+  faqDesc?: string;
 }
 export interface IfaqMainStyle {
-  faqTitle: CSSObject;
-  faqDesc: CSSObject;
+  faqTitle?: CSSObject;
+  faqDesc?: CSSObject;
 }
 
 interface IfaqMain {
   content?: IfaqMainContent | null;
   style?: IfaqMainStyle | null;
   isEditable?: boolean;
-  onChange?: (content: IfaqMainContent) => void;
+  onChangeContent?: (key: string, value: string) => void;
+  onChangeStyle?: (key: string, value: CSSObject) => void;
 }
 
-export const faq_main_item_title_css_ = (isOpen: boolean) => css`
+export const faq_main_item_title_css_ = css`
   color: #486284;
 
   /* pretendard/Regular/15px */
   font-family: Pretendard;
   font-size: 15px;
   font-style: normal;
-  font-weight: ${isOpen ? "700" : "400"};
+
   line-height: 150%; /* 22.5px */
   letter-spacing: -0.15px;
 `;
@@ -54,7 +55,7 @@ export const faq_main_item_desc_css_ = css`
 `;
 
 function FaqMainItem(prop: IfaqMain) {
-  const { content, style, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   const count = 6;
 
@@ -77,6 +78,10 @@ function FaqMainItem(prop: IfaqMain) {
         `
       : "";
 
+  const faq_main_item_title_is_open = (isOpen: boolean) => css`
+    font-weight: ${isOpen ? "700" : "400"};
+  `;
+
   return (
     <div css={item_container}>
       {Array.from({ length: count }, (_, index) => {
@@ -84,7 +89,12 @@ function FaqMainItem(prop: IfaqMain) {
           return (
             <div css={item}>
               <div css={title_container}>
-                <p css={style?.faqTitle || faq_main_item_title_css_(true)}>
+                <p
+                  css={[
+                    style?.faqTitle || faq_main_item_title_css_,
+                    faq_main_item_title_is_open(true),
+                  ]}
+                >
                   {content?.faqTitle || item_title_}
                 </p>
                 <ChevUp css={icon(true)} />
@@ -100,7 +110,12 @@ function FaqMainItem(prop: IfaqMain) {
           return (
             <div css={item}>
               <div css={title_container}>
-                <p css={style?.faqTitle || faq_main_item_title_css_(false)}>
+                <p
+                  css={[
+                    style?.faqTitle || faq_main_item_title_css_,
+                    faq_main_item_title_is_open(false),
+                  ]}
+                >
                   {content?.faqTitle || item_title_}
                 </p>
                 <ChevUp css={icon(false)} />
@@ -114,12 +129,12 @@ function FaqMainItem(prop: IfaqMain) {
 }
 
 export default function FaqMain(prop: IfaqMain) {
-  const { content, style, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   const initial = {
     faqTitle: {
       text: content?.faqTitle || item_title_,
-      css: style?.faqTitle || faq_main_item_title_css_(false),
+      css: style?.faqTitle || faq_main_item_title_css_,
     },
     faqDesc: {
       text: content?.faqDesc || item_desc_,
@@ -135,22 +150,6 @@ export default function FaqMain(prop: IfaqMain) {
     }
   }, [content]);
 
-  // function handleEdit(
-  //   field: keyof IfaqMainContent,
-  //   updatedText: string,
-  //   updatedCss: CSSObject
-  // ) {
-  //   const updatedState = {
-  //     ...edit,
-  //     [field]: {
-  //       text: updatedText,
-  //       css: updatedCss,
-  //     },
-  //   };
-  //   setEdit(updatedState);
-  //   onChange?.(updatedState);
-  // }
-
   return (
     <OuterWrap padding="114px 0">
       <InnerWrap>
@@ -159,7 +158,8 @@ export default function FaqMain(prop: IfaqMain) {
           <FaqMainItem
             content={content}
             isEditable={isEditable}
-            onChange={onChange}
+            onChangeContent={onChangeContent}
+            onChangeStyle={onChangeStyle}
           />
         </div>
       </InnerWrap>

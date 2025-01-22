@@ -9,20 +9,21 @@ const desc_ =
   "lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non";
 
 export interface IintermediaryMatchServiceIntroductionContent {
-  IntermediaryMatchServiceIntroductionTitle: string;
-  IntermediaryMatchServiceIntroductionDesc: string;
+  IntermediaryMatchServiceIntroductionTitle?: string;
+  IntermediaryMatchServiceIntroductionDesc?: string;
 }
 
 export interface IintermediaryMatchServiceIntroductionStyle {
-  IntermediaryMatchServiceIntroductionTitle: CSSObject;
-  IntermediaryMatchServiceIntroductionDesc: CSSObject;
+  IntermediaryMatchServiceIntroductionTitle?: CSSObject;
+  IntermediaryMatchServiceIntroductionDesc?: CSSObject;
 }
 
 interface IintermediaryMatchServiceIntroduction {
   content?: IintermediaryMatchServiceIntroductionContent | null;
   style?: IintermediaryMatchServiceIntroductionStyle | null;
   isEditable?: boolean;
-  onChange?: (content: IintermediaryMatchServiceIntroductionContent) => void;
+  onChangeContent?: (key: string, value: string) => void;
+  onChangeStyle?: (key: string, value: CSSObject) => void;
 }
 
 export const intermediary_match_service_introduction_title_css_ = css`
@@ -71,19 +72,21 @@ export const intermediary_match_service_introduction_desc_css_ = css`
 export default function IntermediaryMatchServiceIntroduction(
   prop: IintermediaryMatchServiceIntroduction
 ) {
-  const { isEditable, style, content, onChange } = prop;
+  const { isEditable, style, content, onChangeContent, onChangeStyle } = prop;
+
+  console.log(content);
 
   const initial = {
     IntermediaryMatchServiceIntroductionTitle: {
       text: content?.IntermediaryMatchServiceIntroductionTitle || title_,
       css:
-        content?.IntermediaryMatchServiceIntroductionTitle ||
+        style?.IntermediaryMatchServiceIntroductionTitle ||
         intermediary_match_service_introduction_title_css_,
     },
     IntermediaryMatchServiceIntroductionDesc: {
       text: content?.IntermediaryMatchServiceIntroductionDesc || desc_,
       css:
-        content?.IntermediaryMatchServiceIntroductionDesc ||
+        style?.IntermediaryMatchServiceIntroductionDesc ||
         intermediary_match_service_introduction_desc_css_,
     },
   };
@@ -96,32 +99,26 @@ export default function IntermediaryMatchServiceIntroduction(
     }
   }, [content]);
 
-  // function handleEdit(
-  //   field: keyof IintermediaryMatchServiceIntroductionContent,
-  //   updatedText: string,
-  //   updatedCss: CSSObject
-  // ) {
-  //   const updatedState = {
-  //     ...edit,
-  //     [field]: {
-  //       text: updatedText,
-  //       css: updatedCss,
-  //     },
-  //   };
-  //   setEdit(updatedState);
-  //   onChange?.(updatedState);
-  // }
-
   return (
     <OuterWrap padding="0">
       <div css={container}>
         <div css={banner_1_container}>
           <div css={text_container_absolute}>
-            <p css={intermediary_match_service_introduction_title_css_}>
-              {title_}
+            <p
+              css={
+                edit?.IntermediaryMatchServiceIntroductionTitle?.css ||
+                intermediary_match_service_introduction_title_css_
+              }
+            >
+              {edit?.IntermediaryMatchServiceIntroductionTitle?.text || title_}
             </p>
-            <p css={intermediary_match_service_introduction_desc_css_}>
-              {desc_}
+            <p
+              css={
+                edit?.IntermediaryMatchServiceIntroductionDesc?.css ||
+                intermediary_match_service_introduction_desc_css_
+              }
+            >
+              {edit?.IntermediaryMatchServiceIntroductionDesc?.text || desc_}
             </p>
           </div>
           <ImageBox
@@ -227,6 +224,7 @@ export default function IntermediaryMatchServiceIntroduction(
 
 const text_align_center = css`
   text-align: center;
+  padding: 0 100px;
 `;
 
 const container = css`

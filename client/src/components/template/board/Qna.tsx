@@ -18,18 +18,19 @@ const item_title = "Q&A 제목";
 export type Tqna = "텍스트형" | "이미지형";
 
 export interface IqnaContent {
-  qnaTitle: string;
+  qnaTitle?: string;
 }
 export interface IqnaStyle {
-  qnaTitle: CSSObject;
+  qnaTitle?: CSSObject;
 }
 
 export interface Iqna {
   content?: IqnaContent | null;
   style?: IqnaStyle | null;
   isEditable?: boolean;
-  onChange?: (content: IqnaContent) => void;
   option?: Tqna;
+  onChangeContent?: (key: string, value: string) => void;
+  onChangeStyle?: (key: string, value: CSSObject) => void;
 }
 
 export const qna_item_title_css_ = css`
@@ -75,7 +76,7 @@ function QnaTitle() {
 }
 
 function QnaTable(prop: Iqna) {
-  const { content, style, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   const count = 10;
 
@@ -310,7 +311,8 @@ function QnaSearch() {
 }
 
 export default function Qna(prop: Iqna) {
-  const { content, style, isEditable, onChange, option } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle, option } =
+    prop;
 
   const initial = {
     qnaTitle: {
@@ -358,7 +360,8 @@ export default function Qna(prop: Iqna) {
           <QnaTitle />
           <QnaTable
             content={content}
-            onChange={onChange}
+            onChangeContent={onChangeContent}
+            onChangeStyle={onChangeStyle}
             isEditable={isEditable}
             option={option}
           />

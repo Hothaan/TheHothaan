@@ -7,6 +7,7 @@ import { ReactComponent as ChevRight } from "@svgs//service/chevRight.svg";
 import { IbuttonStep } from "@components/service/button/ButtonStep";
 import ButtonStep from "@components/service/button/ButtonStep";
 import { serviceDefaultDataStore } from "@store/serviceDefaultDataStore";
+import { renderWithKeys } from "@hooks/renderWidthKeys";
 
 export default function TitleNstepSection() {
   const location = useLocation();
@@ -45,29 +46,30 @@ export default function TitleNstepSection() {
 
   useEffect(() => {
     const { serviceDefaultData } = serviceDefaultDataStore.getState();
+    const serviceInfo = sessionStorage.getItem("serviceInfo");
+    const serviceTitle = serviceInfo
+      ? JSON.parse(serviceInfo).serviceTitle
+      : null;
     const currentStep = parseInt(location.pathname.slice(-1));
     const newStepData = [...stepData];
+
     newStepData.forEach((step) => {
       if (step.step === 4) {
         step.title = [
-          <span css={gradient_text}>
-            {serviceDefaultData.serviceTitle !== ""
-              ? serviceDefaultData.serviceTitle
-              : "프로젝트"}
+          <span css={gradient_text} key="1">
+            {serviceTitle ? serviceTitle : "프로젝트"}
           </span>,
-          ` 화면을 구성해봤어요.`,
-          <br key="1" />,
-          `화면을 클릭해 내용을 수정해보세요!`,
+          <span key="2"> 화면을 구성해봤어요.</span>,
+          <br key="3" />,
+          <span key="4">화면을 클릭해 내용을 수정해보세요!</span>,
         ];
       }
       if (step.step === 5) {
         step.title = [
-          <span css={gradient_text}>
-            {serviceDefaultData.serviceTitle !== ""
-              ? serviceDefaultData.serviceTitle
-              : "프로젝트"}
+          <span css={gradient_text} key="1">
+            {serviceTitle ? serviceTitle : "프로젝트"}
           </span>,
-          ` 기획안 파일이 생성되었어요 👀🎉`,
+          <span key="2"> 기획안 파일이 생성되었어요 👀🎉</span>,
         ];
       }
       if (step.step === currentStep) {
@@ -83,7 +85,11 @@ export default function TitleNstepSection() {
 
   return (
     <section css={wrap}>
-      <h2 css={title}>{activeStep?.title || activeStep?.text}</h2>
+      <h2 css={title}>
+        {activeStep?.title
+          ? renderWithKeys(activeStep?.title, `title`)
+          : activeStep?.text}
+      </h2>
       <div css={step_container}>
         {stepData.map((item, idx) => (
           <React.Fragment key={item.text + idx}>

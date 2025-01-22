@@ -5,6 +5,7 @@ import Title from "../commonComponent/Title";
 import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 import { ReactComponent as GotoLink } from "@svgs/template/gotoLink.svg";
+import EditableText from "@components/service/editableText/EditableText";
 
 const component_title_ = "service Introduction";
 const component_desc_ = "lorem ipsum, quia dolorem ipsum, quia do";
@@ -13,40 +14,39 @@ const item_title_ = "lorem ipsum, quia do ddd";
 
 const item_desc_ = "lorem ipsum";
 
-export interface IserviceIntroductionText {
-  title?: string;
-  desc?: string;
-}
-
 export interface IserviceIntroductionContent {
-  title?: {
-    text?: string;
-    css?: CSSObject;
-  };
-  desc?: {
-    text?: string;
-    css?: CSSObject;
-  };
+  serviceIntroductionTitle?: string;
+  serviceIntroductionDesc?: string;
+}
+export interface IserviceIntroductionStyle {
+  serviceIntroductionTitle?: CSSObject;
+  serviceIntroductionDesc?: CSSObject;
 }
 
 interface IserviceIntroduction {
   content?: IserviceIntroductionContent | null;
+  style?: IserviceIntroductionStyle | null;
   isEditable?: boolean;
-  onChange?: (content: IserviceIntroductionContent) => void;
+  onChangeContent: (key: string, value: string) => void;
+  onChangeStyle: (key: string, value: CSSObject) => void;
 }
 
 export const service_introduction_title_css_: CSSObject = {
   width: "100%",
   height: "36px",
-  overflow: "hidden",
   color: "#486284",
-  textOverflow: "ellipsis",
   whiteSpace: "nowrap",
   fontFamily: "Inter",
   fontSize: "24px",
   fontStyle: "normal",
   fontWeight: "800",
   lineHeight: "normal",
+
+  display: "-webkit-box",
+  WebkitBoxOrient: "vertical",
+  // overflow: "hidden",
+  textOverflow: "ellipsis",
+  WebkitLineClamp: "1",
 };
 
 export const service_introduction_desc_css_: CSSObject = {
@@ -56,44 +56,24 @@ export const service_introduction_desc_css_: CSSObject = {
   fontStyle: "normal",
   fontWeight: "400",
   lineHeight: "160%",
+
+  display: "-webkit-box",
+  WebkitBoxOrient: "vertical",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  WebkitLineClamp: "1",
 };
 
 function ServiceIntroductionItem(prop: IserviceIntroduction) {
-  const { content, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
-  const initial = {
-    title: {
-      text: content?.title?.text || item_title_,
-      css: content?.title?.css || service_introduction_title_css_,
-    },
-    desc: {
-      text: content?.desc?.text || item_desc_,
-      css: content?.desc?.css || service_introduction_desc_css_,
-    },
-  };
-
-  const [serviceIntroduction, setServiceIntroduction] = useState(initial);
-
-  useEffect(() => {
-    if (content) {
-      setServiceIntroduction(initial);
-    }
-  }, [content]);
-
-  function handleEdit(
-    field: keyof IserviceIntroductionContent,
-    updatedText: string,
-    updatedCss: CSSObject
+  if (
+    content?.serviceIntroductionTitle === undefined ||
+    content?.serviceIntroductionDesc === undefined ||
+    style?.serviceIntroductionTitle === undefined ||
+    style?.serviceIntroductionDesc === undefined
   ) {
-    const updatedState = {
-      ...serviceIntroduction,
-      [field]: {
-        text: updatedText,
-        css: updatedCss,
-      },
-    };
-    setServiceIntroduction(updatedState);
-    onChange?.(updatedState);
+    return <></>;
   }
 
   return (
@@ -110,12 +90,43 @@ function ServiceIntroductionItem(prop: IserviceIntroduction) {
       />
       <div css={info_container}>
         <div css={text_container}>
-          <p css={content?.title?.css || service_introduction_title_css_}>
-            {content?.title?.text || item_title_}
-          </p>
-          <p css={content?.desc?.css || service_introduction_desc_css_}>
-            {content?.desc?.text || item_desc_}
-          </p>
+          {isEditable ? (
+            <EditableText
+              text={content.serviceIntroductionTitle}
+              className="serviceIntroductionTitle"
+              isTextArea={false}
+              defaultCss={style.serviceIntroductionTitle}
+              onChangeText={(key, value) => onChangeContent(key, value)}
+              onChangeCss={(key, value) => onChangeStyle(key, value)}
+            />
+          ) : (
+            <p
+              css={
+                style?.serviceIntroductionTitle ||
+                service_introduction_title_css_
+              }
+            >
+              {content?.serviceIntroductionTitle || item_title_}
+            </p>
+          )}
+          {isEditable ? (
+            <EditableText
+              text={content.serviceIntroductionDesc}
+              className="serviceIntroductionDesc"
+              isTextArea={false}
+              defaultCss={style.serviceIntroductionDesc}
+              onChangeText={(key, value) => onChangeContent(key, value)}
+              onChangeCss={(key, value) => onChangeStyle(key, value)}
+            />
+          ) : (
+            <p
+              css={
+                style?.serviceIntroductionDesc || service_introduction_desc_css_
+              }
+            >
+              {content?.serviceIntroductionDesc || item_desc_}
+            </p>
+          )}
         </div>
         <GotoLink css={icon} />
       </div>
@@ -124,9 +135,63 @@ function ServiceIntroductionItem(prop: IserviceIntroduction) {
 }
 
 export default function ServiceIntroduction(prop: IserviceIntroduction) {
-  const { content, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   const count = 3;
+
+  const initialContent = {
+    serviceIntroductionTitle: content?.serviceIntroductionTitle || item_title_,
+    serviceIntroductionDesc: content?.serviceIntroductionDesc || item_desc_,
+  };
+
+  const initialStyle = {
+    serviceIntroductionTitle:
+      style?.serviceIntroductionTitle || service_introduction_title_css_,
+    serviceIntroductionDesc:
+      style?.serviceIntroductionDesc || service_introduction_desc_css_,
+  };
+
+  const [editableContent, setEditableContent] = useState<any>(null);
+  const [editableStyle, setEditableStyle] = useState<any>(null);
+
+  useEffect(() => {
+    if (content) {
+      if (content?.serviceIntroductionTitle) {
+        setEditableContent({
+          ...initialContent,
+          serviceIntroductionTitle: content.serviceIntroductionTitle,
+        });
+      }
+      if (content?.serviceIntroductionDesc) {
+        setEditableContent({
+          ...initialContent,
+          serviceIntroductionDesc: content.serviceIntroductionDesc,
+        });
+      }
+      setEditableStyle(initialStyle);
+    }
+  }, [content]);
+
+  function handleEditContent(key: string, value: string) {
+    setEditableContent({
+      ...editableContent,
+      [key]: value,
+    });
+    onChangeContent?.(key, value);
+  }
+
+  function handleEditStyle(key: string, value: CSSObject) {
+    setEditableStyle({
+      ...editableStyle,
+      [key]: value,
+    });
+    onChangeStyle?.(key, value);
+  }
+
+  if (!editableContent) {
+    return <></>;
+  }
+
   return (
     <OuterWrap padding="160px 0">
       <InnerWrap>
@@ -142,9 +207,11 @@ export default function ServiceIntroduction(prop: IserviceIntroduction) {
           {Array.from({ length: count }, (_, index) => (
             <ServiceIntroductionItem
               key={index}
-              content={content}
+              content={editableContent}
+              style={editableStyle}
               isEditable={isEditable}
-              onChange={onChange}
+              onChangeContent={handleEditContent}
+              onChangeStyle={handleEditStyle}
             />
           ))}
         </div>
@@ -189,7 +256,6 @@ const item = css`
 
 const info_container = css`
   width: 280px;
-  overflow: hidden;
   display: flex;
   align-items: center;
   gap: 10px;

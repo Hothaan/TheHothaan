@@ -15,18 +15,19 @@ import { IfetchedfeatureResponseData } from "@components/template/types";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
-/* content */
-import { IfeedContent } from "@components/template/board/Feed";
+/* css */
+import { feed_item_title_css_ } from "@components/template/board/Feed";
 
 interface IcommunitySnsFeedContent {
-  feedTitle: string;
+  feedTitle?: string;
 }
 interface IcommunitySnsFeedStyle {
-  feedTitle: CSSObject;
+  feedTitle?: CSSObject;
 }
 
 export default function CommunitySnsFeed() {
   const feature = "피드";
+  const featureKey = "communitySnsFeed";
 
   /* only projectId */
   const { isProduction } = useIsProduction();
@@ -81,32 +82,125 @@ export default function CommunitySnsFeed() {
     }
   }, [projectIdValue]);
 
-  const [changedContent, setChangedContent] = useState(null);
   const [pageContent, setPageContent] = useState<IcommunitySnsFeedContent>(
     {} as IcommunitySnsFeedContent
   );
+  const [pageStyle, setPageStyle] = useState<IcommunitySnsFeedStyle>(
+    {} as IcommunitySnsFeedStyle
+  );
 
-  // function updateSectionContent<T extends keyof IcommunitySnsFeedContent>(
-  //   section: T,
-  //   updatedContent: Partial<IcommunitySnsFeedContent[T]>
-  // ) {
-  //   setPageContent((prev) => ({
-  //     ...prev,
-  //     [section]: {
-  //       ...prev?.[section],
-  //       ...updatedContent,
-  //     },
-  //   }));
-  // }
+  function updateInitialContent() {
+    if (generatedText && generatedText.content) {
+      const initialContent = {
+        feedTitle: generatedText.content.feedTitle || undefined,
+      };
+      setPageContent({ ...initialContent });
+    }
+  }
 
-  // if (!generatedText || !headerData) {
-  //   return <Loading />;
-  // }
+  //페이지에 적용될 초기 스타일 저장
+  function updateInitialStyle() {
+    const initialStyle = {
+      feedTitle: feed_item_title_css_ || undefined,
+    };
+    setPageStyle({ ...initialStyle });
+  }
+
+  //featureData가 들어오면 초기 콘텐츠와 스타일 업데이트
+  useEffect(() => {
+    if (generatedText) {
+      updateInitialContent();
+      updateInitialStyle();
+    }
+  }, [generatedText]);
+
+  //pageContent가 변경될 때마다 localStorage에 업데이트
+  useEffect(() => {
+    if (pageContent) {
+      const localContent = localStorage.getItem("changedContent");
+
+      if (localContent) {
+        const parsed = JSON.parse(localContent);
+        const updatedData = {
+          ...parsed,
+          [featureKey]: {
+            featureId: generatedText?.feature_id,
+            content: {
+              ...pageContent,
+            },
+          },
+        };
+        localStorage.setItem("changedContent", JSON.stringify(updatedData));
+      } else {
+        const data = {
+          [featureKey]: {
+            featureId: generatedText?.feature_id,
+            content: {
+              ...pageContent,
+            },
+          },
+        };
+        localStorage.setItem("changedContent", JSON.stringify(data));
+      }
+    }
+  }, [pageContent]);
+
+  function handleChangeContent(key: string, value: string) {
+    setPageContent({ ...pageContent, [key]: value });
+  }
+
+  function handleChangeStyle(key: string, value: CSSObject) {
+    setPageStyle({ ...pageStyle, [key]: value });
+  }
+
+  useEffect(() => {
+    if (pageStyle) {
+      const localStyle = localStorage.getItem("changedStyle");
+
+      if (localStyle) {
+        const parsed = JSON.parse(localStyle);
+        const updatedData = {
+          ...parsed,
+          [featureKey]: {
+            featureId: generatedText?.feature_id,
+            style: {
+              ...pageStyle,
+            },
+          },
+        };
+        localStorage.setItem("changedStyle", JSON.stringify(updatedData));
+      } else {
+        const data = {
+          [featureKey]: {
+            featureId: generatedText?.feature_id,
+            style: {
+              ...pageContent,
+            },
+          },
+        };
+        localStorage.setItem("changedStyle", JSON.stringify(data));
+      }
+    }
+  }, [pageStyle]);
+
+  if (!generatedText || !headerData) {
+    return <Loading />;
+  }
 
   return (
     <div className="templateImage">
       <Header serviceType="커뮤니티·sns" />
-      <Feed />
+      <Feed
+        content={{
+          feedTitle: pageContent?.feedTitle,
+        }}
+        style={{
+          feedTitle: pageStyle?.feedTitle,
+        }}
+        isEditable={true}
+        onChangeContent={handleChangeContent}
+        onChangeStyle={handleChangeStyle}
+      />
       <Footer serviceType="커뮤니티·sns" />
     </div>
   );

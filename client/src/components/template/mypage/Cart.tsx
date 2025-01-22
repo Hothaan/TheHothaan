@@ -15,24 +15,20 @@ import ImageBox from "../commonComponent/ImageBox";
 const title_ = "제품 이름";
 const title_className = "cart_title";
 
-export interface IcartText {
-  title?: string;
-}
-
 export interface IcartContent {
-  cartTitle: string;
+  cartTitle?: string;
 }
 
 export interface IcartStyle {
-  cartTitle: CSSObject;
+  cartTitle?: CSSObject;
 }
 
 interface Icart {
   content?: IcartContent | null;
   style?: IcartStyle | null;
   isEditable?: boolean;
-  onChangeContent?: (content: IcartContent) => void;
-  onChangeStyle?: (style: IcartStyle) => void;
+  onChangeContent?: (key: string, value: string) => void;
+  onChangeStyle?: (key: string, value: CSSObject) => void;
 }
 
 export const cart_title_css = {
@@ -396,7 +392,10 @@ function CartOrder(prop: Icart) {
                   borderRadius="0"
                 />
                 <div css={product_info_container}>
-                  <p css={style?.cartTitle} className={title_className}>
+                  <p
+                    css={style?.cartTitle || cart_title_css}
+                    className={title_className}
+                  >
                     {content?.cartTitle || title_}
                   </p>
                   <p css={text_style}>￦5,600,000</p>
@@ -650,22 +649,6 @@ export default function Cart(prop: Icart) {
     }
   }, [content]);
 
-  // function handleEdit(
-  //   field: keyof IcartContent,
-  //   updatedText: string,
-  //   updatedCss: CSSObject
-  // ) {
-  //   const updatedState = {
-  //     ...edit,
-  //     [field]: {
-  //       text: updatedText,
-  //       css: updatedCss,
-  //     },
-  //   };
-  //   setEdit(updatedState);
-  //   onChange?.(updatedState);
-  // }
-
   const container = css`
     width: 100%;
   `;
@@ -677,6 +660,7 @@ export default function Cart(prop: Icart) {
           <CartTitle />
           <CartOrder
             content={content}
+            style={style}
             isEditable={isEditable}
             // onChange={onChange}
           />

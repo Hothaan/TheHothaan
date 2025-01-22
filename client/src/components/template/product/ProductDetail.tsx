@@ -18,30 +18,25 @@ const product_desc_ = "상품 설명 내용입니다.";
 const more_product_title_ = "lorem ipsum, quia do";
 const more_product_desc_ = "lorem ipsum, quia do";
 
-export interface IproductDetailText {
-  product?: { title?: string; desc?: string };
-  moreProduct?: { title?: string; desc?: string };
-}
-
 export interface IproductDetailContent {
-  productDetailProductTitle: string;
-  productDetailProductDesc: string;
-  productDetailMoreProductTitle: string;
-  productDetailMoreProductDesc: string;
+  productDetailProductTitle?: string;
+  productDetailProductDesc?: string;
+  productDetailMoreProductTitle?: string;
+  productDetailMoreProductDesc?: string;
 }
 export interface IproductDetailStyle {
-  productDetailProductTitle: CSSObject;
-  productDetailProductDesc: CSSObject;
-  productDetailMoreProductTitle: CSSObject;
-  productDetailMoreProductDesc: CSSObject;
+  productDetailProductTitle?: CSSObject;
+  productDetailProductDesc?: CSSObject;
+  productDetailMoreProductTitle?: CSSObject;
+  productDetailMoreProductDesc?: CSSObject;
 }
 
 interface IproductDetail {
   content?: IproductDetailContent | null;
   style?: IproductDetailStyle | null;
   isEditable?: boolean;
-  onChangeContent?: (content: IproductDetailContent) => void;
-  onChangeStyle?: (style: IproductDetailStyle) => void;
+  onChangeContent?: (key: string, value: string) => void;
+  onChangeStyle?: (key: string, value: CSSObject) => void;
 }
 
 export const product_detail_product_title_css_: CSSObject = {
@@ -63,10 +58,7 @@ export const product_detail_product_desc_css_: CSSObject = {
   lineHeight: "160%",
 };
 
-export const product_detail_more_product__option_main_title_css: Record<
-  string,
-  string
-> = {
+export const product_detail_more_product__option_main_title_css: CSSObject = {
   color: "#486284",
   textAlign: "center",
   fontFamily: "Inter",
@@ -74,12 +66,16 @@ export const product_detail_more_product__option_main_title_css: Record<
   fontStyle: "normal",
   fontWeight: "400",
   lineHeight: "normal",
+
+  width: "100%",
+  textOverflow: "ellipsis",
+  overflow: "hidden",
+  display: "-webkit-box",
+  WebkitBoxOrient: "vertical",
+  WebkitLineClamp: "1",
 };
 
-export const product_detail_more_product__option_main_desc_css: Record<
-  string,
-  string
-> = {
+export const product_detail_more_product__option_main_desc_css: CSSObject = {
   color: "#a0a0a0",
   textAlign: "center",
   fontFamily: "Inter",
@@ -401,10 +397,20 @@ function ProductDetailList(prop: IproductDetail) {
           />
           <div css={text_container}>
             <div css={product_info_container}>
-              <p css={style?.productDetailProductTitle}>
+              <p
+                css={
+                  style?.productDetailProductTitle ||
+                  product_detail_more_product__option_main_title_css
+                }
+              >
                 {content?.productDetailProductTitle || more_product_title_}
               </p>
-              <p css={style?.productDetailProductDesc}>
+              <p
+                css={
+                  style?.productDetailProductDesc ||
+                  product_detail_more_product__option_main_desc_css
+                }
+              >
                 {content?.productDetailProductDesc || more_product_desc_}
               </p>
             </div>

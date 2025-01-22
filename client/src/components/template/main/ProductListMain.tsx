@@ -6,34 +6,31 @@ import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 import { ReactComponent as Heart } from "@svgs/template/heart.svg";
 import { ReactComponent as Bag } from "@svgs/template/bag.svg";
+import EditableText from "@components/service/editableText/EditableText";
 
 const title_ = "lorem ipsum, quia do";
 
 const desc_ = "lorem ipsum, quia do";
 
-export interface IproductListText {
-  title?: string;
-  desc?: string;
+export interface IproductListContent {
+  productListTitle?: string;
+  productListDesc?: string;
 }
 
-export interface IproductListContent {
-  title?: {
-    text?: string;
-    css?: CSSObject;
-  };
-  desc?: {
-    text?: string;
-    css?: CSSObject;
-  };
+export interface IproductListStyle {
+  productListTitle?: CSSObject;
+  productListDesc?: CSSObject;
 }
 
 interface IproductListItem extends IproductList {}
 
 interface IproductList {
   content?: IproductListContent | null;
+  style?: IproductListStyle | null;
   isEditable?: boolean;
-  onChange?: (content: IproductListContent) => void;
   option: "main" | "list";
+  onChangeContent: (key: string, value: string) => void;
+  onChangeStyle: (key: string, value: CSSObject) => void;
 }
 
 export const product_list_option_main_title_css: CSSObject = {
@@ -44,6 +41,13 @@ export const product_list_option_main_title_css: CSSObject = {
   fontStyle: "normal",
   fontWeight: "400",
   lineHeight: "normal",
+
+  display: "-webkit-box",
+  width: "100%",
+  WebkitBoxOrient: "vertical",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  WebkitLineClamp: "1",
 };
 
 export const product_list_option_list_title_css: CSSObject = {
@@ -54,6 +58,13 @@ export const product_list_option_list_title_css: CSSObject = {
   fontStyle: "normal",
   fontWeight: "400",
   lineHeight: "normal",
+
+  display: "-webkit-box",
+  width: "100%",
+  WebkitBoxOrient: "vertical",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  WebkitLineClamp: "1",
 };
 
 export const product_list_option_main_desc_css: CSSObject = {
@@ -64,6 +75,14 @@ export const product_list_option_main_desc_css: CSSObject = {
   fontStyle: "normal",
   fontWeight: "400",
   lineHeight: "normal",
+
+  display: "-webkit-box",
+  width: "100%",
+
+  WebkitBoxOrient: "vertical",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  WebkitLineClamp: "1",
 };
 
 export const product_list_option_list_desc_css: CSSObject = {
@@ -74,52 +93,27 @@ export const product_list_option_list_desc_css: CSSObject = {
   fontStyle: "normal",
   fontWeight: "400",
   lineHeight: "normal",
+
+  display: "-webkit-box",
+  width: "100%",
+
+  WebkitBoxOrient: "vertical",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  WebkitLineClamp: "1",
 };
 
 function ProductListItemMain(prop: IproductListItem) {
-  const { option, content, isEditable, onChange } = prop;
+  const { option, content, style, isEditable, onChangeContent, onChangeStyle } =
+    prop;
 
-  const initial = {
-    title: {
-      text: content?.title?.text || title_,
-      css:
-        content?.title?.css ||
-        (option === "main"
-          ? product_list_option_main_title_css
-          : product_list_option_list_title_css),
-    },
-    desc: {
-      text: content?.desc?.text || desc_,
-      css:
-        content?.desc?.css ||
-        (option === "main"
-          ? product_list_option_main_desc_css
-          : product_list_option_list_desc_css),
-    },
-  };
-
-  const [edit, setEdit] = useState(initial);
-
-  useEffect(() => {
-    if (content) {
-      setEdit(initial);
-    }
-  }, [content]);
-
-  function handleEdit(
-    field: keyof IproductListContent,
-    updatedText: string,
-    updatedCss: CSSObject
+  if (
+    content?.productListTitle === undefined ||
+    content?.productListDesc === undefined ||
+    style?.productListTitle === undefined ||
+    style?.productListDesc === undefined
   ) {
-    const updatedState = {
-      ...edit,
-      [field]: {
-        text: updatedText,
-        css: updatedCss,
-      },
-    };
-    setEdit(updatedState);
-    onChange?.(updatedState);
+    return <></>;
   }
 
   if (option === "main") {
@@ -132,8 +126,34 @@ function ProductListItemMain(prop: IproductListItem) {
         />
         <div css={text_container}>
           <div css={product_info_container}>
-            <p css={edit?.title?.css}>{edit?.title?.text || title_}</p>
-            <p css={edit?.desc?.css}>{edit?.desc?.text || desc_}</p>
+            {isEditable ? (
+              <EditableText
+                text={content.productListTitle}
+                className="productListTitle"
+                isTextArea={false}
+                defaultCss={style.productListTitle}
+                onChangeText={(key, value) => onChangeContent(key, value)}
+                onChangeCss={(key, value) => onChangeStyle(key, value)}
+              />
+            ) : (
+              <p css={style?.productListTitle}>
+                {content?.productListTitle || title_}
+              </p>
+            )}
+            {isEditable ? (
+              <EditableText
+                text={content.productListDesc}
+                className="productListDesc"
+                isTextArea={false}
+                defaultCss={style.productListDesc}
+                onChangeText={(key, value) => onChangeContent(key, value)}
+                onChangeCss={(key, value) => onChangeStyle(key, value)}
+              />
+            ) : (
+              <p css={style?.productListDesc}>
+                {content?.productListDesc || desc_}
+              </p>
+            )}
           </div>
           <div css={product_price_container(option)}>
             <p css={product_price_sale(option)}>50,000원</p>
@@ -153,8 +173,34 @@ function ProductListItemMain(prop: IproductListItem) {
         <div css={info_container}>
           <div css={text_container}>
             <div css={product_info_container}>
-              <p css={edit?.title?.css}>{edit?.title?.text || title_}</p>
-              <p css={edit?.desc?.css}>{edit?.desc?.text || desc_}</p>
+              {isEditable ? (
+                <EditableText
+                  text={content.productListTitle}
+                  className="productListTitle"
+                  isTextArea={false}
+                  defaultCss={style.productListTitle}
+                  onChangeText={(key, value) => onChangeContent(key, value)}
+                  onChangeCss={(key, value) => onChangeStyle(key, value)}
+                />
+              ) : (
+                <p css={style?.productListTitle}>
+                  {content?.productListTitle || title_}
+                </p>
+              )}
+              {isEditable ? (
+                <EditableText
+                  text={content.productListDesc}
+                  className="productListDesc"
+                  isTextArea={false}
+                  defaultCss={style.productListDesc}
+                  onChangeText={(key, value) => onChangeContent(key, value)}
+                  onChangeCss={(key, value) => onChangeStyle(key, value)}
+                />
+              ) : (
+                <p css={style?.productListDesc}>
+                  {content?.productListDesc || desc_}
+                </p>
+              )}
             </div>
             <div css={product_price_container(option)}>
               <p css={product_price_sale(option)}>50,000원</p>
@@ -173,7 +219,8 @@ function ProductListItemMain(prop: IproductListItem) {
 }
 
 export default function ProductListMain(prop: IproductList) {
-  const { option, content, isEditable, onChange } = prop;
+  const { option, content, style, isEditable, onChangeContent, onChangeStyle } =
+    prop;
 
   const count = 3;
 
@@ -193,6 +240,65 @@ export default function ProductListMain(prop: IproductList) {
     gap: 26px;
   `;
 
+  const initialContent = {
+    productListTitle: content?.productListTitle || title_,
+    productListDesc: content?.productListDesc || desc_,
+  };
+
+  const initialStyle = {
+    productListTitle:
+      style?.productListTitle ||
+      (option === "main"
+        ? product_list_option_main_title_css
+        : product_list_option_list_title_css),
+    productListDesc:
+      style?.productListDesc ||
+      (option === "main"
+        ? product_list_option_main_desc_css
+        : product_list_option_list_desc_css),
+  };
+
+  const [editableContent, setEditableContent] = useState<any>(null);
+  const [editableStyle, setEditableStyle] = useState<any>(null);
+
+  useEffect(() => {
+    if (content) {
+      if (content?.productListTitle) {
+        setEditableContent({
+          ...initialContent,
+          productListTitle: content.productListTitle,
+        });
+      }
+      if (content?.productListDesc) {
+        setEditableContent({
+          ...initialContent,
+          productListDesc: content.productListDesc,
+        });
+      }
+      setEditableStyle(initialStyle);
+    }
+  }, [content]);
+
+  function handleEditContent(key: string, value: string) {
+    setEditableContent({
+      ...editableContent,
+      [key]: value,
+    });
+    onChangeContent?.(key, value);
+  }
+
+  function handleEditStyle(key: string, value: CSSObject) {
+    setEditableStyle({
+      ...editableStyle,
+      [key]: value,
+    });
+    onChangeStyle?.(key, value);
+  }
+
+  if (!editableContent) {
+    return <></>;
+  }
+
   if (option === "main") {
     return (
       <OuterWrap padding="135px 0">
@@ -201,9 +307,13 @@ export default function ProductListMain(prop: IproductList) {
           <div css={item_container}>
             {Array.from({ length: count }, (_, index) => (
               <ProductListItemMain
-                option={option}
-                content={content}
                 key={index}
+                option={option}
+                content={editableContent}
+                style={editableStyle}
+                isEditable={isEditable}
+                onChangeContent={handleEditContent}
+                onChangeStyle={handleEditStyle}
               />
             ))}
           </div>
@@ -220,9 +330,13 @@ export default function ProductListMain(prop: IproductList) {
               <div css={item_container} key={index1}>
                 {Array.from({ length: count }, (_, index2) => (
                   <ProductListItemMain
-                    option={option}
                     key={index2}
-                    content={content}
+                    option={option}
+                    content={editableContent}
+                    style={editableStyle}
+                    isEditable={isEditable}
+                    onChangeContent={handleEditContent}
+                    onChangeStyle={handleEditStyle}
                   />
                 ))}
               </div>
