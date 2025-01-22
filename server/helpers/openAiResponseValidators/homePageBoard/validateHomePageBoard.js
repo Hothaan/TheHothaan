@@ -10,5 +10,6 @@ function validateHomePageBoard(response, depth2, cnt) {
   if (depth2 === '연혁') return validateHistory(response);
   if (depth2 === '뉴스') return validateNews(response);
   if (depth2 === '미디어') return validateMedia(response);
+  return false;
 }
 module.exports = validateHomePageBoard;
