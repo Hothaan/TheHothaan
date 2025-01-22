@@ -29,11 +29,9 @@ import {
 } from "@components/template/main/Mainbanner";
 
 import {
-  matching_service_introduce_main_banner_desc_css_,
-  matching_service_introduce_main_banner_title_css_,
-  matching_service_introduce_main_item_desc_css_,
-  matching_service_introduce_main_item_title_css_,
-} from "@components/template/main/MatchingServiceIntroduceMain";
+  service_introduce_title_css,
+  service_introduce_desc_css,
+} from "@components/template/main/ServiceIntroduceMain";
 
 import {
   product_introduce_desc_css_,
@@ -41,7 +39,17 @@ import {
   product_introduce_title_css_,
 } from "@components/template/main/ProductIntroduceMain";
 
-import { price_main_item_desc_css_ } from "@components/template/main/PriceMain";
+import {
+  notice_main_title_css_,
+  notice_main_desc_css_,
+} from "@components/template/main/NoticeMain";
+
+import {
+  recruit_item_desc_css_,
+  recruit_item_title_css_,
+} from "@components/template/main/RecruitMain";
+
+import { news_main_item_title_css_ } from "@components/template/main/NewsMain";
 
 import {
   explore_service_button_css_,
@@ -49,27 +57,6 @@ import {
   explore_service_explore_title_css_,
   explore_service_title_css_,
 } from "@components/template/main/ExploreServiceMain";
-
-import {
-  product_list_option_list_desc_css,
-  product_list_option_list_title_css,
-  product_list_option_main_desc_css,
-  product_list_option_main_title_css,
-} from "@components/template/main/ProductListMain";
-
-import {
-  review_item_caption_name_css,
-  review_item_caption_role_css,
-  review_item_desc_css,
-  review_item_title_css,
-} from "@components/template/product/Review";
-
-import {
-  service_introduction_desc_css_,
-  service_introduction_title_css_,
-} from "@components/template/service/ServiceIntroduction";
-
-import { service_contact_title_css_ } from "@components/template/service/ServiceContact";
 
 interface IlandingIntroduceMainContent {
   mainBannerTitle?: string;
@@ -228,20 +215,20 @@ export default function LandingIntroduceMain() {
       mainBannerDesc: mainBanner_desc_css_ || undefined,
       mainBannerButton: mainBanner_button_css_ || undefined,
 
-      serviceIntroductionTitle: service_introduction_title_css_ || undefined,
-      serviceIntroductionDesc: service_introduction_desc_css_ || undefined,
+      serviceIntroduceTitle: service_introduce_title_css || undefined,
+      serviceIntroduceDesc: service_introduce_desc_css || undefined,
 
-      productIntroduceImageDesc: undefined,
-      productIntroduceTitle: undefined,
-      productIntroduceDesc: undefined,
+      productIntroduceImageDesc: product_introduce_image_desc_css_ || undefined,
+      productIntroduceTitle: product_introduce_title_css_ || undefined,
+      productIntroduceDesc: product_introduce_desc_css_ || undefined,
 
-      noticeTitle: undefined,
-      noticeDesc: undefined,
+      noticeTitle: notice_main_title_css_ || undefined,
+      noticeDesc: notice_main_desc_css_ || undefined,
 
-      recruitTitle: undefined,
-      recruitDesc: undefined,
+      recruitTitle: recruit_item_title_css_ || undefined,
+      recruitDesc: recruit_item_desc_css_ || undefined,
 
-      newsTitle: undefined,
+      newsTitle: news_main_item_title_css_ || undefined,
 
       exploreServiceTitle: explore_service_title_css_ || undefined,
       exploreServiceButton: explore_service_button_css_ || undefined,
@@ -352,11 +339,71 @@ export default function LandingIntroduceMain() {
         onChangeContent={handleChangeContent}
         onChangeStyle={handleChangeStyle}
       />
-      <ServiceIntroduce />
-      <ProductIntroduceMain />
-      <NoticeMain />
-      <RecruitMain />
-      <NewsMain />
+      <ServiceIntroduce
+        content={{
+          serviceIntroduceTitle: pageContent?.serviceIntroduceTitle,
+          serviceIntroduceDesc: pageContent?.serviceIntroduceDesc,
+        }}
+        style={{
+          serviceIntroduceTitle: pageStyle?.serviceIntroduceTitle,
+          serviceIntroduceDesc: pageStyle?.serviceIntroduceDesc,
+        }}
+        isEditable={true}
+        onChangeContent={handleChangeContent}
+        onChangeStyle={handleChangeStyle}
+      />
+      <ProductIntroduceMain
+        content={{
+          productIntroduceImageDesc: pageContent?.productIntroduceImageDesc,
+          productIntroduceTitle: pageContent?.productIntroduceTitle,
+          productIntroduceDesc: pageContent?.productIntroduceDesc,
+        }}
+        style={{
+          productIntroduceImageDesc: pageStyle?.productIntroduceImageDesc,
+          productIntroduceTitle: pageStyle?.productIntroduceTitle,
+          productIntroduceDesc: pageStyle?.productIntroduceDesc,
+        }}
+        isEditable={true}
+        onChangeContent={handleChangeContent}
+        onChangeStyle={handleChangeStyle}
+      />
+      <NoticeMain
+        content={{
+          noticeTitle: pageContent?.noticeTitle,
+          noticeDesc: pageContent?.noticeDesc,
+        }}
+        style={{
+          noticeTitle: pageStyle?.noticeTitle,
+          noticeDesc: pageStyle?.noticeDesc,
+        }}
+        isEditable={true}
+        onChangeContent={handleChangeContent}
+        onChangeStyle={handleChangeStyle}
+      />
+      <RecruitMain
+        content={{
+          recruitTitle: pageContent?.recruitTitle,
+          recruitDesc: pageContent?.recruitDesc,
+        }}
+        style={{
+          recruitTitle: pageStyle?.recruitTitle,
+          recruitDesc: pageStyle?.recruitDesc,
+        }}
+        isEditable={true}
+        onChangeContent={handleChangeContent}
+        onChangeStyle={handleChangeStyle}
+      />
+      <NewsMain
+        content={{
+          newsTitle: pageContent?.newsTitle,
+        }}
+        style={{
+          newsTitle: pageStyle?.newsTitle,
+        }}
+        isEditable={true}
+        onChangeContent={handleChangeContent}
+        onChangeStyle={handleChangeStyle}
+      />
       <ExploreServiceMain
         content={{
           exploreServiceTitle: pageContent?.exploreServiceTitle,

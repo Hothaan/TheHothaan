@@ -15,31 +15,26 @@ const item_title_ = "headline h1";
 const item_desc_ =
   "lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia nonlorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia nonlorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia nonlorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non";
 
-export interface IbrandIntroduceText {
-  banner?: { title?: string; desc?: string };
-  item?: { title?: string; desc?: string };
-}
-
 export interface IbrandIntroduceContent {
-  brandIntroduceBannerTitle: string;
-  brandIntroduceBannerDesc: string;
-  brandIntroduceItemTitle: string;
-  brandIntroduceItemDesc: string;
+  brandIntroduceBannerTitle?: string;
+  brandIntroduceBannerDesc?: string;
+  brandIntroduceItemTitle?: string;
+  brandIntroduceItemDesc?: string;
 }
 
 export interface IbrandIntroduceStyle {
-  brandIntroduceBannerTitle: CSSObject;
-  brandIntroduceBannerDesc: CSSObject;
-  brandIntroduceItemTitle: CSSObject;
-  brandIntroduceItemDesc: CSSObject;
+  brandIntroduceBannerTitle?: CSSObject;
+  brandIntroduceBannerDesc?: CSSObject;
+  brandIntroduceItemTitle?: CSSObject;
+  brandIntroduceItemDesc?: CSSObject;
 }
 
 interface IbrandIntroduce {
   content?: IbrandIntroduceContent | null;
-  style?: IbrandIntroduceContent | null;
+  style?: IbrandIntroduceStyle | null;
   isEditable?: boolean;
-  onChangeContent?: (content: IbrandIntroduceContent) => void;
-  onChangeStyle?: (content: IbrandIntroduceContent) => void;
+  onChangeContent?: (key: string, value: string) => void;
+  onChangeStyle?: (key: string, value: CSSObject) => void;
 }
 
 export const brandIntroduce_item_title_css: CSSObject = {
@@ -117,19 +112,19 @@ export default function BrandIntroduce(prop: IbrandIntroduce) {
   const initial = {
     brandIntroduceBannerTitle: {
       text: content?.brandIntroduceBannerTitle,
-      css: content?.brandIntroduceBannerTitle,
+      css: style?.brandIntroduceBannerTitle,
     },
     brandIntroduceBannerDesc: {
       text: content?.brandIntroduceBannerDesc,
-      css: content?.brandIntroduceBannerDesc,
+      css: style?.brandIntroduceBannerDesc,
     },
     brandIntroduceItemTitle: {
       text: content?.brandIntroduceItemTitle,
-      css: content?.brandIntroduceItemTitle,
+      css: style?.brandIntroduceItemTitle,
     },
     brandIntroduceItemDesc: {
       text: content?.brandIntroduceItemDesc,
-      css: content?.brandIntroduceItemDesc,
+      css: style?.brandIntroduceItemDesc,
     },
   };
 

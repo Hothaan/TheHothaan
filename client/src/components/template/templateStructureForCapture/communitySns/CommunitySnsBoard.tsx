@@ -16,20 +16,25 @@ import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 import useNavigation from "@hooks/useNavigation";
 
-/* content */
-import { IboardContent } from "@components/template/board/Board";
+/* css */
+import {
+  board_item_option_image_desc_css_,
+  board_item_option_image_title_css_,
+  board_item_option_text_title_css_,
+} from "@components/template/board/Board";
 
 interface IcommunitySnsBoardContent {
-  boardTitle: string;
-  boardDesc: string;
+  boardTitle?: string;
+  boardDesc?: string;
 }
 interface IcommunitySnsBoardStyle {
-  boardTitle: CSSObject;
-  boardDesc: CSSObject;
+  boardTitle?: CSSObject;
+  boardDesc?: CSSObject;
 }
 
 export default function CommunitySnsBoard() {
   const feature = "일반 게시판";
+  const featureKey = "communitySnsBoard";
 
   /* only projectId */
   const { isProduction } = useIsProduction();
@@ -85,32 +90,133 @@ export default function CommunitySnsBoard() {
     }
   }, [projectIdValue]);
 
-  const [changedContent, setChangedContent] = useState(null);
   const [pageContent, setPageContent] = useState<IcommunitySnsBoardContent>(
     {} as IcommunitySnsBoardContent
   );
+  const [pageStyle, setPageStyle] = useState<IcommunitySnsBoardStyle>(
+    {} as IcommunitySnsBoardStyle
+  );
 
-  // function updateSectionContent<T extends keyof IcommunitySnsBoardContent>(
-  //   section: T,
-  //   updatedContent: Partial<IcommunitySnsBoardContent[T]>
-  // ) {
-  //   setPageContent((prev) => ({
-  //     ...prev,
-  //     [section]: {
-  //       ...prev?.[section],
-  //       ...updatedContent,
-  //     },
-  //   }));
-  // }
+  function updateInitialContent() {
+    if (generatedText && generatedText.content) {
+      const initialContent = {
+        boardTitle: generatedText.content.boardTitle || undefined,
+        boardDesc: generatedText.content.boardDesc || undefined,
+      };
+      setPageContent({ ...initialContent });
+    }
+  }
 
-  // if (!generatedText || !headerData) {
-  //   return <Loading />;
-  // }
+  //페이지에 적용될 초기 스타일 저장
+  function updateInitialStyle() {
+    const initialStyle = {
+      boardTitle:
+        generatedText?.option === "이미지형"
+          ? board_item_option_image_title_css_
+          : board_item_option_text_title_css_ || undefined,
+      boardDesc: board_item_option_image_desc_css_ || undefined,
+    };
+    setPageStyle({ ...initialStyle });
+  }
+
+  //featureData가 들어오면 초기 콘텐츠와 스타일 업데이트
+  useEffect(() => {
+    if (generatedText) {
+      updateInitialContent();
+      updateInitialStyle();
+    }
+  }, [generatedText]);
+
+  //pageContent가 변경될 때마다 localStorage에 업데이트
+  useEffect(() => {
+    if (pageContent) {
+      const localContent = localStorage.getItem("changedContent");
+
+      if (localContent) {
+        const parsed = JSON.parse(localContent);
+        const updatedData = {
+          ...parsed,
+          [featureKey]: {
+            featureId: generatedText?.feature_id,
+            content: {
+              ...pageContent,
+            },
+          },
+        };
+        localStorage.setItem("changedContent", JSON.stringify(updatedData));
+      } else {
+        const data = {
+          [featureKey]: {
+            featureId: generatedText?.feature_id,
+            content: {
+              ...pageContent,
+            },
+          },
+        };
+        localStorage.setItem("changedContent", JSON.stringify(data));
+      }
+    }
+  }, [pageContent]);
+
+  function handleChangeContent(key: string, value: string) {
+    setPageContent({ ...pageContent, [key]: value });
+  }
+
+  function handleChangeStyle(key: string, value: CSSObject) {
+    setPageStyle({ ...pageStyle, [key]: value });
+  }
+
+  useEffect(() => {
+    if (pageStyle) {
+      const localStyle = localStorage.getItem("changedStyle");
+
+      if (localStyle) {
+        const parsed = JSON.parse(localStyle);
+        const updatedData = {
+          ...parsed,
+          [featureKey]: {
+            featureId: generatedText?.feature_id,
+            style: {
+              ...pageStyle,
+            },
+          },
+        };
+        localStorage.setItem("changedStyle", JSON.stringify(updatedData));
+      } else {
+        const data = {
+          [featureKey]: {
+            featureId: generatedText?.feature_id,
+            style: {
+              ...pageContent,
+            },
+          },
+        };
+        localStorage.setItem("changedStyle", JSON.stringify(data));
+      }
+    }
+  }, [pageStyle]);
+
+  if (!generatedText || !headerData || Object.keys(pageContent).length === 0) {
+    return <Loading />;
+  }
 
   return (
     <div className="templateImage">
       <Header serviceType="커뮤니티·sns" />
-      <Board option="텍스트형" />
+      <Board
+        option="텍스트형"
+        content={{
+          boardTitle: pageContent?.boardTitle,
+          boardDesc: pageContent?.boardDesc,
+        }}
+        style={{
+          boardTitle: pageStyle?.boardTitle,
+          boardDesc: pageStyle?.boardDesc,
+        }}
+        isEditable={true}
+        onChangeContent={handleChangeContent}
+        onChangeStyle={handleChangeStyle}
+      />
       <Footer serviceType="커뮤니티·sns" />
     </div>
   );

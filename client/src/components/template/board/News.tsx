@@ -12,23 +12,46 @@ const item_title_ = "lorem ipsum, quia do";
 const item_desc_ = "lorem ipsum, quia do";
 
 export interface InewsContent {
-  newsTitle: string;
-  newsDesc: string;
+  newsTitle?: string;
+  newsDesc?: string;
 }
 export interface InewsStyle {
-  newsTitle: CSSObject;
-  newsDesc: CSSObject;
+  newsTitle?: CSSObject;
+  newsDesc?: CSSObject;
 }
 
 interface Inews {
   content?: InewsContent | null;
   style?: InewsStyle | null;
   isEditable?: boolean;
-  onChange?: (content: InewsContent) => void;
+  onChangeContent?: (key: string, value: string) => void;
+  onChangeStyle?: (key: string, value: CSSObject) => void;
 }
 
+export const news_title_css_ = css`
+  color: #486284;
+
+  /* mall/subject */
+  font-family: Inter;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+`;
+
+export const news_desc_css_ = css`
+  color: var(--A0A0A0, #a0a0a0);
+
+  /* mall/subject_small */
+  font-family: Inter;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+`;
+
 function NewsItem(prop: Inews) {
-  const { content, style, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   return (
     <div css={item_container}>
@@ -56,7 +79,7 @@ function NewsItem(prop: Inews) {
 }
 
 export default function News(prop: Inews) {
-  const { content, style, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   const initial = {
     newsTitle: {
@@ -109,7 +132,8 @@ export default function News(prop: Inews) {
             key={index}
             content={content}
             isEditable={isEditable}
-            onChange={onChange}
+            onChangeContent={onChangeContent}
+            onChangeStyle={onChangeStyle}
           />
         ))}
       </div>
@@ -158,26 +182,4 @@ const number_style = css`
   font-weight: 400;
   line-height: 150%; /* 22.5px */
   letter-spacing: -0.15px;
-`;
-
-const news_title_css_ = css`
-  color: #486284;
-
-  /* mall/subject */
-  font-family: Inter;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-`;
-
-const news_desc_css_ = css`
-  color: var(--A0A0A0, #a0a0a0);
-
-  /* mall/subject_small */
-  font-family: Inter;
-  font-size: 15px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
 `;

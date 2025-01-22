@@ -6,28 +6,22 @@ import { OuterWrap } from "../commonComponent/Wrap";
 const desc_ =
   "lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non";
 
-export interface IhistoryText {
-  desc?: string;
-}
-
 export interface IhistoryContent {
-  historyDesc: string;
+  historyDesc?: string;
 }
 export interface IhistoryStyle {
-  historyDesc: CSSObject;
+  historyDesc?: CSSObject;
 }
 
 interface Ihistory {
   content?: IhistoryContent | null;
   style?: IhistoryStyle | null;
   isEditable?: boolean;
-  onChange?: (content: IhistoryContent) => void;
+  onChangeContent?: (key: string, value: string) => void;
+  onChangeStyle?: (key: string, value: CSSObject) => void;
 }
 
-export const history_desc_css_ = (
-  isSelected?: boolean,
-  isLast?: boolean
-) => css`
+export const history_desc_css_ = css`
   position: relative;
 
   max-width: 600px;
@@ -40,22 +34,20 @@ export const history_desc_css_ = (
   font-weight: 400;
   line-height: normal;
 
-  padding-bottom: ${isLast ? "0px" : isSelected ? "240px" : "140px"};
-
   &:after {
     display: block;
     content: "";
     width: 1px;
     height: 100%;
     position: absolute;
-    background-color: ${isSelected ? "#486284" : "#D6D6D6"};
+
     top: 20px;
     left: -34px;
   }
 `;
 
 export default function History(prop: Ihistory) {
-  const { content, style, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   const initial = {
     historyDesc: {
@@ -72,22 +64,6 @@ export default function History(prop: Ihistory) {
     }
   }, [content]);
 
-  // function handleEdit(
-  //   field: keyof IhistoryContent,
-  //   updatedText: string,
-  //   updatedCss: CSSObject
-  // ) {
-  //   const updatedState = {
-  //     ...edit,
-  //     [field]: {
-  //       text: updatedText,
-  //       css: updatedCss,
-  //     },
-  //   };
-  //   setEdit(updatedState);
-  //   onChange?.(updatedState);
-  // }
-
   const count = 6;
 
   return (
@@ -101,10 +77,13 @@ export default function History(prop: Ihistory) {
                 <span css={circle(index === 0 ? true : false)}></span>
               </div>
               <p
-                css={history_desc_css_(
-                  index === 0 ? true : false,
-                  index === count - 1 ? true : false
-                )}
+                css={[
+                  history_desc_css_,
+                  history_desc_change(
+                    index === 0 ? true : false,
+                    index === count - 1 ? true : false
+                  ),
+                ]}
               >
                 {content?.historyDesc || desc_}
               </p>
@@ -176,5 +155,13 @@ const circle = (isSelected?: boolean) => css`
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+  }
+`;
+
+const history_desc_change = (isSelected?: boolean, isLast?: boolean) => css`
+  padding-bottom: ${isLast ? "0px" : isSelected ? "240px" : "140px"};
+
+  &:after {
+    background-color: ${isSelected ? "#486284" : "#D6D6D6"};
   }
 `;

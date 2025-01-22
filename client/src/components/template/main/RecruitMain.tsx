@@ -14,23 +14,56 @@ const desc_ =
 const date_ = "2024.11.12";
 
 export interface IrecruitMainContent {
-  recruitTitle: string;
-  recruitDesc: string;
+  recruitTitle?: string;
+  recruitDesc?: string;
 }
 export interface IrecruitMainStyle {
-  recruitTitle: CSSObject;
-  recruitDesc: CSSObject;
+  recruitTitle?: CSSObject;
+  recruitDesc?: CSSObject;
 }
 
 interface IrecruitMain {
   content?: IrecruitMainContent | null;
   style?: IrecruitMainStyle | null;
   isEditable?: boolean;
-  onChange?: (content: IrecruitMainContent) => void;
+  onChangeContent?: (key: string, value: string) => void;
+  onChangeStyle?: (key: string, value: CSSObject) => void;
 }
 
+export const recruit_item_title_css_ = css`
+  overflow: hidden;
+  color: #486284;
+  text-overflow: ellipsis;
+
+  /* pretendard/Regular/20px */
+  font-family: Pretendard;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 150%; /* 30px */
+  letter-spacing: -0.4px;
+`;
+
+export const recruit_item_desc_css_ = css`
+  width: 100%;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  color: var(--black-gray-888888, #888);
+  text-overflow: ellipsis;
+
+  /* pretendard/Regular/15px */
+  font-family: Pretendard;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%; /* 22.5px */
+  letter-spacing: -0.15px;
+`;
+
 function RecruitMainItem(prop: IrecruitMain) {
-  const { content, style, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   return (
     <div css={item_container}>
@@ -51,7 +84,7 @@ function RecruitMainItem(prop: IrecruitMain) {
 }
 
 export default function RecruitMain(prop: IrecruitMain) {
-  const { content, style, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   const initial = {
     recruitTitle: {
@@ -102,7 +135,8 @@ export default function RecruitMain(prop: IrecruitMain) {
                   key={index}
                   content={content}
                   isEditable={isEditable}
-                  onChange={onChange}
+                  onChangeContent={onChangeContent}
+                  onChangeStyle={onChangeStyle}
                 />
               ))}
             </div>
@@ -188,20 +222,6 @@ const tag = css`
   border: 1px solid #486284;
 `;
 
-const recruit_item_title_css_ = css`
-  overflow: hidden;
-  color: #486284;
-  text-overflow: ellipsis;
-
-  /* pretendard/Regular/20px */
-  font-family: Pretendard;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: 150%; /* 30px */
-  letter-spacing: -0.4px;
-`;
-
 const date_style = css`
   color: #7d7d7d;
   font-family: Pretendard;
@@ -210,22 +230,4 @@ const date_style = css`
   font-weight: 400;
   line-height: 150%; /* 24px */
   letter-spacing: -0.32px;
-`;
-
-const recruit_item_desc_css_ = css`
-  width: 100%;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
-  overflow: hidden;
-  color: var(--black-gray-888888, #888);
-  text-overflow: ellipsis;
-
-  /* pretendard/Regular/15px */
-  font-family: Pretendard;
-  font-size: 15px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 150%; /* 22.5px */
-  letter-spacing: -0.15px;
 `;

@@ -14,28 +14,31 @@ import { IfetchedfeatureResponseData } from "@components/template/types";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
-/* text  */
-import { IbrandIntroduceText } from "@components/template/brandIntroduce/BrandIntroduce";
-
-/* content */
-import { IbrandIntroduceContent } from "@components/template/brandIntroduce/BrandIntroduce";
+/* css  */
+import {
+  brandIntroduce_banner_desc_css,
+  brandIntroduce_banner_title_css,
+  brandIntroduce_item_desc_css,
+  brandIntroduce_item_title_css,
+} from "@components/template/brandIntroduce/BrandIntroduce";
 
 interface IshoppingMallBrandIntroduceContent {
-  brandIntroduceBannerTitle: string;
-  brandIntroduceBannerDesc: string;
-  brandIntroduceItemTitle: string;
-  brandIntroduceItemDesc: string;
+  brandIntroduceBannerTitle?: string;
+  brandIntroduceBannerDesc?: string;
+  brandIntroduceItemTitle?: string;
+  brandIntroduceItemDesc?: string;
 }
 
 interface IshoppingMallBrandIntroduceStyle {
-  brandIntroduceBannerTitle: CSSObject;
-  brandIntroduceBannerDesc: CSSObject;
-  brandIntroduceItemTitle: CSSObject;
-  brandIntroduceItemDesc: CSSObject;
+  brandIntroduceBannerTitle?: CSSObject;
+  brandIntroduceBannerDesc?: CSSObject;
+  brandIntroduceItemTitle?: CSSObject;
+  brandIntroduceItemDesc?: CSSObject;
 }
 
 export default function ShoppingMallBrandIntroduce() {
   const feature = "브랜드 소개";
+  const featureKey = "shoppingMallBrandIntroduce";
 
   /* only projectId */
   const { isProduction } = useIsProduction();
@@ -75,12 +78,6 @@ export default function ShoppingMallBrandIntroduce() {
     }
   }
 
-  const [changedContent, setChangedContent] = useState(null);
-  const [pageContent, setPageContent] =
-    useState<IshoppingMallBrandIntroduceContent>(
-      {} as IshoppingMallBrandIntroduceContent
-    );
-
   useEffect(() => {
     if (projectId === undefined) {
       setProjectIdValue(sessionStorage.getItem("projectId"));
@@ -95,7 +92,119 @@ export default function ShoppingMallBrandIntroduce() {
     }
   }, [projectIdValue]);
 
-  if (!generatedText || !headerData) {
+  const [pageContent, setPageContent] =
+    useState<IshoppingMallBrandIntroduceContent>(
+      {} as IshoppingMallBrandIntroduceContent
+    );
+  const [pageStyle, setPageStyle] = useState<IshoppingMallBrandIntroduceStyle>(
+    {} as IshoppingMallBrandIntroduceStyle
+  );
+
+  function updateInitialContent() {
+    if (generatedText && generatedText.content) {
+      const initialContent = {
+        brandIntroduceBannerTitle:
+          generatedText.content.brandIntroduceBannerTitle || undefined,
+        brandIntroduceBannerDesc:
+          generatedText.content.brandIntroduceBannerDesc || undefined,
+        brandIntroduceItemTitle:
+          generatedText.content.brandIntroduceItemTitle || undefined,
+        brandIntroduceItemDesc:
+          generatedText.content.brandIntroduceItemDesc || undefined,
+      };
+      setPageContent({ ...initialContent });
+    }
+  }
+
+  //페이지에 적용될 초기 스타일 저장
+  function updateInitialStyle() {
+    const initialStyle = {
+      brandIntroduceBannerTitle: brandIntroduce_banner_title_css || undefined,
+      brandIntroduceBannerDesc: brandIntroduce_banner_desc_css || undefined,
+      brandIntroduceItemTitle: brandIntroduce_item_title_css || undefined,
+      brandIntroduceItemDesc: brandIntroduce_item_desc_css || undefined,
+    };
+    setPageStyle({ ...initialStyle });
+  }
+
+  //featureData가 들어오면 초기 콘텐츠와 스타일 업데이트
+  useEffect(() => {
+    if (generatedText) {
+      updateInitialContent();
+      updateInitialStyle();
+    }
+  }, [generatedText]);
+
+  //pageContent가 변경될 때마다 localStorage에 업데이트
+  useEffect(() => {
+    if (pageContent) {
+      const localContent = localStorage.getItem("changedContent");
+
+      if (localContent) {
+        const parsed = JSON.parse(localContent);
+        const updatedData = {
+          ...parsed,
+          [featureKey]: {
+            featureId: generatedText?.feature_id,
+            content: {
+              ...pageContent,
+            },
+          },
+        };
+        localStorage.setItem("changedContent", JSON.stringify(updatedData));
+      } else {
+        const data = {
+          [featureKey]: {
+            featureId: generatedText?.feature_id,
+            content: {
+              ...pageContent,
+            },
+          },
+        };
+        localStorage.setItem("changedContent", JSON.stringify(data));
+      }
+    }
+  }, [pageContent]);
+
+  function handleChangeContent(key: string, value: string) {
+    setPageContent({ ...pageContent, [key]: value });
+  }
+
+  function handleChangeStyle(key: string, value: CSSObject) {
+    setPageStyle({ ...pageStyle, [key]: value });
+  }
+
+  useEffect(() => {
+    if (pageStyle) {
+      const localStyle = localStorage.getItem("changedStyle");
+
+      if (localStyle) {
+        const parsed = JSON.parse(localStyle);
+        const updatedData = {
+          ...parsed,
+          [featureKey]: {
+            featureId: generatedText?.feature_id,
+            style: {
+              ...pageStyle,
+            },
+          },
+        };
+        localStorage.setItem("changedStyle", JSON.stringify(updatedData));
+      } else {
+        const data = {
+          [featureKey]: {
+            featureId: generatedText?.feature_id,
+            style: {
+              ...pageContent,
+            },
+          },
+        };
+        localStorage.setItem("changedStyle", JSON.stringify(data));
+      }
+    }
+  }, [pageStyle]);
+
+  if (!generatedText || !headerData || Object.keys(pageContent).length === 0) {
     return <Loading />;
   }
 
@@ -106,7 +215,23 @@ export default function ShoppingMallBrandIntroduce() {
         logo={headerData.logo}
         serviceType="쇼핑몰"
       />
-      <BrandIntroduce />
+      <BrandIntroduce
+        content={{
+          brandIntroduceBannerTitle: pageContent?.brandIntroduceBannerTitle,
+          brandIntroduceBannerDesc: pageContent?.brandIntroduceBannerDesc,
+          brandIntroduceItemTitle: pageContent?.brandIntroduceItemTitle,
+          brandIntroduceItemDesc: pageContent?.brandIntroduceItemDesc,
+        }}
+        style={{
+          brandIntroduceBannerTitle: pageStyle?.brandIntroduceBannerTitle,
+          brandIntroduceBannerDesc: pageStyle?.brandIntroduceBannerDesc,
+          brandIntroduceItemTitle: pageStyle?.brandIntroduceItemTitle,
+          brandIntroduceItemDesc: pageStyle?.brandIntroduceItemDesc,
+        }}
+        isEditable={true}
+        onChangeContent={handleChangeContent}
+        onChangeStyle={handleChangeStyle}
+      />
       <Footer logo={headerData.logo} serviceType="쇼핑몰" />
     </div>
   );

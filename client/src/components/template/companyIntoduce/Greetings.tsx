@@ -11,27 +11,28 @@ const desc_ =
   "lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non";
 
 export interface IgreetingsContent {
-  greetingsHalfTitle: string;
-  greetingsHalfDesc: string;
-  greetingsFullTitle: string;
-  greetingsFullDesc: string;
+  greetingsHalfTitle?: string;
+  greetingsHalfDesc?: string;
+  greetingsFullTitle?: string;
+  greetingsFullDesc?: string;
 }
 
 export interface IgreetingsStyle {
-  greetingsHalfTitle: CSSObject;
-  greetingsHalfDesc: CSSObject;
-  greetingsFullTitle: CSSObject;
-  greetingsFullDesc: CSSObject;
+  greetingsHalfTitle?: CSSObject;
+  greetingsHalfDesc?: CSSObject;
+  greetingsFullTitle?: CSSObject;
+  greetingsFullDesc?: CSSObject;
 }
 
 interface Igreetings {
   content?: IgreetingsContent | null;
   style?: IgreetingsStyle | null;
   isEditable?: boolean;
-  onChange?: (content: IgreetingsContent) => void;
+  onChangeContent?: (key: string, value: string) => void;
+  onChangeStyle?: (key: string, value: CSSObject) => void;
 }
 
-const greetings_full_title_css_: CSSObject = {
+export const greetings_full_title_css_: CSSObject = {
   color: "#486284",
   fontFamily: "Inter",
   fontSize: "96px",
@@ -46,7 +47,7 @@ const greetings_full_title_css_: CSSObject = {
   textAlign: "center",
 };
 
-const greetings_full_desc_css_: CSSObject = {
+export const greetings_full_desc_css_: CSSObject = {
   wordBreak: "keep-all",
   color: "#486284",
   fontFamily: "Inter",
@@ -65,7 +66,7 @@ const greetings_full_desc_css_: CSSObject = {
   textAlign: "center",
 };
 
-const greetings_half_title_css_ = css`
+export const greetings_half_title_css_ = css`
   color: #486284;
 
   /* H1 */
@@ -85,7 +86,7 @@ const greetings_half_title_css_ = css`
   }
 `;
 
-const greetings_half_desc_css_ = css`
+export const greetings_half_desc_css_ = css`
   color: #486284;
 
   /* h2_middle */
@@ -98,7 +99,7 @@ const greetings_half_desc_css_ = css`
 `;
 
 export default function Greetings(prop: Igreetings) {
-  const { content, style, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   const initial = {
     greetingsHalfTitle: {

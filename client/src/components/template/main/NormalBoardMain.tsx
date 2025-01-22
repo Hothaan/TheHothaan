@@ -12,20 +12,21 @@ const title_className = "normal_board_main_title";
 const date_ = "2025.09.31";
 
 export interface InormalBoardContent {
-  boardTitle: string;
+  boardTitle?: string;
 }
 export interface InormalBoardStyle {
-  boardTitle: CSSObject;
+  boardTitle?: CSSObject;
 }
 
 interface InormalBoardMain {
   content?: InormalBoardContent | null;
   style?: InormalBoardStyle | null;
   isEditable?: boolean;
-  onChange?: (content: InormalBoardContent) => void;
+  onChangeContent?: (key: string, value: string) => void;
+  onChangeStyle?: (key: string, value: CSSObject) => void;
 }
 
-export const nomal_board_main_title_css_ = css`
+export const normal_board_main_title_css_ = css`
   width: 50%;
   color: var(--Greys-Blue-Grey-800, #444a6d);
   font-family: "Noto Sans KR";
@@ -42,12 +43,12 @@ export const nomal_board_main_title_css_ = css`
 `;
 
 export function NormalBoardMainItem(prop: InormalBoardMain) {
-  const { content, style, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   return (
     <div css={item_container}>
       <p
-        css={style?.boardTitle || nomal_board_main_title_css_}
+        css={style?.boardTitle || normal_board_main_title_css_}
         className={title_className}
       >
         {content?.boardTitle || title_}
@@ -63,12 +64,12 @@ export function NormalBoardMainItem(prop: InormalBoardMain) {
 }
 
 export default function NormalBoardMain(prop: InormalBoardMain) {
-  const { content, style, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   const initial = {
     boardTitle: {
       text: content?.boardTitle || title_,
-      css: style?.boardTitle || nomal_board_main_title_css_,
+      css: style?.boardTitle || normal_board_main_title_css_,
     },
   };
 
@@ -79,22 +80,6 @@ export default function NormalBoardMain(prop: InormalBoardMain) {
       setEdit(initial);
     }
   }, [content]);
-
-  // function handleEdit(
-  //   field: keyof InormalBoardContent,
-  //   updatedText: string,
-  //   updatedCss: CSSObject
-  // ) {
-  //   const updatedState = {
-  //     ...edit,
-  //     [field]: {
-  //       text: updatedText,
-  //       css: updatedCss,
-  //     },
-  //   };
-  //   setEdit(updatedState);
-  //   onChange?.(updatedState);
-  // }
 
   const count = 3;
 
@@ -108,7 +93,8 @@ export default function NormalBoardMain(prop: InormalBoardMain) {
               <NormalBoardMainItem
                 content={content}
                 isEditable={isEditable}
-                onChange={onChange}
+                onChangeContent={onChangeContent}
+                onChangeStyle={onChangeStyle}
                 key={index}
               />
             ))}

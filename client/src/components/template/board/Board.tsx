@@ -17,12 +17,12 @@ const item_title_ = "lorem ipsum, quia do";
 const item_desc_ = "lorem ipsum, quia do";
 
 export interface IboardContent {
-  boardTitle: string;
-  boardDesc: string;
+  boardTitle?: string;
+  boardDesc?: string;
 }
 export interface IboardStyle {
-  boardTitle: CSSObject;
-  boardDesc: CSSObject;
+  boardTitle?: CSSObject;
+  boardDesc?: CSSObject;
 }
 
 export type Tboard = "이미지형" | "텍스트형" | "동영상형";
@@ -31,11 +31,12 @@ export interface Iboard {
   content?: IboardContent | null;
   style?: IboardStyle | null;
   isEditable?: boolean;
-  onChange?: (content: IboardContent) => void;
   option?: Tboard;
+  onChangeContent?: (key: string, value: string) => void;
+  onChangeStyle?: (key: string, value: CSSObject) => void;
 }
 
-const board_item_option_image_title_css_ = css`
+export const board_item_option_image_title_css_ = css`
   color: #486284;
 
   /* mall/subject */
@@ -46,7 +47,7 @@ const board_item_option_image_title_css_ = css`
   line-height: normal;
 `;
 
-const board_item_option_image_desc_css_ = css`
+export const board_item_option_image_desc_css_ = css`
   color: var(--A0A0A0, #a0a0a0);
 
   /* mall/subject_small */
@@ -57,7 +58,7 @@ const board_item_option_image_desc_css_ = css`
   line-height: normal;
 `;
 
-const board_item_option_text_title_css_ = css`
+export const board_item_option_text_title_css_ = css`
   color: #486284;
 
   /* pretendard/Bold/18px */
@@ -69,7 +70,7 @@ const board_item_option_text_title_css_ = css`
 `;
 
 function TextTable(prop: Iboard) {
-  const { content, style, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   const count = 10;
   const col1 = css`
@@ -183,7 +184,7 @@ function TextTable(prop: Iboard) {
 }
 
 function ImageItem(prop: Iboard) {
-  const { content, style, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
   const count = 6;
 
   const item_container = css`
@@ -253,7 +254,8 @@ function ImageItem(prop: Iboard) {
 }
 
 export default function Board(prop: Iboard) {
-  const { option, style, content, isEditable, onChange } = prop;
+  const { option, style, content, isEditable, onChangeContent, onChangeStyle } =
+    prop;
 
   const initial = {
     boardTitle: {
@@ -308,13 +310,15 @@ export default function Board(prop: Iboard) {
             <TextTable
               content={content}
               isEditable={isEditable}
-              onChange={onChange}
+              onChangeContent={onChangeContent}
+              onChangeStyle={onChangeStyle}
             />
           ) : option === "이미지형" ? (
             <ImageItem
               content={content}
               isEditable={isEditable}
-              onChange={onChange}
+              onChangeContent={onChangeContent}
+              onChangeStyle={onChangeStyle}
             />
           ) : (
             <></>

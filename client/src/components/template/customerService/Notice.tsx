@@ -12,10 +12,6 @@ import ImageBox from "../commonComponent/ImageBox";
 
 const title_ = "게시글 제목";
 
-export interface InoticeText {
-  title?: string;
-}
-
 export interface InoticeContent {
   noticeTitle?: string;
 }
@@ -265,22 +261,6 @@ export default function Notice(prop: Inotice) {
       setEdit(initial);
     }
   }, [content]);
-
-  // function handleEdit(
-  //   field: keyof InoticeContent,
-  //   updatedText: string,
-  //   updatedCss: CSSObject
-  // ) {
-  //   const updatedState = {
-  //     ...edit,
-  //     [field]: {
-  //       text: updatedText,
-  //       css: updatedCss,
-  //     },
-  //   };
-  //   setEdit(updatedState);
-  //   onChange?.(updatedState);
-  // }
 
   const container = css`
     width: 100%;

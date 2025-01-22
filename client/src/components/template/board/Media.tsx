@@ -12,24 +12,47 @@ const item_title_ = "lorem ipsum, quia do";
 const item_desc_ = "lorem ipsum, quia do";
 
 export interface ImediaContent {
-  mediaTitle: string;
-  mediaDesc: string;
+  mediaTitle?: string;
+  mediaDesc?: string;
 }
 
 export interface ImediaStyle {
-  mediaTitle: CSSObject;
-  mediaDesc: CSSObject;
+  mediaTitle?: CSSObject;
+  mediaDesc?: CSSObject;
 }
 
 interface Imedia {
   content?: ImediaContent | null;
   style?: ImediaStyle | null;
   isEditable?: boolean;
-  onChange?: (update: ImediaContent) => void;
+  onChangeContent?: (key: string, value: string) => void;
+  onChangeStyle?: (key: string, value: CSSObject) => void;
 }
 
+export const media_title_css_ = css`
+  color: #486284;
+
+  /* mall/subject */
+  font-family: Inter;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+`;
+
+export const media_desc_css_ = css`
+  color: var(--A0A0A0, #a0a0a0);
+
+  /* mall/subject_small */
+  font-family: Inter;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+`;
+
 function MediaItem(prop: Imedia) {
-  const { content, style, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   return (
     <div css={item_container}>
@@ -57,7 +80,7 @@ function MediaItem(prop: Imedia) {
 }
 
 export default function Media(prop: Imedia) {
-  const { content, style, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   const initial = {
     mediaTitle: {
@@ -108,7 +131,8 @@ export default function Media(prop: Imedia) {
           <MediaItem
             key={index}
             content={content}
-            onChange={onChange}
+            onChangeContent={onChangeContent}
+            onChangeStyle={onChangeStyle}
             isEditable
           />
         ))}
@@ -150,26 +174,4 @@ const number_style = css`
   font-weight: 400;
   line-height: 150%; /* 22.5px */
   letter-spacing: -0.15px;
-`;
-
-const media_title_css_ = css`
-  color: #486284;
-
-  /* mall/subject */
-  font-family: Inter;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-`;
-
-const media_desc_css_ = css`
-  color: var(--A0A0A0, #a0a0a0);
-
-  /* mall/subject_small */
-  font-family: Inter;
-  font-size: 15px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
 `;

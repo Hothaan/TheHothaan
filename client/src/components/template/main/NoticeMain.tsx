@@ -13,22 +13,23 @@ const desc_ =
 const date_ = "2024.11.12";
 
 export interface InoticeMainContent {
-  noticeTitle: string;
-  noticeDesc: string;
+  noticeTitle?: string;
+  noticeDesc?: string;
 }
 export interface InoticeMainStyle {
-  noticeTitle: CSSObject;
-  noticeDesc: CSSObject;
+  noticeTitle?: CSSObject;
+  noticeDesc?: CSSObject;
 }
 
 interface InoticeMain {
   content?: InoticeMainContent | null;
   style?: InoticeMainStyle | null;
   isEditable?: boolean;
-  onChange?: (content: InoticeMainContent) => void;
+  onChangeContent?: (key: string, value: string) => void;
+  onChangeStyle?: (key: string, value: CSSObject) => void;
 }
 
-const notice_main_title_css_: CSSObject = css`
+export const notice_main_title_css_: CSSObject = css`
   overflow: hidden;
   color: #486284;
   text-overflow: ellipsis;
@@ -42,7 +43,7 @@ const notice_main_title_css_: CSSObject = css`
   letter-spacing: -0.4px;
 `;
 
-const notice_main_desc_css_: CSSObject = css`
+export const notice_main_desc_css_: CSSObject = css`
   width: 100%;
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -61,7 +62,7 @@ const notice_main_desc_css_: CSSObject = css`
 `;
 
 function NoticeMainItem(prop: InoticeMain) {
-  const { content, style, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   return (
     <div css={item_container}>
@@ -78,7 +79,7 @@ function NoticeMainItem(prop: InoticeMain) {
 }
 
 export default function NoticeMain(prop: InoticeMain) {
-  const { content, style, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   const initial = {
     noticeTitle: {
@@ -128,7 +129,8 @@ export default function NoticeMain(prop: InoticeMain) {
                 key={index}
                 content={content}
                 isEditable={isEditable}
-                onChange={onChange}
+                onChangeContent={onChangeContent}
+                onChangeStyle={onChangeStyle}
               />
             ))}
           </div>

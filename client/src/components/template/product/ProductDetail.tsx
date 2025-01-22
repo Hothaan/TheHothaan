@@ -58,10 +58,7 @@ export const product_detail_product_desc_css_: CSSObject = {
   lineHeight: "160%",
 };
 
-export const product_detail_more_product__option_main_title_css: Record<
-  string,
-  string
-> = {
+export const product_detail_more_product__option_main_title_css: CSSObject = {
   color: "#486284",
   textAlign: "center",
   fontFamily: "Inter",
@@ -69,12 +66,16 @@ export const product_detail_more_product__option_main_title_css: Record<
   fontStyle: "normal",
   fontWeight: "400",
   lineHeight: "normal",
+
+  width: "100%",
+  textOverflow: "ellipsis",
+  overflow: "hidden",
+  display: "-webkit-box",
+  WebkitBoxOrient: "vertical",
+  WebkitLineClamp: "1",
 };
 
-export const product_detail_more_product__option_main_desc_css: Record<
-  string,
-  string
-> = {
+export const product_detail_more_product__option_main_desc_css: CSSObject = {
   color: "#a0a0a0",
   textAlign: "center",
   fontFamily: "Inter",
@@ -396,10 +397,20 @@ function ProductDetailList(prop: IproductDetail) {
           />
           <div css={text_container}>
             <div css={product_info_container}>
-              <p css={style?.productDetailProductTitle}>
+              <p
+                css={
+                  style?.productDetailProductTitle ||
+                  product_detail_more_product__option_main_title_css
+                }
+              >
                 {content?.productDetailProductTitle || more_product_title_}
               </p>
-              <p css={style?.productDetailProductDesc}>
+              <p
+                css={
+                  style?.productDetailProductDesc ||
+                  product_detail_more_product__option_main_desc_css
+                }
+              >
                 {content?.productDetailProductDesc || more_product_desc_}
               </p>
             </div>

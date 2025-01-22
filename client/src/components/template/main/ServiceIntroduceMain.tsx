@@ -11,22 +11,23 @@ const desc_ =
   "lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non";
 
 export interface IserviceIntroduceContent {
-  serviceIntroduceTitle: string;
-  serviceIntroduceDesc: string;
+  serviceIntroduceTitle?: string;
+  serviceIntroduceDesc?: string;
 }
 export interface IserviceIntroduceStyle {
-  serviceIntroduceTitle: CSSObject;
-  serviceIntroduceDesc: CSSObject;
+  serviceIntroduceTitle?: CSSObject;
+  serviceIntroduceDesc?: CSSObject;
 }
 
 export interface IserviceIntroduce {
   content?: IserviceIntroduceContent | null;
   style?: IserviceIntroduceStyle | null;
   isEditable?: boolean;
-  onChange?: (content: IserviceIntroduceContent) => void;
+  onChangeContent?: (key: string, value: string) => void;
+  onChangeStyle?: (key: string, value: CSSObject) => void;
 }
 
-const service_introduce_title_css: CSSObject = {
+export const service_introduce_title_css: CSSObject = {
   color: "#486284",
   fontFamily: "Inter",
   fontSize: "96px",
@@ -40,7 +41,7 @@ const service_introduce_title_css: CSSObject = {
   whiteSpace: "nowrap",
 };
 
-const service_introduce_desc_css: CSSObject = {
+export const service_introduce_desc_css: CSSObject = {
   wordBreak: "keep-all",
   color: "#486284",
   fontFamily: "Inter",
@@ -58,7 +59,7 @@ const service_introduce_desc_css: CSSObject = {
 };
 
 export default function ServiceIntroduce(prop: IserviceIntroduce) {
-  const { content, style, isEditable, onChange } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   const initial = {
     serviceIntroduceTitle: {

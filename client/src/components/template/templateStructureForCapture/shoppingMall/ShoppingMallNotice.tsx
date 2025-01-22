@@ -23,10 +23,10 @@ import {
 } from "@components/template/customerService/Notice";
 
 interface IshoppingMallNoticeContent {
-  noticeTitle: string;
+  noticeTitle?: string;
 }
 interface IshoppingMallNoticeStyle {
-  noticeTitle: CSSObject;
+  noticeTitle?: CSSObject;
 }
 
 export default function ShoppingMallNotice() {
@@ -204,7 +204,7 @@ export default function ShoppingMallNotice() {
     }
   }, [pageStyle]);
 
-  if (!generatedText || !headerData || Object.keys(pageContent).length === 0) {
+  if (!generatedText || !headerData) {
     return <Loading />;
   }
 
