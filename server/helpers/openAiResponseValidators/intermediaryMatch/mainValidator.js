@@ -7,6 +7,9 @@ function mainValidator(response) {
   if (!response.content.MatchingServiceIntroduceMainBannerDesc) return false;
   if (!response.content.MatchingServiceIntroduceMainItemTitle) return false;
   if (!response.content.MatchingServiceIntroduceMainItemDesc) return false;
+  if (!response.content.productIntroduceImageDesc) return false;
+  if (!response.content.productIntroduceTitle) return false;
+  if (!response.content.productIntroduceDesc) return false;
   if (!response.content.productIntroduce) return false;
   if (!response.content.ReviewTitle) return false;
   if (!response.content.ReviewDesc) return false;
