@@ -6,6 +6,7 @@ function validateMain(response) {
   if (!response.content.noticeTitle) return false;
   if (!response.content.noticeDesc) return false;
   if (!response.content.boardTitle) return false;
+  if (!response.content.imageBoardTitle) return false;
   if (!response.content.newsTitle) return false;
   if (!response.content.faqTitle) return false;
   if (!response.content.faqDesc) return false;
