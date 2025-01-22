@@ -28,6 +28,8 @@ async function generateOpenAiText(
       userPrompt = generatePrompt(serviceDetails);
     } else if (service === '커뮤니티·sns') {
       userPrompt = generatePrompt(serviceDetails);
+    } else if (service === '홈페이지·게시판') {
+      userPrompt = generatePrompt(serviceDetails);
     } else {
       if (depth2 === '상품 목록' && cnt) {
         // 상품 목록용 프롬프트: cnt 개수만큼 카테고리 목록 생성
