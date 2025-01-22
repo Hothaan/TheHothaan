@@ -204,7 +204,7 @@ export default function ShoppingMallBrandIntroduce() {
     }
   }, [pageStyle]);
 
-  if (!generatedText || !headerData || Object.keys(pageContent).length === 0) {
+  if (!generatedText || !headerData) {
     return <Loading />;
   }
 

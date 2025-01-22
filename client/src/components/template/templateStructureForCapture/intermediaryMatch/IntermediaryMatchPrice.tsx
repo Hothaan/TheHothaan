@@ -184,7 +184,7 @@ export default function IntermediaryMatchPrice() {
     }
   }, [pageStyle]);
 
-  if (!generatedText || !headerData || Object.keys(pageContent).length === 0) {
+  if (!generatedText || !headerData) {
     return <Loading />;
   }
 

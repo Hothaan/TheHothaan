@@ -190,7 +190,7 @@ export default function HomePageBoardNews() {
     }
   }, [pageStyle]);
 
-  if (!generatedText || !headerData || Object.keys(pageContent).length === 0) {
+  if (!generatedText || !headerData) {
     return <Loading />;
   }
 

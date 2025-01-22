@@ -21,11 +21,11 @@ import useIsProduction from "@hooks/useIsProduction";
 import { cart_title_css } from "@components/template/mypage/Cart";
 
 interface IshoppingMallContent {
-  cartTitle: string;
+  cartTitle?: string;
 }
 
 interface IshoppingMallStyle {
-  cartTitle: CSSObject;
+  cartTitle?: CSSObject;
 }
 
 export default function ShoppingMallCart() {
@@ -189,7 +189,7 @@ export default function ShoppingMallCart() {
     }
   }, [pageStyle]);
 
-  if (!generatedText || !headerData || Object.keys(pageContent).length === 0) {
+  if (!generatedText || !headerData) {
     return <Loading />;
   }
 

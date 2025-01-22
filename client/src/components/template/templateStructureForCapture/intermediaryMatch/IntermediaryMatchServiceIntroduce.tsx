@@ -203,7 +203,7 @@ export default function IntermediaryMatchServiceIntroduce() {
 
   console.log(pageContent);
 
-  if (!generatedText || !headerData || Object.keys(pageContent).length === 0) {
+  if (!generatedText || !headerData) {
     return <Loading />;
   }
 

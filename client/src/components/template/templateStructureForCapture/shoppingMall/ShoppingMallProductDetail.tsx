@@ -209,7 +209,7 @@ export default function ShoppingMallProductDetail() {
     }
   }, [pageStyle]);
 
-  if (!generatedText || !headerData || Object.keys(pageContent).length === 0) {
+  if (!generatedText || !headerData) {
     return <Loading />;
   }
 
