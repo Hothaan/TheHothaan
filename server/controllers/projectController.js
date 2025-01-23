@@ -327,13 +327,14 @@ exports.getAllFeaturesForProject = async (req, res) => {
   const { projectId } = req.params;
 
   try {
-    // 프로젝트의 기본 정보 가져오기
+    // 1. 프로젝트 아이디를 기준으로 프로젝트 이름, 설명 가져오기
     const projectInfo = await projectModel.getProjectById(projectId);
 
     if (!projectInfo || projectInfo.length === 0) {
       return res.status(404).json({ error: 'Project 정보를 찾을 수 없습니다.' });
     }
 
+    // 2. 프로젝트 아이디를 기준으로 서비스 메뉴들과 메뉴 구성 요소들 가져오기
     const features = await projectModel.getProjectFeaturesWithId(projectId);
 
     if (!features || features.length === 0) {
@@ -352,6 +353,7 @@ exports.getAllFeaturesForProject = async (req, res) => {
             ? null
             : JSON.parse(feature.content) // JSON 문자열인 경우 파싱
           : feature.content, // 이미 객체인 경우 그대로 사용
+      style: feature.style,
     }));
 
     // 성공 응답
