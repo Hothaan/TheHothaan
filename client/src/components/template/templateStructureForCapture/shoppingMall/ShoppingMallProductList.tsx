@@ -101,6 +101,7 @@ export default function ShoppingMallProductList() {
     }
     return null;
   }
+
   function getLocalStyle() {
     const localContent = localStorage.getItem("changedStyle");
     if (localContent) {

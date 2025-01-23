@@ -259,38 +259,6 @@ export default function ProductList(prop: IproductList) {
     }
   }, [content]);
 
-  console.log(editableContent);
-
-  const count = 3;
-
-  const nav_count = 6;
-
-  const item_rows_container = css`
-    display: flex;
-    flex-direction: column;
-    gap: 100px;
-  `;
-
-  const item_container = css`
-    width: 100%;
-    max-width: 1000px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 26px;
-  `;
-
-  const title_wrap = css`
-    width: 100%;
-    margin-bottom: 100px;
-  `;
-  const category_wrap = css`
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-  `;
-
   function handleEditContent(key: string, value: string) {
     setEditableContent({
       ...editableContent,
@@ -364,4 +332,34 @@ export default function ProductList(prop: IproductList) {
 const nav_item = css`
   display: flex;
   align-items: center;
+`;
+
+const count = 3;
+
+const nav_count = 6;
+
+const item_rows_container = css`
+  display: flex;
+  flex-direction: column;
+  gap: 100px;
+`;
+
+const item_container = css`
+  width: 100%;
+  max-width: 1000px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 26px;
+`;
+
+const title_wrap = css`
+  width: 100%;
+  margin-bottom: 100px;
+`;
+const category_wrap = css`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
 `;

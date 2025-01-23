@@ -109,17 +109,32 @@ export default function Mainbanner(prop: ImainBanner) {
           ...initialContent,
           mainBannerTitle: content.mainBannerTitle,
         });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          mainBannerTitle: initialContent.mainBannerTitle,
+        });
       }
       if (content?.mainBannerDesc) {
         setEditableContent({
           ...initialContent,
           mainBannerDesc: content.mainBannerDesc,
         });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          mainBannerDesc: initialContent.mainBannerDesc,
+        });
       }
       if (content?.mainBannerButton) {
         setEditableContent({
           ...initialContent,
           mainBannerButton: content.mainBannerButton,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          mainBannerButton: initialContent.mainBannerButton,
         });
       }
       setEditableStyle(initialStyle);

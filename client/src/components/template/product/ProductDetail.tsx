@@ -11,6 +11,7 @@ import Pagination from "../commonComponent/Pagination";
 import { ReactComponent as Heart } from "@svgs/template/heart.svg";
 import { ReactComponent as Plus } from "@svgs/template/productAmountPlus.svg";
 import { ReactComponent as Minus } from "@svgs/template/productAmountMinus.svg";
+import EditableText from "@components/service/editableText/EditableText";
 
 const product_title_ = "상품제목입니다";
 const product_desc_ = "상품 설명 내용입니다.";
@@ -35,8 +36,8 @@ interface IproductDetail {
   content?: IproductDetailContent | null;
   style?: IproductDetailStyle | null;
   isEditable?: boolean;
-  onChangeContent?: (key: string, value: string) => void;
-  onChangeStyle?: (key: string, value: CSSObject) => void;
+  onChangeContent: (key: string, value: string) => void;
+  onChangeStyle: (key: string, value: CSSObject) => void;
 }
 
 export const product_detail_product_title_css_: CSSObject = {
@@ -245,6 +246,15 @@ function ProductDetailInfo(prop: IproductDetail) {
     background: #f9f9f9;
   `;
 
+  if (
+    content?.productDetailProductTitle === undefined ||
+    content?.productDetailProductDesc === undefined ||
+    style?.productDetailProductTitle === undefined ||
+    style?.productDetailProductDesc === undefined
+  ) {
+    return <></>;
+  }
+
   return (
     <div css={top_container}>
       <ImageBox
@@ -258,19 +268,49 @@ function ProductDetailInfo(prop: IproductDetail) {
         </div>
         <div css={prodcut_info_container}>
           <TemplateBadge text="카테고리" />
-
-          <p css={product_detail_product_title_css_}>
-            {content?.productDetailProductTitle || product_title_}
-          </p>
+          {isEditable ? (
+            <EditableText
+              text={content.productDetailProductTitle}
+              className="productDetailProductTitle"
+              isTextArea={false}
+              defaultCss={style.productDetailProductTitle}
+              onChangeText={(key, value) => onChangeContent(key, value)}
+              onChangeCss={(key, value) => onChangeStyle(key, value)}
+            />
+          ) : (
+            <p
+              css={
+                style.productDetailProductTitle ||
+                product_detail_product_title_css_
+              }
+            >
+              {content?.productDetailProductTitle || product_title_}
+            </p>
+          )}
 
           <div css={product_price_container}>
             <p css={product_price}>32,000원</p>
             <p css={product_price_sale}>32,000원</p>
           </div>
-
-          <p css={product_detail_product_desc_css_}>
-            {content?.productDetailProductDesc || product_desc_}
-          </p>
+          {isEditable ? (
+            <EditableText
+              text={content.productDetailProductDesc}
+              className="productDetailProductDesc"
+              isTextArea={false}
+              defaultCss={style.productDetailProductDesc}
+              onChangeText={(key, value) => onChangeContent(key, value)}
+              onChangeCss={(key, value) => onChangeStyle(key, value)}
+            />
+          ) : (
+            <p
+              css={
+                style.productDetailProductDesc ||
+                product_detail_product_desc_css_
+              }
+            >
+              {content?.productDetailProductDesc || product_desc_}
+            </p>
+          )}
         </div>
         <div css={product_amount_container}>
           <div css={product_amount_controller_container}>
@@ -386,6 +426,15 @@ function ProductDetailList(prop: IproductDetail) {
     text-decoration: line-through;
   `;
 
+  if (
+    content?.productDetailMoreProductTitle === undefined ||
+    content?.productDetailMoreProductDesc === undefined ||
+    style?.productDetailMoreProductTitle === undefined ||
+    style?.productDetailMoreProductDesc === undefined
+  ) {
+    return <></>;
+  }
+
   return (
     <div css={container}>
       {Array.from({ length: count }, (_, index) => (
@@ -397,22 +446,51 @@ function ProductDetailList(prop: IproductDetail) {
           />
           <div css={text_container}>
             <div css={product_info_container}>
-              <p
-                css={
-                  style?.productDetailProductTitle ||
-                  product_detail_more_product__option_main_title_css
-                }
-              >
-                {content?.productDetailProductTitle || more_product_title_}
-              </p>
-              <p
-                css={
-                  style?.productDetailProductDesc ||
-                  product_detail_more_product__option_main_desc_css
-                }
-              >
-                {content?.productDetailProductDesc || more_product_desc_}
-              </p>
+              {isEditable ? (
+                content.productDetailMoreProductTitle &&
+                style.productDetailMoreProductTitle && (
+                  <EditableText
+                    text={content.productDetailMoreProductTitle}
+                    className="productDetailMoreProductTitle"
+                    isTextArea={false}
+                    defaultCss={style.productDetailMoreProductTitle}
+                    onChangeText={(key, value) => onChangeContent(key, value)}
+                    onChangeCss={(key, value) => onChangeStyle(key, value)}
+                  />
+                )
+              ) : (
+                <p
+                  css={
+                    style?.productDetailMoreProductTitle ||
+                    product_detail_more_product__option_main_title_css
+                  }
+                >
+                  {content?.productDetailMoreProductTitle ||
+                    more_product_title_}
+                </p>
+              )}
+              {isEditable ? (
+                content.productDetailMoreProductDesc &&
+                style.productDetailMoreProductDesc && (
+                  <EditableText
+                    text={content.productDetailMoreProductDesc}
+                    className="productDetailMoreProductDesc"
+                    isTextArea={false}
+                    defaultCss={style.productDetailMoreProductDesc}
+                    onChangeText={(key, value) => onChangeContent(key, value)}
+                    onChangeCss={(key, value) => onChangeStyle(key, value)}
+                  />
+                )
+              ) : (
+                <p
+                  css={
+                    style?.productDetailMoreProductDesc ||
+                    product_detail_more_product__option_main_desc_css
+                  }
+                >
+                  {content?.productDetailMoreProductDesc || more_product_desc_}
+                </p>
+              )}
             </div>
             <div css={product_price_container("main")}>
               <p css={product_price_sale("main")}>50,000원</p>
@@ -441,53 +519,107 @@ function ProductDetailReview() {
 export default function ProductDetail(prop: IproductDetail) {
   const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
-  const initial = {
-    productDetailProductTitle: {
-      text: content?.productDetailProductTitle || product_title_,
-      css:
-        style?.productDetailProductTitle || product_detail_product_title_css_,
-    },
-    productDetailProductDesc: {
-      text: content?.productDetailProductDesc || product_desc_,
-      css: style?.productDetailProductDesc || product_detail_product_desc_css_,
-    },
-    productDetailMoreProductTitle: {
-      text: content?.productDetailMoreProductTitle || more_product_title_,
-      css:
-        style?.productDetailMoreProductTitle ||
-        product_detail_more_product__option_main_title_css,
-    },
-    productDetailMoreProductDesc: {
-      text: content?.productDetailMoreProductDesc || more_product_desc_,
-      css:
-        style?.productDetailMoreProductDesc ||
-        product_detail_more_product__option_main_desc_css,
-    },
+  const initialContent = {
+    productDetailProductTitle:
+      content?.productDetailProductTitle || product_title_,
+    productDetailProductDesc:
+      content?.productDetailProductDesc || product_desc_,
+    productDetailMoreProductTitle:
+      content?.productDetailMoreProductTitle || more_product_title_,
+    productDetailMoreProductDesc:
+      content?.productDetailMoreProductDesc || more_product_desc_,
   };
 
-  const [edit, setEdit] = useState(initial);
+  const initialStyle = {
+    productDetailProductTitle:
+      style?.productDetailProductTitle || product_detail_product_title_css_,
+    productDetailProductDesc:
+      style?.productDetailProductDesc || product_detail_product_desc_css_,
+    productDetailMoreProductTitle:
+      style?.productDetailMoreProductTitle ||
+      product_detail_more_product__option_main_title_css,
+    productDetailMoreProductDesc:
+      style?.productDetailMoreProductDesc ||
+      product_detail_more_product__option_main_desc_css,
+  };
+
+  const [editableContent, setEditableContent] = useState<any>(null);
+  const [editableStyle, setEditableStyle] = useState<any>(null);
 
   useEffect(() => {
     if (content) {
-      setEdit(initial);
+      if (content?.productDetailProductTitle) {
+        setEditableContent({
+          ...initialContent,
+          productDetailProductTitle: content.productDetailProductTitle,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          productDetailProductTitle: initialContent.productDetailProductTitle,
+        });
+      }
+
+      if (content?.productDetailProductDesc) {
+        setEditableContent({
+          ...initialContent,
+          productDetailProductDesc: content.productDetailProductDesc,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          productDetailProductDesc: initialContent.productDetailProductDesc,
+        });
+      }
+
+      if (content?.productDetailMoreProductTitle) {
+        setEditableContent({
+          ...initialContent,
+          productDetailMoreProductTitle: content.productDetailMoreProductTitle,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          productDetailMoreProductTitle:
+            initialContent.productDetailMoreProductTitle,
+        });
+      }
+
+      if (content?.productDetailMoreProductDesc) {
+        setEditableContent({
+          ...initialContent,
+          productDetailMoreProductDesc: content.productDetailMoreProductDesc,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          productDetailMoreProductDesc:
+            initialContent.productDetailMoreProductDesc,
+        });
+      }
+      setEditableStyle(initialStyle);
     }
   }, [content]);
 
-  // function handleEdit(
-  //   field: keyof IproductDetailContent,
-  //   updatedText: string,
-  //   updatedCss: CSSObject
-  // ) {
-  //   const updatedState = {
-  //     ...edit,
-  //     [field]: {
-  //       text: updatedText,
-  //       css: updatedCss,
-  //     },
-  //   };
-  //   setEdit(updatedState);
-  //   onChange?.(updatedState);
-  // }
+  function handleEditContent(key: string, value: string) {
+    setEditableContent({
+      ...editableContent,
+      [key]: value,
+    });
+    onChangeContent?.(key, value);
+  }
+
+  function handleEditStyle(key: string, value: CSSObject) {
+    setEditableStyle({
+      ...editableStyle,
+      [key]: value,
+    });
+    onChangeStyle?.(key, value);
+  }
+
+  if (!editableContent) {
+    return <></>;
+  }
 
   const container = css`
     display: flex;
@@ -502,15 +634,19 @@ export default function ProductDetail(prop: IproductDetail) {
       <ContentsWrap>
         <div css={container}>
           <ProductDetailInfo
-            content={content}
+            content={editableContent}
+            style={editableStyle}
             isEditable={isEditable}
-            // onChange={onChange}
+            onChangeContent={handleEditContent}
+            onChangeStyle={handleEditStyle}
           />
           <ProductDetailAccordion />
           <ProductDetailList
-            content={content}
+            content={editableContent}
+            style={editableStyle}
             isEditable={isEditable}
-            // onChange={onChange}
+            onChangeContent={handleEditContent}
+            onChangeStyle={handleEditStyle}
           />
           <ProductDetailReview />
           <Pagination />
