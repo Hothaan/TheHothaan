@@ -26,8 +26,8 @@ interface Inotice {
   style?: InoticeStyle | null;
   isEditable?: boolean;
   option?: Tnotice;
-  onChangeContent?: (key: string, value: string) => void;
-  onChangeStyle?: (key: string, value: CSSObject) => void;
+  onChangeContent: (key: string, value: string) => void;
+  onChangeStyle: (key: string, value: CSSObject) => void;
 }
 
 export const notice_title_option_text_css_: CSSObject = {
@@ -254,6 +254,17 @@ export default function Notice(prop: Inotice) {
     },
   };
 
+  const initialContent = {
+    noticeTitle: content?.noticeTitle || title_,
+  };
+  const initialStyle = {
+    noticeTitle:
+      style?.noticeTitle ||
+      (option === "텍스트형"
+        ? notice_title_option_text_css_
+        : notice_title_option_image_css_),
+  };
+
   const [edit, setEdit] = useState(initial);
 
   useEffect(() => {
@@ -276,11 +287,11 @@ export default function Notice(prop: Inotice) {
         <ContentsWrap>
           <div css={container}>
             <NoticeTitle />
-            <NoticeTable
+            {/* <NoticeTable
               content={content}
               isEditable={isEditable}
               // onChange={onChange}
-            />
+            /> */}
             <NoticeSearch />
           </div>
         </ContentsWrap>
@@ -292,11 +303,11 @@ export default function Notice(prop: Inotice) {
         <ContentsWrap>
           <div css={container}>
             <NoticeTitle />
-            <NoticeGalleryBoard
+            {/* <NoticeGalleryBoard
               content={content}
               isEditable={isEditable}
               // onChange={onChange}
-            />
+            /> */}
             <NoticeSearch />
           </div>
         </ContentsWrap>

@@ -146,7 +146,7 @@ export default function ShoppingMallProductList() {
     if (generatedText) {
       const localContent = localStorage.getItem("changedContent");
       const hasLocalContent = localContent
-        ? JSON.parse(localContent)?.shoppingMallMain?.content
+        ? JSON.parse(localContent)?.[featureKey]?.content
         : null;
 
       if (!hasLocalContent) {
@@ -155,7 +155,7 @@ export default function ShoppingMallProductList() {
 
       const localStyle = localStorage.getItem("changedStyle");
       const hasLocalStyle = localStyle
-        ? JSON.parse(localStyle)?.shoppingMallMain?.style
+        ? JSON.parse(localStyle)?.[featureKey]?.style
         : null;
 
       if (!hasLocalStyle) {
