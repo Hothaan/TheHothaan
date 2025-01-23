@@ -64,24 +64,24 @@ const projectController = require('../controllers/projectController');
  *                 example: [
  *                   { "type": "device", "value": "PC" },
  *                   { "type": "service", "value": "쇼핑몰" },
- *                   { 
- *                     "type": "menu", 
- *                     "value": "메인", 
+ *                   {
+ *                     "type": "menu",
+ *                     "value": "메인",
  *                     "features": [
  *                       { "value": "메인" }
  *                     ]
  *                   },
- *                   { 
- *                     "type": "menu", 
- *                     "value": "상품", 
+ *                   {
+ *                     "type": "menu",
+ *                     "value": "상품",
  *                     "features": [
  *                       { "value": "상품 목록" },
  *                       { "value": "상품 상세" }
  *                     ]
  *                   },
- *                   { 
- *                     "type": "menu", 
- *                     "value": "유틸리티", 
+ *                   {
+ *                     "type": "menu",
+ *                     "value": "유틸리티",
  *                     "features": [
  *                       { "value": "로그인", "option": "소셜 로그인" }
  *                     ]
@@ -287,7 +287,13 @@ router.get('/:projectId/features', projectController.getAllFeaturesForProject);
  *               content:
  *                 type: object
  *                 description: 수정할 content 값
- *                 example: 
+ *                 example:
+ *                   title: "새로운 제목"
+ *                   desc: "새로운 설명"
+ *               style:
+ *                 type: object
+ *                 description: 수정할 style 값
+ *                 example:
  *                   title: "새로운 제목"
  *                   desc: "새로운 설명"
  *     responses:
@@ -399,7 +405,6 @@ router.put('/features/update/:featureId', projectController.updateFeatureContent
  *                   type: string
  *                   example: "파일 처리 중 오류가 발생했습니다."
  */
-router.post("/generate-files", projectController.generateFilesForProject);
-
+router.post('/generate-files', projectController.generateFilesForProject);
 
 module.exports = router;

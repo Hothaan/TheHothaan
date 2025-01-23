@@ -32,13 +32,12 @@ exports.addProjectFeature = async (menu_selection_id, feature_name, feature_opti
 };
 
 // feature content 업데이트
-exports.updateFeatureContent = async (featureId, content) => {
+exports.updateFeatureContent = async (featureId, content, styleString) => {
   try {
     const result = await pool.query(
-      `UPDATE project_selection_features SET content = ?, updated_at = NOW() WHERE feature_id = ?`,
-      [content, featureId],
+      `UPDATE project_selection_features SET content = ?, style = ?, updated_at = NOW() WHERE feature_id = ?`,
+      [content, styleString, featureId],
     );
-    // console.log("Update Result:", result);
     return result;
   } catch (error) {
     console.error('DB Update Error:', error);

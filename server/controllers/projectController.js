@@ -373,7 +373,7 @@ exports.getAllFeaturesForProject = async (req, res) => {
 // feature content 수정
 exports.updateFeatureContent = async (req, res) => {
   const { featureId } = req.params;
-  const { content } = req.body;
+  const { content, style } = req.body;
 
   try {
     // featureId와 content 유효성 검사
@@ -383,9 +383,10 @@ exports.updateFeatureContent = async (req, res) => {
 
     // content를 JSON 문자열로 변환
     const contentString = typeof content === 'object' ? JSON.stringify(content) : content;
+    const styleString = typeof style === 'object' ? JSON.stringify(style) : null;
 
     // feature content 업데이트
-    const isUpdated = await projectModel.updateFeatureContent(featureId, contentString);
+    const isUpdated = await projectModel.updateFeatureContent(featureId, contentString, styleString);
 
     if (!isUpdated) {
       return res.status(404).json({ error: '해당 feature를 찾을 수 없습니다.' });
