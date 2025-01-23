@@ -8,6 +8,7 @@ const sharp = require('sharp'); // PNG -> JPG 변환용
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
+const parseJson = require('../helpers/parseJson');
 require('dotenv').config();
 
 // 프로젝트 생성 함수
@@ -353,7 +354,7 @@ exports.getAllFeaturesForProject = async (req, res) => {
             ? null
             : JSON.parse(feature.content) // JSON 문자열인 경우 파싱
           : feature.content, // 이미 객체인 경우 그대로 사용
-      style: feature.style,
+      style: parseJson(feature.style),
     }));
 
     // 성공 응답
