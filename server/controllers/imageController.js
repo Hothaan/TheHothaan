@@ -92,6 +92,7 @@ const saveImageToDatabase = async (req, res) => {
   let browser;
   try {
     browser = await puppeteer.launch({
+      headless: true,
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
     const page = await browser.newPage();
@@ -100,18 +101,19 @@ const saveImageToDatabase = async (req, res) => {
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
     );
     await page.setViewport({ width: 1920, height: 1080 });
-
-    console.log(`Navigating to ${url}...`);
     await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 });
+    await page.waitForSelector('.templateImage', { timeout: 30000 });
 
     let imageBuffer;
-    try {
-      await page.waitForSelector('.templateImage', { timeout: 30000 });
-      const element = await page.$('.templateImage');
-      console.log('.templateImage found! Capturing screenshot...');
-      imageBuffer = await element.screenshot();
-    } catch (err) {
-      console.warn('`.templateImage` not found. Capturing full page screenshot...');
+    const element = await page.$('.templateImage');
+    if (element) {
+      const boundingBox = await element.boundingBox();
+      if (boundingBox && boundingBox.width > 0 && boundingBox.height > 0) {
+        imageBuffer = await element.screenshot();
+      } else {
+        imageBuffer = await page.screenshot({ fullPage: true });
+      }
+    } else {
       imageBuffer = await page.screenshot({ fullPage: true });
     }
 
@@ -119,15 +121,10 @@ const saveImageToDatabase = async (req, res) => {
     const imageDir = process.env.IMAGE_DIRECTORY || path.resolve(__dirname, '../images');
     const imagePath = path.join(imageDir, imageName);
 
-    if (!fs.existsSync(imageDir)) {
-      fs.mkdirSync(imageDir, { recursive: true });
-    }
-
+    if (!fs.existsSync(imageDir)) fs.mkdirSync(imageDir, { recursive: true });
     fs.writeFileSync(imagePath, imageBuffer);
 
     const imageUrl = `http://dolllpitoxic3.mycafe24.com/images/${imageName}`;
-
-    // `addFileRecord` 함수 호출하여 DB에 저장
     const fileId = await projectModel.addFileRecord(project_id, feature_id, 'image', url, imagePath, imageUrl);
 
     res.status(200).json({
