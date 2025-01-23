@@ -438,7 +438,7 @@ function ProductDetailList(prop: IproductDetail) {
   return (
     <div css={container}>
       {Array.from({ length: count }, (_, index) => (
-        <div css={slide_item}>
+        <div css={slide_item} key={index}>
           <ImageBox
             container={{ width: "280px", height: "280px" }}
             icon={{ width: "50px", height: "50px" }}
@@ -447,48 +447,31 @@ function ProductDetailList(prop: IproductDetail) {
           <div css={text_container}>
             <div css={product_info_container}>
               {isEditable ? (
-                content.productDetailMoreProductTitle &&
-                style.productDetailMoreProductTitle && (
-                  <EditableText
-                    text={content.productDetailMoreProductTitle}
-                    className="productDetailMoreProductTitle"
-                    isTextArea={false}
-                    defaultCss={style.productDetailMoreProductTitle}
-                    onChangeText={(key, value) => onChangeContent(key, value)}
-                    onChangeCss={(key, value) => onChangeStyle(key, value)}
-                  />
-                )
+                <EditableText
+                  text={content.productDetailMoreProductTitle as string}
+                  className="productDetailMoreProductTitle"
+                  isTextArea={false}
+                  defaultCss={style.productDetailMoreProductTitle as CSSObject}
+                  onChangeText={(key, value) => onChangeContent(key, value)}
+                  onChangeCss={(key, value) => onChangeStyle(key, value)}
+                />
               ) : (
-                <p
-                  css={
-                    style?.productDetailMoreProductTitle ||
-                    product_detail_more_product__option_main_title_css
-                  }
-                >
-                  {content?.productDetailMoreProductTitle ||
-                    more_product_title_}
+                <p css={style?.productDetailMoreProductTitle}>
+                  {content?.productDetailMoreProductTitle}
                 </p>
               )}
               {isEditable ? (
-                content.productDetailMoreProductDesc &&
-                style.productDetailMoreProductDesc && (
-                  <EditableText
-                    text={content.productDetailMoreProductDesc}
-                    className="productDetailMoreProductDesc"
-                    isTextArea={false}
-                    defaultCss={style.productDetailMoreProductDesc}
-                    onChangeText={(key, value) => onChangeContent(key, value)}
-                    onChangeCss={(key, value) => onChangeStyle(key, value)}
-                  />
-                )
+                <EditableText
+                  text={content.productDetailMoreProductDesc as string}
+                  className="productDetailMoreProductDesc"
+                  isTextArea={false}
+                  defaultCss={style.productDetailMoreProductDesc as CSSObject}
+                  onChangeText={(key, value) => onChangeContent(key, value)}
+                  onChangeCss={(key, value) => onChangeStyle(key, value)}
+                />
               ) : (
-                <p
-                  css={
-                    style?.productDetailMoreProductDesc ||
-                    product_detail_more_product__option_main_desc_css
-                  }
-                >
-                  {content?.productDetailMoreProductDesc || more_product_desc_}
+                <p css={style?.productDetailMoreProductDesc}>
+                  {content?.productDetailMoreProductDesc}
                 </p>
               )}
             </div>
@@ -617,10 +600,6 @@ export default function ProductDetail(prop: IproductDetail) {
     onChangeStyle?.(key, value);
   }
 
-  if (!editableContent) {
-    return <></>;
-  }
-
   const container = css`
     display: flex;
     flex-direction: column;
@@ -628,6 +607,18 @@ export default function ProductDetail(prop: IproductDetail) {
     align-items: center;
     gap: 50px;
   `;
+
+  console.log(editableContent);
+
+  if (
+    !editableContent ||
+    editableContent.productDetailProductTitle === undefined ||
+    editableContent.productDetailProductDesc === undefined ||
+    editableContent.productDetailMoreProductTitle === undefined ||
+    editableContent.productDetailMoreProductDesc === undefined
+  ) {
+    return <></>;
+  }
 
   return (
     <OuterWrap padding="200px 0">

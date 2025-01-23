@@ -160,17 +160,16 @@ function NoticeTable(prop: Inotice) {
             <td css={[cellStyle, text_style, col1]}>{10}</td>
             <td css={[cellStyle, col2, text_align_left]}>
               {isEditable ? (
-                content?.noticeTitle &&
-                style?.noticeTitle && (
-                  <EditableText
-                    text={content?.noticeTitle}
-                    className="noticeTitle"
-                    isTextArea={false}
-                    defaultCss={style?.noticeTitle}
-                    onChangeText={(key, value) => onChangeContent(key, value)}
-                    onChangeCss={(key, value) => onChangeStyle(key, value)}
-                  />
-                )
+                <EditableText
+                  text={content?.noticeTitle || title_}
+                  className="noticeTitle"
+                  isTextArea={false}
+                  defaultCss={
+                    style?.noticeTitle || notice_title_option_text_css_
+                  }
+                  onChangeText={(key, value) => onChangeContent(key, value)}
+                  onChangeCss={(key, value) => onChangeStyle(key, value)}
+                />
               ) : (
                 <p css={style.noticeTitle || notice_title_option_text_css_}>
                   {content?.noticeTitle || title_}

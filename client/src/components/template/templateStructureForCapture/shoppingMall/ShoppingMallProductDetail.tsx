@@ -94,12 +94,13 @@ export default function ShoppingMallProductDetail() {
       fetchFeatureData(isProduction, projectIdValue);
     }
   }, [projectIdValue]);
+
   function getLocalContent() {
     const localContent = localStorage.getItem("changedContent");
     if (localContent) {
       const parsed = JSON.parse(localContent);
       if (parsed[featureKey]?.content) {
-        return parsed[featureKey].content;
+        return parsed[featureKey]?.content;
       }
     }
     return null;
