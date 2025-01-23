@@ -294,7 +294,7 @@ export default function ServiceStep2Page() {
     onClick: () => {
       setFormData((prev) => ({
         ...prev,
-        service: { number: 4, text: "랜딩·소개" },
+        service: { number: 5, text: "랜딩·소개" },
       }));
     },
   };

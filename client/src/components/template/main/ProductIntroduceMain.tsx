@@ -91,29 +91,83 @@ export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
     },
   };
 
-  const [edit, setEdit] = useState(initial);
+  const initialContent = {
+    productIntroduceImageDesc:
+      content?.productIntroduceImageDesc || image_desc_,
+    productIntroduceTitle: content?.productIntroduceTitle || title_,
+    productIntroduceDesc: content?.productIntroduceDesc || desc_,
+  };
+
+  const initialStyle = {
+    productIntroduceImageDesc:
+      style?.productIntroduceImageDesc || product_introduce_image_desc_css_,
+    productIntroduceTitle:
+      style?.productIntroduceTitle || product_introduce_title_css_,
+    productIntroduceDesc:
+      style?.productIntroduceDesc || product_introduce_desc_css_,
+  };
+
+  const [editableContent, setEditableContent] = useState<any>(null);
+  const [editableStyle, setEditableStyle] = useState<any>(null);
 
   useEffect(() => {
     if (content) {
-      setEdit(initial);
+      if (content?.productIntroduceImageDesc) {
+        setEditableContent({
+          ...initialContent,
+          productIntroduceImageDesc: content.productIntroduceImageDesc,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          productIntroduceImageDesc: initialContent.productIntroduceImageDesc,
+        });
+      }
+      if (content?.productIntroduceTitle) {
+        setEditableContent({
+          ...initialContent,
+          productIntroduceTitle: content.productIntroduceTitle,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          productIntroduceTitle: initialContent.productIntroduceTitle,
+        });
+      }
+      if (content?.productIntroduceDesc) {
+        setEditableContent({
+          ...initialContent,
+          productIntroduceDesc: content.productIntroduceDesc,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          productIntroduceDesc: initialContent.productIntroduceDesc,
+        });
+      }
+      setEditableStyle(initialStyle);
     }
   }, [content]);
 
-  // function handleEdit(
-  //   field: keyof IproductIntroduceMainContent,
-  //   updatedText: string,
-  //   updatedCss: CSSObject
-  // ) {
-  //   const updatedState = {
-  //     ...edit,
-  //     [field]: {
-  //       text: updatedText,
-  //       css: updatedCss,
-  //     },
-  //   };
-  //   setEdit(updatedState);
-  //   onChange?.(updatedState);
-  // }
+  function handleEditContent(key: string, value: string) {
+    setEditableContent({
+      ...editableContent,
+      [key]: value,
+    });
+    onChangeContent?.(key, value);
+  }
+
+  function handleEditStyle(key: string, value: CSSObject) {
+    setEditableStyle({
+      ...editableStyle,
+      [key]: value,
+    });
+    onChangeStyle?.(key, value);
+  }
+
+  if (!editableContent) {
+    return <></>;
+  }
 
   return (
     <OuterWrap padding="0">
@@ -131,30 +185,35 @@ export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
           />
           <p
             css={
-              edit?.productIntroduceImageDesc?.css ||
+              editableStyle?.productIntroduceImageDesc ||
               product_introduce_image_desc_css_
             }
           >
-            {edit?.productIntroduceImageDesc?.text || image_desc_}
+            {editableContent?.productIntroduceImageDesc || image_desc_}
           </p>
         </div>
         <div css={text_container}>
           <p
             css={
-              edit?.productIntroduceTitle?.css || product_introduce_title_css_
+              editableStyle?.productIntroduceTitle ||
+              product_introduce_title_css_
             }
           >
-            {edit?.productIntroduceTitle?.text || title_}
+            {editableContent?.productIntroduceTitle || title_}
           </p>
           <p
-            css={edit?.productIntroduceDesc?.css || product_introduce_desc_css_}
+            css={
+              editableStyle?.productIntroduceDesc || product_introduce_desc_css_
+            }
           >
-            {edit?.productIntroduceDesc?.text || desc_}
+            {editableContent?.productIntroduceDesc || desc_}
           </p>
           <p
-            css={edit?.productIntroduceDesc?.css || product_introduce_desc_css_}
+            css={
+              editableStyle?.productIntroduceDesc || product_introduce_desc_css_
+            }
           >
-            {edit?.productIntroduceDesc?.text || desc_}
+            {editableContent?.productIntroduceDesc || desc_}
           </p>
         </div>
       </div>
@@ -162,20 +221,25 @@ export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
         <div css={text_container}>
           <p
             css={
-              edit?.productIntroduceTitle?.css || product_introduce_title_css_
+              editableStyle?.productIntroduceTitle ||
+              product_introduce_title_css_
             }
           >
-            {edit?.productIntroduceTitle?.text || title_}
+            {editableContent?.productIntroduceTitle || title_}
           </p>
           <p
-            css={edit?.productIntroduceDesc?.css || product_introduce_desc_css_}
+            css={
+              editableStyle?.productIntroduceDesc || product_introduce_desc_css_
+            }
           >
-            {edit?.productIntroduceDesc?.text || desc_}
+            {editableContent?.productIntroduceDesc || desc_}
           </p>
           <p
-            css={edit?.productIntroduceDesc?.css || product_introduce_desc_css_}
+            css={
+              editableStyle?.productIntroduceDesc || product_introduce_desc_css_
+            }
           >
-            {edit?.productIntroduceDesc?.text || desc_}
+            {editableContent?.productIntroduceDesc || desc_}
           </p>
         </div>
         <div css={image_container}>
@@ -191,11 +255,11 @@ export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
           />
           <p
             css={
-              edit?.productIntroduceImageDesc?.css ||
+              editableStyle?.productIntroduceImageDesc ||
               product_introduce_image_desc_css_
             }
           >
-            {edit?.productIntroduceImageDesc?.text || image_desc_}
+            {editableContent?.productIntroduceImageDesc || image_desc_}
           </p>
         </div>
       </div>

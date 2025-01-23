@@ -3,7 +3,7 @@ import { css, CSSObject } from "@emotion/react";
 import { OuterWrap, ContentsWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 import { useEffect, useState } from "react";
-import { on } from "stream";
+import EditableText from "@components/service/editableText/EditableText";
 
 const banner_title_ = "headline h1";
 
@@ -33,8 +33,8 @@ interface IbrandIntroduce {
   content?: IbrandIntroduceContent | null;
   style?: IbrandIntroduceStyle | null;
   isEditable?: boolean;
-  onChangeContent?: (key: string, value: string) => void;
-  onChangeStyle?: (key: string, value: CSSObject) => void;
+  onChangeContent: (key: string, value: string) => void;
+  onChangeStyle: (key: string, value: CSSObject) => void;
 }
 
 export const brandIntroduce_item_title_css: CSSObject = {
@@ -82,6 +82,15 @@ export const brandIntroduce_banner_desc_css: CSSObject = {
 function BrandIntroduceItem(prop: IbrandIntroduce) {
   const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
+  if (
+    content?.brandIntroduceItemTitle === undefined ||
+    content?.brandIntroduceItemDesc === undefined ||
+    style?.brandIntroduceItemTitle === undefined ||
+    style?.brandIntroduceItemDesc === undefined
+  ) {
+    return <></>;
+  }
+
   return (
     <div css={item_container}>
       <ImageBox
@@ -94,12 +103,36 @@ function BrandIntroduceItem(prop: IbrandIntroduce) {
           icon: "width: 100px; height: 100px;",
         }}
       />
-      <p css={style?.brandIntroduceItemTitle || brandIntroduce_item_title_css}>
-        {content?.brandIntroduceItemTitle || item_title_}
-      </p>
-      <p css={style?.brandIntroduceItemDesc || brandIntroduce_item_desc_css}>
-        {content?.brandIntroduceItemDesc || item_desc_}
-      </p>
+      {isEditable ? (
+        <EditableText
+          text={content.brandIntroduceItemTitle}
+          className="reviewTitle"
+          isTextArea={false}
+          defaultCss={style.brandIntroduceItemTitle}
+          onChangeText={(key, value) => onChangeContent(key, value)}
+          onChangeCss={(key, value) => onChangeStyle(key, value)}
+        />
+      ) : (
+        <p
+          css={style?.brandIntroduceItemTitle || brandIntroduce_item_title_css}
+        >
+          {content?.brandIntroduceItemTitle || item_title_}
+        </p>
+      )}
+      {isEditable ? (
+        <EditableText
+          text={content.brandIntroduceItemDesc}
+          className="reviewTitle"
+          isTextArea={false}
+          defaultCss={style.brandIntroduceItemDesc}
+          onChangeText={(key, value) => onChangeContent(key, value)}
+          onChangeCss={(key, value) => onChangeStyle(key, value)}
+        />
+      ) : (
+        <p css={style?.brandIntroduceItemDesc || brandIntroduce_item_desc_css}>
+          {content?.brandIntroduceItemDesc || item_desc_}
+        </p>
+      )}
     </div>
   );
 }
@@ -128,13 +161,100 @@ export default function BrandIntroduce(prop: IbrandIntroduce) {
     },
   };
 
-  const [edit, setEdit] = useState(initial);
+  const initialContent = {
+    brandIntroduceBannerTitle:
+      content?.brandIntroduceBannerTitle || banner_title_,
+    brandIntroduceBannerDesc: content?.brandIntroduceBannerDesc || banner_desc_,
+    brandIntroduceItemTitle: content?.brandIntroduceItemTitle || item_title_,
+    brandIntroduceItemDesc: content?.brandIntroduceItemDesc || item_desc_,
+  };
+
+  const initialStyle = {
+    brandIntroduceBannerTitle:
+      style?.brandIntroduceBannerTitle || brandIntroduce_banner_title_css,
+    brandIntroduceBannerDesc:
+      style?.brandIntroduceBannerDesc || brandIntroduce_banner_desc_css,
+    brandIntroduceItemTitle:
+      style?.brandIntroduceItemTitle || brandIntroduce_item_title_css,
+    brandIntroduceItemDesc:
+      style?.brandIntroduceItemDesc || brandIntroduce_item_desc_css,
+  };
+
+  const [editableContent, setEditableContent] = useState<any>(null);
+  const [editableStyle, setEditableStyle] = useState<any>(null);
 
   useEffect(() => {
     if (content) {
-      setEdit(initial);
+      if (content?.brandIntroduceBannerTitle) {
+        setEditableContent({
+          ...initialContent,
+          brandIntroduceBannerTitle: content.brandIntroduceBannerTitle,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          brandIntroduceBannerTitle: initialContent.brandIntroduceBannerTitle,
+        });
+      }
+
+      if (content?.brandIntroduceBannerDesc) {
+        setEditableContent({
+          ...initialContent,
+          brandIntroduceBannerDesc: content.brandIntroduceBannerDesc,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          brandIntroduceBannerDesc: initialContent.brandIntroduceBannerDesc,
+        });
+      }
+
+      if (content?.brandIntroduceItemTitle) {
+        setEditableContent({
+          ...initialContent,
+          brandIntroduceItemTitle: content.brandIntroduceItemTitle,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          brandIntroduceItemTitle: initialContent.brandIntroduceItemTitle,
+        });
+      }
+
+      if (content?.brandIntroduceItemDesc) {
+        setEditableContent({
+          ...initialContent,
+          brandIntroduceItemDesc: content.brandIntroduceItemDesc,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          brandIntroduceItemDesc: initialContent.brandIntroduceItemDesc,
+        });
+      }
+      setEditableStyle(initialStyle);
     }
   }, [content]);
+
+  function handleEditContent(key: string, value: string) {
+    setEditableContent({
+      ...editableContent,
+      [key]: value,
+    });
+    onChangeContent?.(key, value);
+  }
+
+  function handleEditStyle(key: string, value: CSSObject) {
+    setEditableStyle({
+      ...editableStyle,
+      [key]: value,
+    });
+    onChangeStyle?.(key, value);
+  }
+
+  if (!editableContent) {
+    return <></>;
+  }
 
   return (
     <OuterWrap padding="0">
@@ -152,19 +272,19 @@ export default function BrandIntroduce(prop: IbrandIntroduce) {
         <div css={container}>
           <p
             css={
-              edit?.brandIntroduceBannerTitle?.css ||
+              editableStyle?.brandIntroduceBannerTitle ||
               brandIntroduce_banner_title_css
             }
           >
-            {edit?.brandIntroduceBannerTitle?.text || banner_title_}
+            {editableContent?.brandIntroduceBannerTitle || banner_title_}
           </p>
           <p
             css={
-              edit?.brandIntroduceBannerDesc?.css ||
+              editableStyle?.brandIntroduceBannerDesc ||
               brandIntroduce_banner_desc_css
             }
           >
-            {edit?.brandIntroduceBannerDesc?.text || banner_desc_}
+            {editableContent?.brandIntroduceBannerDesc || banner_desc_}
           </p>
         </div>
       </div>
@@ -174,9 +294,11 @@ export default function BrandIntroduce(prop: IbrandIntroduce) {
             {Array.from({ length: count }, (_, index) => (
               <BrandIntroduceItem
                 key={index}
-                content={content}
+                content={editableContent}
+                style={editableStyle}
                 isEditable={isEditable}
-                // onChange={onChange}
+                onChangeContent={handleEditContent}
+                onChangeStyle={handleEditStyle}
               />
             ))}
           </div>

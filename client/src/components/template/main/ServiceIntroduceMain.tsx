@@ -61,40 +61,70 @@ export const service_introduce_desc_css: CSSObject = {
 export default function ServiceIntroduce(prop: IserviceIntroduce) {
   const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
-  const initial = {
-    serviceIntroduceTitle: {
-      text: content?.serviceIntroduceTitle || title_,
-      css: style?.serviceIntroduceTitle || service_introduce_title_css,
-    },
-    serviceIntroduceDesc: {
-      text: content?.serviceIntroduceDesc || desc_,
-      css: style?.serviceIntroduceDesc || service_introduce_desc_css,
-    },
+  const initialContent = {
+    serviceIntroduceTitle: content?.serviceIntroduceTitle || title_,
+    serviceIntroduceDesc: content?.serviceIntroduceDesc || desc_,
   };
 
-  const [edit, setEdit] = useState(initial);
+  const initialStyle = {
+    serviceIntroduceTitle:
+      style?.serviceIntroduceTitle || service_introduce_title_css,
+    serviceIntroduceDesc:
+      style?.serviceIntroduceDesc || service_introduce_desc_css,
+  };
+
+  const [editableContent, setEditableContent] = useState<any>(null);
+  const [editableStyle, setEditableStyle] = useState<any>(null);
 
   useEffect(() => {
     if (content) {
-      setEdit(initial);
+      if (content?.serviceIntroduceTitle) {
+        setEditableContent({
+          ...initialContent,
+          serviceIntroduceTitle: content.serviceIntroduceTitle,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          serviceIntroduceTitle: initialContent.serviceIntroduceTitle,
+        });
+      }
+
+      if (content?.serviceIntroduceDesc) {
+        setEditableContent({
+          ...initialContent,
+          serviceIntroduceDesc: content.serviceIntroduceDesc,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          serviceIntroduceDesc: initialContent.serviceIntroduceDesc,
+        });
+      }
+
+      setEditableStyle(initialStyle);
     }
   }, [content]);
 
-  // function handleEdit(
-  //   field: keyof IserviceIntroduceContent,
-  //   updatedText: string,
-  //   updatedCss: CSSObject
-  // ) {
-  //   const updatedState = {
-  //     ...edit,
-  //     [field]: {
-  //       text: updatedText,
-  //       css: updatedCss,
-  //     },
-  //   };
-  //   setEdit(updatedState);
-  //   onChange?.(updatedState);
-  // }
+  function handleEditContent(key: string, value: string) {
+    setEditableContent({
+      ...editableContent,
+      [key]: value,
+    });
+    onChangeContent?.(key, value);
+  }
+
+  function handleEditStyle(key: string, value: CSSObject) {
+    setEditableStyle({
+      ...editableStyle,
+      [key]: value,
+    });
+    onChangeStyle?.(key, value);
+  }
+
+  if (!editableContent) {
+    return <></>;
+  }
 
   return (
     <OuterWrap padding="0">
@@ -112,78 +142,103 @@ export default function ServiceIntroduce(prop: IserviceIntroduce) {
         <div css={container}>
           {isEditable ? (
             <EditableText
-              text={edit?.serviceIntroduceTitle?.text || title_}
+              text={editableContent?.serviceIntroduceTitle || title_}
+              defaultCss={
+                editableStyle?.serviceIntroduceTitle ||
+                service_introduce_title_css
+              }
               isTextArea={false}
-              defaultCss={
-                edit?.serviceIntroduceTitle?.css || service_introduce_title_css
-              }
+              className="serviceIntroduceTitle"
+              onChangeText={(key, value) => handleEditContent(key, value)}
+              onChangeCss={(key, value) => handleEditStyle(key, value)}
             />
           ) : (
             <p
               css={
-                edit?.serviceIntroduceTitle?.css || service_introduce_title_css
+                editableStyle?.serviceIntroduceTitle ||
+                service_introduce_title_css
               }
             >
-              {edit?.serviceIntroduceTitle?.text || title_}
+              {editableContent?.serviceIntroduceTitle || title_}
             </p>
           )}
+
           {isEditable ? (
             <EditableText
-              text={edit?.serviceIntroduceDesc?.text || desc_}
-              isTextArea={true}
+              text={editableContent?.serviceIntroduceDesc || desc_}
               defaultCss={
-                edit?.serviceIntroduceDesc?.css || service_introduce_desc_css
+                editableStyle?.serviceIntroduceDesc ||
+                service_introduce_desc_css
               }
+              isTextArea={true}
+              className="serviceIntroduceDesc"
+              onChangeText={(key, value) => handleEditContent(key, value)}
+              onChangeCss={(key, value) => handleEditStyle(key, value)}
             />
           ) : (
             <p
               css={
-                edit?.serviceIntroduceDesc?.css || service_introduce_desc_css
+                editableStyle?.serviceIntroduceDesc ||
+                service_introduce_desc_css
               }
             >
-              {edit?.serviceIntroduceDesc?.text || desc_}
+              {editableContent?.serviceIntroduceDesc || desc_}
             </p>
           )}
+
           {isEditable ? (
             <EditableText
-              text={edit?.serviceIntroduceDesc?.text || desc_}
-              isTextArea={true}
+              text={editableContent?.serviceIntroduceDesc || desc_}
               defaultCss={
-                edit?.serviceIntroduceDesc?.css || service_introduce_desc_css
+                editableStyle?.serviceIntroduceDesc ||
+                service_introduce_desc_css
               }
+              isTextArea={true}
+              className="serviceIntroduceDesc"
+              onChangeText={(key, value) => handleEditContent(key, value)}
+              onChangeCss={(key, value) => handleEditStyle(key, value)}
             />
           ) : (
             <p
               css={
-                edit?.serviceIntroduceDesc?.css || service_introduce_desc_css
+                editableStyle?.serviceIntroduceDesc ||
+                service_introduce_desc_css
               }
             >
-              {edit?.serviceIntroduceDesc?.text || desc_}
+              {editableContent?.serviceIntroduceDesc || desc_}
             </p>
           )}
+
           {isEditable ? (
             <EditableText
-              text={edit?.serviceIntroduceDesc?.text || desc_}
-              isTextArea={true}
+              text={editableContent?.serviceIntroduceDesc || desc_}
               defaultCss={
-                edit?.serviceIntroduceDesc?.css || service_introduce_desc_css
+                editableStyle?.serviceIntroduceDesc ||
+                service_introduce_desc_css
               }
+              isTextArea={true}
+              className="serviceIntroduceDesc"
+              onChangeText={(key, value) => handleEditContent(key, value)}
+              onChangeCss={(key, value) => handleEditStyle(key, value)}
             />
           ) : (
             <p
               css={
-                edit?.serviceIntroduceDesc?.css || service_introduce_desc_css
+                editableStyle?.serviceIntroduceDesc ||
+                service_introduce_desc_css
               }
             >
-              {edit?.serviceIntroduceDesc?.text || desc_}
+              {editableContent?.serviceIntroduceDesc || desc_}
             </p>
           )}
+
+          {/*           
           <p css={pass_desc_line}>
-            {edit?.serviceIntroduceDesc?.text || desc_}
+            {editableContent?.serviceIntroduceDesc || desc_}
           </p>
           <p css={pass_desc_line}>
-            {edit?.serviceIntroduceDesc?.text || desc_}
-          </p>
+            {editableContent?.serviceIntroduceDesc || desc_}
+          </p> */}
         </div>
       </div>
     </OuterWrap>
@@ -211,19 +266,3 @@ const container = css`
   justify-content: start;
   gap: 40px;
 `;
-
-const pass_desc_line: CSSObject = {
-  wordBreak: "keep-all",
-  color: "#486284",
-  fontFamily: "Inter",
-  fontSize: "32px",
-  fontStyle: "normal",
-  fontWeight: "400",
-  lineHeight: "normal",
-
-  display: "-webkit-box",
-  WebkitBoxOrient: "vertical",
-  overflow: "hidden",
-  textOverflow: "ellipsis",
-  WebkitLineClamp: "2",
-};

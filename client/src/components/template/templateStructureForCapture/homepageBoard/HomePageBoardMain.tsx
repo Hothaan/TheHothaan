@@ -34,9 +34,9 @@ import {
 } from "@components/template/main/ServiceIntroduceMain";
 
 import {
-  product_introduce_desc_css_,
   product_introduce_image_desc_css_,
   product_introduce_title_css_,
+  product_introduce_desc_css_,
 } from "@components/template/main/ProductIntroduceMain";
 
 import {
@@ -45,56 +45,56 @@ import {
 } from "@components/template/main/NoticeMain";
 
 import {
-  recruit_item_desc_css_,
   recruit_item_title_css_,
+  recruit_item_desc_css_,
 } from "@components/template/main/RecruitMain";
 
 import { news_main_item_title_css_ } from "@components/template/main/NewsMain";
 
 import {
-  explore_service_button_css_,
-  explore_service_explore_button_css_,
-  explore_service_explore_title_css_,
   explore_service_title_css_,
+  explore_service_button_css_,
+  explore_service_explore_title_css_,
+  explore_service_explore_button_css_,
 } from "@components/template/main/ExploreServiceMain";
 
 interface IhomePageBoardMainContent {
-  mainBannerTitle: string;
-  mainBannerDesc: string;
-  mainBannerButton: string;
-  serviceIntroduceTitle: string;
-  serviceIntroduceDesc: string;
-  productIntroduceImageDesc: string;
-  productIntroduceTitle: string;
-  productIntroduceDesc: string;
-  noticeTitle: string;
-  noticeDesc: string;
-  recruitTitle: string;
-  recruitDesc: string;
-  newsTitle: string;
-  exploreServiceTitle: string;
-  exploreServiceButton: string;
-  exploreServiceExploreTitle: string;
-  exploreServiceExploreButton: string;
+  mainBannerTitle?: string;
+  mainBannerDesc?: string;
+  mainBannerButton?: string;
+  serviceIntroduceTitle?: string;
+  serviceIntroduceDesc?: string;
+  productIntroduceImageDesc?: string;
+  productIntroduceTitle?: string;
+  productIntroduceDesc?: string;
+  noticeTitle?: string;
+  noticeDesc?: string;
+  recruitTitle?: string;
+  recruitDesc?: string;
+  newsTitle?: string;
+  exploreServiceTitle?: string;
+  exploreServiceButton?: string;
+  exploreServiceExploreTitle?: string;
+  exploreServiceExploreButton?: string;
 }
 interface IhomePageBoardMainStyle {
-  mainBannerTitle: CSSObject;
-  mainBannerDesc: CSSObject;
-  mainBannerButton: CSSObject;
-  serviceIntroduceTitle: CSSObject;
-  serviceIntroduceDesc: CSSObject;
-  productIntroduceImageDesc: CSSObject;
-  productIntroduceTitle: CSSObject;
-  productIntroduceDesc: CSSObject;
-  noticeTitle: CSSObject;
-  noticeDesc: CSSObject;
-  recruitTitle: CSSObject;
-  recruitDesc: CSSObject;
-  newsTitle: CSSObject;
-  exploreServiceTitle: CSSObject;
-  exploreServiceButton: CSSObject;
-  exploreServiceExploreTitle: CSSObject;
-  exploreServiceExploreButton: CSSObject;
+  mainBannerTitle?: CSSObject;
+  mainBannerDesc?: CSSObject;
+  mainBannerButton?: CSSObject;
+  serviceIntroduceTitle?: CSSObject;
+  serviceIntroduceDesc?: CSSObject;
+  productIntroduceImageDesc?: CSSObject;
+  productIntroduceTitle?: CSSObject;
+  productIntroduceDesc?: CSSObject;
+  noticeTitle?: CSSObject;
+  noticeDesc?: CSSObject;
+  recruitTitle?: CSSObject;
+  recruitDesc?: CSSObject;
+  newsTitle?: CSSObject;
+  exploreServiceTitle?: CSSObject;
+  exploreServiceButton?: CSSObject;
+  exploreServiceExploreTitle?: CSSObject;
+  exploreServiceExploreButton?: CSSObject;
 }
 
 export default function HomePageBoardMain() {
@@ -154,11 +154,31 @@ export default function HomePageBoardMain() {
     }
   }, [projectIdValue]);
 
-  const [pageContent, setPageContent] = useState<IhomePageBoardMainContent>(
-    {} as IhomePageBoardMainContent
-  );
-  const [pageStyle, setPageStyle] = useState<IhomePageBoardMainStyle>(
-    {} as IhomePageBoardMainStyle
+  function getLocalContent() {
+    const localContent = localStorage.getItem("changedContent");
+    if (localContent) {
+      const parsed = JSON.parse(localContent);
+      if (parsed[featureKey]?.content) {
+        return parsed[featureKey].content;
+      }
+    }
+    return null;
+  }
+  function getLocalStyle() {
+    const localContent = localStorage.getItem("changedStyle");
+    if (localContent) {
+      const parsed = JSON.parse(localContent);
+      if (parsed[featureKey]?.style) {
+        return parsed[featureKey].style;
+      }
+    }
+    return null;
+  }
+
+  const [pageContent, setPageContent] =
+    useState<IhomePageBoardMainContent | null>(getLocalContent());
+  const [pageStyle, setPageStyle] = useState<IhomePageBoardMainStyle | null>(
+    getLocalStyle()
   );
 
   function updateInitialContent() {
@@ -197,7 +217,7 @@ export default function HomePageBoardMain() {
         exploreServiceExploreButton:
           generatedText.content.exploreServiceExploreButton || undefined,
       };
-      setPageContent({ ...initialContent });
+      setPageContent(initialContent);
     }
   }
 
@@ -230,47 +250,74 @@ export default function HomePageBoardMain() {
       exploreServiceExploreButton:
         explore_service_explore_button_css_ || undefined,
     };
+
     setPageStyle({ ...initialStyle });
   }
 
   //featureData가 들어오면 초기 콘텐츠와 스타일 업데이트
   useEffect(() => {
     if (generatedText) {
-      updateInitialContent();
-      updateInitialStyle();
+      const localContent = localStorage.getItem("changedContent");
+      const hasLocalContent = localContent
+        ? JSON.parse(localContent)?.[featureKey]?.content
+        : null;
+
+      if (!hasLocalContent) {
+        updateInitialContent();
+      }
+
+      const localStyle = localStorage.getItem("changedStyle");
+      const hasLocalStyle = localStyle
+        ? JSON.parse(localStyle)?.[featureKey]?.style
+        : null;
+
+      if (!hasLocalStyle) {
+        updateInitialStyle();
+      }
     }
   }, [generatedText]);
 
-  //pageContent가 변경될 때마다 localStorage에 업데이트
   useEffect(() => {
     if (pageContent) {
       const localContent = localStorage.getItem("changedContent");
-
-      if (localContent) {
-        const parsed = JSON.parse(localContent);
-        const updatedData = {
-          ...parsed,
-          shoppingMallMain: {
-            featureId: generatedText?.feature_id,
-            content: {
-              ...pageContent,
+      const updatedContent = localContent
+        ? {
+            ...JSON.parse(localContent),
+            [featureKey]: {
+              featureId: generatedText?.feature_id,
+              content: { ...pageContent },
             },
-          },
-        };
-        localStorage.setItem("changedContent", JSON.stringify(updatedData));
-      } else {
-        const data = {
-          shoppingMallMain: {
-            featureId: generatedText?.feature_id,
-            content: {
-              ...pageContent,
+          }
+        : {
+            [featureKey]: {
+              featureId: generatedText?.feature_id,
+              content: { ...pageContent },
             },
-          },
-        };
-        localStorage.setItem("changedContent", JSON.stringify(data));
-      }
+          };
+      localStorage.setItem("changedContent", JSON.stringify(updatedContent));
     }
   }, [pageContent]);
+
+  useEffect(() => {
+    if (pageStyle) {
+      const localStyle = localStorage.getItem("changedStyle");
+      const updatedStyle = localStyle
+        ? {
+            ...JSON.parse(localStyle),
+            [featureKey]: {
+              featureId: generatedText?.feature_id,
+              style: { ...pageStyle },
+            },
+          }
+        : {
+            [featureKey]: {
+              featureId: generatedText?.feature_id,
+              style: { ...pageStyle },
+            },
+          };
+      localStorage.setItem("changedStyle", JSON.stringify(updatedStyle));
+    }
+  }, [pageStyle]);
 
   function handleChangeContent(key: string, value: string) {
     setPageContent({ ...pageContent, [key]: value });
@@ -279,36 +326,6 @@ export default function HomePageBoardMain() {
   function handleChangeStyle(key: string, value: CSSObject) {
     setPageStyle({ ...pageStyle, [key]: value });
   }
-
-  useEffect(() => {
-    if (pageStyle) {
-      const localStyle = localStorage.getItem("changedStyle");
-
-      if (localStyle) {
-        const parsed = JSON.parse(localStyle);
-        const updatedData = {
-          ...parsed,
-          [featureKey]: {
-            featureId: generatedText?.feature_id,
-            style: {
-              ...pageStyle,
-            },
-          },
-        };
-        localStorage.setItem("changedStyle", JSON.stringify(updatedData));
-      } else {
-        const data = {
-          [featureKey]: {
-            featureId: generatedText?.feature_id,
-            style: {
-              ...pageContent,
-            },
-          },
-        };
-        localStorage.setItem("changedStyle", JSON.stringify(data));
-      }
-    }
-  }, [pageStyle]);
 
   if (!generatedText || !headerData) {
     return <Loading />;

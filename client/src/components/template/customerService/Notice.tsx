@@ -9,6 +9,7 @@ import Pagination from "../commonComponent/Pagination";
 import FormButton from "../commonComponent/form/FormButton";
 import SelectBox from "../commonComponent/form/SelectBox";
 import ImageBox from "../commonComponent/ImageBox";
+import EditableText from "@components/service/editableText/EditableText";
 
 const title_ = "게시글 제목";
 
@@ -26,8 +27,8 @@ interface Inotice {
   style?: InoticeStyle | null;
   isEditable?: boolean;
   option?: Tnotice;
-  onChangeContent?: (key: string, value: string) => void;
-  onChangeStyle?: (key: string, value: CSSObject) => void;
+  onChangeContent: (key: string, value: string) => void;
+  onChangeStyle: (key: string, value: CSSObject) => void;
 }
 
 export const notice_title_option_text_css_: CSSObject = {
@@ -139,6 +140,10 @@ function NoticeTable(prop: Inotice) {
     text-align: left;
   `;
 
+  if (content?.noticeTitle === undefined || style?.noticeTitle === undefined) {
+    return <></>;
+  }
+
   return (
     <table css={tableStyle}>
       <thead>
@@ -153,15 +158,24 @@ function NoticeTable(prop: Inotice) {
         {Array.from({ length: count }, (_, index) => (
           <tr key={index} css={rowStyle}>
             <td css={[cellStyle, text_style, col1]}>{10}</td>
-            <td
-              css={[
-                cellStyle,
-                notice_title_option_text_css_,
-                col2,
-                text_align_left,
-              ]}
-            >
-              {content?.noticeTitle || title_}
+            <td css={[cellStyle, col2, text_align_left]}>
+              {isEditable ? (
+                content?.noticeTitle &&
+                style?.noticeTitle && (
+                  <EditableText
+                    text={content?.noticeTitle}
+                    className="noticeTitle"
+                    isTextArea={false}
+                    defaultCss={style?.noticeTitle}
+                    onChangeText={(key, value) => onChangeContent(key, value)}
+                    onChangeCss={(key, value) => onChangeStyle(key, value)}
+                  />
+                )
+              ) : (
+                <p css={style.noticeTitle || notice_title_option_text_css_}>
+                  {content?.noticeTitle || title_}
+                </p>
+              )}
             </td>
             <td css={[cellStyle, text_style, col3]}>{"YYYY.MM.DD"}</td>
             <td css={[cellStyle, text_style, col4]}>{1}</td>
@@ -191,6 +205,10 @@ function NoticeGalleryBoard(prop: Inotice) {
     gap: 10px;
   `;
 
+  if (content?.noticeTitle === undefined || style?.noticeTitle === undefined) {
+    return <></>;
+  }
+
   return (
     <div css={container}>
       {Array.from({ length: count }, (_, index) => (
@@ -200,9 +218,23 @@ function NoticeGalleryBoard(prop: Inotice) {
             icon={{ width: "50px", height: "50px" }}
             borderRadius="0"
           />
-          <p css={notice_title_option_image_css_}>
-            {content?.noticeTitle || title_}
-          </p>
+          {isEditable ? (
+            content?.noticeTitle &&
+            style?.noticeTitle && (
+              <EditableText
+                text={content.noticeTitle}
+                className="noticeTitle"
+                isTextArea={false}
+                defaultCss={style.noticeTitle}
+                onChangeText={(key, value) => onChangeContent(key, value)}
+                onChangeCss={(key, value) => onChangeStyle(key, value)}
+              />
+            )
+          ) : (
+            <p css={style?.noticeTitle || notice_title_option_image_css_}>
+              {content?.noticeTitle || title_}
+            </p>
+          )}
         </div>
       ))}
     </div>
@@ -243,24 +275,53 @@ export default function Notice(prop: Inotice) {
   const { option, style, content, isEditable, onChangeContent, onChangeStyle } =
     prop;
 
-  const initial = {
-    title: {
-      text: content?.noticeTitle || title_,
-      css:
-        style?.noticeTitle?.css ||
-        (option === "텍스트형"
-          ? notice_title_option_text_css_
-          : notice_title_option_image_css_),
-    },
+  const initialContent = {
+    noticeTitle: content?.noticeTitle || title_,
+  };
+  const initialStyle = {
+    noticeTitle:
+      style?.noticeTitle ||
+      (option === "텍스트형"
+        ? notice_title_option_text_css_
+        : notice_title_option_image_css_),
   };
 
-  const [edit, setEdit] = useState(initial);
+  const [editableContent, setEditableContent] = useState<any>(null);
+  const [editableStyle, setEditableStyle] = useState<any>(null);
 
   useEffect(() => {
     if (content) {
-      setEdit(initial);
+      if (content?.noticeTitle) {
+        setEditableContent({
+          ...initialContent,
+          noticeTitle: content.noticeTitle,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          noticeTitle: initialContent.noticeTitle,
+        });
+      }
+
+      setEditableStyle(initialStyle);
     }
   }, [content]);
+
+  function handleEditContent(key: string, value: string) {
+    setEditableContent({
+      ...editableContent,
+      [key]: value,
+    });
+    onChangeContent?.(key, value);
+  }
+
+  function handleEditStyle(key: string, value: CSSObject) {
+    setEditableStyle({
+      ...editableStyle,
+      [key]: value,
+    });
+    onChangeStyle?.(key, value);
+  }
 
   const container = css`
     width: 100%;
@@ -277,9 +338,11 @@ export default function Notice(prop: Inotice) {
           <div css={container}>
             <NoticeTitle />
             <NoticeTable
-              content={content}
+              content={editableContent}
+              style={editableStyle}
               isEditable={isEditable}
-              // onChange={onChange}
+              onChangeContent={handleEditContent}
+              onChangeStyle={handleEditStyle}
             />
             <NoticeSearch />
           </div>
@@ -293,9 +356,11 @@ export default function Notice(prop: Inotice) {
           <div css={container}>
             <NoticeTitle />
             <NoticeGalleryBoard
-              content={content}
+              content={editableContent}
+              style={editableStyle}
               isEditable={isEditable}
-              // onChange={onChange}
+              onChangeContent={handleEditContent}
+              onChangeStyle={handleEditStyle}
             />
             <NoticeSearch />
           </div>
