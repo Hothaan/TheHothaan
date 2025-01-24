@@ -18,7 +18,7 @@ async function generateOpenAiText(
   cnt,
 ) {
   const serviceDetails = { service, serviceTitle, serviceDesc, depth1, depth2, component, structure, content, cnt };
-  console.log('serviceType: ', service);
+
   try {
     let userPrompt;
 
