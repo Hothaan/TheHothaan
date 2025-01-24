@@ -3,6 +3,7 @@ import { css, CSSObject } from "@emotion/react";
 import { useState, useEffect } from "react";
 import { OuterWrap } from "../commonComponent/Wrap";
 import { ReactComponent as SearchIcon } from "@svgs/template/search/search.svg";
+import EditableText from "@components/service/editableText/EditableText";
 
 const search_result_title_bold_ = "‘검색어’";
 const search_result_title_ = " 검색 결과입니다.";
@@ -11,13 +12,13 @@ const search_result_item_desc_ =
   "Lorem ipsum dolor sit amet consectetur adipiscing eli mattis sit phasellus mollis sit aliquam sit nullam.";
 
 export interface IsearchContent {
-  SearchTitle: string;
-  SearchDesc: string;
+  SearchTitle?: string;
+  SearchDesc?: string;
 }
 
 export interface IsearchStyle {
-  SearchTitle: CSSObject;
-  SearchDesc: CSSObject;
+  SearchTitle?: CSSObject;
+  SearchDesc?: CSSObject;
 }
 
 type TsearchOption = "일반 검색" | "통합 검색";
@@ -25,9 +26,10 @@ type TsearchOption = "일반 검색" | "통합 검색";
 interface Isearch {
   content?: IsearchContent | null;
   style?: IsearchStyle | null;
-  isEditable?: boolean;
-  onChange?: (content: IsearchContent) => void;
   option?: TsearchOption;
+  isEditable?: boolean;
+  onChangeContent: (key: string, value: string) => void;
+  onChangeStyle: (key: string, value: CSSObject) => void;
 }
 
 export const search_result_item_title_css_ = css`
@@ -53,42 +55,78 @@ export const search_result_item_desc_css_ = css`
 `;
 
 export default function Search(prop: Isearch) {
-  const { content, style, isEditable, onChange, option } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle, option } =
+    prop;
 
-  const initial = {
-    SearchTitle: {
-      text: content?.SearchTitle || search_result_item_title_,
-      css: style?.SearchTitle || search_result_item_title_css_,
-    },
-    SearchDesc: {
-      text: content?.SearchDesc || search_result_item_desc_,
-      css: style?.SearchDesc || search_result_item_desc_css_,
-    },
+  const initialContent = {
+    SearchTitle: content?.SearchTitle || search_result_item_title_,
+    SearchDesc: content?.SearchDesc || search_result_item_desc_,
   };
 
-  const [edit, setEdit] = useState(initial);
+  const initialStyle = {
+    SearchTitle: style?.SearchTitle || search_result_item_title_css_,
+    SearchDesc: style?.SearchDesc || search_result_item_desc_css_,
+  };
+
+  const [editableContent, setEditableContent] = useState<any>(null);
+  const [editableStyle, setEditableStyle] = useState<any>(null);
 
   useEffect(() => {
     if (content) {
-      setEdit(initial);
+      if (content?.SearchTitle) {
+        setEditableContent({
+          ...initialContent,
+          SearchTitle: content.SearchTitle,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          SearchTitle: initialContent.SearchTitle,
+        });
+      }
+      if (content?.SearchDesc) {
+        setEditableContent({
+          ...initialContent,
+          SearchDesc: content.SearchDesc,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          SearchDesc: initialContent.SearchDesc,
+        });
+      }
+
+      setEditableStyle(initialStyle);
     }
   }, [content]);
 
-  // function handleEdit(
-  //   field: keyof IsearchContent,
-  //   updatedText: string,
-  //   updatedCss: CSSObject
-  // ) {
-  //   const updatedState = {
-  //     ...edit,
-  //     [field]: {
-  //       text: updatedText,
-  //       css: updatedCss,
-  //     },
-  //   };
-  //   setEdit(updatedState);
-  //   onChange?.(updatedState);
-  // }
+  function handleEditContent(key: string, value: string) {
+    setEditableContent({
+      ...editableContent,
+      [key]: value,
+    });
+    onChangeContent?.(key, value);
+  }
+
+  function handleEditStyle(key: string, value: CSSObject) {
+    setEditableStyle({
+      ...editableStyle,
+      [key]: value,
+    });
+    onChangeStyle?.(key, value);
+  }
+
+  if (!editableContent) {
+    return <></>;
+  }
+  if (
+    editableContent.SearchTitle === undefined ||
+    editableContent.SearchDesc === undefined ||
+    editableStyle.SearchTitle === undefined ||
+    editableStyle.SearchDesc === undefined
+  ) {
+    return <></>;
+  }
 
   return (
     <OuterWrap padding="100px 0">
@@ -106,28 +144,94 @@ export default function Search(prop: Isearch) {
               {search_result_title_}
             </p>
             <div css={search_result_item_container}>
-              <p css={edit?.SearchTitle?.css || search_result_item_title_css_}>
-                {edit?.SearchTitle?.text || search_result_item_title_}
-              </p>
-              <p css={edit?.SearchDesc?.css || search_result_item_desc_css_}>
-                {edit?.SearchDesc?.text || search_result_item_desc_}
-              </p>
+              {isEditable ? (
+                <EditableText
+                  text={editableContent.SearchTitle}
+                  className="SearchTitle"
+                  isTextArea={false}
+                  defaultCss={editableStyle.SearchTitle}
+                  onChangeText={(key, value) => onChangeContent(key, value)}
+                  onChangeCss={(key, value) => onChangeStyle(key, value)}
+                />
+              ) : (
+                <p css={editableStyle?.SearchTitle}>
+                  {editableContent?.SearchTitle}
+                </p>
+              )}
+              {isEditable ? (
+                <EditableText
+                  text={editableContent.SearchDesc}
+                  className="SearchDesc"
+                  isTextArea={false}
+                  defaultCss={editableStyle.SearchDesc}
+                  onChangeText={(key, value) => onChangeContent(key, value)}
+                  onChangeCss={(key, value) => onChangeStyle(key, value)}
+                />
+              ) : (
+                <p css={editableStyle?.SearchDesc}>
+                  {editableContent?.SearchDesc}
+                </p>
+              )}
             </div>
             <div css={search_result_item_container}>
-              <p css={edit?.SearchTitle?.css || search_result_item_title_css_}>
-                {edit?.SearchTitle?.text || search_result_item_title_}
-              </p>
-              <p css={edit?.SearchDesc?.css || search_result_item_desc_css_}>
-                {edit?.SearchDesc?.text || search_result_item_desc_}
-              </p>
+              {isEditable ? (
+                <EditableText
+                  text={editableContent.SearchTitle}
+                  className="SearchTitle"
+                  isTextArea={false}
+                  defaultCss={editableStyle.SearchTitle}
+                  onChangeText={(key, value) => onChangeContent(key, value)}
+                  onChangeCss={(key, value) => onChangeStyle(key, value)}
+                />
+              ) : (
+                <p css={editableStyle?.SearchTitle}>
+                  {editableContent?.SearchTitle}
+                </p>
+              )}
+              {isEditable ? (
+                <EditableText
+                  text={editableContent.SearchDesc}
+                  className="SearchDesc"
+                  isTextArea={false}
+                  defaultCss={editableStyle.SearchDesc}
+                  onChangeText={(key, value) => onChangeContent(key, value)}
+                  onChangeCss={(key, value) => onChangeStyle(key, value)}
+                />
+              ) : (
+                <p css={editableStyle?.SearchDesc}>
+                  {editableContent?.SearchDesc}
+                </p>
+              )}
             </div>
             <div css={search_result_item_container}>
-              <p css={edit?.SearchTitle?.css || search_result_item_title_css_}>
-                {edit?.SearchTitle?.text || search_result_item_title_}
-              </p>
-              <p css={edit?.SearchDesc?.css || search_result_item_desc_css_}>
-                {edit?.SearchDesc?.text || search_result_item_desc_}
-              </p>
+              {isEditable ? (
+                <EditableText
+                  text={editableContent.SearchTitle}
+                  className="SearchTitle"
+                  isTextArea={false}
+                  defaultCss={editableStyle.SearchTitle}
+                  onChangeText={(key, value) => onChangeContent(key, value)}
+                  onChangeCss={(key, value) => onChangeStyle(key, value)}
+                />
+              ) : (
+                <p css={editableStyle?.SearchTitle}>
+                  {editableContent?.SearchTitle}
+                </p>
+              )}
+              {isEditable ? (
+                <EditableText
+                  text={editableContent.SearchDesc}
+                  className="SearchDesc"
+                  isTextArea={false}
+                  defaultCss={editableStyle.SearchDesc}
+                  onChangeText={(key, value) => onChangeContent(key, value)}
+                  onChangeCss={(key, value) => onChangeStyle(key, value)}
+                />
+              ) : (
+                <p css={editableStyle?.SearchDesc}>
+                  {editableContent?.SearchDesc}
+                </p>
+              )}
             </div>
           </div>
         )}

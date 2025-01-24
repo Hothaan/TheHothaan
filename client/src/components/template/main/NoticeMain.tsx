@@ -2,6 +2,7 @@
 import { css, CSSObject } from "@emotion/react";
 import { useEffect, useState } from "react";
 import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";
+import EditableText from "@components/service/editableText/EditableText";
 
 const component_title_ = "공지사항";
 
@@ -25,8 +26,8 @@ interface InoticeMain {
   content?: InoticeMainContent | null;
   style?: InoticeMainStyle | null;
   isEditable?: boolean;
-  onChangeContent?: (key: string, value: string) => void;
-  onChangeStyle?: (key: string, value: CSSObject) => void;
+  onChangeContent: (key: string, value: string) => void;
+  onChangeStyle: (key: string, value: CSSObject) => void;
 }
 
 export const notice_main_title_css_: CSSObject = css`
@@ -64,16 +65,47 @@ export const notice_main_desc_css_: CSSObject = css`
 function NoticeMainItem(prop: InoticeMain) {
   const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
+  if (
+    content?.noticeTitle === undefined ||
+    content?.noticeDesc === undefined ||
+    style?.noticeTitle === undefined ||
+    style?.noticeDesc === undefined
+  ) {
+    return <></>;
+  }
+
   return (
     <div css={item_container}>
       <div css={title_container}>
         <div css={title_inner_container}>
           <p css={tag}>NEW</p>
-          <p css={notice_main_title_css_}>{content?.noticeTitle || title_}</p>
+          {isEditable ? (
+            <EditableText
+              text={content.noticeTitle as string}
+              className="noticeTitle"
+              isTextArea={false}
+              defaultCss={style.noticeTitle as CSSObject}
+              onChangeText={(key, value) => onChangeContent(key, value)}
+              onChangeCss={(key, value) => onChangeStyle(key, value)}
+            />
+          ) : (
+            <p css={notice_main_title_css_}>{content?.noticeTitle || title_}</p>
+          )}
         </div>
         <p css={date_style}>{date_}</p>
       </div>
-      <p css={notice_main_desc_css_}>{content?.noticeDesc || desc_}</p>
+      {isEditable ? (
+        <EditableText
+          text={content.noticeDesc as string}
+          className="noticeDesc"
+          isTextArea={false}
+          defaultCss={style.noticeDesc as CSSObject}
+          onChangeText={(key, value) => onChangeContent(key, value)}
+          onChangeCss={(key, value) => onChangeStyle(key, value)}
+        />
+      ) : (
+        <p css={notice_main_desc_css_}>{content?.noticeDesc || desc_}</p>
+      )}
     </div>
   );
 }
@@ -81,42 +113,78 @@ function NoticeMainItem(prop: InoticeMain) {
 export default function NoticeMain(prop: InoticeMain) {
   const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
-  const initial = {
-    noticeTitle: {
-      text: content?.noticeTitle || title_,
-      css: style?.noticeTitle || notice_main_title_css_,
-    },
-    noticeDesc: {
-      text: content?.noticeDesc || desc_,
-      css: style?.noticeDesc || notice_main_desc_css_,
-    },
+  const count = 3;
+
+  const initialContent = {
+    noticeTitle: content?.noticeTitle || title_,
+    noticeDesc: content?.noticeDesc || desc_,
   };
 
-  const [edit, setEdit] = useState(initial);
+  const initialStyle = {
+    noticeTitle: style?.noticeTitle || notice_main_title_css_,
+    noticeDesc: style?.noticeDesc || notice_main_desc_css_,
+  };
+
+  const [editableContent, setEditableContent] = useState<any>(null);
+  const [editableStyle, setEditableStyle] = useState<any>(null);
 
   useEffect(() => {
     if (content) {
-      setEdit(initial);
+      if (content?.noticeTitle) {
+        setEditableContent({
+          ...initialContent,
+          noticeTitle: content.noticeTitle,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          noticeTitle: initialContent.noticeTitle,
+        });
+      }
+
+      if (content?.noticeDesc) {
+        setEditableContent({
+          ...initialContent,
+          noticeDesc: content.noticeDesc,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          noticeDesc: initialContent.noticeDesc,
+        });
+      }
+
+      setEditableStyle(initialStyle);
     }
   }, [content]);
 
-  // function handleEdit(
-  //   field: keyof InoticeMainContent,
-  //   updatedText: string,
-  //   updatedCss: CSSObject
-  // ) {
-  //   const updatedState = {
-  //     ...edit,
-  //     [field]: {
-  //       text: updatedText,
-  //       css: updatedCss,
-  //     },
-  //   };
-  //   setEdit(updatedState);
-  //   onChange?.(updatedState);
-  // }
+  function handleEditContent(key: string, value: string) {
+    setEditableContent({
+      ...editableContent,
+      [key]: value,
+    });
+    onChangeContent?.(key, value);
+  }
 
-  const count = 3;
+  function handleEditStyle(key: string, value: CSSObject) {
+    setEditableStyle({
+      ...editableStyle,
+      [key]: value,
+    });
+    onChangeStyle?.(key, value);
+  }
+
+  const container = css`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+  `;
+
+  if (!editableContent) {
+    return <></>;
+  }
 
   return (
     <OuterWrap padding="98px 0">
@@ -127,10 +195,11 @@ export default function NoticeMain(prop: InoticeMain) {
             {Array.from({ length: count }, (_, index) => (
               <NoticeMainItem
                 key={index}
-                content={content}
+                content={editableContent}
+                style={editableStyle}
                 isEditable={isEditable}
-                onChangeContent={onChangeContent}
-                onChangeStyle={onChangeStyle}
+                onChangeContent={handleEditContent}
+                onChangeStyle={handleEditStyle}
               />
             ))}
           </div>

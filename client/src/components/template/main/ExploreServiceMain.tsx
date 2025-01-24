@@ -106,38 +106,104 @@ export const explore_service_explore_button_css_ = css`
 
 export default function ExploreServiceMain(prop: IexploreService) {
   const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
+  const count = 3;
 
-  const initial = {
-    exploreServiceTitle: {
-      text: content?.exploreServiceTitle || title_,
-      css: style?.exploreServiceTitle || explore_service_title_css_,
-    },
-    exploreServiceButton: {
-      text: content?.exploreServiceButton || button_,
-      css: style?.exploreServiceButton || explore_service_button_css_,
-    },
-    exploreServiceExploreTitle: {
-      text: content?.exploreServiceExploreTitle || item_title_,
-      css:
-        style?.exploreServiceExploreTitle || explore_service_explore_title_css_,
-    },
-    exploreServiceExploreButton: {
-      text: content?.exploreServiceExploreButton || item_button_,
-      css:
-        style?.exploreServiceExploreButton ||
-        explore_service_explore_button_css_,
-    },
+  const initialContent = {
+    exploreServiceTitle: content?.exploreServiceTitle || title_,
+    exploreServiceButton: content?.exploreServiceButton || button_,
+    exploreServiceExploreTitle:
+      content?.exploreServiceExploreTitle || item_title_,
+    exploreServiceExploreButton:
+      content?.exploreServiceExploreButton || item_button_,
   };
 
-  const [edit, setEdit] = useState(initial);
+  const initialStyle = {
+    exploreServiceTitle:
+      style?.exploreServiceTitle || explore_service_title_css_,
+    exploreServiceButton:
+      style?.exploreServiceButton || explore_service_button_css_,
+    exploreServiceExploreTitle:
+      style?.exploreServiceExploreTitle || explore_service_explore_title_css_,
+    exploreServiceExploreButton:
+      style?.exploreServiceExploreButton || explore_service_explore_button_css_,
+  };
+
+  const [editableContent, setEditableContent] = useState<any>(null);
+  const [editableStyle, setEditableStyle] = useState<any>(null);
 
   useEffect(() => {
     if (content) {
-      setEdit(initial);
+      if (content?.exploreServiceTitle) {
+        setEditableContent({
+          ...initialContent,
+          exploreServiceTitle: content.exploreServiceTitle,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          exploreServiceTitle: initialContent.exploreServiceTitle,
+        });
+      }
+
+      if (content?.exploreServiceButton) {
+        setEditableContent({
+          ...initialContent,
+          exploreServiceButton: content.exploreServiceButton,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          exploreServiceButton: initialContent.exploreServiceButton,
+        });
+      }
+
+      if (content?.exploreServiceExploreTitle) {
+        setEditableContent({
+          ...initialContent,
+          exploreServiceExploreTitle: content.exploreServiceExploreTitle,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          exploreServiceExploreTitle: initialContent.exploreServiceExploreTitle,
+        });
+      }
+
+      if (content?.exploreServiceExploreButton) {
+        setEditableContent({
+          ...initialContent,
+          exploreServiceExploreButton: content.exploreServiceExploreButton,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          exploreServiceExploreButton:
+            initialContent.exploreServiceExploreButton,
+        });
+      }
+      setEditableStyle(initialStyle);
     }
   }, [content]);
 
-  const count = 3;
+  function handleEditContent(key: string, value: string) {
+    setEditableContent({
+      ...editableContent,
+      [key]: value,
+    });
+    onChangeContent?.(key, value);
+  }
+
+  function handleEditStyle(key: string, value: CSSObject) {
+    setEditableStyle({
+      ...editableStyle,
+      [key]: value,
+    });
+    onChangeStyle?.(key, value);
+  }
+
+  if (!editableContent) {
+    return <></>;
+  }
 
   return (
     <OuterWrap padding="0">
@@ -156,46 +222,75 @@ export default function ExploreServiceMain(prop: IexploreService) {
           <div css={text_container}>
             {isEditable ? (
               <EditableText
-                text={edit?.exploreServiceTitle?.text || title_}
-                isTextArea={false}
-                defaultCss={
-                  edit?.exploreServiceTitle?.css || explore_service_title_css_
-                }
+                text={editableContent?.exploreServiceTitle}
+                defaultCss={editableStyle?.exploreServiceTitle}
+                className="exploreServiceTitle"
+                isTextArea={true}
+                onChangeText={(key, value) => handleEditContent(key, value)}
+                onChangeCss={(key, value) => handleEditStyle(key, value)}
               />
             ) : (
-              <p css={explore_service_title_css_}>
-                {edit?.exploreServiceTitle?.text || title_}
+              <p
+                css={
+                  editableStyle?.exploreServiceTitle?.css ||
+                  explore_service_title_css_
+                }
+              >
+                {editableContent?.exploreServiceTitle?.text || title_}
               </p>
             )}
             <ul css={explore_list}>
               {Array.from({ length: count }, (_, index) => (
                 <li css={explore_item} key={index}>
-                  <p
-                    css={
-                      edit?.exploreServiceExploreTitle?.css ||
-                      explore_service_explore_title_css_
-                    }
-                  >
-                    {edit?.exploreServiceExploreTitle?.text || item_title_}
-                  </p>
-                  <p
-                    css={
-                      edit?.exploreServiceExploreButton?.css ||
-                      explore_service_explore_button_css_
-                    }
-                  >
-                    {edit?.exploreServiceExploreButton?.text || item_button_}
-                  </p>
+                  {isEditable ? (
+                    <EditableText
+                      text={editableContent?.exploreServiceExploreTitle}
+                      defaultCss={editableStyle?.exploreServiceExploreTitle}
+                      className="exploreServiceExploreTitle"
+                      isTextArea={false}
+                      onChangeText={(key, value) =>
+                        handleEditContent(key, value)
+                      }
+                      onChangeCss={(key, value) => handleEditStyle(key, value)}
+                    />
+                  ) : (
+                    <p css={editableStyle?.exploreServiceExploreTitle}>
+                      {editableContent?.exploreServiceExploreTitle}
+                    </p>
+                  )}
+                  {isEditable ? (
+                    <EditableText
+                      text={editableContent?.exploreServiceExploreButton}
+                      defaultCss={editableStyle?.exploreServiceExploreButton}
+                      className="exploreServiceExploreButton"
+                      isTextArea={false}
+                      onChangeText={(key, value) =>
+                        handleEditContent(key, value)
+                      }
+                      onChangeCss={(key, value) => handleEditStyle(key, value)}
+                    />
+                  ) : (
+                    <p css={editableStyle?.exploreServiceExploreButton}>
+                      {editableContent?.exploreServiceExploreButton}
+                    </p>
+                  )}
                 </li>
               ))}
             </ul>
-            <div
-              css={
-                edit?.exploreServiceButton?.css || explore_service_button_css_
-              }
-            >
-              {edit?.exploreServiceButton?.text || button_}
-            </div>
+            {isEditable ? (
+              <EditableText
+                text={editableContent?.exploreServiceButton}
+                defaultCss={editableStyle?.exploreServiceButton}
+                className="exploreServiceButton"
+                isTextArea={false}
+                onChangeText={(key, value) => handleEditContent(key, value)}
+                onChangeCss={(key, value) => handleEditStyle(key, value)}
+              />
+            ) : (
+              <div css={editableStyle?.exploreServiceButton}>
+                {editableContent?.exploreServiceButton}
+              </div>
+            )}
           </div>
         </div>
       </div>

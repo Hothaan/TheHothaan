@@ -2,6 +2,7 @@
 import { css, CSSObject } from "@emotion/react";
 import { useEffect, useState } from "react";
 import { OuterWrap } from "../commonComponent/Wrap";
+import EditableText from "@components/service/editableText/EditableText";
 
 const desc_ =
   "lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non";
@@ -17,8 +18,8 @@ interface Ihistory {
   content?: IhistoryContent | null;
   style?: IhistoryStyle | null;
   isEditable?: boolean;
-  onChangeContent?: (key: string, value: string) => void;
-  onChangeStyle?: (key: string, value: CSSObject) => void;
+  onChangeContent: (key: string, value: string) => void;
+  onChangeStyle: (key: string, value: CSSObject) => void;
 }
 
 export const history_desc_css_ = css`
@@ -49,22 +50,55 @@ export const history_desc_css_ = css`
 export default function History(prop: Ihistory) {
   const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
-  const initial = {
-    historyDesc: {
-      text: content?.historyDesc || desc_,
-      css: style?.historyDesc || history_desc_css_,
-    },
+  const count = 6;
+
+  const initialContent = {
+    historyDesc: content?.historyDesc || desc_,
+  };
+  const initialStyle = {
+    historyDesc: style?.historyDesc || history_desc_css_,
   };
 
-  const [edit, setEdit] = useState(initial);
+  const [editableContent, setEditableContent] = useState<any>(null);
+  const [editableStyle, setEditableStyle] = useState<any>(null);
 
   useEffect(() => {
     if (content) {
-      setEdit(initial);
+      if (content?.historyDesc) {
+        setEditableContent({
+          ...initialContent,
+          historyDesc: content.historyDesc,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          historyDesc: initialContent.historyDesc,
+        });
+      }
+
+      setEditableStyle(initialStyle);
     }
   }, [content]);
 
-  const count = 6;
+  function handleEditContent(key: string, value: string) {
+    setEditableContent({
+      ...editableContent,
+      [key]: value,
+    });
+    onChangeContent?.(key, value);
+  }
+
+  function handleEditStyle(key: string, value: CSSObject) {
+    setEditableStyle({
+      ...editableStyle,
+      [key]: value,
+    });
+    onChangeStyle?.(key, value);
+  }
+
+  if (!editableContent) {
+    return <></>;
+  }
 
   return (
     <OuterWrap padding="200px 0">
@@ -76,17 +110,34 @@ export default function History(prop: Ihistory) {
               <div css={circle_container}>
                 <span css={circle(index === 0 ? true : false)}></span>
               </div>
-              <p
-                css={[
-                  history_desc_css_,
-                  history_desc_change(
-                    index === 0 ? true : false,
-                    index === count - 1 ? true : false
-                  ),
-                ]}
-              >
-                {content?.historyDesc || desc_}
-              </p>
+              {isEditable ? (
+                <EditableText
+                  text={editableContent.historyDesc}
+                  className="historyDesc"
+                  isTextArea={false}
+                  defaultCss={{
+                    ...editableStyle.historyDesc,
+                    ...history_desc_change(
+                      index === 0 ? true : false,
+                      index === count - 1 ? true : false
+                    ),
+                  }}
+                  onChangeText={(key, value) => handleEditContent(key, value)}
+                  onChangeCss={(key, value) => handleEditStyle(key, value)}
+                />
+              ) : (
+                <p
+                  css={[
+                    editableStyle?.historyDesc,
+                    history_desc_change(
+                      index === 0 ? true : false,
+                      index === count - 1 ? true : false
+                    ),
+                  ]}
+                >
+                  {editableContent?.historyDesc}
+                </p>
+              )}
             </li>
           ))}
         </ul>

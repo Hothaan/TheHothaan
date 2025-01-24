@@ -3,6 +3,7 @@ import { css, CSSObject } from "@emotion/react";
 import { useState, useEffect } from "react";
 import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
+import EditableText from "@components/service/editableText/EditableText";
 
 const component_title_ = "채용";
 
@@ -26,8 +27,8 @@ interface IrecruitMain {
   content?: IrecruitMainContent | null;
   style?: IrecruitMainStyle | null;
   isEditable?: boolean;
-  onChangeContent?: (key: string, value: string) => void;
-  onChangeStyle?: (key: string, value: CSSObject) => void;
+  onChangeContent: (key: string, value: string) => void;
+  onChangeStyle: (key: string, value: CSSObject) => void;
 }
 
 export const recruit_item_title_css_ = css`
@@ -65,20 +66,51 @@ export const recruit_item_desc_css_ = css`
 function RecruitMainItem(prop: IrecruitMain) {
   const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
+  if (
+    content?.recruitTitle === undefined ||
+    content?.recruitDesc === undefined ||
+    style?.recruitTitle === undefined ||
+    style?.recruitDesc === undefined
+  ) {
+    return <></>;
+  }
+
   return (
     <div css={item_container}>
       <div css={title_container}>
         <div css={title_inner_container}>
           <p css={tag}>NEW</p>
-          <p css={style?.recruitTitle || recruit_item_title_css_}>
-            {content?.recruitTitle || title_}
-          </p>
+          {isEditable ? (
+            <EditableText
+              text={content.recruitTitle as string}
+              className="recruitTitle"
+              isTextArea={false}
+              defaultCss={style.recruitTitle as CSSObject}
+              onChangeText={(key, value) => onChangeContent(key, value)}
+              onChangeCss={(key, value) => onChangeStyle(key, value)}
+            />
+          ) : (
+            <p css={style?.recruitTitle || recruit_item_title_css_}>
+              {content?.recruitTitle || title_}
+            </p>
+          )}
         </div>
         <p css={date_style}>{date_}</p>
       </div>
-      <p css={style?.recruitDesc || recruit_item_desc_css_}>
-        {content?.recruitDesc || desc_}
-      </p>
+      {isEditable ? (
+        <EditableText
+          text={content.recruitDesc as string}
+          className="recruitDesc"
+          isTextArea={false}
+          defaultCss={style.recruitDesc as CSSObject}
+          onChangeText={(key, value) => onChangeContent(key, value)}
+          onChangeCss={(key, value) => onChangeStyle(key, value)}
+        />
+      ) : (
+        <p css={style?.recruitDesc || recruit_item_desc_css_}>
+          {content?.recruitDesc || desc_}
+        </p>
+      )}
     </div>
   );
 }
@@ -86,40 +118,68 @@ function RecruitMainItem(prop: IrecruitMain) {
 export default function RecruitMain(prop: IrecruitMain) {
   const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
-  const initial = {
-    recruitTitle: {
-      text: content?.recruitTitle || title_,
-      css: style?.recruitTitle || recruit_item_title_css_,
-    },
-    recruitDesc: {
-      text: content?.recruitDesc || desc_,
-      css: style?.recruitDesc || recruit_item_desc_css_,
-    },
+  const initialContent = {
+    recruitTitle: content?.recruitTitle || title_,
+    recruitDesc: content?.recruitDesc || desc_,
   };
 
-  const [edit, setEdit] = useState(initial);
+  const initialStyle = {
+    recruitTitle: style?.recruitTitle || recruit_item_title_css_,
+    recruitDesc: style?.recruitDesc || recruit_item_desc_css_,
+  };
+
+  const [editableContent, setEditableContent] = useState<any>(null);
+  const [editableStyle, setEditableStyle] = useState<any>(null);
 
   useEffect(() => {
     if (content) {
-      setEdit(initial);
+      if (content?.recruitTitle) {
+        setEditableContent({
+          ...initialContent,
+          recruitTitle: content.recruitTitle,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          recruitTitle: initialContent.recruitTitle,
+        });
+      }
+
+      if (content?.recruitDesc) {
+        setEditableContent({
+          ...initialContent,
+          recruitDesc: content.recruitDesc,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          recruitDesc: initialContent.recruitDesc,
+        });
+      }
+
+      setEditableStyle(initialStyle);
     }
   }, [content]);
 
-  // function handleEdit(
-  //   field: keyof IrecruitMainContent,
-  //   updatedText: string,
-  //   updatedCss: CSSObject
-  // ) {
-  //   const updatedState = {
-  //     ...edit,
-  //     [field]: {
-  //       text: updatedText,
-  //       css: updatedCss,
-  //     },
-  //   };
-  //   setEdit(updatedState);
-  //   onChange?.(updatedState);
-  // }
+  function handleEditContent(key: string, value: string) {
+    setEditableContent({
+      ...editableContent,
+      [key]: value,
+    });
+    onChangeContent?.(key, value);
+  }
+
+  function handleEditStyle(key: string, value: CSSObject) {
+    setEditableStyle({
+      ...editableStyle,
+      [key]: value,
+    });
+    onChangeStyle?.(key, value);
+  }
+
+  if (!editableContent) {
+    return <></>;
+  }
 
   const count = 3;
 
@@ -133,10 +193,11 @@ export default function RecruitMain(prop: IrecruitMain) {
               {Array.from({ length: count }, (_, index) => (
                 <RecruitMainItem
                   key={index}
-                  content={content}
+                  content={editableContent}
+                  style={editableStyle}
                   isEditable={isEditable}
-                  onChangeContent={onChangeContent}
-                  onChangeStyle={onChangeStyle}
+                  onChangeContent={handleEditContent}
+                  onChangeStyle={handleEditStyle}
                 />
               ))}
             </div>

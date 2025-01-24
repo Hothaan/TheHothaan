@@ -91,6 +91,7 @@ export default function ShoppingMallBrandIntroduce() {
       fetchFeatureData(isProduction, projectIdValue);
     }
   }, [projectIdValue]);
+
   function getLocalContent() {
     const localContent = localStorage.getItem("changedContent");
     if (localContent) {

@@ -11,6 +11,7 @@ import { ReactComponent as Plus } from "@svgs/template/productAmountPlus.svg";
 import { ReactComponent as Caption } from "@svgs/template/productCaption.svg";
 import Tabs from "../commonComponent/Tabs";
 import ImageBox from "../commonComponent/ImageBox";
+import EditableText from "@components/service/editableText/EditableText";
 
 const title_ = "제품 이름";
 const title_className = "cart_title";
@@ -27,8 +28,8 @@ interface Icart {
   content?: IcartContent | null;
   style?: IcartStyle | null;
   isEditable?: boolean;
-  onChangeContent?: (key: string, value: string) => void;
-  onChangeStyle?: (key: string, value: CSSObject) => void;
+  onChangeContent: (key: string, value: string) => void;
+  onChangeStyle: (key: string, value: CSSObject) => void;
 }
 
 export const cart_title_css = {
@@ -373,6 +374,10 @@ function CartOrder(prop: Icart) {
 
   const cart_product_list_inner_container = css``;
 
+  if (content?.cartTitle === undefined || style?.cartTitle === undefined) {
+    return <></>;
+  }
+
   return (
     <div css={container}>
       <div css={cart_product_list_container}>
@@ -392,12 +397,18 @@ function CartOrder(prop: Icart) {
                   borderRadius="0"
                 />
                 <div css={product_info_container}>
-                  <p
-                    css={style?.cartTitle || cart_title_css}
-                    className={title_className}
-                  >
-                    {content?.cartTitle || title_}
-                  </p>
+                  {isEditable ? (
+                    <EditableText
+                      text={content?.cartTitle || title_}
+                      className="cartTitle"
+                      isTextArea={false}
+                      defaultCss={style?.cartTitle}
+                      onChangeText={(key, value) => onChangeContent(key, value)}
+                      onChangeCss={(key, value) => onChangeStyle(key, value)}
+                    />
+                  ) : (
+                    <p css={style?.cartTitle}>{content?.cartTitle}</p>
+                  )}
                   <p css={text_style}>￦5,600,000</p>
                 </div>
               </div>
@@ -634,24 +645,58 @@ function CartInfo() {
 export default function Cart(prop: Icart) {
   const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
-  const initial = {
-    cartTitle: {
-      text: content?.cartTitle || title_,
-      css: content?.cartTitle || cart_title_css,
-    },
-  };
-
-  const [edit, setEdit] = useState(initial);
-
-  useEffect(() => {
-    if (content) {
-      setEdit(initial);
-    }
-  }, [content]);
-
   const container = css`
     width: 100%;
   `;
+
+  const initialContent = {
+    cartTitle: content?.cartTitle || title_,
+  };
+
+  const initialStyle = {
+    cartTitle: style?.cartTitle || cart_title_css,
+  };
+
+  const [editableContent, setEditableContent] = useState<any>(null);
+  const [editableStyle, setEditableStyle] = useState<any>(null);
+
+  useEffect(() => {
+    if (content) {
+      if (content?.cartTitle) {
+        setEditableContent({
+          ...initialContent,
+          cartTitle: content.cartTitle,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          cartTitle: initialContent.cartTitle,
+        });
+      }
+
+      setEditableStyle(initialStyle);
+    }
+  }, [content]);
+
+  function handleEditContent(key: string, value: string) {
+    setEditableContent({
+      ...editableContent,
+      [key]: value,
+    });
+    onChangeContent?.(key, value);
+  }
+
+  function handleEditStyle(key: string, value: CSSObject) {
+    setEditableStyle({
+      ...editableStyle,
+      [key]: value,
+    });
+    onChangeStyle?.(key, value);
+  }
+
+  if (!editableContent) {
+    return <></>;
+  }
 
   return (
     <OuterWrap padding="200px 0">
@@ -659,10 +704,11 @@ export default function Cart(prop: Icart) {
         <div css={container}>
           <CartTitle />
           <CartOrder
-            content={content}
-            style={style}
+            content={editableContent}
+            style={editableStyle}
             isEditable={isEditable}
-            // onChange={onChange}
+            onChangeContent={handleEditContent}
+            onChangeStyle={handleEditStyle}
           />
           <CartInfo />
         </div>

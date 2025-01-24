@@ -86,20 +86,6 @@ export default function ShoppingMallNotice() {
     }
   }, [projectIdValue]);
 
-  useEffect(() => {
-    if (projectId === undefined) {
-      setProjectIdValue(sessionStorage.getItem("projectId"));
-    } else {
-      setProjectIdValue(projectId);
-    }
-  }, [projectId]);
-
-  useEffect(() => {
-    if (projectIdValue) {
-      fetchFeatureData(isProduction, projectIdValue);
-    }
-  }, [projectIdValue]);
-
   function getLocalContent() {
     const localContent = localStorage.getItem("changedContent");
     if (localContent) {

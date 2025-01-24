@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { OuterWrap } from "../commonComponent/Wrap";
 import Title from "../commonComponent/Title";
 import ImageBox from "../commonComponent/ImageBox";
+import EditableText from "@components/service/editableText/EditableText";
 
 const component_title_ = "news board";
 
@@ -24,8 +25,8 @@ interface Inews {
   content?: InewsContent | null;
   style?: InewsStyle | null;
   isEditable?: boolean;
-  onChangeContent?: (key: string, value: string) => void;
-  onChangeStyle?: (key: string, value: CSSObject) => void;
+  onChangeContent: (key: string, value: string) => void;
+  onChangeStyle: (key: string, value: CSSObject) => void;
 }
 
 export const news_title_css_ = css`
@@ -53,6 +54,15 @@ export const news_desc_css_ = css`
 function NewsItem(prop: Inews) {
   const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
+  if (
+    content?.newsTitle === undefined ||
+    content?.newsDesc === undefined ||
+    style?.newsTitle === undefined ||
+    style?.newsDesc === undefined
+  ) {
+    return <></>;
+  }
+
   return (
     <div css={item_container}>
       <ImageBox
@@ -67,12 +77,30 @@ function NewsItem(prop: Inews) {
       />
       <div css={item_info_container}>
         <p css={number_style}>483</p>
-        <p css={style?.newsTitle || news_title_css_}>
-          {content?.newsTitle || item_title_}
-        </p>
-        <p css={style?.newsDesc || news_desc_css_}>
-          {content?.newsDesc || item_desc_}
-        </p>
+        {isEditable ? (
+          <EditableText
+            text={content.newsTitle}
+            className="newsTitle"
+            isTextArea={false}
+            defaultCss={style.newsTitle}
+            onChangeText={(key, value) => onChangeContent(key, value)}
+            onChangeCss={(key, value) => onChangeStyle(key, value)}
+          />
+        ) : (
+          <p css={style?.newsTitle}>{content?.newsTitle}</p>
+        )}
+        {isEditable ? (
+          <EditableText
+            text={content.newsDesc}
+            className="newsDesc"
+            isTextArea={false}
+            defaultCss={style.newsDesc}
+            onChangeText={(key, value) => onChangeContent(key, value)}
+            onChangeCss={(key, value) => onChangeStyle(key, value)}
+          />
+        ) : (
+          <p css={style?.newsDesc}>{content?.newsDesc}</p>
+        )}
       </div>
     </div>
   );
@@ -81,42 +109,68 @@ function NewsItem(prop: Inews) {
 export default function News(prop: Inews) {
   const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
-  const initial = {
-    newsTitle: {
-      text: content?.newsTitle || item_title_,
-      css: style?.newsTitle || news_title_css_,
-    },
-    newsDesc: {
-      text: content?.newsDesc || item_desc_,
-      css: style?.newsDesc || news_desc_css_,
-    },
+  const count = 4;
+
+  const initialContent = {
+    newsTitle: content?.newsTitle || item_title_,
+    newsDesc: content?.newsDesc || item_desc_,
+  };
+  const initialStyle = {
+    newsTitle: style?.newsTitle || news_title_css_,
+    newsDesc: style?.newsDesc || news_desc_css_,
   };
 
-  const [edit, setEdit] = useState(initial);
+  const [editableContent, setEditableContent] = useState<any>(null);
+  const [editableStyle, setEditableStyle] = useState<any>(null);
 
   useEffect(() => {
     if (content) {
-      setEdit(initial);
+      if (content?.newsTitle) {
+        setEditableContent({
+          ...initialContent,
+          newsTitle: content.newsTitle,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          newsTitle: initialContent.newsTitle,
+        });
+      }
+      if (content?.newsDesc) {
+        setEditableContent({
+          ...initialContent,
+          newsDesc: content.newsDesc,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          newsDesc: initialContent.newsDesc,
+        });
+      }
+
+      setEditableStyle(initialStyle);
     }
   }, [content]);
 
-  // function handleEdit(
-  //   field: keyof InewsContent,
-  //   updatedText: string,
-  //   updatedCss: CSSObject
-  // ) {
-  //   const updatedState = {
-  //     ...edit,
-  //     [field]: {
-  //       text: updatedText,
-  //       css: updatedCss,
-  //     },
-  //   };
-  //   setEdit(updatedState);
-  //   onChange?.(updatedState);
-  // }
+  function handleEditContent(key: string, value: string) {
+    setEditableContent({
+      ...editableContent,
+      [key]: value,
+    });
+    onChangeContent?.(key, value);
+  }
 
-  const count = 4;
+  function handleEditStyle(key: string, value: CSSObject) {
+    setEditableStyle({
+      ...editableStyle,
+      [key]: value,
+    });
+    onChangeStyle?.(key, value);
+  }
+
+  if (!editableContent) {
+    return <></>;
+  }
 
   return (
     <OuterWrap padding="100px">
@@ -130,10 +184,11 @@ export default function News(prop: Inews) {
         {Array.from({ length: count }, (_, index) => (
           <NewsItem
             key={index}
-            content={content}
+            content={editableContent}
+            style={editableStyle}
             isEditable={isEditable}
-            onChangeContent={onChangeContent}
-            onChangeStyle={onChangeStyle}
+            onChangeContent={handleEditContent}
+            onChangeStyle={handleEditStyle}
           />
         ))}
       </div>
