@@ -84,6 +84,7 @@ const saveImageFromURL = async (req, res) => {
 // 이미지 & DB 저장
 const saveImageToDatabase = async (req, res) => {
   const { url, project_id, feature_id } = req.body;
+  const isProductDetail = url.includes('쇼핑몰-상품상세');
 
   if (!url || !project_id || !feature_id) {
     return res.status(400).json({ message: 'URL, project_id, and feature_id are required' });
@@ -96,6 +97,9 @@ const saveImageToDatabase = async (req, res) => {
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
     const page = await browser.newPage();
+    if (isProductDetail) {
+      console.log('have Page ====> ', page);
+    }
 
     await page.setUserAgent(
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
@@ -106,9 +110,15 @@ const saveImageToDatabase = async (req, res) => {
 
     let imageBuffer;
     const element = await page.$('.templateImage');
+    if (isProductDetail) {
+      console.log('have Element ====> ', element);
+    }
     if (element) {
       const boundingBox = await element.boundingBox();
       if (boundingBox && boundingBox.width > 0 && boundingBox.height > 0) {
+        if (isProductDetail) {
+          console.log('check boundingBox ====> ', boundingBox);
+        }
         imageBuffer = await element.screenshot();
       } else {
         imageBuffer = await page.screenshot({ fullPage: true });
@@ -117,6 +127,7 @@ const saveImageToDatabase = async (req, res) => {
       imageBuffer = await page.screenshot({ fullPage: true });
     }
 
+    console.log('Image captured successfully!!!!');
     const imageName = `image-${Date.now()}.png`;
     const imageDir = process.env.IMAGE_DIRECTORY || path.resolve(__dirname, '../images');
     const imagePath = path.join(imageDir, imageName);
@@ -126,6 +137,8 @@ const saveImageToDatabase = async (req, res) => {
 
     const imageUrl = `http://dolllpitoxic3.mycafe24.com/images/${imageName}`;
     const fileId = await projectModel.addFileRecord(project_id, feature_id, 'image', url, imagePath, imageUrl);
+
+    console.log('Image saved successfully!!!!');
 
     res.status(200).json({
       message: 'Image saved successfully',
