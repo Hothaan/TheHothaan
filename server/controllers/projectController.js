@@ -237,7 +237,6 @@ exports.generateProjectText = async (req, res) => {
 
         try {
           const featureDetails = await componentModel.getComponentDetails(menu, feature, serviceType);
-          console.log('featureDetails ==>', featureDetails);
 
           if (!featureDetails || featureDetails.length === 0) {
             responses.push({
