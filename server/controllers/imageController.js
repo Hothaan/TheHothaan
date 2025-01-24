@@ -127,7 +127,6 @@ const saveImageToDatabase = async (req, res) => {
       imageBuffer = await page.screenshot({ fullPage: true });
     }
 
-    console.log('Image captured successfully!!!!');
     const imageName = `image-${Date.now()}.png`;
     const imageDir = process.env.IMAGE_DIRECTORY || path.resolve(__dirname, '../images');
     const imagePath = path.join(imageDir, imageName);
@@ -137,8 +136,6 @@ const saveImageToDatabase = async (req, res) => {
 
     const imageUrl = `http://dolllpitoxic3.mycafe24.com/images/${imageName}`;
     const fileId = await projectModel.addFileRecord(project_id, feature_id, 'image', url, imagePath, imageUrl);
-
-    console.log('Image saved successfully!!!!');
 
     res.status(200).json({
       message: 'Image saved successfully',
