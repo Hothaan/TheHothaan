@@ -353,7 +353,7 @@ exports.getAllFeaturesForProject = async (req, res) => {
             ? null
             : JSON.parse(feature.content) // JSON 문자열인 경우 파싱
           : feature.content, // 이미 객체인 경우 그대로 사용
-      style: parseJson(feature.style),
+      style: feature.style,
     }));
 
     // 성공 응답
