@@ -250,7 +250,7 @@ exports.generateProjectText = async (req, res) => {
           }
 
           const { depth1, depth2, structure, content, cnt } = featureDetails;
-          console.log('===========......depth1: ', depth1, 'depth2: ', depth2);
+
           const featureResponseData = await generateOpenAiText(
             serviceType,
             serviceTitle,
