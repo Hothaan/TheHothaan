@@ -143,7 +143,7 @@ export default function ShoppingMallMain() {
     if (localContent) {
       const parsed = JSON.parse(localContent);
       if (parsed[featureKey]?.content) {
-        return parsed[featureKey].content;
+        return parsed[featureKey]?.content;
       }
     }
     return null;
@@ -211,7 +211,6 @@ export default function ShoppingMallMain() {
       serviceContactTitle: service_contact_title_css_ || undefined,
       serviceContactButton: undefined,
     };
-    console.log(initialStyle);
     setPageStyle({ ...initialStyle });
   }
 

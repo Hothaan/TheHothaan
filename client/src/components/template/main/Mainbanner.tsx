@@ -178,9 +178,9 @@ export default function Mainbanner(prop: ImainBanner) {
           {isEditable ? (
             <EditableText
               text={editableContent.mainBannerTitle}
-              className="mainBannerTitle"
               isTextArea={false}
               defaultCss={editableStyle.mainBannerTitle}
+              className="mainBannerTitle"
               onChangeText={(key, value) => handleEditContent(key, value)}
               onChangeCss={(key, value) => handleEditStyle(key, value)}
             />
@@ -192,9 +192,9 @@ export default function Mainbanner(prop: ImainBanner) {
           {isEditable ? (
             <EditableText
               text={editableContent.mainBannerDesc}
-              className="mainBannerDesc"
-              isTextArea={true}
               defaultCss={editableStyle.mainBannerDesc}
+              isTextArea={true}
+              className="mainBannerDesc"
               onChangeText={(key, value) => handleEditContent(key, value)}
               onChangeCss={(key, value) => handleEditStyle(key, value)}
             />
