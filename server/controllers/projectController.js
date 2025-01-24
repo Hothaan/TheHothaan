@@ -249,7 +249,7 @@ exports.generateProjectText = async (req, res) => {
             continue;
           }
 
-          const { depth1, depth2, structure, content, cnt } = featureDetails;
+          const { depth1, depth2, structure, style, content, cnt } = featureDetails;
 
           const featureResponseData = await generateOpenAiText(
             serviceType,
@@ -265,7 +265,7 @@ exports.generateProjectText = async (req, res) => {
 
           // DB에 결과 저장
           if (feature_id) {
-            await projectModel.updateFeatureContent(feature_id, JSON.stringify(featureResponseData.content));
+            await projectModel.updateFeatureContent(feature_id, JSON.stringify(featureResponseData.content), style);
           }
 
           responses.push({
