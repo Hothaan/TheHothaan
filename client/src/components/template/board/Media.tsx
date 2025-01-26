@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { OuterWrap } from "../commonComponent/Wrap";
 import Title from "../commonComponent/Title";
 import ImageBox from "../commonComponent/ImageBox";
-import EditableText from "@components/service/editableText/EditableText";
 
 const component_title_ = "media board";
 
@@ -26,8 +25,8 @@ interface Imedia {
   content?: ImediaContent | null;
   style?: ImediaStyle | null;
   isEditable?: boolean;
-  onChangeContent: (key: string, value: string) => void;
-  onChangeStyle: (key: string, value: CSSObject) => void;
+  onChangeContent?: (key: string, value: string) => void;
+  onChangeStyle?: (key: string, value: CSSObject) => void;
 }
 
 export const media_title_css_ = css`
@@ -55,15 +54,6 @@ export const media_desc_css_ = css`
 function MediaItem(prop: Imedia) {
   const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
-  if (
-    content?.mediaTitle === undefined ||
-    content?.mediaDesc === undefined ||
-    style?.mediaTitle === undefined ||
-    style?.mediaDesc === undefined
-  ) {
-    return <></>;
-  }
-
   return (
     <div css={item_container}>
       <ImageBox
@@ -78,30 +68,12 @@ function MediaItem(prop: Imedia) {
       />
       <div css={item_info_container}>
         <p css={number_style}>483</p>
-        {isEditable ? (
-          <EditableText
-            text={content.mediaTitle}
-            className="mediaTitle"
-            isTextArea={false}
-            defaultCss={style.mediaTitle}
-            onChangeText={(key, value) => onChangeContent(key, value)}
-            onChangeCss={(key, value) => onChangeStyle(key, value)}
-          />
-        ) : (
-          <p css={style?.mediaTitle}>{content?.mediaTitle}</p>
-        )}
-        {isEditable ? (
-          <EditableText
-            text={content.mediaDesc}
-            className="mediaDesc"
-            isTextArea={false}
-            defaultCss={style.mediaDesc}
-            onChangeText={(key, value) => onChangeContent(key, value)}
-            onChangeCss={(key, value) => onChangeStyle(key, value)}
-          />
-        ) : (
-          <p css={style?.mediaDesc}>{content?.mediaDesc}</p>
-        )}
+        <p css={style?.mediaTitle || media_title_css_}>
+          {content?.mediaTitle || item_title_}
+        </p>
+        <p css={style?.mediaDesc || media_desc_css_}>
+          {content?.mediaDesc || item_desc_}
+        </p>
       </div>
     </div>
   );
@@ -110,68 +82,42 @@ function MediaItem(prop: Imedia) {
 export default function Media(prop: Imedia) {
   const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
-  const count = 6;
-
-  const initialContent = {
-    mediaTitle: content?.mediaTitle || item_title_,
-    mediaDesc: content?.mediaDesc || item_desc_,
+  const initial = {
+    mediaTitle: {
+      text: content?.mediaTitle || item_title_,
+      css: style?.mediaTitle || media_title_css_,
+    },
+    mediaDesc: {
+      text: content?.mediaDesc || item_desc_,
+      css: style?.mediaDesc || media_desc_css_,
+    },
   };
-  const initialStyle = {
-    mediaTitle: style?.mediaTitle || media_title_css_,
-    mediaDesc: style?.mediaDesc || media_desc_css_,
-  };
 
-  const [editableContent, setEditableContent] = useState<any>(null);
-  const [editableStyle, setEditableStyle] = useState<any>(null);
+  const [edit, setEdit] = useState(initial);
 
   useEffect(() => {
     if (content) {
-      if (content?.mediaDesc) {
-        setEditableContent({
-          ...initialContent,
-          mediaDesc: content.mediaDesc,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          mediaDesc: initialContent.mediaDesc,
-        });
-      }
-      if (content?.mediaTitle) {
-        setEditableContent({
-          ...initialContent,
-          mediaTitle: content.mediaTitle,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          mediaTitle: initialContent.mediaTitle,
-        });
-      }
-
-      setEditableStyle(initialStyle);
+      setEdit(initial);
     }
   }, [content]);
 
-  function handleEditContent(key: string, value: string) {
-    setEditableContent({
-      ...editableContent,
-      [key]: value,
-    });
-    onChangeContent?.(key, value);
-  }
+  // function handleEdit(
+  //   field: keyof ImediaContent,
+  //   updatedText: string,
+  //   updatedCss: CSSObject
+  // ) {
+  //   const updatedState = {
+  //     ...edit,
+  //     [field]: {
+  //       text: updatedText,
+  //       css: updatedCss,
+  //     },
+  //   };
+  //   setEdit(updatedState);
+  //   onChange?.(updatedState);
+  // }
 
-  function handleEditStyle(key: string, value: CSSObject) {
-    setEditableStyle({
-      ...editableStyle,
-      [key]: value,
-    });
-    onChangeStyle?.(key, value);
-  }
-
-  if (!editableContent) {
-    return <></>;
-  }
+  const count = 6;
 
   return (
     <OuterWrap padding="100px 0">
@@ -184,11 +130,10 @@ export default function Media(prop: Imedia) {
         {Array.from({ length: count }, (_, index) => (
           <MediaItem
             key={index}
-            isEditable={isEditable}
-            content={editableContent}
-            style={editableStyle}
-            onChangeContent={handleEditContent}
-            onChangeStyle={handleEditStyle}
+            content={content}
+            onChangeContent={onChangeContent}
+            onChangeStyle={onChangeStyle}
+            isEditable
           />
         ))}
       </div>

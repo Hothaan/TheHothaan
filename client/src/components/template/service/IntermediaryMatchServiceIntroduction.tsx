@@ -1,9 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
 import { useEffect, useState } from "react";
-import { OuterWrap } from "../commonComponent/Wrap";
+import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
-import EditableText from "@components/service/editableText/EditableText";
 
 const title_ = "Headline H1";
 const desc_ =
@@ -75,6 +74,8 @@ export default function IntermediaryMatchServiceIntroduction(
 ) {
   const { isEditable, style, content, onChangeContent, onChangeStyle } = prop;
 
+  console.log(content);
+
   const initial = {
     IntermediaryMatchServiceIntroductionTitle: {
       text: content?.IntermediaryMatchServiceIntroductionTitle || title_,
@@ -90,114 +91,35 @@ export default function IntermediaryMatchServiceIntroduction(
     },
   };
 
-  const initialContent = {
-    IntermediaryMatchServiceIntroductionTitle:
-      content?.IntermediaryMatchServiceIntroductionTitle || title_,
-    IntermediaryMatchServiceIntroductionDesc:
-      content?.IntermediaryMatchServiceIntroductionDesc || desc_,
-  };
-  const initialStyle = {
-    IntermediaryMatchServiceIntroductionTitle:
-      style?.IntermediaryMatchServiceIntroductionTitle ||
-      intermediary_match_service_introduction_title_css_,
-    IntermediaryMatchServiceIntroductionDesc:
-      style?.IntermediaryMatchServiceIntroductionDesc ||
-      intermediary_match_service_introduction_desc_css_,
-  };
-
-  const [editableContent, setEditableContent] = useState<any>(null);
-  const [editableStyle, setEditableStyle] = useState<any>(null);
+  const [edit, setEdit] = useState(initial);
 
   useEffect(() => {
     if (content) {
-      if (content?.IntermediaryMatchServiceIntroductionTitle) {
-        setEditableContent({
-          ...initialContent,
-          IntermediaryMatchServiceIntroductionTitle:
-            content.IntermediaryMatchServiceIntroductionTitle,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          IntermediaryMatchServiceIntroductionTitle:
-            initialContent.IntermediaryMatchServiceIntroductionTitle,
-        });
-      }
-      if (content?.IntermediaryMatchServiceIntroductionDesc) {
-        setEditableContent({
-          ...initialContent,
-          IntermediaryMatchServiceIntroductionDesc:
-            content.IntermediaryMatchServiceIntroductionDesc,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          IntermediaryMatchServiceIntroductionDesc:
-            initialContent.IntermediaryMatchServiceIntroductionDesc,
-        });
-      }
-
-      setEditableStyle(initialStyle);
+      setEdit(initial);
     }
   }, [content]);
-
-  function handleEditContent(key: string, value: string) {
-    setEditableContent({
-      ...editableContent,
-      [key]: value,
-    });
-    onChangeContent?.(key, value);
-  }
-
-  function handleEditStyle(key: string, value: CSSObject) {
-    setEditableStyle({
-      ...editableStyle,
-      [key]: value,
-    });
-    onChangeStyle?.(key, value);
-  }
-
-  if (!editableContent) {
-    return <></>;
-  }
 
   return (
     <OuterWrap padding="0">
       <div css={container}>
         <div css={banner_1_container}>
           <div css={text_container_absolute}>
-            {isEditable ? (
-              <EditableText
-                text={editableContent.IntermediaryMatchServiceIntroductionTitle}
-                className="IntermediaryMatchServiceIntroductionTitle"
-                isTextArea={false}
-                defaultCss={
-                  editableStyle.IntermediaryMatchServiceIntroductionTitle
-                }
-                onChangeText={(key, value) => handleEditContent(key, value)}
-                onChangeCss={(key, value) => handleEditStyle(key, value)}
-              />
-            ) : (
-              <p css={editableStyle?.IntermediaryMatchServiceIntroductionTitle}>
-                {editableContent?.IntermediaryMatchServiceIntroductionTitle}
-              </p>
-            )}
-            {isEditable ? (
-              <EditableText
-                text={editableContent.IntermediaryMatchServiceIntroductionDesc}
-                className="IntermediaryMatchServiceIntroductionDesc"
-                isTextArea={true}
-                defaultCss={
-                  editableStyle.IntermediaryMatchServiceIntroductionDesc
-                }
-                onChangeText={(key, value) => handleEditContent(key, value)}
-                onChangeCss={(key, value) => handleEditStyle(key, value)}
-              />
-            ) : (
-              <p css={editableStyle?.IntermediaryMatchServiceIntroductionDesc}>
-                {editableContent?.IntermediaryMatchServiceIntroductionDesc}
-              </p>
-            )}
+            <p
+              css={
+                edit?.IntermediaryMatchServiceIntroductionTitle?.css ||
+                intermediary_match_service_introduction_title_css_
+              }
+            >
+              {edit?.IntermediaryMatchServiceIntroductionTitle?.text || title_}
+            </p>
+            <p
+              css={
+                edit?.IntermediaryMatchServiceIntroductionDesc?.css ||
+                intermediary_match_service_introduction_desc_css_
+              }
+            >
+              {edit?.IntermediaryMatchServiceIntroductionDesc?.text || desc_}
+            </p>
           </div>
           <ImageBox
             container={{ width: "100%", height: "1120px" }}
@@ -213,46 +135,23 @@ export default function IntermediaryMatchServiceIntroduction(
         <div css={banner_2_container}>
           <div css={text_wrap}>
             <div css={text_container}>
-              {isEditable ? (
-                <EditableText
-                  text={
-                    editableContent.IntermediaryMatchServiceIntroductionTitle
-                  }
-                  className="IntermediaryMatchServiceIntroductionTitle"
-                  isTextArea={false}
-                  defaultCss={
-                    editableStyle.IntermediaryMatchServiceIntroductionTitle
-                  }
-                  onChangeText={(key, value) => handleEditContent(key, value)}
-                  onChangeCss={(key, value) => handleEditStyle(key, value)}
-                />
-              ) : (
-                <p
-                  css={editableStyle?.IntermediaryMatchServiceIntroductionTitle}
-                >
-                  {editableContent?.IntermediaryMatchServiceIntroductionTitle}
-                </p>
-              )}
-              {isEditable ? (
-                <EditableText
-                  text={
-                    editableContent.IntermediaryMatchServiceIntroductionDesc
-                  }
-                  className="IntermediaryMatchServiceIntroductionDesc"
-                  isTextArea={true}
-                  defaultCss={
-                    editableStyle.IntermediaryMatchServiceIntroductionDesc
-                  }
-                  onChangeText={(key, value) => handleEditContent(key, value)}
-                  onChangeCss={(key, value) => handleEditStyle(key, value)}
-                />
-              ) : (
-                <p
-                  css={editableStyle?.IntermediaryMatchServiceIntroductionDesc}
-                >
-                  {editableContent?.IntermediaryMatchServiceIntroductionDesc}
-                </p>
-              )}
+              <p
+                css={
+                  edit?.IntermediaryMatchServiceIntroductionTitle?.css ||
+                  intermediary_match_service_introduction_title_css_
+                }
+              >
+                {edit?.IntermediaryMatchServiceIntroductionTitle?.text ||
+                  title_}
+              </p>
+              <p
+                css={
+                  edit?.IntermediaryMatchServiceIntroductionDesc?.css ||
+                  intermediary_match_service_introduction_desc_css_
+                }
+              >
+                {edit?.IntermediaryMatchServiceIntroductionDesc?.text || desc_}
+              </p>
             </div>
           </div>
           <ImageBox
@@ -279,82 +178,44 @@ export default function IntermediaryMatchServiceIntroduction(
           />
           <div css={text_wrap}>
             <div css={text_container}>
-              {isEditable ? (
-                <EditableText
-                  text={
-                    editableContent.IntermediaryMatchServiceIntroductionTitle
-                  }
-                  className="IntermediaryMatchServiceIntroductionTitle"
-                  isTextArea={false}
-                  defaultCss={
-                    editableStyle.IntermediaryMatchServiceIntroductionTitle
-                  }
-                  onChangeText={(key, value) => handleEditContent(key, value)}
-                  onChangeCss={(key, value) => handleEditStyle(key, value)}
-                />
-              ) : (
-                <p
-                  css={editableStyle?.IntermediaryMatchServiceIntroductionTitle}
-                >
-                  {editableContent?.IntermediaryMatchServiceIntroductionTitle}
-                </p>
-              )}
-              {isEditable ? (
-                <EditableText
-                  text={
-                    editableContent.IntermediaryMatchServiceIntroductionDesc
-                  }
-                  className="IntermediaryMatchServiceIntroductionDesc"
-                  isTextArea={true}
-                  defaultCss={
-                    editableStyle.IntermediaryMatchServiceIntroductionDesc
-                  }
-                  onChangeText={(key, value) => handleEditContent(key, value)}
-                  onChangeCss={(key, value) => handleEditStyle(key, value)}
-                />
-              ) : (
-                <p
-                  css={editableStyle?.IntermediaryMatchServiceIntroductionDesc}
-                >
-                  {editableContent?.IntermediaryMatchServiceIntroductionDesc}
-                </p>
-              )}
+              <p
+                css={
+                  edit?.IntermediaryMatchServiceIntroductionTitle?.css ||
+                  intermediary_match_service_introduction_title_css_
+                }
+              >
+                {edit?.IntermediaryMatchServiceIntroductionTitle?.text ||
+                  title_}
+              </p>
+              <p
+                css={
+                  edit?.IntermediaryMatchServiceIntroductionDesc?.css ||
+                  intermediary_match_service_introduction_desc_css_
+                }
+              >
+                {edit?.IntermediaryMatchServiceIntroductionDesc?.text || desc_}
+              </p>
             </div>
           </div>
         </div>
         <div css={banner_4_container}>
-          {isEditable ? (
-            <EditableText
-              text={editableContent.IntermediaryMatchServiceIntroductionTitle}
-              className="IntermediaryMatchServiceIntroductionTitle"
-              isTextArea={false}
-              defaultCss={
-                editableStyle.IntermediaryMatchServiceIntroductionTitle
-              }
-              onChangeText={(key, value) => handleEditContent(key, value)}
-              onChangeCss={(key, value) => handleEditStyle(key, value)}
-            />
-          ) : (
-            <p css={editableStyle?.IntermediaryMatchServiceIntroductionTitle}>
-              {editableContent?.IntermediaryMatchServiceIntroductionTitle}
-            </p>
-          )}
-          {isEditable ? (
-            <EditableText
-              text={editableContent.IntermediaryMatchServiceIntroductionDesc}
-              className="IntermediaryMatchServiceIntroductionDesc"
-              isTextArea={true}
-              defaultCss={
-                editableStyle.IntermediaryMatchServiceIntroductionDesc
-              }
-              onChangeText={(key, value) => handleEditContent(key, value)}
-              onChangeCss={(key, value) => handleEditStyle(key, value)}
-            />
-          ) : (
-            <p css={editableStyle?.IntermediaryMatchServiceIntroductionDesc}>
-              {editableContent?.IntermediaryMatchServiceIntroductionDesc}
-            </p>
-          )}
+          <p
+            css={
+              edit?.IntermediaryMatchServiceIntroductionTitle?.css ||
+              intermediary_match_service_introduction_title_css_
+            }
+          >
+            {edit?.IntermediaryMatchServiceIntroductionTitle?.text || title_}
+          </p>
+          <p
+            css={[
+              text_align_center,
+              edit?.IntermediaryMatchServiceIntroductionDesc?.css ||
+                intermediary_match_service_introduction_desc_css_,
+            ]}
+          >
+            {edit?.IntermediaryMatchServiceIntroductionDesc?.text || desc_}
+          </p>
         </div>
       </div>
     </OuterWrap>

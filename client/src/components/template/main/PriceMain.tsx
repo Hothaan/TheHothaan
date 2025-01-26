@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { OuterWrap, ContentsWrap } from "../commonComponent/Wrap";
 import Title from "../commonComponent/Title";
 import ImageBox from "../commonComponent/ImageBox";
-import EditableText from "@components/service/editableText/EditableText";
 
 const component_desc_ =
   "Lorem ipsum dolor sit amet consectetur adipiscing eli mattis sit phasellus mollis sit aliquam sit nullam.";
@@ -22,8 +21,8 @@ interface IpriceMain {
   content?: iPriceMainContent | null;
   style?: iPriceMainStyle | null;
   isEditable?: boolean;
-  onChangeContent: (key: string, value: string) => void;
-  onChangeStyle: (key: string, value: CSSObject) => void;
+  onChangeContent?: (key: string, value: string) => void;
+  onChangeStyle?: (key: string, value: CSSObject) => void;
 }
 
 interface iPriceMainItem extends IpriceMain {
@@ -60,13 +59,6 @@ function PriceMainItem(prop: iPriceMainItem) {
     itemDay,
   } = prop;
 
-  if (
-    content?.priceMainDesc === undefined ||
-    style?.priceMainDesc === undefined
-  ) {
-    return <></>;
-  }
-
   return (
     <div css={item_container}>
       <ImageBox
@@ -84,19 +76,9 @@ function PriceMainItem(prop: iPriceMainItem) {
           <span css={item_bold_text_64_style}>{itemDay}</span>
           <span>day</span>
         </p>
-        {isEditable ? (
-          <EditableText
-            text={content.priceMainDesc}
-            className="priceMainDesc"
-            isTextArea={false}
-            defaultCss={style.priceMainDesc}
-            onChangeText={(key, value) => onChangeContent(key, value)}
-            onChangeCss={(key, value) => onChangeStyle(key, value)}
-          />
-        ) : (
-          <p css={price_main_item_desc_css_}>{content?.priceMainDesc}</p>
-        )}
-
+        <p css={price_main_item_desc_css_}>
+          {content?.priceMainDesc || item_desc_}
+        </p>
         <p css={item_price_text_style}>
           <span css={item_bold_text_40_style}>
             {item_price.toLocaleString()}
@@ -110,55 +92,23 @@ function PriceMainItem(prop: iPriceMainItem) {
 
 export default function PriceMain(prop: IpriceMain) {
   const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
-  const count = 3;
 
-  const initialContent = {
-    priceMainDesc: content?.priceMainDesc || item_desc_,
-  };
-  const initialStyle = {
-    priceMainDesc: style?.priceMainDesc || price_main_item_desc_css_,
+  const initial = {
+    desc: {
+      text: content?.priceMainDesc || item_desc_,
+      css: style?.priceMainDesc || price_main_item_desc_css_,
+    },
   };
 
-  const [editableContent, setEditableContent] = useState<any>(null);
-  const [editableStyle, setEditableStyle] = useState<any>(null);
+  const [edit, setEdit] = useState(initial);
 
   useEffect(() => {
     if (content) {
-      if (content?.priceMainDesc) {
-        setEditableContent({
-          ...initialContent,
-          priceMainDesc: content.priceMainDesc,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          priceMainDesc: initialContent.priceMainDesc,
-        });
-      }
-
-      setEditableStyle(initialStyle);
+      setEdit(initial);
     }
   }, [content]);
 
-  function handleEditContent(key: string, value: string) {
-    setEditableContent({
-      ...editableContent,
-      [key]: value,
-    });
-    onChangeContent?.(key, value);
-  }
-
-  function handleEditStyle(key: string, value: CSSObject) {
-    setEditableStyle({
-      ...editableStyle,
-      [key]: value,
-    });
-    onChangeStyle?.(key, value);
-  }
-
-  if (!editableContent) {
-    return <></>;
-  }
+  const count = 3;
 
   return (
     <OuterWrap padding="160px 0">
@@ -173,11 +123,10 @@ export default function PriceMain(prop: IpriceMain) {
               <PriceMainItem
                 key={index}
                 itemDay={(index + 1).toString()}
-                content={editableContent}
-                style={editableStyle}
+                content={content}
                 isEditable={isEditable}
-                onChangeContent={handleEditContent}
-                onChangeStyle={handleEditStyle}
+                onChangeContent={onChangeContent}
+                onChangeStyle={onChangeStyle}
               />
             ))}
           </div>

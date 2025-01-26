@@ -3,7 +3,6 @@ import { css, CSSObject } from "@emotion/react";
 import { useEffect, useState } from "react";
 import { OuterWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
-import EditableText from "@components/service/editableText/EditableText";
 
 const component_title_ = "뉴스";
 
@@ -23,8 +22,8 @@ interface InewsMain {
   content?: InewsMainContent | null;
   style?: InewsMainStyle | null;
   isEditable?: boolean;
-  onChangeContent: (key: string, value: string) => void;
-  onChangeStyle: (key: string, value: CSSObject) => void;
+  onChangeContent?: (key: string, value: string) => void;
+  onChangeStyle?: (key: string, value: CSSObject) => void;
 }
 
 export const news_main_item_title_css_ = css`
@@ -44,10 +43,6 @@ export const news_main_item_title_css_ = css`
 function NewsMainItem(prop: InewsMain) {
   const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
-  if (content?.newsTitle === undefined || style?.newsTitle === undefined) {
-    return <></>;
-  }
-
   return (
     <div css={item}>
       <ImageBox
@@ -62,20 +57,9 @@ function NewsMainItem(prop: InewsMain) {
       />
       <div css={info_container}>
         <p css={item_tag}>{item_tag_}</p>
-        {isEditable ? (
-          <EditableText
-            text={content.newsTitle as string}
-            className="productDetailMoreProductTitle"
-            isTextArea={false}
-            defaultCss={style.newsTitle as CSSObject}
-            onChangeText={(key, value) => onChangeContent(key, value)}
-            onChangeCss={(key, value) => onChangeStyle(key, value)}
-          />
-        ) : (
-          <p css={style?.newsTitle || news_main_item_title_css_}>
-            {content?.newsTitle || item_title_}
-          </p>
-        )}
+        <p css={style?.newsTitle || news_main_item_title_css_}>
+          {content?.newsTitle || item_title_}
+        </p>
       </div>
     </div>
   );
@@ -84,55 +68,38 @@ function NewsMainItem(prop: InewsMain) {
 export default function NewsMain(prop: InewsMain) {
   const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
-  const count = 6;
-
-  const initialContent = {
-    newsTitle: content?.newsTitle || item_title_,
+  const initial = {
+    title: {
+      text: content?.newsTitle || item_title_,
+      css: style?.newsTitle || news_main_item_title_css_,
+    },
   };
 
-  const initialStyle = {
-    newsTitle: style?.newsTitle || news_main_item_title_css_,
-  };
-
-  const [editableContent, setEditableContent] = useState<any>(null);
-  const [editableStyle, setEditableStyle] = useState<any>(null);
+  const [edit, setEdit] = useState(initial);
 
   useEffect(() => {
     if (content) {
-      if (content?.newsTitle) {
-        setEditableContent({
-          ...initialContent,
-          newsTitle: content.newsTitle,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          newsTitle: initialContent.newsTitle,
-        });
-      }
-      setEditableStyle(initialStyle);
+      setEdit(initial);
     }
   }, [content]);
 
-  function handleEditContent(key: string, value: string) {
-    setEditableContent({
-      ...editableContent,
-      [key]: value,
-    });
-    onChangeContent?.(key, value);
-  }
+  // function handleEdit(
+  //   field: keyof InewsMainContent,
+  //   updatedText: string,
+  //   updatedCss: CSSObject
+  // ) {
+  //   const updatedState = {
+  //     ...edit,
+  //     [field]: {
+  //       text: updatedText,
+  //       css: updatedCss,
+  //     },
+  //   };
+  //   setEdit(updatedState);
+  //   onChange?.(updatedState);
+  // }
 
-  function handleEditStyle(key: string, value: CSSObject) {
-    setEditableStyle({
-      ...editableStyle,
-      [key]: value,
-    });
-    onChangeStyle?.(key, value);
-  }
-
-  if (!editableContent) {
-    return <></>;
-  }
+  const count = 6;
 
   return (
     <OuterWrap padding="86px 0">
@@ -140,14 +107,7 @@ export default function NewsMain(prop: InewsMain) {
         <p css={title_style}>{component_title_}</p>
         <div css={item_container}>
           {Array.from({ length: count }, (_, index) => (
-            <NewsMainItem
-              key={index}
-              content={editableContent}
-              style={editableStyle}
-              isEditable={isEditable}
-              onChangeContent={handleEditContent}
-              onChangeStyle={handleEditStyle}
-            />
+            <NewsMainItem key={index} content={content} />
           ))}
         </div>
       </div>

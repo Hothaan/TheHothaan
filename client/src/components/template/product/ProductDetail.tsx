@@ -502,14 +502,6 @@ function ProductDetailReview() {
 export default function ProductDetail(prop: IproductDetail) {
   const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
-  const container = css`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 50px;
-  `;
-
   const initialContent = {
     productDetailProductTitle:
       content?.productDetailProductTitle || product_title_,
@@ -608,7 +600,23 @@ export default function ProductDetail(prop: IproductDetail) {
     onChangeStyle?.(key, value);
   }
 
-  if (!editableContent) {
+  const container = css`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+  `;
+
+  console.log(editableContent);
+
+  if (
+    !editableContent ||
+    editableContent.productDetailProductTitle === undefined ||
+    editableContent.productDetailProductDesc === undefined ||
+    editableContent.productDetailMoreProductTitle === undefined ||
+    editableContent.productDetailMoreProductDesc === undefined
+  ) {
     return <></>;
   }
 

@@ -274,14 +274,6 @@ export default function Notice(prop: Inotice) {
   const { option, style, content, isEditable, onChangeContent, onChangeStyle } =
     prop;
 
-  const container = css`
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 50px;
-  `;
-
   const initialContent = {
     noticeTitle: content?.noticeTitle || title_,
   };
@@ -330,9 +322,13 @@ export default function Notice(prop: Inotice) {
     onChangeStyle?.(key, value);
   }
 
-  if (!editableContent) {
-    return <></>;
-  }
+  const container = css`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 50px;
+  `;
 
   if (option === "텍스트형") {
     return (

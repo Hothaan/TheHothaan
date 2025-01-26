@@ -142,6 +142,25 @@ export default function BrandIntroduce(prop: IbrandIntroduce) {
 
   const count = 2;
 
+  const initial = {
+    brandIntroduceBannerTitle: {
+      text: content?.brandIntroduceBannerTitle,
+      css: style?.brandIntroduceBannerTitle,
+    },
+    brandIntroduceBannerDesc: {
+      text: content?.brandIntroduceBannerDesc,
+      css: style?.brandIntroduceBannerDesc,
+    },
+    brandIntroduceItemTitle: {
+      text: content?.brandIntroduceItemTitle,
+      css: style?.brandIntroduceItemTitle,
+    },
+    brandIntroduceItemDesc: {
+      text: content?.brandIntroduceItemDesc,
+      css: style?.brandIntroduceItemDesc,
+    },
+  };
+
   const initialContent = {
     brandIntroduceBannerTitle:
       content?.brandIntroduceBannerTitle || banner_title_,
