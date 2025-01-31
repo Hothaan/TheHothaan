@@ -17,10 +17,10 @@ import useIsProduction from "@hooks/useIsProduction";
 
 /* css */
 import {
-  greetings_half_title_css_,
-  greetings_half_desc_css_,
-  greetings_full_title_css_,
   greetings_full_desc_css_,
+  greetings_full_title_css_,
+  greetings_half_desc_css_,
+  greetings_half_title_css_,
 } from "@components/template/companyIntoduce/Greetings";
 
 interface IhomePageBoardGreetingsContent {
@@ -93,32 +93,13 @@ export default function HomePageBoardGreetings() {
     }
   }, [projectIdValue]);
 
-  function getLocalContent() {
-    const localContent = localStorage.getItem("changedContent");
-    if (localContent) {
-      const parsed = JSON.parse(localContent);
-      if (parsed[featureKey]?.content) {
-        return parsed[featureKey].content;
-      }
-    }
-    return null;
-  }
-
-  function getLocalStyle() {
-    const localContent = localStorage.getItem("changedStyle");
-    if (localContent) {
-      const parsed = JSON.parse(localContent);
-      if (parsed[featureKey]?.style) {
-        return parsed[featureKey].style;
-      }
-    }
-    return null;
-  }
-
   const [pageContent, setPageContent] =
-    useState<IhomePageBoardGreetingsContent | null>(getLocalContent());
-  const [pageStyle, setPageStyle] =
-    useState<IhomePageBoardGreetingsStyle | null>(getLocalStyle());
+    useState<IhomePageBoardGreetingsContent>(
+      {} as IhomePageBoardGreetingsContent
+    );
+  const [pageStyle, setPageStyle] = useState<IhomePageBoardGreetingsStyle>(
+    {} as IhomePageBoardGreetingsStyle
+  );
 
   function updateInitialContent() {
     if (generatedText && generatedText.content) {
@@ -130,7 +111,7 @@ export default function HomePageBoardGreetings() {
           generatedText.content.greetingsFullTitle || undefined,
         greetingsFullDesc: generatedText.content.greetingsFullDesc || undefined,
       };
-      setPageContent(initialContent);
+      setPageContent({ ...initialContent });
     }
   }
 
@@ -148,67 +129,41 @@ export default function HomePageBoardGreetings() {
   //featureData가 들어오면 초기 콘텐츠와 스타일 업데이트
   useEffect(() => {
     if (generatedText) {
-      const localContent = localStorage.getItem("changedContent");
-      const hasLocalContent = localContent
-        ? JSON.parse(localContent)?.[featureKey]?.content
-        : null;
-
-      if (!hasLocalContent) {
-        updateInitialContent();
-      }
-
-      const localStyle = localStorage.getItem("changedStyle");
-      const hasLocalStyle = localStyle
-        ? JSON.parse(localStyle)?.[featureKey]?.style
-        : null;
-
-      if (!hasLocalStyle) {
-        updateInitialStyle();
-      }
+      updateInitialContent();
+      updateInitialStyle();
     }
   }, [generatedText]);
 
+  //pageContent가 변경될 때마다 localStorage에 업데이트
   useEffect(() => {
     if (pageContent) {
       const localContent = localStorage.getItem("changedContent");
-      const updatedContent = localContent
-        ? {
-            ...JSON.parse(localContent),
-            [featureKey]: {
-              featureId: generatedText?.feature_id,
-              content: { ...pageContent },
+
+      if (localContent) {
+        const parsed = JSON.parse(localContent);
+        const updatedData = {
+          ...parsed,
+          [featureKey]: {
+            featureId: generatedText?.feature_id,
+            content: {
+              ...pageContent,
             },
-          }
-        : {
-            [featureKey]: {
-              featureId: generatedText?.feature_id,
-              content: { ...pageContent },
+          },
+        };
+        localStorage.setItem("changedContent", JSON.stringify(updatedData));
+      } else {
+        const data = {
+          [featureKey]: {
+            featureId: generatedText?.feature_id,
+            content: {
+              ...pageContent,
             },
-          };
-      localStorage.setItem("changedContent", JSON.stringify(updatedContent));
+          },
+        };
+        localStorage.setItem("changedContent", JSON.stringify(data));
+      }
     }
   }, [pageContent]);
-
-  useEffect(() => {
-    if (pageStyle) {
-      const localStyle = localStorage.getItem("changedStyle");
-      const updatedStyle = localStyle
-        ? {
-            ...JSON.parse(localStyle),
-            [featureKey]: {
-              featureId: generatedText?.feature_id,
-              style: { ...pageStyle },
-            },
-          }
-        : {
-            [featureKey]: {
-              featureId: generatedText?.feature_id,
-              style: { ...pageStyle },
-            },
-          };
-      localStorage.setItem("changedStyle", JSON.stringify(updatedStyle));
-    }
-  }, [pageStyle]);
 
   function handleChangeContent(key: string, value: string) {
     setPageContent({ ...pageContent, [key]: value });
@@ -217,6 +172,36 @@ export default function HomePageBoardGreetings() {
   function handleChangeStyle(key: string, value: CSSObject) {
     setPageStyle({ ...pageStyle, [key]: value });
   }
+
+  useEffect(() => {
+    if (pageStyle) {
+      const localStyle = localStorage.getItem("changedStyle");
+
+      if (localStyle) {
+        const parsed = JSON.parse(localStyle);
+        const updatedData = {
+          ...parsed,
+          [featureKey]: {
+            featureId: generatedText?.feature_id,
+            style: {
+              ...pageStyle,
+            },
+          },
+        };
+        localStorage.setItem("changedStyle", JSON.stringify(updatedData));
+      } else {
+        const data = {
+          [featureKey]: {
+            featureId: generatedText?.feature_id,
+            style: {
+              ...pageContent,
+            },
+          },
+        };
+        localStorage.setItem("changedStyle", JSON.stringify(data));
+      }
+    }
+  }, [pageStyle]);
 
   if (!generatedText || !headerData) {
     return <Loading />;

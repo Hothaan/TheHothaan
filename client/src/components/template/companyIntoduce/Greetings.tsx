@@ -28,8 +28,8 @@ interface Igreetings {
   content?: IgreetingsContent | null;
   style?: IgreetingsStyle | null;
   isEditable?: boolean;
-  onChangeContent: (key: string, value: string) => void;
-  onChangeStyle: (key: string, value: CSSObject) => void;
+  onChangeContent?: (key: string, value: string) => void;
+  onChangeStyle?: (key: string, value: CSSObject) => void;
 }
 
 export const greetings_full_title_css_: CSSObject = {
@@ -120,95 +120,29 @@ export default function Greetings(prop: Igreetings) {
     },
   };
 
-  const initialContent = {
-    greetingsHalfTitle: content?.greetingsHalfTitle || title_,
-    greetingsHalfDesc: content?.greetingsHalfDesc || desc_,
-    greetingsFullTitle: content?.greetingsFullTitle || title_,
-    greetingsFullDesc: content?.greetingsFullDesc || desc_,
-  };
-
-  const initialStyle = {
-    greetingsHalfTitle: style?.greetingsHalfTitle || greetings_half_title_css_,
-    greetingsHalfDesc: style?.greetingsHalfDesc || greetings_half_desc_css_,
-    greetingsFullTitle: style?.greetingsFullTitle || greetings_full_title_css_,
-    greetingsFullDesc: style?.greetingsFullDesc || greetings_full_desc_css_,
-  };
-
-  const [editableContent, setEditableContent] = useState<any>(null);
-  const [editableStyle, setEditableStyle] = useState<any>(null);
+  const [edit, setEdit] = useState(initial);
 
   useEffect(() => {
     if (content) {
-      if (content?.greetingsHalfTitle) {
-        setEditableContent({
-          ...initialContent,
-          greetingsHalfTitle: content.greetingsHalfTitle,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          greetingsHalfTitle: initialContent.greetingsHalfTitle,
-        });
-      }
-
-      if (content?.greetingsHalfDesc) {
-        setEditableContent({
-          ...initialContent,
-          greetingsHalfDesc: content.greetingsHalfDesc,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          greetingsHalfDesc: initialContent.greetingsHalfDesc,
-        });
-      }
-
-      if (content?.greetingsFullTitle) {
-        setEditableContent({
-          ...initialContent,
-          greetingsFullTitle: content.greetingsFullTitle,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          greetingsFullTitle: initialContent.greetingsFullTitle,
-        });
-      }
-
-      if (content?.greetingsFullDesc) {
-        setEditableContent({
-          ...initialContent,
-          greetingsFullDesc: content.greetingsFullDesc,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          greetingsFullDesc: initialContent.greetingsFullDesc,
-        });
-      }
-      setEditableStyle(initialStyle);
+      setEdit(initial);
     }
   }, [content]);
 
-  function handleEditContent(key: string, value: string) {
-    setEditableContent({
-      ...editableContent,
-      [key]: value,
-    });
-    onChangeContent?.(key, value);
-  }
-
-  function handleEditStyle(key: string, value: CSSObject) {
-    setEditableStyle({
-      ...editableStyle,
-      [key]: value,
-    });
-    onChangeStyle?.(key, value);
-  }
-
-  if (!editableContent) {
-    return <></>;
-  }
+  // function handleEdit(
+  //   field: keyof IgreetingsContent,
+  //   updatedText: string,
+  //   updatedCss: CSSObject
+  // ) {
+  //   const updatedState = {
+  //     ...edit,
+  //     [field]: {
+  //       text: updatedText,
+  //       css: updatedCss,
+  //     },
+  //   };
+  //   setEdit(updatedState);
+  //   onChange?.(updatedState);
+  // }
 
   return (
     <OuterWrap padding="0 0 100px 0">
@@ -227,34 +161,12 @@ export default function Greetings(prop: Igreetings) {
             />
           </div>
           <div css={text_container}>
-            {isEditable ? (
-              <EditableText
-                text={editableContent.greetingsHalfTitle}
-                className="greetingsHalfTitle"
-                isTextArea={false}
-                defaultCss={editableStyle.greetingsHalfTitle}
-                onChangeText={(key, value) => onChangeContent(key, value)}
-                onChangeCss={(key, value) => onChangeStyle(key, value)}
-              />
-            ) : (
-              <p css={editableStyle?.greetingsHalfTitle}>
-                {editableContent?.greetingsHalfTitle}
-              </p>
-            )}
-            {isEditable ? (
-              <EditableText
-                text={editableContent.greetingsHalfDesc}
-                className="greetingsHalfTitle"
-                isTextArea={true}
-                defaultCss={editableStyle.greetingsHalfDesc}
-                onChangeText={(key, value) => onChangeContent(key, value)}
-                onChangeCss={(key, value) => onChangeStyle(key, value)}
-              />
-            ) : (
-              <p css={editableStyle?.greetingsHalfDesc}>
-                {editableContent?.greetingsHalfDesc}
-              </p>
-            )}
+            <p css={edit?.greetingsHalfTitle?.css || greetings_half_title_css_}>
+              {edit?.greetingsHalfTitle?.text || title_}
+            </p>
+            <p css={edit?.greetingsHalfDesc?.css || greetings_half_desc_css_}>
+              {edit?.greetingsHalfDesc?.text || desc_}
+            </p>
           </div>
         </div>
         <div css={container}>
@@ -269,80 +181,25 @@ export default function Greetings(prop: Igreetings) {
             }}
           />
           <div css={inner_container}>
-            {isEditable ? (
-              <EditableText
-                text={editableContent.greetingsFullTitle}
-                className="greetingsFullTitle"
-                isTextArea={false}
-                defaultCss={editableStyle.greetingsFullTitle}
-                onChangeText={(key, value) => onChangeContent(key, value)}
-                onChangeCss={(key, value) => onChangeStyle(key, value)}
-              />
-            ) : (
-              <p css={editableStyle?.greetingsFullTitle}>
-                {editableContent?.greetingsFullTitle}
-              </p>
-            )}
-            {isEditable ? (
-              <EditableText
-                text={editableContent.greetingsFullDesc}
-                className="greetingsFullDesc"
-                isTextArea={true}
-                defaultCss={editableStyle.greetingsFullDesc}
-                onChangeText={(key, value) => onChangeContent(key, value)}
-                onChangeCss={(key, value) => onChangeStyle(key, value)}
-              />
-            ) : (
-              <p css={editableStyle?.greetingsFullDesc}>
-                {editableContent?.greetingsFullDesc}
-              </p>
-            )}
-            {isEditable ? (
-              <EditableText
-                text={editableContent.greetingsFullDesc}
-                className="greetingsFullDesc"
-                isTextArea={true}
-                defaultCss={editableStyle.greetingsFullDesc}
-                onChangeText={(key, value) => onChangeContent(key, value)}
-                onChangeCss={(key, value) => onChangeStyle(key, value)}
-              />
-            ) : (
-              <p css={editableStyle?.greetingsFullDesc}>
-                {editableContent?.greetingsFullDesc}
-              </p>
-            )}
+            <p css={edit?.greetingsFullTitle?.css || greetings_full_title_css_}>
+              {edit?.greetingsFullTitle?.text || title_}
+            </p>
+            <p css={edit?.greetingsFullDesc?.css || greetings_full_desc_css_}>
+              {edit?.greetingsFullDesc?.text || desc_}
+            </p>
+            <p css={edit?.greetingsFullDesc?.css || greetings_full_desc_css_}>
+              {edit?.greetingsFullDesc?.text || desc_}
+            </p>
           </div>
         </div>
         <div css={container}>
           <div css={text_container}>
-            {isEditable ? (
-              <EditableText
-                text={editableContent.greetingsHalfTitle}
-                className="greetingsHalfTitle"
-                isTextArea={false}
-                defaultCss={editableStyle.greetingsHalfTitle}
-                onChangeText={(key, value) => onChangeContent(key, value)}
-                onChangeCss={(key, value) => onChangeStyle(key, value)}
-              />
-            ) : (
-              <p css={editableStyle?.greetingsHalfTitle}>
-                {editableContent?.greetingsHalfTitle}
-              </p>
-            )}
-            {isEditable ? (
-              <EditableText
-                text={editableContent.greetingsHalfDesc}
-                className="greetingsHalfDesc"
-                isTextArea={true}
-                defaultCss={editableStyle.greetingsHalfDesc}
-                onChangeText={(key, value) => onChangeContent(key, value)}
-                onChangeCss={(key, value) => onChangeStyle(key, value)}
-              />
-            ) : (
-              <p css={editableStyle?.greetingsHalfDesc}>
-                {editableContent?.greetingsHalfDesc}
-              </p>
-            )}
+            <p css={edit?.greetingsHalfTitle?.css || greetings_half_title_css_}>
+              {edit?.greetingsHalfTitle?.text || title_}
+            </p>
+            <p css={edit?.greetingsHalfDesc?.css || greetings_half_desc_css_}>
+              {edit?.greetingsHalfDesc?.text || desc_}
+            </p>
           </div>
           <div css={image_container}>
             <ImageBox
