@@ -31,8 +31,8 @@ interface IexploreService {
   content?: IexploreServiceContent | null;
   style?: IexploreServiceStyle | null;
   isEditable?: boolean;
-  onChangeContent?: (key: string, value: string) => void;
-  onChangeStyle?: (key: string, value: CSSObject) => void;
+  onChangeContent: (key: string, value: string) => void;
+  onChangeStyle: (key: string, value: CSSObject) => void;
 }
 
 export const explore_service_title_css_: CSSObject = {

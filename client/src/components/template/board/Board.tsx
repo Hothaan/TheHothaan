@@ -5,6 +5,7 @@ import { OuterWrap, InnerWrap, ContentsWrap } from "../commonComponent/Wrap";
 import Title from "../commonComponent/Title";
 import Pagination from "../commonComponent/Pagination";
 import ImageBox from "../commonComponent/ImageBox";
+import EditableText from "@components/service/editableText/EditableText";
 
 const title_ = "Nomal Board";
 
@@ -32,8 +33,8 @@ export interface Iboard {
   style?: IboardStyle | null;
   isEditable?: boolean;
   option?: Tboard;
-  onChangeContent?: (key: string, value: string) => void;
-  onChangeStyle?: (key: string, value: CSSObject) => void;
+  onChangeContent: (key: string, value: string) => void;
+  onChangeStyle: (key: string, value: CSSObject) => void;
 }
 
 export const board_item_option_image_title_css_ = css`
@@ -137,6 +138,10 @@ function TextTable(prop: Iboard) {
     width: 100%;
   `;
 
+  if (content?.boardTitle === undefined || style?.boardTitle === undefined) {
+    return <></>;
+  }
+
   return (
     <div css={table_container}>
       <p css={total}>총 100건</p>
@@ -164,9 +169,20 @@ function TextTable(prop: Iboard) {
                 <p css={[td_text, col1_text]}>{col1_}</p>
               </td>
               <td css={[td, col2]}>
-                <p css={[board_item_option_text_title_css_, col2_text]}>
-                  {content?.boardTitle || col2_}
-                </p>
+                {isEditable ? (
+                  <EditableText
+                    text={content.boardTitle as string}
+                    className="boardTitle"
+                    isTextArea={false}
+                    defaultCss={style.boardTitle as CSSObject}
+                    onChangeText={(key, value) => onChangeContent(key, value)}
+                    onChangeCss={(key, value) => onChangeStyle(key, value)}
+                  />
+                ) : (
+                  <p css={[board_item_option_text_title_css_, col2_text]}>
+                    {content?.boardTitle || col2_}
+                  </p>
+                )}
               </td>
               <td css={[td]}>
                 <p css={[td_text, col3_text]}>{col3_}</p>
@@ -224,6 +240,15 @@ function ImageItem(prop: Iboard) {
     gap: 4px;
   `;
 
+  if (
+    content?.boardTitle === undefined ||
+    style?.boardTitle === undefined ||
+    content?.boardDesc === undefined ||
+    style?.boardDesc === undefined
+  ) {
+    return <></>;
+  }
+
   return (
     <div css={item_container}>
       {Array.from({ length: count }, (_, index) => (
@@ -240,12 +265,34 @@ function ImageItem(prop: Iboard) {
           />
           <div css={info_container}>
             <p css={item_num}>{item_num_}</p>
-            <p css={style?.boardTitle || board_item_option_image_title_css_}>
-              {content?.boardTitle || item_title_}
-            </p>
-            <p css={style?.boardDesc || board_item_option_image_desc_css_}>
-              {content?.boardDesc || item_desc_}
-            </p>
+            {isEditable ? (
+              <EditableText
+                text={content.boardTitle as string}
+                className="boardTitle"
+                isTextArea={false}
+                defaultCss={style.boardTitle as CSSObject}
+                onChangeText={(key, value) => onChangeContent(key, value)}
+                onChangeCss={(key, value) => onChangeStyle(key, value)}
+              />
+            ) : (
+              <p css={style?.boardTitle || board_item_option_image_title_css_}>
+                {content?.boardTitle || item_title_}
+              </p>
+            )}
+            {isEditable ? (
+              <EditableText
+                text={content.boardDesc as string}
+                className="boardDesc"
+                isTextArea={false}
+                defaultCss={style.boardDesc as CSSObject}
+                onChangeText={(key, value) => onChangeContent(key, value)}
+                onChangeCss={(key, value) => onChangeStyle(key, value)}
+              />
+            ) : (
+              <p css={style?.boardDesc || board_item_option_image_desc_css_}>
+                {content?.boardDesc || item_desc_}
+              </p>
+            )}
           </div>
         </div>
       ))}
@@ -257,44 +304,72 @@ export default function Board(prop: Iboard) {
   const { option, style, content, isEditable, onChangeContent, onChangeStyle } =
     prop;
 
-  const initial = {
-    boardTitle: {
-      text: content?.boardTitle || item_title_,
-      css:
-        style?.boardTitle ||
-        (option === "텍스트형"
-          ? board_item_option_text_title_css_
-          : board_item_option_image_title_css_),
-    },
-    boardDesc: {
-      text: content?.boardDesc || item_desc_,
-      css: style?.boardDesc || board_item_option_image_desc_css_,
-    },
+  const initialContent = {
+    boardTitle: content?.boardTitle || item_title_,
+    boardDesc: content?.boardDesc || item_desc_,
   };
 
-  const [edit, setEdit] = useState(initial);
+  const initialStyle = {
+    boardTitle:
+      style?.boardTitle ||
+      (option === "텍스트형"
+        ? board_item_option_text_title_css_
+        : board_item_option_image_title_css_),
+    boardDesc: style?.boardDesc || board_item_option_image_desc_css_,
+  };
+
+  const [editableContent, setEditableContent] = useState<any>(null);
+  const [editableStyle, setEditableStyle] = useState<any>(null);
 
   useEffect(() => {
     if (content) {
-      setEdit(initial);
+      if (content?.boardTitle) {
+        setEditableContent({
+          ...initialContent,
+          boardTitle: content.boardTitle,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          boardTitle: initialContent.boardTitle,
+        });
+      }
+
+      if (content?.boardDesc) {
+        setEditableContent({
+          ...initialContent,
+          boardDesc: content.boardDesc,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          boardDesc: initialContent.boardDesc,
+        });
+      }
+
+      setEditableStyle(initialStyle);
     }
   }, [content]);
 
-  // function handleEdit(
-  //   field: keyof IboardContent,
-  //   updatedText: string,
-  //   updatedCss: CSSObject
-  // ) {
-  //   const updatedState = {
-  //     ...edit,
-  //     [field]: {
-  //       text: updatedText,
-  //       css: updatedCss,
-  //     },
-  //   };
-  //   setEdit(updatedState);
-  //   onChange?.(updatedState);
-  // }
+  function handleEditContent(key: string, value: string) {
+    setEditableContent({
+      ...editableContent,
+      [key]: value,
+    });
+    onChangeContent?.(key, value);
+  }
+
+  function handleEditStyle(key: string, value: CSSObject) {
+    setEditableStyle({
+      ...editableStyle,
+      [key]: value,
+    });
+    onChangeStyle?.(key, value);
+  }
+
+  if (!editableContent) {
+    return <></>;
+  }
 
   return (
     <OuterWrap padding="70px 0">
@@ -308,17 +383,19 @@ export default function Board(prop: Iboard) {
           />
           {option === "텍스트형" ? (
             <TextTable
-              content={content}
+              content={editableContent}
+              style={editableStyle}
               isEditable={isEditable}
-              onChangeContent={onChangeContent}
-              onChangeStyle={onChangeStyle}
+              onChangeContent={handleEditContent}
+              onChangeStyle={handleEditStyle}
             />
           ) : option === "이미지형" ? (
             <ImageItem
-              content={content}
+              content={editableContent}
+              style={editableStyle}
               isEditable={isEditable}
-              onChangeContent={onChangeContent}
-              onChangeStyle={onChangeStyle}
+              onChangeContent={handleEditContent}
+              onChangeStyle={handleEditStyle}
             />
           ) : (
             <></>

@@ -3,6 +3,7 @@ import { css, CSSObject } from "@emotion/react";
 import { useState, useEffect } from "react";
 import { OuterWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
+import EditableText from "@components/service/editableText/EditableText";
 
 export interface ImatchingServiceIntroduceMainContent {
   MatchingServiceIntroduceMainBannerTitle?: string;
@@ -22,8 +23,8 @@ interface ImatchingServiceIntroduceMain {
   content?: ImatchingServiceIntroduceMainContent | null;
   style?: ImatchingServiceIntroduceMainStyle | null;
   isEditable?: boolean;
-  onChangeContent?: (key: string, value: string) => void;
-  onChangeStyle?: (key: string, value: CSSObject) => void;
+  onChangeContent: (key: string, value: string) => void;
+  onChangeStyle: (key: string, value: CSSObject) => void;
 }
 
 const banner_title_ = "Headline H1";
@@ -89,22 +90,34 @@ function MatchingServiceIntroduceMainItem(prop: ImatchingServiceIntroduceMain) {
 
   return (
     <div css={item_container}>
-      <p
-        css={
-          style?.MatchingServiceIntroduceMainItemTitle ||
-          matching_service_introduce_main_item_title_css_
-        }
-      >
-        {content?.MatchingServiceIntroduceMainItemTitle || item_title_}
-      </p>
-      <p
-        css={
-          style?.MatchingServiceIntroduceMainItemDesc ||
-          matching_service_introduce_main_item_desc_css_
-        }
-      >
-        {content?.MatchingServiceIntroduceMainItemDesc || item_desc_}
-      </p>
+      {isEditable ? (
+        <EditableText
+          text={content?.MatchingServiceIntroduceMainItemTitle as string}
+          className="MatchingServiceIntroduceMainItemTitle"
+          isTextArea={false}
+          defaultCss={style?.MatchingServiceIntroduceMainItemTitle as CSSObject}
+          onChangeText={(key, value) => onChangeContent(key, value)}
+          onChangeCss={(key, value) => onChangeStyle(key, value)}
+        />
+      ) : (
+        <p css={style?.MatchingServiceIntroduceMainItemTitle}>
+          {content?.MatchingServiceIntroduceMainItemTitle}
+        </p>
+      )}
+      {isEditable ? (
+        <EditableText
+          text={content?.MatchingServiceIntroduceMainItemDesc as string}
+          className="MatchingServiceIntroduceMainItemDesc"
+          isTextArea={false}
+          defaultCss={style?.MatchingServiceIntroduceMainItemDesc as CSSObject}
+          onChangeText={(key, value) => onChangeContent(key, value)}
+          onChangeCss={(key, value) => onChangeStyle(key, value)}
+        />
+      ) : (
+        <p css={style?.MatchingServiceIntroduceMainItemDesc}>
+          {content?.MatchingServiceIntroduceMainItemDesc}
+        </p>
+      )}
       <div css={circle_wrap}>
         <div css={circle_container}>
           <span css={circle(false)}></span>
@@ -124,42 +137,121 @@ export default function MatchingServiceIntroduceMain(
 ) {
   const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
-  const initial = {
-    MatchingServiceIntroduceMainBannerTitle: {
-      text: content?.MatchingServiceIntroduceMainBannerTitle || banner_title_,
-      css:
-        style?.MatchingServiceIntroduceMainBannerTitle ||
-        matching_service_introduce_main_banner_title_css_,
-    },
-    MatchingServiceIntroduceMainBannerDesc: {
-      text: content?.MatchingServiceIntroduceMainBannerDesc || banner_desc_,
-      css:
-        style?.MatchingServiceIntroduceMainBannerDesc ||
-        matching_service_introduce_main_banner_desc_css_,
-    },
-    MatchingServiceIntroduceMainItemTitle: {
-      text: content?.MatchingServiceIntroduceMainItemTitle || item_title_,
-      css:
-        style?.MatchingServiceIntroduceMainItemTitle ||
-        matching_service_introduce_main_item_title_css_,
-    },
-    MatchingServiceIntroduceMainItemDesc: {
-      text: content?.MatchingServiceIntroduceMainItemDesc || item_desc_,
-      css:
-        style?.MatchingServiceIntroduceMainItemDesc ||
-        matching_service_introduce_main_item_desc_css_,
-    },
+  const count = 3;
+
+  const initialContent = {
+    MatchingServiceIntroduceMainBannerTitle:
+      content?.MatchingServiceIntroduceMainBannerTitle || banner_title_,
+    MatchingServiceIntroduceMainBannerDesc:
+      content?.MatchingServiceIntroduceMainBannerDesc || banner_desc_,
+    MatchingServiceIntroduceMainItemTitle:
+      content?.MatchingServiceIntroduceMainItemTitle || item_title_,
+    MatchingServiceIntroduceMainItemDesc:
+      content?.MatchingServiceIntroduceMainItemDesc || item_desc_,
   };
 
-  const [edit, setEdit] = useState(initial);
+  const initialStyle = {
+    MatchingServiceIntroduceMainBannerTitle:
+      style?.MatchingServiceIntroduceMainBannerTitle ||
+      matching_service_introduce_main_banner_title_css_,
+    MatchingServiceIntroduceMainBannerDesc:
+      style?.MatchingServiceIntroduceMainBannerDesc ||
+      matching_service_introduce_main_banner_desc_css_,
+    MatchingServiceIntroduceMainItemTitle:
+      style?.MatchingServiceIntroduceMainItemTitle ||
+      matching_service_introduce_main_item_title_css_,
+    MatchingServiceIntroduceMainItemDesc:
+      style?.MatchingServiceIntroduceMainItemDesc ||
+      matching_service_introduce_main_item_desc_css_,
+  };
+
+  const [editableContent, setEditableContent] = useState<any>(null);
+  const [editableStyle, setEditableStyle] = useState<any>(null);
 
   useEffect(() => {
     if (content) {
-      setEdit(initial);
+      if (content?.MatchingServiceIntroduceMainBannerTitle) {
+        setEditableContent({
+          ...initialContent,
+          MatchingServiceIntroduceMainBannerTitle:
+            content.MatchingServiceIntroduceMainBannerTitle,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          MatchingServiceIntroduceMainBannerTitle:
+            initialContent.MatchingServiceIntroduceMainBannerTitle,
+        });
+      }
+
+      if (content?.MatchingServiceIntroduceMainBannerDesc) {
+        setEditableContent({
+          ...initialContent,
+
+          MatchingServiceIntroduceMainBannerDesc:
+            content.MatchingServiceIntroduceMainBannerDesc,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          MatchingServiceIntroduceMainBannerDesc:
+            initialContent.MatchingServiceIntroduceMainBannerDesc,
+        });
+      }
+
+      if (content?.MatchingServiceIntroduceMainItemTitle) {
+        setEditableContent({
+          ...initialContent,
+
+          MatchingServiceIntroduceMainItemTitle:
+            content.MatchingServiceIntroduceMainItemTitle,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          MatchingServiceIntroduceMainItemTitle:
+            initialContent.MatchingServiceIntroduceMainItemTitle,
+        });
+      }
+
+      if (content?.MatchingServiceIntroduceMainItemDesc) {
+        setEditableContent({
+          ...initialContent,
+
+          MatchingServiceIntroduceMainItemDesc:
+            content.MatchingServiceIntroduceMainItemDesc,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          MatchingServiceIntroduceMainItemDesc:
+            initialContent.MatchingServiceIntroduceMainItemDesc,
+        });
+      }
+
+      setEditableStyle(initialStyle);
     }
   }, [content]);
 
-  const count = 3;
+  function handleEditContent(key: string, value: string) {
+    setEditableContent({
+      ...editableContent,
+      [key]: value,
+    });
+    onChangeContent?.(key, value);
+  }
+
+  function handleEditStyle(key: string, value: CSSObject) {
+    setEditableStyle({
+      ...editableStyle,
+      [key]: value,
+    });
+    onChangeStyle?.(key, value);
+  }
+
+  if (!editableContent) {
+    return <></>;
+  }
 
   return (
     <OuterWrap padding="150px 0">
@@ -176,52 +268,81 @@ export default function MatchingServiceIntroduceMain(
             }}
           />
           <div css={banner_text_container}>
-            <p
-              css={
-                edit?.MatchingServiceIntroduceMainBannerTitle?.css ||
-                matching_service_introduce_main_banner_title_css_
-              }
-            >
-              {edit?.MatchingServiceIntroduceMainBannerTitle?.text ||
-                banner_title_}
-            </p>
-            <p
-              css={
-                edit?.MatchingServiceIntroduceMainBannerDesc?.css ||
-                matching_service_introduce_main_banner_desc_css_
-              }
-            >
-              {edit?.MatchingServiceIntroduceMainBannerDesc?.text ||
-                banner_desc_}
-            </p>
-            <p
-              css={
-                edit?.MatchingServiceIntroduceMainBannerDesc?.css ||
-                matching_service_introduce_main_banner_desc_css_
-              }
-            >
-              {edit?.MatchingServiceIntroduceMainBannerDesc?.text ||
-                banner_desc_}
-            </p>
-            <p
-              css={
-                edit?.MatchingServiceIntroduceMainBannerDesc?.css ||
-                matching_service_introduce_main_banner_desc_css_
-              }
-            >
-              {edit?.MatchingServiceIntroduceMainBannerDesc?.text ||
-                banner_desc_}
-            </p>
+            {isEditable ? (
+              <EditableText
+                text={editableContent?.MatchingServiceIntroduceMainBannerTitle}
+                defaultCss={
+                  editableStyle?.MatchingServiceIntroduceMainBannerTitle
+                }
+                isTextArea={false}
+                className="MatchingServiceIntroduceMainBannerTitle"
+                onChangeText={(key, value) => handleEditContent(key, value)}
+                onChangeCss={(key, value) => handleEditStyle(key, value)}
+              />
+            ) : (
+              <p css={editableStyle.MatchingServiceIntroduceMainBannerTitle}>
+                {editableContent?.MatchingServiceIntroduceMainBannerTitle}
+              </p>
+            )}
+            {isEditable ? (
+              <EditableText
+                text={editableContent?.MatchingServiceIntroduceMainBannerDesc}
+                defaultCss={
+                  editableStyle?.MatchingServiceIntroduceMainBannerDesc
+                }
+                isTextArea={true}
+                className="MatchingServiceIntroduceMainBannerDesc"
+                onChangeText={(key, value) => handleEditContent(key, value)}
+                onChangeCss={(key, value) => handleEditStyle(key, value)}
+              />
+            ) : (
+              <p css={editableStyle.MatchingServiceIntroduceMainBannerTitle}>
+                {editableContent?.MatchingServiceIntroduceMainBannerTitle}
+              </p>
+            )}
+            {isEditable ? (
+              <EditableText
+                text={editableContent?.MatchingServiceIntroduceMainBannerDesc}
+                defaultCss={
+                  editableStyle?.MatchingServiceIntroduceMainBannerDesc
+                }
+                isTextArea={true}
+                className="MatchingServiceIntroduceMainBannerDesc"
+                onChangeText={(key, value) => handleEditContent(key, value)}
+                onChangeCss={(key, value) => handleEditStyle(key, value)}
+              />
+            ) : (
+              <p css={editableStyle.MatchingServiceIntroduceMainBannerTitle}>
+                {editableContent?.MatchingServiceIntroduceMainBannerTitle}
+              </p>
+            )}
+            {isEditable ? (
+              <EditableText
+                text={editableContent?.MatchingServiceIntroduceMainBannerDesc}
+                defaultCss={
+                  editableStyle?.MatchingServiceIntroduceMainBannerDesc
+                }
+                isTextArea={true}
+                className="MatchingServiceIntroduceMainBannerDesc"
+                onChangeText={(key, value) => handleEditContent(key, value)}
+                onChangeCss={(key, value) => handleEditStyle(key, value)}
+              />
+            ) : (
+              <p css={editableStyle.MatchingServiceIntroduceMainBannerTitle}>
+                {editableContent?.MatchingServiceIntroduceMainBannerTitle}
+              </p>
+            )}
           </div>
         </div>
         <div css={item_wrap}>
           {Array.from({ length: count }, (_, index) => (
             <MatchingServiceIntroduceMainItem
               key={index}
-              content={content}
+              content={editableContent}
+              style={editableStyle}
               isEditable={isEditable}
-              onChangeContent={onChangeContent}
-              onChangeStyle={onChangeStyle}
+              onChangeContent={handleEditContent}
+              onChangeStyle={handleEditStyle}
             />
           ))}
         </div>

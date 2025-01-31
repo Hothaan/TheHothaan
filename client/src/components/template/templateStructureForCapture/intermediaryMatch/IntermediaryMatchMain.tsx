@@ -28,45 +28,45 @@ import {
 } from "@components/template/main/Mainbanner";
 
 import {
-  matching_service_introduce_main_banner_desc_css_,
   matching_service_introduce_main_banner_title_css_,
-  matching_service_introduce_main_item_desc_css_,
+  matching_service_introduce_main_banner_desc_css_,
   matching_service_introduce_main_item_title_css_,
+  matching_service_introduce_main_item_desc_css_,
 } from "@components/template/main/MatchingServiceIntroduceMain";
 
 import {
-  product_introduce_desc_css_,
   product_introduce_image_desc_css_,
   product_introduce_title_css_,
+  product_introduce_desc_css_,
 } from "@components/template/main/ProductIntroduceMain";
 
 import {
+  review_item_title_css,
+  review_item_desc_css,
   review_item_caption_name_css,
   review_item_caption_role_css,
-  review_item_desc_css,
-  review_item_title_css,
 } from "@components/template/product/Review";
 
 import { price_main_item_desc_css_ } from "@components/template/main/PriceMain";
 
 import {
-  explore_service_button_css_,
-  explore_service_explore_button_css_,
-  explore_service_explore_title_css_,
   explore_service_title_css_,
+  explore_service_button_css_,
+  explore_service_explore_title_css_,
+  explore_service_explore_button_css_,
 } from "@components/template/main/ExploreServiceMain";
 
 interface IntermediaryMatchMainContent {
   mainBannerTitle?: string;
   mainBannerDesc?: string;
-  mainBannerButton: string;
+  mainBannerButton?: string;
   MatchingServiceIntroduceMainBannerTitle?: string;
   MatchingServiceIntroduceMainBannerDesc?: string;
   MatchingServiceIntroduceMainItemTitle?: string;
   MatchingServiceIntroduceMainItemDesc?: string;
-  productIntroduceImageDesc?: string; //수정요청
-  productIntroduceTitle?: string; //수정요청
-  productIntroduceDesc?: string; //수정요청청
+  productIntroduceImageDesc?: string;
+  productIntroduceTitle?: string;
+  productIntroduceDesc?: string;
   ReviewTitle?: string;
   ReviewDesc?: string;
   ReviewName?: string;
@@ -86,9 +86,9 @@ interface IntermediaryMatchMainStyle {
   MatchingServiceIntroduceMainBannerDesc?: CSSObject;
   MatchingServiceIntroduceMainItemTitle?: CSSObject;
   MatchingServiceIntroduceMainItemDesc?: CSSObject;
-  productIntroduceImageDesc?: CSSObject; //수정요청
-  productIntroduceTitle?: CSSObject; //수정요청
-  productIntroduceDesc?: CSSObject; //수정요청
+  productIntroduceImageDesc?: CSSObject;
+  productIntroduceTitle?: CSSObject;
+  productIntroduceDesc?: CSSObject;
   ReviewTitle?: CSSObject;
   ReviewDesc?: CSSObject;
   ReviewName?: CSSObject;
@@ -157,11 +157,31 @@ export default function IntermediaryMatchMain() {
     }
   }, [projectIdValue]);
 
-  const [pageContent, setPageContent] = useState<IntermediaryMatchMainContent>(
-    {} as IntermediaryMatchMainContent
-  );
-  const [pageStyle, setPageStyle] = useState<IntermediaryMatchMainStyle>(
-    {} as IntermediaryMatchMainStyle
+  function getLocalContent() {
+    const localContent = localStorage.getItem("changedContent");
+    if (localContent) {
+      const parsed = JSON.parse(localContent);
+      if (parsed[featureKey]?.content) {
+        return parsed[featureKey]?.content;
+      }
+    }
+    return null;
+  }
+  function getLocalStyle() {
+    const localContent = localStorage.getItem("changedStyle");
+    if (localContent) {
+      const parsed = JSON.parse(localContent);
+      if (parsed[featureKey]?.style) {
+        return parsed[featureKey].style;
+      }
+    }
+    return null;
+  }
+
+  const [pageContent, setPageContent] =
+    useState<IntermediaryMatchMainContent | null>(getLocalContent());
+  const [pageStyle, setPageStyle] = useState<IntermediaryMatchMainStyle | null>(
+    getLocalStyle()
   );
 
   function updateInitialContent() {
@@ -187,16 +207,16 @@ export default function IntermediaryMatchMain() {
         productIntroduceImageDesc:
           generatedText.content.productIntroduceImageDesc || undefined,
         productIntroduceTitle:
-          generatedText.content.productIntroduceImageDesc || undefined,
+          generatedText.content.productIntroduceTitle || undefined,
         productIntroduceDesc:
-          generatedText.content.productIntroduceImageDesc || undefined,
+          generatedText.content.productIntroduceDesc || undefined,
 
-        ReviewTitle: generatedText.content.ReviewTitle || undefined,
-        ReviewDesc: generatedText.content.ReviewDesc || undefined,
-        ReviewName: generatedText.content.ReviewName || undefined,
-        ReviewRole: generatedText.content.ReviewRole || undefined,
+        reviewTitle: generatedText.content.reviewTitle || undefined,
+        reviewDesc: generatedText.content.reviewDesc || undefined,
+        reviewName: generatedText.content.reviewName || undefined,
+        reviewRole: generatedText.content.reviewRole || undefined,
 
-        PriceMainDesc: generatedText.content.PriceMainDesc || undefined,
+        PriceMainDesc: generatedText.content.priceMainDesc || undefined,
 
         exploreServiceTitle:
           generatedText.content.exploreServiceTitle || undefined,
@@ -207,7 +227,7 @@ export default function IntermediaryMatchMain() {
         exploreServiceExploreButton:
           generatedText.content.exploreServiceExploreButton || undefined,
       };
-      setPageContent({ ...initialContent });
+      setPageContent(initialContent);
     }
   }
 
@@ -231,10 +251,10 @@ export default function IntermediaryMatchMain() {
       productIntroduceTitle: product_introduce_title_css_ || undefined,
       productIntroduceDesc: product_introduce_desc_css_ || undefined,
 
-      ReviewTitle: review_item_title_css || undefined,
-      ReviewDesc: review_item_desc_css || undefined,
-      ReviewName: review_item_caption_name_css || undefined,
-      ReviewRole: review_item_caption_role_css || undefined,
+      reviewTitle: review_item_title_css || undefined,
+      reviewDesc: review_item_desc_css || undefined,
+      reviewName: review_item_caption_name_css || undefined,
+      reviewRole: review_item_caption_role_css || undefined,
 
       PriceMainDesc: price_main_item_desc_css_ || undefined,
 
@@ -251,41 +271,67 @@ export default function IntermediaryMatchMain() {
   //featureData가 들어오면 초기 콘텐츠와 스타일 업데이트
   useEffect(() => {
     if (generatedText) {
-      updateInitialContent();
-      updateInitialStyle();
+      const localContent = localStorage.getItem("changedContent");
+      const hasLocalContent = localContent
+        ? JSON.parse(localContent)?.[featureKey]?.content
+        : null;
+
+      if (!hasLocalContent) {
+        updateInitialContent();
+      }
+
+      const localStyle = localStorage.getItem("changedStyle");
+      const hasLocalStyle = localStyle
+        ? JSON.parse(localStyle)?.[featureKey]?.style
+        : null;
+
+      if (!hasLocalStyle) {
+        updateInitialStyle();
+      }
     }
   }, [generatedText]);
 
-  //pageContent가 변경될 때마다 localStorage에 업데이트
   useEffect(() => {
     if (pageContent) {
       const localContent = localStorage.getItem("changedContent");
-
-      if (localContent) {
-        const parsed = JSON.parse(localContent);
-        const updatedData = {
-          ...parsed,
-          [featureKey]: {
-            featureId: generatedText?.feature_id,
-            content: {
-              ...pageContent,
+      const updatedContent = localContent
+        ? {
+            ...JSON.parse(localContent),
+            [featureKey]: {
+              featureId: generatedText?.feature_id,
+              content: { ...pageContent },
             },
-          },
-        };
-        localStorage.setItem("changedContent", JSON.stringify(updatedData));
-      } else {
-        const data = {
-          [featureKey]: {
-            featureId: generatedText?.feature_id,
-            content: {
-              ...pageContent,
+          }
+        : {
+            [featureKey]: {
+              featureId: generatedText?.feature_id,
+              content: { ...pageContent },
             },
-          },
-        };
-        localStorage.setItem("changedContent", JSON.stringify(data));
-      }
+          };
+      localStorage.setItem("changedContent", JSON.stringify(updatedContent));
     }
   }, [pageContent]);
+
+  useEffect(() => {
+    if (pageStyle) {
+      const localStyle = localStorage.getItem("changedStyle");
+      const updatedStyle = localStyle
+        ? {
+            ...JSON.parse(localStyle),
+            [featureKey]: {
+              featureId: generatedText?.feature_id,
+              style: { ...pageStyle },
+            },
+          }
+        : {
+            [featureKey]: {
+              featureId: generatedText?.feature_id,
+              style: { ...pageStyle },
+            },
+          };
+      localStorage.setItem("changedStyle", JSON.stringify(updatedStyle));
+    }
+  }, [pageStyle]);
 
   function handleChangeContent(key: string, value: string) {
     setPageContent({ ...pageContent, [key]: value });
@@ -294,36 +340,6 @@ export default function IntermediaryMatchMain() {
   function handleChangeStyle(key: string, value: CSSObject) {
     setPageStyle({ ...pageStyle, [key]: value });
   }
-
-  useEffect(() => {
-    if (pageStyle) {
-      const localStyle = localStorage.getItem("changedStyle");
-
-      if (localStyle) {
-        const parsed = JSON.parse(localStyle);
-        const updatedData = {
-          ...parsed,
-          [featureKey]: {
-            featureId: generatedText?.feature_id,
-            style: {
-              ...pageStyle,
-            },
-          },
-        };
-        localStorage.setItem("changedStyle", JSON.stringify(updatedData));
-      } else {
-        const data = {
-          [featureKey]: {
-            featureId: generatedText?.feature_id,
-            style: {
-              ...pageContent,
-            },
-          },
-        };
-        localStorage.setItem("changedStyle", JSON.stringify(data));
-      }
-    }
-  }, [pageStyle]);
 
   if (!generatedText || !headerData) {
     return <Loading />;

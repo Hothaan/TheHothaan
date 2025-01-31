@@ -28,8 +28,8 @@ interface IproductIntroduceMain {
   content?: IproductIntroduceMainContent | null;
   style?: IproductIntroduceMainStyle | null;
   isEditable?: boolean;
-  onChangeContent?: (key: string, value: string) => void;
-  onChangeStyle?: (key: string, value: CSSObject) => void;
+  onChangeContent: (key: string, value: string) => void;
+  onChangeStyle: (key: string, value: CSSObject) => void;
 }
 
 export const product_introduce_image_desc_css_: CSSObject = {

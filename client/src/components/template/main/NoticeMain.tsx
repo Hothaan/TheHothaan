@@ -115,6 +115,14 @@ export default function NoticeMain(prop: InoticeMain) {
 
   const count = 3;
 
+  const container = css`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+  `;
+
   const initialContent = {
     noticeTitle: content?.noticeTitle || title_,
     noticeDesc: content?.noticeDesc || desc_,
@@ -173,14 +181,6 @@ export default function NoticeMain(prop: InoticeMain) {
     });
     onChangeStyle?.(key, value);
   }
-
-  const container = css`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 50px;
-  `;
 
   if (!editableContent) {
     return <></>;

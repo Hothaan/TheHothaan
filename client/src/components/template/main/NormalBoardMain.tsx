@@ -2,6 +2,7 @@
 import { css, CSSObject } from "@emotion/react";
 import { useEffect, useState } from "react";
 import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";
+import EditableText from "@components/service/editableText/EditableText";
 
 const component_title_ = "게시판";
 
@@ -22,8 +23,8 @@ interface InormalBoardMain {
   content?: InormalBoardContent | null;
   style?: InormalBoardStyle | null;
   isEditable?: boolean;
-  onChangeContent?: (key: string, value: string) => void;
-  onChangeStyle?: (key: string, value: CSSObject) => void;
+  onChangeContent: (key: string, value: string) => void;
+  onChangeStyle: (key: string, value: CSSObject) => void;
 }
 
 export const normal_board_main_title_css_ = css`
@@ -45,14 +46,30 @@ export const normal_board_main_title_css_ = css`
 export function NormalBoardMainItem(prop: InormalBoardMain) {
   const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
+  if (content?.boardTitle === undefined || style?.boardTitle === undefined) {
+    return <></>;
+  }
+
   return (
     <div css={item_container}>
-      <p
-        css={style?.boardTitle || normal_board_main_title_css_}
-        className={title_className}
-      >
-        {content?.boardTitle || title_}
-      </p>
+      {isEditable ? (
+        <EditableText
+          text={content.boardTitle as string}
+          className="boardTitle"
+          isTextArea={false}
+          defaultCss={style.boardTitle as CSSObject}
+          onChangeText={(key, value) => onChangeContent(key, value)}
+          onChangeCss={(key, value) => onChangeStyle(key, value)}
+        />
+      ) : (
+        <p
+          css={style?.boardTitle || normal_board_main_title_css_}
+          className={title_className}
+        >
+          {content?.boardTitle || title_}
+        </p>
+      )}
+
       <div css={inner_container}>
         <p css={date_style}>{date_}</p>
         <button type="button" css={button}>
@@ -66,22 +83,56 @@ export function NormalBoardMainItem(prop: InormalBoardMain) {
 export default function NormalBoardMain(prop: InormalBoardMain) {
   const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
-  const initial = {
-    boardTitle: {
-      text: content?.boardTitle || title_,
-      css: style?.boardTitle || normal_board_main_title_css_,
-    },
+  const count = 3;
+
+  const initialContent = {
+    boardTitle: content?.boardTitle || title_,
   };
 
-  const [edit, setEdit] = useState(initial);
+  const initialStyle = {
+    boardTitle: style?.boardTitle || normal_board_main_title_css_,
+  };
+
+  const [editableContent, setEditableContent] = useState<any>(null);
+  const [editableStyle, setEditableStyle] = useState<any>(null);
 
   useEffect(() => {
     if (content) {
-      setEdit(initial);
+      if (content?.boardTitle) {
+        setEditableContent({
+          ...initialContent,
+          boardTitle: content.boardTitle,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          boardTitle: initialContent.boardTitle,
+        });
+      }
+
+      setEditableStyle(initialStyle);
     }
   }, [content]);
 
-  const count = 3;
+  function handleEditContent(key: string, value: string) {
+    setEditableContent({
+      ...editableContent,
+      [key]: value,
+    });
+    onChangeContent?.(key, value);
+  }
+
+  function handleEditStyle(key: string, value: CSSObject) {
+    setEditableStyle({
+      ...editableStyle,
+      [key]: value,
+    });
+    onChangeStyle?.(key, value);
+  }
+
+  if (!editableContent) {
+    return <></>;
+  }
 
   return (
     <OuterWrap padding="74px 0">
@@ -91,11 +142,12 @@ export default function NormalBoardMain(prop: InormalBoardMain) {
           <div css={item_wrap}>
             {Array.from({ length: count }, (_, index) => (
               <NormalBoardMainItem
-                content={content}
-                isEditable={isEditable}
-                onChangeContent={onChangeContent}
-                onChangeStyle={onChangeStyle}
                 key={index}
+                content={editableContent}
+                style={editableStyle}
+                isEditable={isEditable}
+                onChangeContent={handleEditContent}
+                onChangeStyle={handleEditStyle}
               />
             ))}
           </div>

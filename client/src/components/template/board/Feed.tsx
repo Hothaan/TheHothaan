@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Title from "../commonComponent/Title";
 import ImageBox from "../commonComponent/ImageBox";
 import { OuterWrap } from "../commonComponent/Wrap";
+import EditableText from "@components/service/editableText/EditableText";
 
 const item_title_ = "lorem ipsum, quia do";
 
@@ -18,8 +19,8 @@ interface Ifeed {
   content?: IfeedContent | null;
   style?: IfeedStyle | null;
   isEditable?: boolean;
-  onChangeContent?: (key: string, value: string) => void;
-  onChangeStyle?: (key: string, value: CSSObject) => void;
+  onChangeContent: (key: string, value: string) => void;
+  onChangeStyle: (key: string, value: CSSObject) => void;
 }
 
 export const feed_item_title_css_ = css`
@@ -38,6 +39,10 @@ function FeedItem(prop: Ifeed) {
 
   const count = 36;
 
+  if (content?.feedTitle === undefined || style?.feedTitle === undefined) {
+    return <></>;
+  }
+
   return (
     <div css={image_wrap}>
       {Array.from({ length: count }, (_, index) => (
@@ -52,9 +57,20 @@ function FeedItem(prop: Ifeed) {
               icon: "width: 40px; height: 40px;",
             }}
           />
-          <p css={style?.feedTitle || feed_item_title_css_}>
-            {content?.feedTitle || item_title_}
-          </p>
+          {isEditable ? (
+            <EditableText
+              text={content.feedTitle as string}
+              className="feedTitle"
+              isTextArea={false}
+              defaultCss={style.feedTitle as CSSObject}
+              onChangeText={(key, value) => onChangeContent(key, value)}
+              onChangeCss={(key, value) => onChangeStyle(key, value)}
+            />
+          ) : (
+            <p css={style?.feedTitle || feed_item_title_css_}>
+              {content?.feedTitle || item_title_}
+            </p>
+          )}
         </div>
       ))}
     </div>
@@ -64,20 +80,53 @@ function FeedItem(prop: Ifeed) {
 export default function Feed(prop: Ifeed) {
   const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
-  const initial = {
-    feedTitle: {
-      text: content?.feedTitle || item_title_,
-      css: style?.feedTitle || feed_item_title_css_,
-    },
+  const initialContent = {
+    feedTitle: content?.feedTitle || item_title_,
   };
 
-  const [edit, setEdit] = useState(initial);
+  const initialStyle = {
+    feedTitle: style?.feedTitle || feed_item_title_css_,
+  };
+
+  const [editableContent, setEditableContent] = useState<any>(null);
+  const [editableStyle, setEditableStyle] = useState<any>(null);
 
   useEffect(() => {
     if (content) {
-      setEdit(initial);
+      if (content?.feedTitle) {
+        setEditableContent({
+          ...initialContent,
+          feedTitle: content.feedTitle,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          feedTitle: initialContent.feedTitle,
+        });
+      }
+      setEditableStyle(initialStyle);
     }
   }, [content]);
+
+  function handleEditContent(key: string, value: string) {
+    setEditableContent({
+      ...editableContent,
+      [key]: value,
+    });
+    onChangeContent?.(key, value);
+  }
+
+  function handleEditStyle(key: string, value: CSSObject) {
+    setEditableStyle({
+      ...editableStyle,
+      [key]: value,
+    });
+    onChangeStyle?.(key, value);
+  }
+
+  if (!editableContent) {
+    return <></>;
+  }
 
   return (
     <OuterWrap padding="60px 0">
@@ -88,10 +137,11 @@ export default function Feed(prop: Ifeed) {
         transform="capitalize"
       />
       <FeedItem
-        content={content}
+        content={editableContent}
+        style={editableStyle}
         isEditable={isEditable}
-        onChangeContent={onChangeContent}
-        onChangeStyle={onChangeStyle}
+        onChangeContent={handleEditContent}
+        onChangeStyle={handleEditStyle}
       />
     </OuterWrap>
   );

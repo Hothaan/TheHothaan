@@ -3,6 +3,7 @@ import { css, CSSObject } from "@emotion/react";
 import { useState, useEffect } from "react";
 import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";
 import { ReactComponent as ChevUp } from "@svgs/template/faqMain/chevUp.svg";
+import EditableText from "@components/service/editableText/EditableText";
 
 const title_ = "FAQ";
 
@@ -25,8 +26,8 @@ interface IfaqMain {
   content?: IfaqMainContent | null;
   style?: IfaqMainStyle | null;
   isEditable?: boolean;
-  onChangeContent?: (key: string, value: string) => void;
-  onChangeStyle?: (key: string, value: CSSObject) => void;
+  onChangeContent: (key: string, value: string) => void;
+  onChangeStyle: (key: string, value: CSSObject) => void;
 }
 
 export const faq_main_item_title_css_ = css`
@@ -82,6 +83,15 @@ function FaqMainItem(prop: IfaqMain) {
     font-weight: ${isOpen ? "700" : "400"};
   `;
 
+  if (
+    content?.faqTitle === undefined ||
+    content?.faqDesc === undefined ||
+    style?.faqTitle === undefined ||
+    style?.faqDesc === undefined
+  ) {
+    return <></>;
+  }
+
   return (
     <div css={item_container}>
       {Array.from({ length: count }, (_, index) => {
@@ -89,35 +99,66 @@ function FaqMainItem(prop: IfaqMain) {
           return (
             <div css={item}>
               <div css={title_container}>
-                <p
-                  css={[
-                    style?.faqTitle || faq_main_item_title_css_,
-                    faq_main_item_title_is_open(true),
-                  ]}
-                >
-                  {content?.faqTitle || item_title_}
-                </p>
+                {isEditable ? (
+                  <EditableText
+                    text={content.faqTitle as string}
+                    className="faqTitle"
+                    isTextArea={false}
+                    defaultCss={style.faqTitle as CSSObject}
+                    onChangeText={(key, value) => onChangeContent(key, value)}
+                    onChangeCss={(key, value) => onChangeStyle(key, value)}
+                  />
+                ) : (
+                  <p
+                    css={[
+                      style?.faqTitle || faq_main_item_title_css_,
+                      faq_main_item_title_is_open(true),
+                    ]}
+                  >
+                    {content?.faqTitle || item_title_}
+                  </p>
+                )}
                 <ChevUp css={icon(true)} />
               </div>
-              {
+              {isEditable ? (
+                <EditableText
+                  text={content.faqDesc as string}
+                  className="faqDesc"
+                  isTextArea={false}
+                  defaultCss={style.faqDesc as CSSObject}
+                  onChangeText={(key, value) => onChangeContent(key, value)}
+                  onChangeCss={(key, value) => onChangeStyle(key, value)}
+                />
+              ) : (
                 <p css={faq_main_item_desc_css_}>
                   {content?.faqDesc || item_desc_}
                 </p>
-              }
+              )}
             </div>
           );
         } else {
           return (
             <div css={item}>
               <div css={title_container}>
-                <p
-                  css={[
-                    style?.faqTitle || faq_main_item_title_css_,
-                    faq_main_item_title_is_open(false),
-                  ]}
-                >
-                  {content?.faqTitle || item_title_}
-                </p>
+                {isEditable ? (
+                  <EditableText
+                    text={content.faqTitle as string}
+                    className="faqTitle"
+                    isTextArea={false}
+                    defaultCss={style.faqTitle as CSSObject}
+                    onChangeText={(key, value) => onChangeContent(key, value)}
+                    onChangeCss={(key, value) => onChangeStyle(key, value)}
+                  />
+                ) : (
+                  <p
+                    css={[
+                      style?.faqTitle || faq_main_item_title_css_,
+                      faq_main_item_title_is_open(false),
+                    ]}
+                  >
+                    {content?.faqTitle || item_title_}
+                  </p>
+                )}
                 <ChevUp css={icon(false)} />
               </div>
             </div>
@@ -131,24 +172,68 @@ function FaqMainItem(prop: IfaqMain) {
 export default function FaqMain(prop: IfaqMain) {
   const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
-  const initial = {
-    faqTitle: {
-      text: content?.faqTitle || item_title_,
-      css: style?.faqTitle || faq_main_item_title_css_,
-    },
-    faqDesc: {
-      text: content?.faqDesc || item_desc_,
-      css: style?.faqDesc || faq_main_item_desc_css_,
-    },
+  const initialContent = {
+    faqTitle: content?.faqTitle || item_title_,
+    faqDesc: content?.faqDesc || item_desc_,
   };
 
-  const [edit, setEdit] = useState(initial);
+  const initialStyle = {
+    faqTitle: style?.faqTitle || faq_main_item_title_css_,
+    faqDesc: style?.faqDesc || faq_main_item_desc_css_,
+  };
+
+  const [editableContent, setEditableContent] = useState<any>(null);
+  const [editableStyle, setEditableStyle] = useState<any>(null);
 
   useEffect(() => {
     if (content) {
-      setEdit(initial);
+      if (content?.faqTitle) {
+        setEditableContent({
+          ...initialContent,
+          faqTitlefaqTitle: content.faqTitle,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          faqTitle: initialContent.faqTitle,
+        });
+      }
+
+      if (content?.faqDesc) {
+        setEditableContent({
+          ...initialContent,
+          faqDesc: content.faqDesc,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          faqDesc: initialContent.faqDesc,
+        });
+      }
+
+      setEditableStyle(initialStyle);
     }
   }, [content]);
+
+  function handleEditContent(key: string, value: string) {
+    setEditableContent({
+      ...editableContent,
+      [key]: value,
+    });
+    onChangeContent?.(key, value);
+  }
+
+  function handleEditStyle(key: string, value: CSSObject) {
+    setEditableStyle({
+      ...editableStyle,
+      [key]: value,
+    });
+    onChangeStyle?.(key, value);
+  }
+
+  if (!editableContent) {
+    return <></>;
+  }
 
   return (
     <OuterWrap padding="114px 0">
@@ -156,10 +241,11 @@ export default function FaqMain(prop: IfaqMain) {
         <div css={container}>
           <p css={title_style}>{title_}</p>
           <FaqMainItem
-            content={content}
+            content={editableContent}
+            style={editableStyle}
             isEditable={isEditable}
-            onChangeContent={onChangeContent}
-            onChangeStyle={onChangeStyle}
+            onChangeContent={handleEditContent}
+            onChangeStyle={handleEditStyle}
           />
         </div>
       </InnerWrap>

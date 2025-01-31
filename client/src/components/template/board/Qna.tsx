@@ -10,6 +10,7 @@ import FormButton from "../commonComponent/form/FormButton";
 import SelectBox from "../commonComponent/form/SelectBox";
 import ImageBox from "../commonComponent/ImageBox";
 import { ReactComponent as Reply } from "@svgs/template/faq/reply.svg";
+import EditableText from "@components/service/editableText/EditableText";
 
 const title_ = "Q&A LIST BOARD";
 
@@ -29,8 +30,8 @@ export interface Iqna {
   style?: IqnaStyle | null;
   isEditable?: boolean;
   option?: Tqna;
-  onChangeContent?: (key: string, value: string) => void;
-  onChangeStyle?: (key: string, value: CSSObject) => void;
+  onChangeContent: (key: string, value: string) => void;
+  onChangeStyle: (key: string, value: CSSObject) => void;
 }
 
 export const qna_item_title_css_ = css`
@@ -150,6 +151,10 @@ function QnaTable(prop: Iqna) {
     align-items: center;
   `;
 
+  if (content?.qnaTitle === undefined || style?.qnaTitle === undefined) {
+    return <></>;
+  }
+
   return (
     <table css={tableStyle}>
       <thead>
@@ -164,17 +169,23 @@ function QnaTable(prop: Iqna) {
         {Array.from({ length: count }, (_, index) => (
           <tr key={index} css={rowStyle}>
             <td css={[cellStyle, text_style, col1]}>{index + 1}</td>
-            <td
-              css={[
-                cellStyle,
-                style?.qnaTitle || qna_item_title_css_,
-                col2,
-                text_align_left,
-              ]}
-            >
+            <td css={[cellStyle, col2, text_align_left]}>
               <div css={inner_container}>
                 {(index + 1) % 2 === 0 && <Reply />}
-                {content?.qnaTitle || item_title}
+                {isEditable ? (
+                  <EditableText
+                    text={content.qnaTitle as string}
+                    className="qnaTitle"
+                    isTextArea={false}
+                    defaultCss={style.qnaTitle as CSSObject}
+                    onChangeText={(key, value) => onChangeContent(key, value)}
+                    onChangeCss={(key, value) => onChangeStyle(key, value)}
+                  />
+                ) : (
+                  <p css={style?.qnaTitle || qna_item_title_css_}>
+                    {content?.qnaTitle || item_title}
+                  </p>
+                )}
               </div>
             </td>
             <td css={[cellStyle, text_style, col3]}>{date_}</td>
@@ -314,37 +325,6 @@ export default function Qna(prop: Iqna) {
   const { content, style, isEditable, onChangeContent, onChangeStyle, option } =
     prop;
 
-  const initial = {
-    qnaTitle: {
-      text: content?.qnaTitle || title_,
-      css: style?.qnaTitle || qna_item_title_css_,
-    },
-  };
-
-  const [edit, setEdit] = useState(initial);
-
-  useEffect(() => {
-    if (content) {
-      setEdit(initial);
-    }
-  }, [content]);
-
-  // function handleEdit(
-  //   field: keyof IqnaContent,
-  //   updatedText: string,
-  //   updatedCss: CSSObject
-  // ) {
-  //   const updatedState = {
-  //     ...edit,
-  //     [field]: {
-  //       text: updatedText,
-  //       css: updatedCss,
-  //     },
-  //   };
-  //   setEdit(updatedState);
-  //   onChange?.(updatedState);
-  // }
-
   const container = css`
     width: 100%;
     display: flex;
@@ -353,17 +333,74 @@ export default function Qna(prop: Iqna) {
     gap: 50px;
   `;
 
+  const initial = {
+    qnaTitle: {
+      text: content?.qnaTitle || title_,
+      css: style?.qnaTitle || qna_item_title_css_,
+    },
+  };
+
+  const initialContent = {
+    qnaTitle: content?.qnaTitle || title_,
+  };
+
+  const initialStyle = {
+    qnaTitle: style?.qnaTitle || qna_item_title_css_,
+  };
+
+  const [editableContent, setEditableContent] = useState<any>(null);
+  const [editableStyle, setEditableStyle] = useState<any>(null);
+
+  useEffect(() => {
+    if (content) {
+      if (content?.qnaTitle) {
+        setEditableContent({
+          ...initialContent,
+          qnaTitle: content.qnaTitle,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          qnaTitle: initialContent.qnaTitle,
+        });
+      }
+
+      setEditableStyle(initialStyle);
+    }
+  }, [content]);
+
+  function handleEditContent(key: string, value: string) {
+    setEditableContent({
+      ...editableContent,
+      [key]: value,
+    });
+    onChangeContent?.(key, value);
+  }
+
+  function handleEditStyle(key: string, value: CSSObject) {
+    setEditableStyle({
+      ...editableStyle,
+      [key]: value,
+    });
+    onChangeStyle?.(key, value);
+  }
+
+  if (!editableContent) {
+    return <></>;
+  }
+
   return (
     <OuterWrap padding="100px 0">
       <ContentsWrap>
         <div css={container}>
           <QnaTitle />
           <QnaTable
-            content={content}
-            onChangeContent={onChangeContent}
-            onChangeStyle={onChangeStyle}
-            isEditable={isEditable}
             option={option}
+            content={editableContent}
+            style={editableStyle}
+            isEditable={isEditable}
+            onChangeContent={handleEditContent}
+            onChangeStyle={handleEditStyle}
           />
           <QnaSearch />
         </div>

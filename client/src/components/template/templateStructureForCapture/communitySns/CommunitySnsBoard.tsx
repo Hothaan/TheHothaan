@@ -90,11 +90,31 @@ export default function CommunitySnsBoard() {
     }
   }, [projectIdValue]);
 
-  const [pageContent, setPageContent] = useState<IcommunitySnsBoardContent>(
-    {} as IcommunitySnsBoardContent
-  );
-  const [pageStyle, setPageStyle] = useState<IcommunitySnsBoardStyle>(
-    {} as IcommunitySnsBoardStyle
+  function getLocalContent() {
+    const localContent = localStorage.getItem("changedContent");
+    if (localContent) {
+      const parsed = JSON.parse(localContent);
+      if (parsed[featureKey]?.content) {
+        return parsed[featureKey].content;
+      }
+    }
+    return null;
+  }
+  function getLocalStyle() {
+    const localContent = localStorage.getItem("changedStyle");
+    if (localContent) {
+      const parsed = JSON.parse(localContent);
+      if (parsed[featureKey]?.style) {
+        return parsed[featureKey].style;
+      }
+    }
+    return null;
+  }
+
+  const [pageContent, setPageContent] =
+    useState<IcommunitySnsBoardContent | null>(getLocalContent());
+  const [pageStyle, setPageStyle] = useState<IcommunitySnsBoardStyle | null>(
+    getLocalStyle()
   );
 
   function updateInitialContent() {
@@ -122,41 +142,67 @@ export default function CommunitySnsBoard() {
   //featureData가 들어오면 초기 콘텐츠와 스타일 업데이트
   useEffect(() => {
     if (generatedText) {
-      updateInitialContent();
-      updateInitialStyle();
+      const localContent = localStorage.getItem("changedContent");
+      const hasLocalContent = localContent
+        ? JSON.parse(localContent)?.[featureKey]?.content
+        : null;
+
+      if (!hasLocalContent) {
+        updateInitialContent();
+      }
+
+      const localStyle = localStorage.getItem("changedStyle");
+      const hasLocalStyle = localStyle
+        ? JSON.parse(localStyle)?.[featureKey]?.style
+        : null;
+
+      if (!hasLocalStyle) {
+        updateInitialStyle();
+      }
     }
   }, [generatedText]);
 
-  //pageContent가 변경될 때마다 localStorage에 업데이트
   useEffect(() => {
     if (pageContent) {
       const localContent = localStorage.getItem("changedContent");
-
-      if (localContent) {
-        const parsed = JSON.parse(localContent);
-        const updatedData = {
-          ...parsed,
-          [featureKey]: {
-            featureId: generatedText?.feature_id,
-            content: {
-              ...pageContent,
+      const updatedContent = localContent
+        ? {
+            ...JSON.parse(localContent),
+            [featureKey]: {
+              featureId: generatedText?.feature_id,
+              content: { ...pageContent },
             },
-          },
-        };
-        localStorage.setItem("changedContent", JSON.stringify(updatedData));
-      } else {
-        const data = {
-          [featureKey]: {
-            featureId: generatedText?.feature_id,
-            content: {
-              ...pageContent,
+          }
+        : {
+            [featureKey]: {
+              featureId: generatedText?.feature_id,
+              content: { ...pageContent },
             },
-          },
-        };
-        localStorage.setItem("changedContent", JSON.stringify(data));
-      }
+          };
+      localStorage.setItem("changedContent", JSON.stringify(updatedContent));
     }
   }, [pageContent]);
+
+  useEffect(() => {
+    if (pageStyle) {
+      const localStyle = localStorage.getItem("changedStyle");
+      const updatedStyle = localStyle
+        ? {
+            ...JSON.parse(localStyle),
+            [featureKey]: {
+              featureId: generatedText?.feature_id,
+              style: { ...pageStyle },
+            },
+          }
+        : {
+            [featureKey]: {
+              featureId: generatedText?.feature_id,
+              style: { ...pageStyle },
+            },
+          };
+      localStorage.setItem("changedStyle", JSON.stringify(updatedStyle));
+    }
+  }, [pageStyle]);
 
   function handleChangeContent(key: string, value: string) {
     setPageContent({ ...pageContent, [key]: value });
@@ -165,36 +211,6 @@ export default function CommunitySnsBoard() {
   function handleChangeStyle(key: string, value: CSSObject) {
     setPageStyle({ ...pageStyle, [key]: value });
   }
-
-  useEffect(() => {
-    if (pageStyle) {
-      const localStyle = localStorage.getItem("changedStyle");
-
-      if (localStyle) {
-        const parsed = JSON.parse(localStyle);
-        const updatedData = {
-          ...parsed,
-          [featureKey]: {
-            featureId: generatedText?.feature_id,
-            style: {
-              ...pageStyle,
-            },
-          },
-        };
-        localStorage.setItem("changedStyle", JSON.stringify(updatedData));
-      } else {
-        const data = {
-          [featureKey]: {
-            featureId: generatedText?.feature_id,
-            style: {
-              ...pageContent,
-            },
-          },
-        };
-        localStorage.setItem("changedStyle", JSON.stringify(data));
-      }
-    }
-  }, [pageStyle]);
 
   if (!generatedText || !headerData) {
     return <Loading />;

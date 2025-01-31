@@ -1,7 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
+import { useEffect, useState } from "react";
 import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
+import EditableText from "@components/service/editableText/EditableText";
 
 const component_title_ = "게시판";
 
@@ -20,8 +22,8 @@ interface IimageBoardMain {
   content?: IimageBoardMainContent | null;
   style?: IimageBoardMainStyle | null;
   isEditable?: boolean;
-  onChangeContent?: (key: string, value: string) => void;
-  onChangeStyle?: (key: string, value: CSSObject) => void;
+  onChangeContent: (key: string, value: string) => void;
+  onChangeStyle: (key: string, value: CSSObject) => void;
 }
 
 export const image_board_title_css_ = css`
@@ -35,13 +37,20 @@ export const image_board_title_css_ = css`
 `;
 
 function ImageBoardMainItem(prop: IimageBoardMain) {
-  const { content, style } = prop;
+  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
   const container = css`
     display: flex;
     flex-direction: column;
     gap: 20px;
   `;
+
+  if (
+    content?.imageBoardTitle === undefined ||
+    style?.imageBoardTitle === undefined
+  ) {
+    return <></>;
+  }
 
   return (
     <div css={container}>
@@ -55,12 +64,23 @@ function ImageBoardMainItem(prop: IimageBoardMain) {
           icon: "width: 50px; height: 50px;",
         }}
       />
-      <p
-        css={style?.imageBoardTitle || image_board_title_css_}
-        className={item_title_className}
-      >
-        {content?.imageBoardTitle || item_title_}
-      </p>
+      {isEditable ? (
+        <EditableText
+          text={content.imageBoardTitle as string}
+          className="noticeTitle"
+          isTextArea={false}
+          defaultCss={style.imageBoardTitle as CSSObject}
+          onChangeText={(key, value) => onChangeContent(key, value)}
+          onChangeCss={(key, value) => onChangeStyle(key, value)}
+        />
+      ) : (
+        <p
+          css={style?.imageBoardTitle || image_board_title_css_}
+          className={item_title_className}
+        >
+          {content?.imageBoardTitle || item_title_}
+        </p>
+      )}
     </div>
   );
 }
@@ -70,6 +90,55 @@ export default function ImageBoardMain(prop: IimageBoardMain) {
 
   const count = 4;
 
+  const initialContent = {
+    imageBoardTitle: content?.imageBoardTitle || item_title_,
+  };
+
+  const initialStyle = {
+    imageBoardTitle: style?.imageBoardTitle || image_board_title_css_,
+  };
+
+  const [editableContent, setEditableContent] = useState<any>(null);
+  const [editableStyle, setEditableStyle] = useState<any>(null);
+
+  useEffect(() => {
+    if (content) {
+      if (content?.imageBoardTitle) {
+        setEditableContent({
+          ...initialContent,
+          imageBoardTitle: content.imageBoardTitle,
+        });
+      } else {
+        setEditableContent({
+          ...initialContent,
+          imageBoardTitle: initialContent.imageBoardTitle,
+        });
+      }
+
+      setEditableStyle(initialStyle);
+    }
+  }, [content]);
+
+  function handleEditContent(key: string, value: string) {
+    setEditableContent({
+      ...editableContent,
+      [key]: value,
+    });
+    onChangeContent?.(key, value);
+  }
+
+  function handleEditStyle(key: string, value: CSSObject) {
+    setEditableStyle({
+      ...editableStyle,
+      [key]: value,
+    });
+    onChangeStyle?.(key, value);
+  }
+
+  if (!editableContent) {
+    return <></>;
+  }
+
   return (
     <OuterWrap padding="120px 0">
       <InnerWrap>
@@ -77,7 +146,14 @@ export default function ImageBoardMain(prop: IimageBoardMain) {
           <p css={title_style}>{component_title_}</p>
           <div css={item_container}>
             {Array.from({ length: count }, (_, index) => (
-              <ImageBoardMainItem key={index} content={content} style={style} />
+              <ImageBoardMainItem
+                key={index}
+                content={editableContent}
+                style={editableStyle}
+                isEditable={isEditable}
+                onChangeContent={handleEditContent}
+                onChangeStyle={handleEditStyle}
+              />
             ))}
           </div>
         </div>
