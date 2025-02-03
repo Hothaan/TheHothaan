@@ -13,6 +13,9 @@ import {
 } from "@pages/user/ServicePage/ServiceStep4Page";
 import { TserviceDefaultData } from "@store/serviceDefaultDataStore";
 import { templateMapForCapture } from "@components/template/templateMapping";
+import { IfetchedfeatureResponseData } from "@components/template/types";
+import { updateFeatureData } from "@api/project/updateFeatureData";
+import useIsProduction from "@hooks/useIsProduction";
 
 interface IFullPageModal {
   imageUrlArr: TimageUrl[] | null;
@@ -20,6 +23,7 @@ interface IFullPageModal {
   projectType: string;
   listData: string[];
   selectedItem: string;
+  featureData: IfetchedfeatureResponseData[] | null;
   onClick: (isModalOpen: boolean) => void;
   setSelectedItem: React.Dispatch<React.SetStateAction<string>>;
 }
@@ -31,12 +35,14 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
     projectType,
     listData,
     selectedItem,
+    featureData,
     onClick,
     setSelectedItem,
   } = prop;
 
   const [isInitalToast, setisInitalToast] = useState(true);
   const [isSavedToast, setisSavedToast] = useState(false);
+  const isProduction = true;
 
   const [serviceDefaultData, setServiceDefaultData] =
     useState<TserviceDefaultData | null>(null);
@@ -80,17 +86,90 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
     },
   };
 
-  function saveChangedContent() {
-    const localData = localStorage.getItem("changedContent");
-    if (localData) {
-      /* db 저장 api 적용 */
-      console.log("db 저장 api 적용");
-      const timer = setTimeout(() => {
-        setIsSaved(true);
-        setisSavedToast(true);
-      }, 3000);
-      return () => clearTimeout(timer);
+  async function updateChangedFeatureData(
+    isProduction: boolean,
+    featureId: string,
+    changedContent: any,
+    changedStyle: any
+  ) {
+    try {
+      const response = await updateFeatureData(
+        isProduction,
+        featureId,
+        changedContent,
+        changedStyle
+      );
+      console.log(response);
+      if (response?.status === 200) {
+      } else {
+        console.error("updateChangedFeatureData error", response.status);
+      }
+    } catch (error) {
+      console.error(error);
+      // window.location.href = "/error";
     }
+  }
+
+  function saveChangedContent() {
+    /* db 저장 api 적용 */
+
+    let changedDataArr: any[] = [];
+    let changedContentArr: any[] = [];
+    let changedStyleArr: any[] = [];
+
+    const changedContent = localStorage.getItem("changedContent");
+    if (changedContent) {
+      const parsed = JSON.parse(changedContent);
+      changedContentArr = Object.values(parsed);
+    }
+    const changedStyle = localStorage.getItem("changedStyle");
+    if (changedStyle) {
+      const parsed = JSON.parse(changedStyle);
+      changedStyleArr = Object.values(parsed);
+    }
+
+    if (changedContentArr.length > 0) {
+      changedDataArr = changedContentArr.map((item) => {
+        const { featureId, content } = item;
+        const style = changedStyleArr.find(
+          (styleItem) => styleItem.featureId === featureId
+        ).style;
+        return {
+          featureId: featureId,
+          content: content,
+          style: style,
+        };
+      });
+    } else if (changedStyleArr.length > 0) {
+      changedDataArr = changedStyleArr.map((item) => {
+        const { featureId, style } = item;
+        const content = changedContentArr.find(
+          (contentItem) => contentItem.featureId === featureId
+        ).content;
+        return {
+          featureId: featureId,
+          content: content,
+          style: style,
+        };
+      });
+    }
+
+    if (changedDataArr.length > 0) {
+      changedDataArr.forEach((item) => {
+        updateChangedFeatureData(
+          isProduction,
+          item.featureId,
+          item.content,
+          item.style
+        );
+      });
+    }
+
+    // const timer = setTimeout(() => {
+    //   setIsSaved(true);
+    //   setisSavedToast(true);
+    // }, 3000);
+    // return () => clearTimeout(timer);
   }
 
   useEffect(() => {
@@ -215,21 +294,6 @@ const button_container = css`
   width: 100px;
   display: flex;
   gap: 20px;
-`;
-
-const close_icon_container = css`
-  padding: 4px;
-  border-radius: 8px;
-  background-color: #383838;
-`;
-
-const close_icon = css`
-  width: 24px;
-  height: 16px;
-
-  * {
-    fill: #fff;
-  }
 `;
 
 const content_wrap = css`

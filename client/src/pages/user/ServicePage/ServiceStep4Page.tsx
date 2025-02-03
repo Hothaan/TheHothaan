@@ -273,6 +273,7 @@ export default function ServicePreviewPage() {
       (serviceDefaultData && serviceDefaultData.serviceType.text) || "쇼핑몰",
     listData: listData,
     selectedItem: selectedItem,
+    featureData: featureData,
     onClick: handleChangeisFullpageModalOpen,
     setSelectedItem: setSelectedItem,
   };

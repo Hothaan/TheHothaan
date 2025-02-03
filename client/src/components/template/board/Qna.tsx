@@ -333,13 +333,6 @@ export default function Qna(prop: Iqna) {
     gap: 50px;
   `;
 
-  const initial = {
-    qnaTitle: {
-      text: content?.qnaTitle || title_,
-      css: style?.qnaTitle || qna_item_title_css_,
-    },
-  };
-
   const initialContent = {
     qnaTitle: content?.qnaTitle || title_,
   };
