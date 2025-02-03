@@ -415,8 +415,7 @@ exports.generateFilesForProject = async (req, res) => {
     }
 
     // "메인" 파일을 먼저 가져오고 나머지 파일들로 배열을 나누기
-    const mainFiles = files.filter((file) => file.action_url.includes('메인'));
-    const otherFiles = files.filter((file) => !file.action_url.includes('메인'));
+    const [mainFiles, otherFiles] = separateMainFiles(files);
 
     // "메인" 파일을 맨 앞에 추가하고 나머지 파일들은 뒤에 추가
     const sortedFiles = [...mainFiles, ...otherFiles];
@@ -539,3 +538,17 @@ exports.generateFilesForProject = async (req, res) => {
     return res.status(500).json({ message: '파일 처리 중 오류가 발생했습니다.' });
   }
 };
+
+// "메인" 파일을 먼저 가져오고 나머지 파일들로 배열을 나누기 함수
+function separateMainFiles(files) {
+  return files.reduce(
+    (acc, file) => {
+      if (file.action_url.includes('메인')) {
+        acc[0].push(file);
+      } else {
+        acc[1].push(file);
+      }
+    },
+    [[], []],
+  );
+}
