@@ -1,30 +1,35 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
 import { useState, useEffect, useRef } from "react";
-import { saveImageDb } from "@api/image/saveImageDb";
+/* store */
 import { serviceStepStore } from "@store/serviceStepStore";
+/* components */
+import Loading from "@components/common/ui/Loading/loading";
 import { IloadingModal } from "@components/common/ui/Modal/LoadingModal";
 import LoadingModal from "@components/common/ui/Modal/LoadingModal";
 import { Ibutton } from "@components/common/button/Button";
 import Button from "@components/common/button/Button";
 import MenuConstructBox from "@components/service/menuConstructBox/MenuConstructBox";
+import { IfetchedfeatureResponseData } from "@components/template/types";
+/* hooks */
 import useIsProduction from "@hooks/useIsProduction";
 import useNavigation from "@hooks/useNavigation";
 import useLocationControl from "@hooks/useLocationControl";
+/* api */
 import {
   getServiceTypeMenu,
   IserviceTypeMenuItem,
   TmenuItem,
   TserviceTypeMenu,
 } from "@api/service/serviceTypeMenu";
+import { saveImageDb } from "@api/image/saveImageDb";
 import { createProject } from "@api/project/createProject";
 import { generateText } from "@api/project/generateText";
-import Loading from "@components/common/ui/Loading/loading";
+import { getFeatureData } from "@api/project/getFeatureData";
+/* etc */
 import { IserviceInfo } from "./ServiceStep1Page";
 import { IserviceData } from "./ServiceStep2Page";
 import { AxiosResponse } from "axios";
-import { getFeatureData } from "@api/project/getFeatureData";
-import { IfetchedfeatureResponseData } from "@components/template/types";
 
 /* 임시 */
 export interface IgeneratedText {

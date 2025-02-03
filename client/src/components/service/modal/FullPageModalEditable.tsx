@@ -1,21 +1,30 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
 import { useState, useEffect, useRef } from "react";
+/* components */
 import { IloadingModal } from "@components/common/ui/Modal/LoadingModal";
 import LoadingModal from "@components/common/ui/Modal/LoadingModal";
 import ToastPopup from "@components/common/ui/ToastPopup/ToastPopup";
-import { ReactComponent as LogoLight } from "@svgs/common/logoLight.svg";
+import { templateMapForCapture } from "@components/template/templateMapping";
+import { IfetchedfeatureResponseData } from "@components/template/types";
 import Button, { Ibutton } from "@components/common/button/Button";
 import NavigationEditable from "../navigation/NavigationEditable";
+/* svgs */
+import { ReactComponent as LogoLight } from "@svgs/common/logoLight.svg";
+/* store */
+import { TserviceDefaultData } from "@store/serviceDefaultDataStore";
+/* hooks */
+import useIsProduction from "@hooks/useIsProduction";
+/* api */
+import { getFeatureData } from "@api/project/getFeatureData";
+import { updateFeatureData } from "@api/project/updateFeatureData";
+import { saveImageDb } from "@api/image/saveImageDb";
+/* etc */
 import {
   TimageName,
   TimageUrl,
 } from "@pages/user/ServicePage/ServiceStep4Page";
-import { TserviceDefaultData } from "@store/serviceDefaultDataStore";
-import { templateMapForCapture } from "@components/template/templateMapping";
-import { IfetchedfeatureResponseData } from "@components/template/types";
-import { updateFeatureData } from "@api/project/updateFeatureData";
-import useIsProduction from "@hooks/useIsProduction";
+import { AxiosResponse } from "axios";
 
 interface IFullPageModal {
   imageUrlArr: TimageUrl[] | null;
@@ -35,15 +44,23 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
     projectType,
     listData,
     selectedItem,
-    featureData,
+    // featureData,
     onClick,
     setSelectedItem,
   } = prop;
 
+  const [projectId, setProjectId] = useState<string | null>(null);
   const [isInitalToast, setisInitalToast] = useState(true);
   const [isSavedToast, setisSavedToast] = useState(false);
+  const [featureData, setFeatureData] = useState<
+    IfetchedfeatureResponseData[] | null
+  >(null);
   const isProduction = true;
-
+  const [isImageSaved, setIsImgageSaved] = useState<boolean>(false);
+  const [ischangeDataUpdated, setIschangeDataUpdated] =
+    useState<boolean>(false);
+  const [changeDataUpdateErrorSwitch, setChangeDataUpdateErrorSwitch] =
+    useState<boolean>(false);
   const [serviceDefaultData, setServiceDefaultData] =
     useState<TserviceDefaultData | null>(null);
   const [isLoadingModalOpen, setIsLoadingModalOpen] = useState(false);
@@ -51,6 +68,16 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
     `${projectType}-${selectedItem}`
   );
   const TemplateToRender = templateMapForCapture[templateKey];
+  const [isFail, setIsFail] = useState(false);
+
+  useEffect(() => {
+    const sessionData = sessionStorage.getItem("projectId");
+    if (sessionData) {
+      setProjectId(JSON.parse(sessionData));
+    } else {
+      setIsFail(true);
+    }
+  }, []);
 
   const initialToast = {
     text: "✅ ESC를 누르거나 상단 우측 축소 버튼을 눌러 풀화면 화면 종료할 수 있어요.",
@@ -86,12 +113,44 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
     },
   };
 
+  async function fetchFeatureData(isProduction: boolean, projectId: string) {
+    try {
+      const response = await getFeatureData(isProduction, projectId);
+      if (response.status === 200) {
+        const data = response.data.featureResponseData.map(
+          (item: IfetchedfeatureResponseData) => {
+            return { ...item, feature: item.feature.split(" ").join("") };
+          }
+        );
+        setFeatureData(data);
+      } else {
+        console.error("getFeatureData error", response.status);
+        setIsFail(true);
+      }
+    } catch (error) {
+      console.error(error);
+      setIsFail(true);
+      // window.location.href = "/error";
+    }
+  }
+
+  useEffect(() => {
+    if (featureData) {
+      saveImages();
+    }
+  }, [featureData]);
+  useEffect(() => {
+    if (isImageSaved) {
+      setIsLoadingModalOpen(false);
+    }
+  }, [isImageSaved]);
+
   async function updateChangedFeatureData(
     isProduction: boolean,
     featureId: string,
     changedContent: any,
     changedStyle: any
-  ) {
+  ): Promise<number> {
     try {
       const response = await updateFeatureData(
         isProduction,
@@ -99,14 +158,110 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
         changedContent,
         changedStyle
       );
-      console.log(response);
       if (response?.status === 200) {
+        return response.status;
       } else {
         console.error("updateChangedFeatureData error", response.status);
+        setChangeDataUpdateErrorSwitch(true);
+        return response.status; // 200이 아닌 경우에도 반환 (예: 400, 500 등)
       }
     } catch (error) {
       console.error(error);
-      // window.location.href = "/error";
+      // 에러 발생 시 임의의 에러 코드를 반환하거나 별도의 처리를 할 수 있음
+      return -1;
+    }
+  }
+
+  async function updateAllFeatures(changedDataArr: any[]) {
+    if (changedDataArr.length > 0) {
+      // 각 호출은 Promise<number>를 반환
+      const updatePromises = changedDataArr.map((item) =>
+        updateChangedFeatureData(
+          isProduction,
+          item.featureId,
+          item.content,
+          item.style
+        )
+      );
+      const statuses = await Promise.all(updatePromises);
+      const allSuccessful = statuses.every((status) => status === 200);
+      if (allSuccessful) {
+        console.log("모든 업데이트가 성공적으로 완료되었습니다.");
+        console.log("변경된 데이터를 다시 가져옵니다.");
+        if (projectId) {
+          fetchFeatureData(isProduction, projectId);
+        }
+      } else {
+        console.log("업데이트 중 일부 오류가 발생하였습니다.", statuses);
+      }
+    }
+  }
+
+  async function saveImages() {
+    const projectId = sessionStorage.getItem("projectId");
+    if (
+      !projectId ||
+      !featureData ||
+      featureData.length === 0 ||
+      !serviceDefaultData
+    ) {
+      console.error("Missing required data for saveImages");
+      return;
+    }
+
+    const projectType = serviceDefaultData.serviceType.text as string;
+    const featureId = featureData.map((item) => item.feature_id);
+    const parameterArr = featureData.map(
+      (item) => `${projectType}-${item.feature}`
+    );
+    try {
+      const responses = await Promise.allSettled(
+        parameterArr.map((url, idx) =>
+          saveImageDb(true, url, projectId, featureId[idx].toString())
+        )
+      );
+
+      // Filter fulfilled responses
+      const fulfilledResponses = responses.filter(
+        (res): res is PromiseFulfilledResult<AxiosResponse<any>> =>
+          res.status === "fulfilled"
+      );
+
+      // Filter rejected responses
+      const rejectedResponses = responses.filter(
+        (res): res is PromiseRejectedResult => res.status === "rejected"
+      );
+
+      console.log("fulfilledResponses:", fulfilledResponses);
+      console.log("rejectedResponses:", rejectedResponses);
+
+      if (fulfilledResponses.length > 0) {
+        const imageNameMapping = fulfilledResponses.map((res, idx) => ({
+          imageName: res.value.data.imageName,
+          parameter: parameterArr[idx],
+        }));
+        const imageUrlMapping = fulfilledResponses.map((res, idx) => ({
+          imageUrl: res.value.data.url,
+          parameter: parameterArr[idx],
+        }));
+
+        localStorage.setItem("imageName", JSON.stringify(imageNameMapping));
+        localStorage.setItem("imageUrl", JSON.stringify(imageUrlMapping));
+      }
+
+      if (rejectedResponses.length > 0) {
+        console.error(
+          "Some image save requests failed:",
+          rejectedResponses.map((res) => res.reason)
+        );
+      } else if (rejectedResponses.length === 0) {
+        setIsImgageSaved(true);
+      }
+    } catch (error) {
+      console.error("Error saving images:", error);
+      // // window.location.href = "/error";
+      return null;
+    } finally {
     }
   }
 
@@ -154,15 +309,16 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
       });
     }
 
-    if (changedDataArr.length > 0) {
-      changedDataArr.forEach((item) => {
-        updateChangedFeatureData(
-          isProduction,
-          item.featureId,
-          item.content,
-          item.style
-        );
-      });
+    if (changedDataArr.length > 0 && projectId) {
+      updateAllFeatures(changedDataArr);
+      // changedDataArr.forEach((item) => {
+      //   updateChangedFeatureData(
+      //     isProduction,
+      //     item.featureId,
+      //     item.content,
+      //     item.style
+      //   );
+      // });
     }
 
     // const timer = setTimeout(() => {
