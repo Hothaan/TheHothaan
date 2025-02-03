@@ -547,6 +547,7 @@ function separateMainFiles(files) {
       } else {
         acc[1].push(file);
       }
+      return acc;
     },
     [[], []],
   );
