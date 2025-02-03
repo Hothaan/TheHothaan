@@ -414,11 +414,8 @@ exports.generateFilesForProject = async (req, res) => {
       return res.status(404).json({ message: '해당 프로젝트에 파일이 없습니다.' });
     }
 
-    // "메인" 파일을 먼저 가져오고 나머지 파일들로 배열을 나누기
-    const [mainFiles, otherFiles] = separateMainFiles(files);
-
-    // "메인" 파일을 맨 앞에 추가하고 나머지 파일들은 뒤에 추가
-    const sortedFiles = [...mainFiles, ...otherFiles];
+    // '메인' 파일들을 앞에 나머지 파일들을 뒤에 추가 해서 정렬
+    const sortedFiles = sortProjectFiles(files);
 
     // 작업 디렉토리 설정
     const outputDir = path.resolve(process.env.FILE_DIRECTORY);
@@ -539,9 +536,9 @@ exports.generateFilesForProject = async (req, res) => {
   }
 };
 
-// "메인" 파일을 먼저 가져오고 나머지 파일들로 배열을 나누기 함수
-function separateMainFiles(files) {
-  return files.reduce(
+function sortProjectFiles(files) {
+  // "메인" 파일을 먼저 가져오고 나머지 파일들로 배열을 나누기
+  const [mainFiles, otherFiles] = files.reduce(
     (acc, file) => {
       if (file.action_url.includes('메인')) {
         acc[0].push(file);
@@ -551,4 +548,6 @@ function separateMainFiles(files) {
     },
     [[], []],
   );
+  // "메인" 파일을 맨 앞에 추가하고 나머지 파일들은 뒤에 추가
+  return [...mainFiles, ...otherFiles];
 }
