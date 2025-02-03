@@ -360,7 +360,7 @@ router.put('/features/update/:featureId', projectController.updateFeatureContent
  *               format:
  *                 type: string
  *                 description: 생성할 파일 포맷 (png, jpg, pdf)
- *                 example: "png"
+ *                 example: "png or jpg or pdf"
  *     tags:
  *      - Project
  *     responses:
@@ -371,9 +371,9 @@ router.put('/features/update/:featureId', projectController.updateFeatureContent
  *             schema:
  *               type: object
  *               properties:
- *                 message:
+ *                 downloadUrl:
  *                   type: string
- *                   example: "파일 생성이 완료되었습니다."
+ *                   example: "/files/project-20250203.pdf"
  *       400:
  *         description: 잘못된 요청입니다.
  *         content:
@@ -383,7 +383,7 @@ router.put('/features/update/:featureId', projectController.updateFeatureContent
  *               properties:
  *                 message:
  *                   type: string
- *                   example: "project_id와 format(png, jpg, pdf)이 필요합니다."
+ *                   example: "'project_id와 format(png, jpg, pdf)이 필요합니다.' or '유효하지 않은 format입니다. png, jpg 또는 pdf만 가능합니다.'"
  *       404:
  *         description: 프로젝트에 파일이 없거나 파일을 찾을 수 없습니다.
  *         content:
@@ -403,7 +403,7 @@ router.put('/features/update/:featureId', projectController.updateFeatureContent
  *               properties:
  *                 message:
  *                   type: string
- *                   example: "파일 처리 중 오류가 발생했습니다."
+ *                   example: "'파일 처리 중 오류가 발생했습니다.' or 'PDF 페이지를 생성하지 못했습니다.'"
  */
 router.post('/generate-files', projectController.generateFilesForProject);
 
