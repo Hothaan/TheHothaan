@@ -467,8 +467,8 @@ exports.generateFilesForProject = async (req, res) => {
           page.drawImage(image, {
             x: (595 - width) / 2, // 중앙 정렬
             y: (842 - height) / 2, // 중앙 정렬
-            width: image.width,
-            height: image.height,
+            width,
+            height,
           });
         }
       }
