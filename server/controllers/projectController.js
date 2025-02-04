@@ -10,6 +10,7 @@ const fs = require('fs');
 const path = require('path');
 const parseJson = require('../helpers/parseJson');
 require('dotenv').config();
+const { PDFDocument } = require('pdf-lib');
 
 // 프로젝트 생성 함수
 exports.createProject = async (req, res) => {
@@ -454,91 +455,27 @@ exports.generateFilesForProject = async (req, res) => {
       const pdfFileName = `project-${project_id}-${Date.now()}.pdf`;
       const pdfFilePath = path.join(outputDir, pdfFileName);
 
-      // const isLocal = process.env.NODE_ENV === 'development';
-      // const browser = await puppeteer.launch({
-      //   executablePath: isLocal
-      //     ? '/Users/hansong-i/.cache/puppeteer/chrome/mac_arm-131.0.6778.85/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing'
-      //     : '/usr/bin/chromium-browser', // 배포 서버에서 설치한 Chromium 경로
-      //   args: ['--no-sandbox', '--disable-setuid-sandbox'],
-      // });
+      const pdfDoc = await PDFDocument.create();
 
-      browser = await puppeteer.launch({
-        headless: true,
-        args: ['--no-sandbox', '--disable-setuid-sandbox'],
-      });
-
-      // const pdfPages = [];
-      const pdfDocs = [];
-
-      // 각 이미지에 대해 PDF 페이지를 생성
       for (const file of sortedFiles) {
         if (file.file_type === 'image' && file.file_path.endsWith('.png')) {
-          const page = await browser.newPage();
+          const imageBytes = fs.readFileSync(file.file_path);
+          const image = await pdfDoc.embedPng(imageBytes);
 
-          // 각 이미지를 HTML 페이지로 불러오기
-          const fileUrl = file.action_url; // DB에서 이미지 URL 가져오기
-
-          await page.setContent(`
-                        <html>
-                            <body style="width: 100%; margin: 0; display: flex; justify-content: center;">
-                                <img src="${fileUrl}" style="max-width: 100%; height: auto;" />  <!-- 이미지 크기 자동 조정 -->
-                            </body>
-                        </html>
-                    `);
-
-          // 뷰포트를 A4 크기에 맞추기
-          await page.setViewport({
-            width: 595, // A4 크기 (mm 기준으로 210mm -> 595px)
-            height: 842, // A4 크기 (mm 기준으로 297mm -> 842px)
-            deviceScaleFactor: 2, // 고해상도
+          const page = pdfDoc.addPage([image.width, image.height]);
+          page.drawImage(image, {
+            x: 0,
+            y: 0,
+            width: image.width,
+            height: image.height,
           });
-
-          await page.goto(fileUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
-          await page.waitForSelector('.templateImage', { timeout: 30000 });
-
-          /** 페이지를 PDF로 변환 */
-          // const pdfPath = path.join(outputDir, `page-${Date.now()}.pdf`);
-          // await page.pdf({
-          //   path: pdfPath, // 각 페이지 PDF 저장
-          //   format: 'A4',
-          //   printBackground: true,
-          //   scale: 0.5,
-          // });
-
-          /** PDF 파일 경로를 배열에 저장 */
-          // pdfPages.push(pdfPath);
-          // await page.close();
-
-          /** 페이지를 PDF로 변환 */
-          const pdfBytes = await page.pdf({
-            format: 'A4',
-            printBackground: true,
-            scale: 0.5,
-          });
-
-          /** PDF 파일를 배열에 저장 */
-          pdfDocs.push(pdfBytes);
-          await page.close();
         }
       }
 
-      await browser.close();
+      const pdfBytes = await pdfDoc.save();
+      fs.writeFileSync(pdfFilePath, pdfBytes);
 
-      /** 디버깅을 위한 출력 (pdfPages 배열 확인) */
-      // console.log('PDF Pages:', pdfPages);
-
-      // PDF 병합
-      if (pdfDocs.length > 0) {
-        const mergedPdfBytes = await mergePdfs(pdfDocs); // 병합 함수 호출
-
-        // 병합된 PDF 저장
-        fs.writeFileSync(pdfFilePath, mergedPdfBytes);
-
-        // 클라이언트에 PDF 파일 경로 반환
-        return res.status(200).json({ downloadUrl: `/files/${pdfFileName}` });
-      } else {
-        return res.status(500).json({ message: 'PDF 페이지를 생성하지 못했습니다.' });
-      }
+      return res.status(200).json({ downloadUrl: `/files/${pdfFileName}` });
     } else {
       return res.status(400).json({
         message: '유효하지 않은 format입니다. png, jpg 또는 pdf만 가능합니다.',
