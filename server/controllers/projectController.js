@@ -493,7 +493,8 @@ exports.generateFilesForProject = async (req, res) => {
             deviceScaleFactor: 2, // 고해상도
           });
 
-          await page.goto(fileUrl, { waitUntil: 'domcontentloaded' });
+          await page.goto(fileUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
+          await page.waitForSelector('.templateImage', { timeout: 30000 });
 
           /** 페이지를 PDF로 변환 */
           // const pdfPath = path.join(outputDir, `page-${Date.now()}.pdf`);
