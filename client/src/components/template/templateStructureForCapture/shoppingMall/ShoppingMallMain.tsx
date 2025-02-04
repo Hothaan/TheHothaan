@@ -159,11 +159,14 @@ export default function ShoppingMallMain() {
     return null;
   }
 
-  const [pageContent, setPageContent] =
-    useState<IshoppingMallMainContent | null>(getLocalContent());
+  const [pageContent, setPageContent] = useState<{
+    [key: string]: string;
+  } | null>(getLocalContent());
   const [pageStyle, setPageStyle] = useState<IshoppingMallMainStyle | null>(
     getLocalStyle()
   );
+
+  console.log(generatedText);
 
   function updateInitialContent() {
     if (generatedText && generatedText.content) {
@@ -215,6 +218,28 @@ export default function ShoppingMallMain() {
   }
 
   //featureData가 들어오면 초기 콘텐츠와 스타일 업데이트
+  // useEffect(() => {
+  //   if (generatedText) {
+  //     const localContent = localStorage.getItem("changedContent");
+  //     const hasLocalContent = localContent
+  //       ? JSON.parse(localContent)?.[featureKey]?.content
+  //       : null;
+
+  //     if (!hasLocalContent) {
+  //       updateInitialContent();
+  //     }
+
+  //     const localStyle = localStorage.getItem("changedStyle");
+  //     const hasLocalStyle = localStyle
+  //       ? JSON.parse(localStyle)?.[featureKey]?.style
+  //       : null;
+
+  //     if (!hasLocalStyle) {
+  //       updateInitialStyle();
+  //     }
+  //   }
+  // }, [generatedText]);
+
   useEffect(() => {
     if (generatedText) {
       const localContent = localStorage.getItem("changedContent");
@@ -222,7 +247,7 @@ export default function ShoppingMallMain() {
         ? JSON.parse(localContent)?.[featureKey]?.content
         : null;
 
-      if (!hasLocalContent) {
+      if (!hasLocalContent && !pageContent) {
         updateInitialContent();
       }
 
@@ -231,30 +256,57 @@ export default function ShoppingMallMain() {
         ? JSON.parse(localStyle)?.[featureKey]?.style
         : null;
 
-      if (!hasLocalStyle) {
+      if (!hasLocalStyle && !pageStyle) {
         updateInitialStyle();
       }
     }
-  }, [generatedText]);
+  }, [generatedText, pageContent]);
+
+  // useEffect(() => {
+  //   if (pageContent) {
+  //     const localContent = localStorage.getItem("changedContent");
+  //     const updatedContent = localContent
+  //       ? {
+  //           ...JSON.parse(localContent),
+  //           [featureKey]: {
+  //             featureId: generatedText?.feature_id,
+  //             content: { ...pageContent },
+  //           },
+  //         }
+  //       : {
+  //           [featureKey]: {
+  //             featureId: generatedText?.feature_id,
+  //             content: { ...pageContent },
+  //           },
+  //         };
+  //     localStorage.setItem("changedContent", JSON.stringify(updatedContent));
+  //   }
+  // }, [pageContent]);
 
   useEffect(() => {
     if (pageContent) {
       const localContent = localStorage.getItem("changedContent");
-      const updatedContent = localContent
-        ? {
-            ...JSON.parse(localContent),
-            [featureKey]: {
-              featureId: generatedText?.feature_id,
-              content: { ...pageContent },
-            },
-          }
-        : {
-            [featureKey]: {
-              featureId: generatedText?.feature_id,
-              content: { ...pageContent },
-            },
-          };
-      localStorage.setItem("changedContent", JSON.stringify(updatedContent));
+      const existingContent = localContent
+        ? JSON.parse(localContent)?.[featureKey]?.content
+        : null;
+
+      if (JSON.stringify(existingContent) !== JSON.stringify(pageContent)) {
+        const updatedContent = localContent
+          ? {
+              ...JSON.parse(localContent),
+              [featureKey]: {
+                featureId: generatedText?.feature_id,
+                content: { ...pageContent },
+              },
+            }
+          : {
+              [featureKey]: {
+                featureId: generatedText?.feature_id,
+                content: { ...pageContent },
+              },
+            };
+        localStorage.setItem("changedContent", JSON.stringify(updatedContent));
+      }
     }
   }, [pageContent]);
 
@@ -279,15 +331,26 @@ export default function ShoppingMallMain() {
     }
   }, [pageStyle]);
 
+  // function handleChangeContent(key: string, value: string) {
+  //   setPageContent({ ...pageContent, [key]: value });
+  // }
+
   function handleChangeContent(key: string, value: string) {
-    setPageContent({ ...pageContent, [key]: value });
+    if (pageContent?.[key] !== value) {
+      setPageContent((prev) => ({
+        ...prev,
+        [key]: value,
+      }));
+    }
   }
 
   function handleChangeStyle(key: string, value: CSSObject) {
     setPageStyle({ ...pageStyle, [key]: value });
   }
 
-  if (!generatedText || !headerData) {
+  console.log(pageContent);
+
+  if (!pageContent || !headerData) {
     return <Loading />;
   }
 

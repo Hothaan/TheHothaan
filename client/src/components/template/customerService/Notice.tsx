@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { OuterWrap, ContentsWrap } from "../commonComponent/Wrap";
 import Title from "../commonComponent/Title";
 import BreadCrumble from "../commonComponent/BreadCrumble";
@@ -161,12 +161,10 @@ function NoticeTable(prop: Inotice) {
             <td css={[cellStyle, col2, text_align_left]}>
               {isEditable ? (
                 <EditableText
-                  text={content?.noticeTitle || title_}
+                  text={content?.noticeTitle as string}
                   className="noticeTitle"
                   isTextArea={false}
-                  defaultCss={
-                    style?.noticeTitle || notice_title_option_text_css_
-                  }
+                  defaultCss={style?.noticeTitle as CSSObject}
                   onChangeText={(key, value) => onChangeContent(key, value)}
                   onChangeCss={(key, value) => onChangeStyle(key, value)}
                 />
@@ -218,17 +216,14 @@ function NoticeGalleryBoard(prop: Inotice) {
             borderRadius="0"
           />
           {isEditable ? (
-            content?.noticeTitle &&
-            style?.noticeTitle && (
-              <EditableText
-                text={content.noticeTitle}
-                className="noticeTitle"
-                isTextArea={false}
-                defaultCss={style.noticeTitle}
-                onChangeText={(key, value) => onChangeContent(key, value)}
-                onChangeCss={(key, value) => onChangeStyle(key, value)}
-              />
-            )
+            <EditableText
+              text={content.noticeTitle as string}
+              className="noticeTitle"
+              isTextArea={false}
+              defaultCss={style.noticeTitle as CSSObject}
+              onChangeText={(key, value) => onChangeContent(key, value)}
+              onChangeCss={(key, value) => onChangeStyle(key, value)}
+            />
           ) : (
             <p css={style?.noticeTitle || notice_title_option_image_css_}>
               {content?.noticeTitle || title_}
@@ -288,31 +283,46 @@ export default function Notice(prop: Inotice) {
   const [editableContent, setEditableContent] = useState<any>(null);
   const [editableStyle, setEditableStyle] = useState<any>(null);
 
-  useEffect(() => {
-    if (content) {
-      if (content?.noticeTitle) {
-        setEditableContent({
-          ...initialContent,
-          noticeTitle: content.noticeTitle,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          noticeTitle: initialContent.noticeTitle,
-        });
-      }
+  // useEffect(() => {
+  //   if (content) {
+  //     if (content?.noticeTitle) {
+  //       setEditableContent({
+  //         ...initialContent,
+  //         noticeTitle: content.noticeTitle,
+  //       });
+  //     } else {
+  //       setEditableContent({
+  //         ...initialContent,
+  //         noticeTitle: initialContent.noticeTitle,
+  //       });
+  //     }
+  //     setEditableStyle(initialStyle);
+  //   }
+  // }, [content]);
 
+  useEffect(() => {
+    if (content?.noticeTitle !== editableContent?.noticeTitle) {
+      setEditableContent({
+        ...initialContent,
+        noticeTitle: content?.noticeTitle ?? initialContent.noticeTitle,
+      });
+    }
+
+    if (style?.noticeTitle !== editableStyle?.noticeTitle) {
       setEditableStyle(initialStyle);
     }
-  }, [content]);
+  }, [content, style]);
 
-  function handleEditContent(key: string, value: string) {
-    setEditableContent({
-      ...editableContent,
-      [key]: value,
-    });
-    onChangeContent?.(key, value);
-  }
+  const handleEditContent = useCallback(
+    (key: string, value: string) => {
+      setEditableContent((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeContent?.(key, value);
+    },
+    [onChangeContent]
+  );
 
   function handleEditStyle(key: string, value: CSSObject) {
     setEditableStyle({
@@ -330,12 +340,12 @@ export default function Notice(prop: Inotice) {
     gap: 50px;
   `;
 
-  if (option === "텍스트형") {
-    return (
-      <OuterWrap padding="100px 0">
-        <ContentsWrap>
-          <div css={container}>
-            <NoticeTitle />
+  return (
+    <OuterWrap padding="100px 0">
+      <ContentsWrap>
+        <div css={container}>
+          <NoticeTitle />
+          {option === "텍스트형" ? (
             <NoticeTable
               content={editableContent}
               style={editableStyle}
@@ -343,17 +353,7 @@ export default function Notice(prop: Inotice) {
               onChangeContent={handleEditContent}
               onChangeStyle={handleEditStyle}
             />
-            <NoticeSearch />
-          </div>
-        </ContentsWrap>
-      </OuterWrap>
-    );
-  } else {
-    return (
-      <OuterWrap padding="100px 0">
-        <ContentsWrap>
-          <div css={container}>
-            <NoticeTitle />
+          ) : (
             <NoticeGalleryBoard
               content={editableContent}
               style={editableStyle}
@@ -361,10 +361,10 @@ export default function Notice(prop: Inotice) {
               onChangeContent={handleEditContent}
               onChangeStyle={handleEditStyle}
             />
-            <NoticeSearch />
-          </div>
-        </ContentsWrap>
-      </OuterWrap>
-    );
-  }
+          )}
+          <NoticeSearch />
+        </div>
+      </ContentsWrap>
+    </OuterWrap>
+  );
 }
