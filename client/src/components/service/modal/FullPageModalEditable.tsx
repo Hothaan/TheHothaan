@@ -19,6 +19,7 @@ import useIsProduction from "@hooks/useIsProduction";
 import { getFeatureData } from "@api/project/getFeatureData";
 import { updateFeatureData } from "@api/project/updateFeatureData";
 import { saveImageDb } from "@api/image/saveImageDb";
+import { generateFiles } from "@api/project/generateFiles";
 /* etc */
 import {
   TimageName,
@@ -57,10 +58,6 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
   >(null);
   const isProduction = true;
   const [isImageSaved, setIsImgageSaved] = useState<boolean>(false);
-  const [ischangeDataUpdated, setIschangeDataUpdated] =
-    useState<boolean>(false);
-  const [changeDataUpdateErrorSwitch, setChangeDataUpdateErrorSwitch] =
-    useState<boolean>(false);
   const [serviceDefaultData, setServiceDefaultData] =
     useState<TserviceDefaultData | null>(null);
   const [isLoadingModalOpen, setIsLoadingModalOpen] = useState(false);
@@ -162,7 +159,6 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
         return response.status;
       } else {
         console.error("updateChangedFeatureData error", response.status);
-        setChangeDataUpdateErrorSwitch(true);
         return response.status; // 200이 아닌 경우에도 반환 (예: 400, 500 등)
       }
     } catch (error) {

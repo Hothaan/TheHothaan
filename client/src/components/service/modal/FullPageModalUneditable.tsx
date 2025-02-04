@@ -11,15 +11,47 @@ import Button, { Ibutton } from "@components/common/button/Button";
 import NavigationUnEditable, {
   INavigationUnEditable,
 } from "../navigation/NavigationUnEditable";
+/* store */
+import { TserviceDefaultData } from "@store/serviceDefaultDataStore";
+/* etc */
+import {
+  TimageName,
+  TimageUrl,
+} from "@pages/user/ServicePage/ServiceStep4Page";
+import { IfetchedfeatureResponseData } from "@components/template/types";
 
 interface IFullPageModal {
+  imageUrlArr: TimageUrl[] | null;
+  imageNameArr: TimageName[] | null;
+  projectType: string;
+  listData: string[];
+  selectedItem: string;
   onClick: (isModalOpen: boolean) => void;
+  setSelectedItem: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export default function FullPageModalUneditable(prop: IFullPageModal) {
-  const { onClick } = prop;
+  const {
+    imageUrlArr,
+    imageNameArr,
+    projectType,
+    listData,
+    selectedItem,
+    // featureData,
+    onClick,
+    setSelectedItem,
+  } = prop;
   const [isToast, setIsToast] = useState(true);
   const [isNaviOpen, setIsNaviOpen] = useState<boolean>(false);
+  const [serviceDefaultData, setServiceDefaultData] =
+    useState<TserviceDefaultData | null>(null);
+
+  useEffect(() => {
+    const sessionData = sessionStorage.getItem("serviceData");
+    if (sessionData) {
+      setServiceDefaultData(JSON.parse(sessionData));
+    }
+  }, []);
 
   const toast = {
     text: "✅ ESC를 누르거나 상단 우측 축소 버튼을 눌러 풀화면 화면 종료할 수 있어요.",
@@ -28,6 +60,11 @@ export default function FullPageModalUneditable(prop: IFullPageModal) {
   };
 
   const navigation: INavigationUnEditable = {
+    imageUrlArr: imageUrlArr,
+    imageNameArr: imageNameArr,
+    listData: listData,
+    selectedItem: selectedItem,
+    setSelectedItem: setSelectedItem,
     isOpen: isNaviOpen,
     setIsOpen: setIsNaviOpen,
   };
@@ -38,7 +75,7 @@ export default function FullPageModalUneditable(prop: IFullPageModal) {
       <div css={wrap}>
         <div css={title_bar}>
           <LogoLight />
-          <p css={title}>편집 불가능한 전체화면 모달</p>
+          <p css={title}>{serviceDefaultData?.serviceTitle || "프로젝트"}</p>
           <div css={button_wrap}>
             <button
               type="button"

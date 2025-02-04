@@ -6,15 +6,19 @@ export interface Icheckbox {
   id: string;
   name: string;
   label: string;
+  isDefault?: boolean;
   checked: boolean;
   padding?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export default function Checkbox(prop: Icheckbox) {
-  const { id, name, label, checked, padding, onChange } = prop;
+  const { id, name, label, checked, padding, isDefault, onChange } = prop;
 
   const handleDivClick = () => {
+    if (isDefault === false) {
+      return;
+    }
     const fakeEvent = {
       currentTarget: { id, checked: !checked },
       target: { checked: !checked },
@@ -23,41 +27,56 @@ export default function Checkbox(prop: Icheckbox) {
   };
 
   return (
-    <div css={checkboxContainerStyle(padding)}>
+    <div
+      css={checkboxContainerStyle(
+        isDefault === undefined ? false : isDefault,
+        padding
+      )}
+    >
       <input
         type="checkbox"
         id={id}
         name={name}
         checked={checked}
         onChange={onChange}
-        css={hiddenCheckboxStyle}
+        css={hiddenCheckboxStyle(isDefault === undefined ? false : isDefault)}
+        disabled={isDefault === undefined ? false : !isDefault}
       />
-      <div css={customCheckboxStyle(checked)} onClick={handleDivClick}>
+      <div
+        css={customCheckboxStyle(
+          checked,
+          isDefault === undefined ? false : isDefault
+        )}
+        onClick={handleDivClick}
+      >
         <Check />
       </div>
-      <label css={labelStyle(checked)} htmlFor={id}>
+      <label
+        css={labelStyle(checked, isDefault === undefined ? false : isDefault)}
+        htmlFor={id}
+      >
         {label}
       </label>
     </div>
   );
 }
 
-const checkboxContainerStyle = (padding?: string) => css`
-  cursor: pointer;
+const checkboxContainerStyle = (isDefault: boolean, padding?: string) => css`
   display: flex;
   align-items: center;
   gap: 6px;
   padding: ${padding ? padding : "10px"};
   flex-basis: 50%;
+  cursor: ${isDefault ? "pointer" : "default"};
 `;
 
-const hiddenCheckboxStyle = css`
+const hiddenCheckboxStyle = (isDefault: boolean) => css`
   position: absolute;
   opacity: 0;
-  cursor: pointer;
+  cursor: ${isDefault ? "pointer" : "default"};
 `;
 
-const customCheckboxStyle = (checked: boolean) => css`
+const customCheckboxStyle = (checked: boolean, isDefault: boolean) => css`
   display: flex;
   width: var(--L, 24px);
   height: var(--L, 24px);
@@ -68,13 +87,17 @@ const customCheckboxStyle = (checked: boolean) => css`
   border: 1px solid var(--stroke-C3C8D1, #c3c8d1);
   background: var(--background-FFFFFF, #fff);
 
+  opacity: ${isDefault ? 1 : 0.5};
+  cursor: ${isDefault ? "pointer" : "default"};
+
   svg {
     display: ${checked ? "block" : "none"};
   }
 `;
 
-const labelStyle = (checked: boolean) => css`
-  cursor: pointer;
+const labelStyle = (checked: boolean, isDefault: boolean) => css`
+  cursor: ${isDefault ? "pointer" : "default"};
+
   color: ${checked ? "#119CD4" : "#383838"};
   font-family: Pretendard;
   font-size: 17px;
@@ -82,4 +105,6 @@ const labelStyle = (checked: boolean) => css`
   font-weight: 400;
   line-height: 150%; /* 25.5px */
   letter-spacing: -0.17px;
+
+  opacity: ${isDefault ? 1 : 0.5};
 `;

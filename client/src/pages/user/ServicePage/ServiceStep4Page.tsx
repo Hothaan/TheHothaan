@@ -2,10 +2,9 @@
 import { css, CSSObject } from "@emotion/react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+/* components */
 import ButtonArrowIcon from "@components/service/button/ButtonArrowIcon";
 import { IbuttonArrow } from "@components/service/button/ButtonArrowIcon";
-import { ReactComponent as Edit } from "@svgs/service/edit.svg";
-import { ReactComponent as Preview } from "@svgs/service/previewGray.svg";
 import { IloadingModal } from "@components/common/ui/Modal/LoadingModal";
 import LoadingModal from "@components/common/ui/Modal/LoadingModal";
 import ButtonFullPage, {
@@ -17,14 +16,21 @@ import FullPageModalEditable from "@components/service/modal/FullPageModalEditab
 import ButtonArrowIconControler, {
   IbuttonArrowControler,
 } from "@components/service/button/ButtonArrowIconControler";
-
 import Loading from "@components/common/ui/Loading/loading";
+import { IfetchedfeatureResponseData } from "@components/template/types";
+/* api */
+import { getFeatureData } from "@api/project/getFeatureData";
+import { generateFiles } from "@api/project/generateFiles";
+/* svgs */
+import { ReactComponent as Edit } from "@svgs/service/edit.svg";
+import { ReactComponent as Preview } from "@svgs/service/previewGray.svg";
+/* hooks */
 import useIsProduction from "@hooks/useIsProduction";
+import useNavigation from "@hooks/useNavigation";
+/* etc */
 import { IserviceData } from "./ServiceStep2Page";
 import { IserviceInfo } from "./ServiceStep1Page";
-import { IfetchedfeatureResponseData } from "@components/template/types";
-import { getFeatureData } from "@api/project/getFeatureData";
-import useNavigation from "@hooks/useNavigation";
+import axios from "axios";
 
 export type TimageName = {
   imageName: string;
@@ -36,6 +42,8 @@ export type TimageUrl = {
   parameter: string;
 };
 
+export type Tformat = "pdf" | "png" | "jpg";
+
 export default function ServicePreviewPage() {
   const { handleNavigation } = useNavigation();
   // const { isProduction } = useIsProduction();
@@ -44,6 +52,7 @@ export default function ServicePreviewPage() {
   const [serviceInfo, setServiceInfo] = useState<IserviceInfo | null>(null);
   const [serviceDefaultData, setServiceDefaultData] =
     useState<IserviceData | null>(null);
+  const [listData, setListData] = useState<string[]>([]);
   const [isFullpageModalOpen, setIsFullpageModalOpen] = useState(false);
   const [isLoadingModalOpen, setIsLoadingModalOpen] = useState(false);
   const navigate = useNavigate();
@@ -52,6 +61,8 @@ export default function ServicePreviewPage() {
   const [featureData, setFeatureData] = useState<
     IfetchedfeatureResponseData[] | null
   >(null);
+  const [currentIdx, setCurrentIdx] = useState<number>(0);
+  const [selectedItem, setSelectedItem] = useState<string>(listData[0]);
   const [isFail, setIsFail] = useState(false);
 
   async function fetchFeatureData(isProduction: boolean, projectId: string) {
@@ -111,12 +122,17 @@ export default function ServicePreviewPage() {
     },
   };
 
+  function navigateToStep5() {
+    navigate("/service/step5");
+  }
+
   const nextButtonData: Ibutton = {
     size: "XL",
     bg: "gradient",
     text: "기획안 생성하기 👀✨",
     onClick: () => {
-      setIsLoadingModalOpen(true);
+      navigateToStep5();
+      // setIsLoadingModalOpen(true);
     },
     disabled: false,
   };
@@ -143,17 +159,12 @@ export default function ServicePreviewPage() {
     }
   }
 
-  const [listData, setListData] = useState<string[]>([]);
-
   useEffect(() => {
     const data = makeListData();
     if (data) {
       setListData(data);
     }
   }, [featureData]);
-
-  const [currentIdx, setCurrentIdx] = useState<number>(0);
-  const [selectedItem, setSelectedItem] = useState<string>(listData[0]);
 
   useEffect(() => {
     if (listData) {
@@ -265,6 +276,63 @@ export default function ServicePreviewPage() {
     setIsFullpageModalOpen(true);
     setSelectedItem(feature);
   }
+
+  // const [isFileGenerated, setIsFileGenerated] = useState<boolean>(false);
+
+  // useEffect(() => {
+  //   if (isLoadingModalOpen) {
+  //     generateTemplateFiles();
+  //   }
+  // }, [isLoadingModalOpen]);
+
+  // useEffect(() => {
+  //   if (isFileGenerated) {
+  //     setIsLoadingModalOpen(false);
+  //     navigate("/service/step5");
+  //   }
+  // }, [isFileGenerated]);
+
+  // async function generateTemplateFiles() {
+  //   if (!projectId) {
+  //     return;
+  //   }
+  //   try {
+  //     const pdfResponse = await generateFiles(isProduction, projectId, "pdf");
+  //     const pngResponse = await generateFiles(isProduction, projectId, "png");
+  //     const jpgResponse = await generateFiles(isProduction, projectId, "jpg");
+
+  //     if (pdfResponse.status === 200) {
+  //       const domain = "dolllpitoxic3.mycafe24.com";
+  //       const url = "http://" + domain + pdfResponse.data.downloadUrl;
+  //       localStorage.setItem("pdf", url);
+  //     } else {
+  //     }
+  //     if (pngResponse.status === 200) {
+  //       const domain = "dolllpitoxic3.mycafe24.com";
+  //       const url = "http://" + domain + pdfResponse.data.downloadUrl;
+  //       localStorage.setItem("png", url);
+  //     } else {
+  //     }
+  //     if (jpgResponse.status === 200) {
+  //       const domain = "dolllpitoxic3.mycafe24.com";
+  //       const url = "http://" + domain + pdfResponse.data.downloadUrl;
+  //       localStorage.setItem("jpg", url);
+  //     } else {
+  //     }
+
+  //     if (
+  //       pdfResponse.status === 200 &&
+  //       pdfResponse.status === 200 &&
+  //       pdfResponse.status === 200
+  //     ) {
+  //       setIsFileGenerated(true);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //     // window.location.href = "/error";
+  //   } finally {
+  //   }
+  // }
 
   const fullPageModal = {
     imageUrlArr: imageUrlArr,

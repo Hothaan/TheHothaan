@@ -2,21 +2,27 @@
 import { css, CSSObject } from "@emotion/react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+/* components */
 import LoadingModal, {
   IloadingModal,
 } from "@components/common/ui/Modal/LoadingModal";
+import { IbuttonIcon } from "@components/service/button/ButtonIcon";
+import ButtonIcon from "@components/service/button/ButtonIcon";
+import FullPageModalUneditable from "@components/service/modal/FullPageModalUneditable";
+/* svgs */
 import { ReactComponent as BannerIcon1 } from "@svgs/service/bannerIcon1.svg";
 import { ReactComponent as BannerIcon2 } from "@svgs/service/bannerIcon2.svg";
 import { ReactComponent as BannerIcon3 } from "@svgs/service/bannerIcon3.svg";
 import { ReactComponent as ArrowRight } from "@svgs/template/arrowRight.svg";
 import { ReactComponent as PreviewGray } from "@svgs/service/previewGray.svg";
 import { ReactComponent as Download } from "@svgs//common/download.svg";
-import { IbuttonIcon } from "@components/service/button/ButtonIcon";
-import ButtonIcon from "@components/service/button/ButtonIcon";
-import FullPageModalUneditable from "@components/service/modal/FullPageModalUneditable";
+/* api */
 import { generateFiles } from "@api/project/generateFiles";
+/* etc */
 import axios from "axios";
 import { IserviceInfo } from "./ServiceStep1Page";
+import { IserviceData } from "./ServiceStep2Page";
+import { TimageName, TimageUrl } from "./ServiceStep4Page";
 
 export type Tformat = "pdf" | "png" | "jpg";
 export default function ServiceStep5Page() {
@@ -28,14 +34,27 @@ export default function ServiceStep5Page() {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isLoadingModalOpen, setIsLoadingModalOpen] = useState(false);
   const [isFullpageModalOpen, setIsFullpageModalOpen] = useState(false);
+  const [serviceDefaultData, setServiceDefaultData] =
+    useState<IserviceData | null>(null);
+  const [listData, setListData] = useState<string[]>([]);
+  const [selectedItem, setSelectedItem] = useState<string>(listData[0]);
+  const [imageNameArr, setImageNameArr] = useState<TimageName[] | null>(null);
+  const [imageUrlArr, setImageUrlArr] = useState<TimageUrl[] | null>(null);
+
+  const fullPageModal = {
+    imageUrlArr: imageUrlArr,
+    imageNameArr: imageNameArr,
+    projectType:
+      (serviceDefaultData && serviceDefaultData.serviceType.text) || "쇼핑몰",
+    listData: listData,
+    selectedItem: selectedItem,
+    onClick: handleChangeisFullpageModalOpen,
+    setSelectedItem: setSelectedItem,
+  };
 
   function handleChangeisFullpageModalOpen(isFullpageModalOpen: boolean) {
     setIsFullpageModalOpen(isFullpageModalOpen);
   }
-
-  const fullPageModal = {
-    onClick: handleChangeisFullpageModalOpen,
-  };
 
   const buttonPreview: IbuttonIcon = {
     size: "M",
@@ -46,43 +65,53 @@ export default function ServiceStep5Page() {
     },
   };
 
-  async function downLoadFiles(format: Tformat) {
+  async function downloadFile(url: string) {
+    try {
+      const response = await axios.get(url, {
+        responseType: "blob",
+      });
+
+      const blob = new Blob([response.data], {
+        type: response.headers["content-type"],
+      });
+
+      const downloadUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = "기획안";
+      link.click();
+
+      URL.revokeObjectURL(downloadUrl);
+
+      setIsLoadingModalOpen(false);
+    } catch (error) {
+      console.error("파일 다운로드 중 오류 발생:", error);
+      // window.location.href = "/error";
+    }
+  }
+
+  async function generateNdownloadFile(format: Tformat) {
     if (!projectId || !format) {
       return;
     }
     setIsLoadingModalOpen(true);
-    try {
-      const response = await generateFiles(isProduction, projectId, format);
-      if (response.status === 200) {
-        const domain = "dolllpitoxic3.mycafe24.com";
-        const url = "http://" + domain + response.data.downloadUrl;
-        try {
-          const response = await axios.get(url, {
-            responseType: "blob",
-          });
-
-          const blob = new Blob([response.data], {
-            type: response.headers["content-type"],
-          });
-
-          const downloadUrl = URL.createObjectURL(blob);
-          const link = document.createElement("a");
-          link.href = downloadUrl;
-          link.download = "기획안";
-          link.click();
-
-          URL.revokeObjectURL(downloadUrl);
-
-          setIsLoadingModalOpen(false);
-        } catch (error) {
-          console.error("파일 다운로드 중 오류 발생:", error);
-          // window.location.href = "/error";
+    const localData = localStorage.getItem(format);
+    if (localData) {
+      downloadFile(localData);
+    } else {
+      try {
+        const response = await generateFiles(isProduction, projectId, format);
+        if (response.status === 200) {
+          const domain = "dolllpitoxic3.mycafe24.com";
+          const url = "http://" + domain + response.data.downloadUrl;
+          localStorage.setItem(format, url);
+          downloadFile(url);
         }
+      } catch (error) {
+        console.log(error);
+        // window.location.href = "/error";
+      } finally {
       }
-    } catch (error) {
-      console.log(error);
-      // window.location.href = "/error";
-    } finally {
     }
   }
 
@@ -91,7 +120,7 @@ export default function ServiceStep5Page() {
     icon: <Download />,
     text: "PDF 다운로드",
     onClick: () => {
-      downLoadFiles("pdf");
+      generateNdownloadFile("pdf");
     },
   };
   const buttonDonwnloadPng: IbuttonIcon = {
@@ -99,7 +128,7 @@ export default function ServiceStep5Page() {
     icon: <Download />,
     text: "PNG 다운로드",
     onClick: () => {
-      downLoadFiles("png");
+      generateNdownloadFile("png");
     },
   };
   const buttonDonwnloadJpg: IbuttonIcon = {
@@ -107,7 +136,7 @@ export default function ServiceStep5Page() {
     icon: <Download />,
     text: "JPG 다운로드",
     onClick: () => {
-      downLoadFiles("jpg");
+      generateNdownloadFile("jpg");
     },
   };
 

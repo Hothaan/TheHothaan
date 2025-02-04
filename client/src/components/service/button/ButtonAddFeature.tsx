@@ -82,6 +82,7 @@ export default function ButtonAddFeature(prop: IbuttonAddFeature) {
       id: item.item_name,
       name: item.item_name,
       label: item.item_name,
+      isDefault: item.is_default,
       checked: item.is_selected,
       onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
         handleCheckboxChange(selectedArr, item.item_name, event.target.checked);
@@ -104,6 +105,7 @@ export default function ButtonAddFeature(prop: IbuttonAddFeature) {
   return (
     <div
       css={wrap}
+      className="buttonAddFeature"
       onClick={() => {
         setIsModalOpen(true);
       }}

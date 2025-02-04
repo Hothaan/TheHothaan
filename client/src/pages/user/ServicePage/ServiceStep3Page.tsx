@@ -3,6 +3,8 @@ import { css, CSSObject } from "@emotion/react";
 import { useState, useEffect, useRef } from "react";
 /* store */
 import { serviceStepStore } from "@store/serviceStepStore";
+import { imageNameStore } from "@store/imageNameStore";
+import { imageUrlStore } from "@store/imageUrlStore";
 /* components */
 import Loading from "@components/common/ui/Loading/loading";
 import { IloadingModal } from "@components/common/ui/Modal/LoadingModal";
@@ -67,6 +69,8 @@ export default function ServiceStep3Page() {
   const { currentLocation } = useLocationControl();
   const totalStep = 5;
   const { steps, setSteps } = serviceStepStore();
+  const { imageName, setImageName } = imageNameStore();
+  const { imageUrl, setImageUrl } = imageUrlStore();
   const [currentStep, setCurrentStep] = useState<number>(2);
   const { isProduction } = useIsProduction();
   // const isProduction = true;
@@ -448,13 +452,21 @@ export default function ServiceStep3Page() {
           imageName: res.value.data.imageName,
           parameter: parameterArr[idx],
         }));
+        const imageNameOnlyMapping = fulfilledResponses.map(
+          (res, idx) => res.value.data.imageName
+        );
         const imageUrlMapping = fulfilledResponses.map((res, idx) => ({
           imageUrl: res.value.data.url,
           parameter: parameterArr[idx],
         }));
+        const imageUrlOnlyMapping = fulfilledResponses.map(
+          (res, idx) => res.value.data.url
+        );
 
         localStorage.setItem("imageName", JSON.stringify(imageNameMapping));
+        setImageName(imageNameOnlyMapping);
         localStorage.setItem("imageUrl", JSON.stringify(imageUrlMapping));
+        setImageUrl(imageUrlOnlyMapping);
       }
 
       if (rejectedResponses.length > 0) {
