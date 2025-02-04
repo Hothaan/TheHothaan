@@ -451,7 +451,6 @@ exports.generateFilesForProject = async (req, res) => {
         }
       }
     } else if (format.toLowerCase() === 'pdf') {
-      // Puppeteer로 PDF 파일 생성
       const pdfFileName = `project-${project_id}-${Date.now()}.pdf`;
       const pdfFilePath = path.join(outputDir, pdfFileName);
 
@@ -463,7 +462,7 @@ exports.generateFilesForProject = async (req, res) => {
           const image = await pdfDoc.embedPng(imageBytes);
 
           const page = pdfDoc.addPage([595, 842]); // A4 크기
-          const { width, height } = image.scale(0.5); // 이미지 크기 조정
+          const { width, height } = image.scaleToFit(595, 842); // 이미지 크기 조정
 
           page.drawImage(image, {
             x: (595 - width) / 2, // 중앙 정렬
