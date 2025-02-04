@@ -453,16 +453,21 @@ exports.generateFilesForProject = async (req, res) => {
       const pdfFileName = `project-${project_id}-${Date.now()}.pdf`;
       const pdfFilePath = path.join(outputDir, pdfFileName);
 
-      const isLocal = process.env.NODE_ENV === 'development';
+      // const isLocal = process.env.NODE_ENV === 'development';
+      // const browser = await puppeteer.launch({
+      //   executablePath: isLocal
+      //     ? '/Users/hansong-i/.cache/puppeteer/chrome/mac_arm-131.0.6778.85/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing'
+      //     : '/usr/bin/chromium-browser', // 배포 서버에서 설치한 Chromium 경로
+      //   args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      // });
 
-      const browser = await puppeteer.launch({
-        executablePath: isLocal
-          ? '/Users/hansong-i/.cache/puppeteer/chrome/mac_arm-131.0.6778.85/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing'
-          : '/usr/bin/chromium-browser', // 배포 서버에서 설치한 Chromium 경로
+      browser = await puppeteer.launch({
+        headless: true,
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
       });
 
-      const pdfPages = [];
+      // const pdfPages = [];
+      const pdfDocs = [];
 
       // 각 이미지에 대해 PDF 페이지를 생성
       for (const file of sortedFiles) {
@@ -487,31 +492,42 @@ exports.generateFilesForProject = async (req, res) => {
             deviceScaleFactor: 2, // 고해상도
           });
 
-          await page.goto(fileUrl, { waitUntil: 'networkidle0' });
+          await page.goto(fileUrl, { waitUntil: 'domcontentloaded' });
 
-          // 페이지를 PDF로 변환
-          const pdfPath = path.join(outputDir, `page-${Date.now()}.pdf`);
-          await page.pdf({
-            path: pdfPath, // 각 페이지 PDF 저장
+          /** 페이지를 PDF로 변환 */
+          // const pdfPath = path.join(outputDir, `page-${Date.now()}.pdf`);
+          // await page.pdf({
+          //   path: pdfPath, // 각 페이지 PDF 저장
+          //   format: 'A4',
+          //   printBackground: true,
+          //   scale: 0.5,
+          // });
+
+          /** PDF 파일 경로를 배열에 저장 */
+          // pdfPages.push(pdfPath);
+          // await page.close();
+
+          /** 페이지를 PDF로 변환 */
+          const pdfBytes = await page.pdf({
             format: 'A4',
             printBackground: true,
             scale: 0.5,
           });
 
-          // PDF 파일 경로를 배열에 저장
-          pdfPages.push(pdfPath);
+          /** PDF 파일를 배열에 저장 */
+          pdfDocs.push(pdfBytes);
           await page.close();
         }
       }
 
       await browser.close();
 
-      // 디버깅을 위한 출력 (pdfPages 배열 확인)
-      console.log('PDF Pages:', pdfPages);
+      /** 디버깅을 위한 출력 (pdfPages 배열 확인) */
+      // console.log('PDF Pages:', pdfPages);
 
       // PDF 병합
-      if (pdfPages.length > 0) {
-        const mergedPdfBytes = await mergePdfs(pdfPages); // 병합 함수 호출
+      if (pdfDocs.length > 0) {
+        const mergedPdfBytes = await mergePdfs(pdfDocs); // 병합 함수 호출
 
         // 병합된 PDF 저장
         fs.writeFileSync(pdfFilePath, mergedPdfBytes);
