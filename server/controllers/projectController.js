@@ -462,10 +462,12 @@ exports.generateFilesForProject = async (req, res) => {
           const imageBytes = fs.readFileSync(file.file_path);
           const image = await pdfDoc.embedPng(imageBytes);
 
-          const page = pdfDoc.addPage([image.width, image.height]);
+          const page = pdfDoc.addPage([595, 842]); // A4 크기
+          const { width, height } = image.scale(0.5); // 이미지 크기 조정
+
           page.drawImage(image, {
-            x: 0,
-            y: 0,
+            x: (595 - width) / 2, // 중앙 정렬
+            y: (842 - height) / 2, // 중앙 정렬
             width: image.width,
             height: image.height,
           });
