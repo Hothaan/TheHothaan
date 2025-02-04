@@ -407,6 +407,7 @@ exports.generateFilesForProject = async (req, res) => {
     return res.status(400).json({ message: 'project_id와 format(png, jpg, pdf)이 필요합니다.' });
   }
 
+  let browser;
   try {
     // 1. DB에서 project_id에 해당하는 파일 가져오기
     const files = await projectModel.getFilesByProject(project_id);
@@ -549,6 +550,7 @@ exports.generateFilesForProject = async (req, res) => {
     // 클라이언트에 ZIP 파일 경로 반환
     return res.status(200).json({ downloadUrl: `/files/${zipFileName}` });
   } catch (error) {
+    if (browser) await browser.close(); // 에러 발생 시 브라우저 종료
     console.error('파일 처리 중 오류:', error);
     return res.status(500).json({ message: '파일 처리 중 오류가 발생했습니다.' });
   }
