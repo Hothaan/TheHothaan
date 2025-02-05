@@ -229,7 +229,6 @@ exports.generateProjectText = async (req, res) => {
     let failureCount = 0;
 
     // 각 메뉴와 그에 해당하는 feature에 대해 OpenAI API 호출
-    /** 여기 아마 수정 지점!!!! */
     for (const group of groupedSelections) {
       const { menu, features } = group;
 
