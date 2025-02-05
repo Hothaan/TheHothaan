@@ -229,7 +229,6 @@ exports.generateProjectText = async (req, res) => {
     let failureCount = 0;
 
     // 각 메뉴와 그에 해당하는 feature에 대해 OpenAI API 호출
-    /** 여기 아마 수정 지점!!!! */
     for (const group of groupedSelections) {
       const { menu, features } = group;
 
@@ -461,15 +460,19 @@ exports.generateFilesForProject = async (req, res) => {
           const imageBytes = fs.readFileSync(file.file_path);
           const image = await pdfDoc.embedPng(imageBytes);
 
-          const page = pdfDoc.addPage([595, 842]); // A4 크기
-          const { width, height } = image.scaleToFit(595, 842); // 이미지 크기 조정
+          /** 페이지를 A4 사이즈로 */
+          // const page = pdfDoc.addPage([595, 842]); // A4 크기
+          // const { width, height } = image.scaleToFit(595, 842); // 이미지 크기 조정
+          // page.drawImage(image, {
+          //   x: (595 - width) / 2, // 중앙 정렬
+          //   y: (842 - height) / 2, // 중앙 정렬
+          //   width,
+          //   height,
+          // });
 
-          page.drawImage(image, {
-            x: (595 - width) / 2, // 중앙 정렬
-            y: (842 - height) / 2, // 중앙 정렬
-            width,
-            height,
-          });
+          /** 페이지를 이미지 사이즈로 */
+          const page = pdfDoc.addPage([image.width, image.height]); // 이미지 크기
+          page.drawImage(image, { x: 0, y: 0, width: image.width, height: image.height });
         }
       }
 
