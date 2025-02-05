@@ -126,7 +126,14 @@ const saveImageToDatabase = async (req, res) => {
     fs.writeFileSync(imagePath, imageBuffer);
 
     const imageUrl = `http://dolllpitoxic3.mycafe24.com/images/${imageName}`;
-    const fileId = await projectModel.addFileRecord(project_id, feature_id, 'image', url, imagePath, imageUrl);
+    const existingFile = await projectModel.getFileByProjectAndFeature(project_id, feature_id);
+    let fileId;
+    if (existingFile) {
+      await projectModel.updateFileRecord(project_id, feature_id, 'image', url, imagePath, imageUrl);
+      fileId = existingFile.file_id;
+    } else {
+      fileId = await projectModel.addFileRecord(project_id, feature_id, 'image', url, imagePath, imageUrl);
+    }
 
     res.status(200).json({
       message: 'Image saved successfully',

@@ -112,18 +112,33 @@ exports.getProjectFeaturesWithId = async (projectId) => {
 
 // 파일 정보 저장
 exports.addFileRecord = async (projectId, featureId, fileType, action_url, filePath, fileUrl) => {
-  // console.log("action_url : ", action_url);
   const result = await pool.query(
-    `INSERT INTO project_files (project_id, feature_id, file_type, action_url, file_path, file_url)
-         VALUES (?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO project_files (project_id, feature_id, file_type, action_url, file_path, file_url) VALUES (?, ?, ?, ?, ?, ?)`,
     [projectId, featureId, fileType, action_url, filePath, fileUrl],
   );
   return result.insertId;
 };
 
+exports.updateFileRecord = async (projectId, featureId, fileType, action_url, filePath, fileUrl) => {
+  const result = await pool.query(
+    `UPDATE project_files SET file_type = ?, action_url = ?, file_path = ?, file_url = ? WHERE project_id = ? AND feature_id = ?`,
+    [fileType, action_url, filePath, fileUrl, projectId, featureId],
+  );
+  return result;
+};
+
 // 프로젝트 파일 정보 가져오기
 exports.getFilesByProject = async (projectId) => {
   const rows = await pool.query(`SELECT * FROM project_files WHERE project_id = ?`, [projectId]);
+  const result = Array.isArray(rows) ? rows : [rows];
+  return result;
+};
+
+exports.getFileByProjectAndFeature = async (projectId, featureId) => {
+  const rows = await pool.query(`SELECT * FROM project_files WHERE project_id = ? AND feature_id = ? LIMIT 1`, [
+    projectId,
+    featureId,
+  ]);
   const result = Array.isArray(rows) ? rows : [rows];
   return result;
 };
