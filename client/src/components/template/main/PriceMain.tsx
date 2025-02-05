@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { OuterWrap, ContentsWrap } from "../commonComponent/Wrap";
 import Title from "../commonComponent/Title";
 import ImageBox from "../commonComponent/ImageBox";
+import EditableText from "@components/service/editableText/EditableText";
 
 const component_desc_ =
   "Lorem ipsum dolor sit amet consectetur adipiscing eli mattis sit phasellus mollis sit aliquam sit nullam.";
@@ -21,33 +22,31 @@ interface IpriceMain {
   content?: iPriceMainContent | null;
   style?: iPriceMainStyle | null;
   isEditable?: boolean;
-  onChangeContent?: (key: string, value: string) => void;
-  onChangeStyle?: (key: string, value: CSSObject) => void;
+  onChangeContent: (key: string, value: string) => void;
+  onChangeStyle: (key: string, value: CSSObject) => void;
 }
 
 interface iPriceMainItem extends IpriceMain {
   itemDay?: string;
 }
 
-export const price_main_item_desc_css_ = css`
-  width: 100%;
-  max-width: 150px;
-  color: #486284;
-  text-align: center;
-
-  /* h2_small */
-  font-family: Inter;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 160%; /* 32px */
-
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  -webkit-line-clamp: 3;
-`;
+export const price_main_item_desc_css_: CSSObject = {
+  width: "100%",
+  maxWidth: "150px",
+  color: "#486284",
+  textAlign: "center",
+  fontFamily: "Inter",
+  fontSize: "20px",
+  fontStyle: "normal",
+  fontWeight: "400",
+  lineHeight: "160%",
+  display: "-webkit-box",
+  WebkitBoxOrient: "vertical",
+  // overflow: "hidden",
+  textOverflow: "ellipsis",
+  WebkitLineClamp: "3",
+  zIndex: "10",
+};
 
 function PriceMainItem(prop: iPriceMainItem) {
   const {
@@ -58,6 +57,13 @@ function PriceMainItem(prop: iPriceMainItem) {
     onChangeStyle,
     itemDay,
   } = prop;
+
+  if (
+    content?.priceMainDesc === undefined ||
+    style?.priceMainDesc === undefined
+  ) {
+    return <></>;
+  }
 
   return (
     <div css={item_container}>
@@ -76,9 +82,21 @@ function PriceMainItem(prop: iPriceMainItem) {
           <span css={item_bold_text_64_style}>{itemDay}</span>
           <span>day</span>
         </p>
-        <p css={price_main_item_desc_css_}>
-          {content?.priceMainDesc || item_desc_}
-        </p>
+        {isEditable ? (
+          <EditableText
+            text={content.priceMainDesc as string}
+            className="priceMainDesc"
+            isTextArea={false}
+            defaultCss={style.priceMainDesc as CSSObject}
+            onChangeText={(key, value) => onChangeContent(key, value)}
+            onChangeCss={(key, value) => onChangeStyle(key, value)}
+          />
+        ) : (
+          <p css={price_main_item_desc_css_}>
+            {content?.priceMainDesc || item_desc_}
+          </p>
+        )}
+
         <p css={item_price_text_style}>
           <span css={item_bold_text_40_style}>
             {item_price.toLocaleString()}
@@ -93,22 +111,66 @@ function PriceMainItem(prop: iPriceMainItem) {
 export default function PriceMain(prop: IpriceMain) {
   const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
 
-  const initial = {
-    desc: {
-      text: content?.priceMainDesc || item_desc_,
-      css: style?.priceMainDesc || price_main_item_desc_css_,
-    },
+  const count = 3;
+
+  const initialContent = {
+    priceMainDesc: content?.priceMainDesc || item_desc_,
   };
 
-  const [edit, setEdit] = useState(initial);
+  const initialStyle = {
+    priceMainDesc: style?.priceMainDesc || price_main_item_desc_css_,
+  };
+
+  const [editableContent, setEditableContent] = useState<any>(initialContent);
+  const [editableStyle, setEditableStyle] = useState<any>(initialStyle);
 
   useEffect(() => {
-    if (content) {
-      setEdit(initial);
+    if (content?.priceMainDesc !== editableContent?.priceMainDesc) {
+      setEditableContent({
+        ...initialContent,
+        priceMainDesc: content?.priceMainDesc ?? initialContent.priceMainDesc,
+      });
     }
   }, [content]);
 
-  const count = 3;
+  useEffect(() => {
+    setEditableStyle((prev: any) => {
+      const updatedStyle = { ...prev };
+
+      if (style?.priceMainDesc !== prev?.priceMainDesc) {
+        updatedStyle.priceMainDesc =
+          style?.priceMainDesc ?? initialStyle.priceMainDesc;
+      }
+
+      // 변경된 값이 있다면 상태 업데이트
+      return JSON.stringify(prev) === JSON.stringify(updatedStyle)
+        ? prev
+        : updatedStyle;
+    });
+  }, [style]);
+
+  const handleEditContent = useCallback(
+    (key: string, value: string) => {
+      setEditableContent((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeContent?.(key, value);
+    },
+    [onChangeContent]
+  );
+
+  function handleEditStyle(key: string, value: CSSObject) {
+    setEditableStyle({
+      ...editableStyle,
+      [key]: value,
+    });
+    onChangeStyle?.(key, value);
+  }
+
+  if (!editableContent) {
+    return <></>;
+  }
 
   return (
     <OuterWrap padding="160px 0">
@@ -123,10 +185,11 @@ export default function PriceMain(prop: IpriceMain) {
               <PriceMainItem
                 key={index}
                 itemDay={(index + 1).toString()}
-                content={content}
+                content={editableContent}
+                style={editableStyle}
                 isEditable={isEditable}
-                onChangeContent={onChangeContent}
-                onChangeStyle={onChangeStyle}
+                onChangeContent={handleEditContent}
+                onChangeStyle={handleEditStyle}
               />
             ))}
           </div>

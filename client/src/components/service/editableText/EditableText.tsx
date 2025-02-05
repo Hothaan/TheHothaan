@@ -273,7 +273,10 @@ export default function EditableText(prop: IeditableText) {
   }
 
   return (
-    <div style={{ position: "relative", width: "auto" }} ref={divRef}>
+    <div
+      style={{ position: "relative", width: "auto", zIndex: "10" }}
+      ref={divRef}
+    >
       {isEditing && (
         <div
           ref={toolbarRef}
@@ -281,7 +284,7 @@ export default function EditableText(prop: IeditableText) {
             position: "absolute",
             top: `${toolbarPosition.top}px`,
             left: `${toolbarPosition.left}px`,
-            zIndex: 1,
+            zIndex: 100,
           }}
         >
           <Toolbar />

@@ -211,12 +211,12 @@ export default function IntermediaryMatchMain() {
         productIntroduceDesc:
           generatedText.content.productIntroduceDesc || undefined,
 
-        reviewTitle: generatedText.content.reviewTitle || undefined,
-        reviewDesc: generatedText.content.reviewDesc || undefined,
-        reviewName: generatedText.content.reviewName || undefined,
-        reviewRole: generatedText.content.reviewRole || undefined,
+        ReviewTitle: generatedText.content.ReviewTitle || undefined,
+        ReviewDesc: generatedText.content.ReviewDesc || undefined,
+        ReviewName: generatedText.content.ReviewName || undefined,
+        ReviewRole: generatedText.content.ReviewRole || undefined,
 
-        PriceMainDesc: generatedText.content.priceMainDesc || undefined,
+        PriceMainDesc: generatedText.content.PriceMainDesc || undefined,
 
         exploreServiceTitle:
           generatedText.content.exploreServiceTitle || undefined,
@@ -251,10 +251,10 @@ export default function IntermediaryMatchMain() {
       productIntroduceTitle: product_introduce_title_css_ || undefined,
       productIntroduceDesc: product_introduce_desc_css_ || undefined,
 
-      reviewTitle: review_item_title_css || undefined,
-      reviewDesc: review_item_desc_css || undefined,
-      reviewName: review_item_caption_name_css || undefined,
-      reviewRole: review_item_caption_role_css || undefined,
+      ReviewTitle: review_item_title_css || undefined,
+      ReviewDesc: review_item_desc_css || undefined,
+      ReviewName: review_item_caption_name_css || undefined,
+      ReviewRole: review_item_caption_role_css || undefined,
 
       PriceMainDesc: price_main_item_desc_css_ || undefined,
 
@@ -347,7 +347,11 @@ export default function IntermediaryMatchMain() {
 
   return (
     <div className="templateImage">
-      <Header serviceType="중개·매칭" />
+      <Header
+        serviceType="중개·매칭"
+        categories={headerData.categories}
+        logo={headerData.logo}
+      />
       <Mainbanner
         content={{
           mainBannerTitle: pageContent?.mainBannerTitle,

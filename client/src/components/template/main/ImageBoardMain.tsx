@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 import EditableText from "@components/service/editableText/EditableText";
@@ -26,15 +26,15 @@ interface IimageBoardMain {
   onChangeStyle: (key: string, value: CSSObject) => void;
 }
 
-export const image_board_title_css_ = css`
-  color: #486284;
-  font-family: Pretendard;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: normal;
-  text-transform: capitalize;
-`;
+export const image_board_title_css_: CSSObject = {
+  color: "#486284",
+  fontFamily: "Pretendard",
+  fontSize: "20px",
+  fontStyle: "normal",
+  fontWeight: "600",
+  lineHeight: "normal",
+  textTransform: "capitalize",
+};
 
 function ImageBoardMainItem(prop: IimageBoardMain) {
   const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
@@ -67,7 +67,7 @@ function ImageBoardMainItem(prop: IimageBoardMain) {
       {isEditable ? (
         <EditableText
           text={content.imageBoardTitle as string}
-          className="noticeTitle"
+          className="imageBoardTitle"
           isTextArea={false}
           defaultCss={style.imageBoardTitle as CSSObject}
           onChangeText={(key, value) => onChangeContent(key, value)}
@@ -102,30 +102,34 @@ export default function ImageBoardMain(prop: IimageBoardMain) {
   const [editableStyle, setEditableStyle] = useState<any>(null);
 
   useEffect(() => {
-    if (content) {
-      if (content?.imageBoardTitle) {
-        setEditableContent({
-          ...initialContent,
-          imageBoardTitle: content.imageBoardTitle,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          imageBoardTitle: initialContent.imageBoardTitle,
-        });
-      }
-
-      setEditableStyle(initialStyle);
+    if (content?.imageBoardTitle !== editableContent?.imageBoardTitle) {
+      setEditableContent({
+        ...initialContent,
+        imageBoardTitle:
+          content?.imageBoardTitle ?? initialContent.imageBoardTitle,
+      });
     }
   }, [content]);
 
-  function handleEditContent(key: string, value: string) {
-    setEditableContent({
-      ...editableContent,
-      [key]: value,
-    });
-    onChangeContent?.(key, value);
-  }
+  useEffect(() => {
+    if (style?.imageBoardTitle !== editableStyle?.imageBoardTitle) {
+      setEditableStyle({
+        ...initialStyle,
+        imageBoardTitle: style?.imageBoardTitle ?? initialStyle.imageBoardTitle,
+      });
+    }
+  }, [style]);
+
+  const handleEditContent = useCallback(
+    (key: string, value: string) => {
+      setEditableContent((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeContent?.(key, value);
+    },
+    [onChangeContent]
+  );
 
   function handleEditStyle(key: string, value: CSSObject) {
     setEditableStyle({

@@ -283,23 +283,6 @@ export default function Notice(prop: Inotice) {
   const [editableContent, setEditableContent] = useState<any>(null);
   const [editableStyle, setEditableStyle] = useState<any>(null);
 
-  // useEffect(() => {
-  //   if (content) {
-  //     if (content?.noticeTitle) {
-  //       setEditableContent({
-  //         ...initialContent,
-  //         noticeTitle: content.noticeTitle,
-  //       });
-  //     } else {
-  //       setEditableContent({
-  //         ...initialContent,
-  //         noticeTitle: initialContent.noticeTitle,
-  //       });
-  //     }
-  //     setEditableStyle(initialStyle);
-  //   }
-  // }, [content]);
-
   useEffect(() => {
     if (content?.noticeTitle !== editableContent?.noticeTitle) {
       setEditableContent({

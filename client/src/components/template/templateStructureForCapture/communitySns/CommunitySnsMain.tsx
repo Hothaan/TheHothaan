@@ -45,7 +45,10 @@ import {
   faq_main_item_title_css_,
 } from "@components/template/main/FaqMain";
 
-import { service_contact_title_css_ } from "@components/template/service/ServiceContact";
+import {
+  service_contact_title_css_,
+  service_contact_button_css_,
+} from "@components/template/service/ServiceContact";
 
 interface IcommunitySnsMainContent {
   mainBannerTitle?: string;
@@ -209,7 +212,7 @@ export default function CommunitySnsMain() {
       faqDesc: faq_main_item_desc_css_ || undefined,
 
       serviceContactTitle: service_contact_title_css_ || undefined,
-      serviceContactButton: undefined,
+      serviceContactButton: service_contact_button_css_ || undefined,
     };
     setPageStyle({ ...initialStyle });
   }

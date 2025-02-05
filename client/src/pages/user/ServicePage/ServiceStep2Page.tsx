@@ -167,6 +167,10 @@ export default function ServiceStep2Page() {
         })
       );
     }
+    if (formData.service !== serviceData?.serviceType) {
+      sessionStorage.removeItem("projectData(formData)");
+      sessionStorage.removeItem("projectData(sendData)");
+    }
   }
 
   const prevButtonData: Ibutton = {

@@ -1,14 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";
+import EditableText from "@components/service/editableText/EditableText";
 
 const component_title_ = "공지사항";
 
 const title_ = "공지사항 제목입니다.";
 
-const desc_ =
-  "공지사항 입니다. 공지사항 입니다. 공지사항 입니다. 공지사항 입니다. 공지사항 입니다. 공지사항 입니다. 공지사항 입니다. 공지사항 입니다. 공지사항 입니다. 공지사항 입니다. 공지사항 입니다. ";
+const desc_ = "공지사항 입니다.";
 
 const date_ = "2024.11.12";
 
@@ -25,55 +25,82 @@ interface InoticeMain {
   content?: InoticeMainContent | null;
   style?: InoticeMainStyle | null;
   isEditable?: boolean;
-  onChangeContent?: (key: string, value: string) => void;
-  onChangeStyle?: (key: string, value: CSSObject) => void;
+  onChangeContent: (key: string, value: string) => void;
+  onChangeStyle: (key: string, value: CSSObject) => void;
 }
 
-export const notice_main_title_css_: CSSObject = css`
-  overflow: hidden;
-  color: #486284;
-  text-overflow: ellipsis;
+export const notice_main_title_css_: CSSObject = {
+  overflow: "hidden",
+  color: "#486284",
+  textOverflow: "ellipsis",
+  fontFamily: "Pretendard",
+  fontSize: "20px",
+  fontStyle: "normal",
+  fontWeight: "700",
+  lineHeight: "150%",
+  letterSpacing: "-0.4px",
+};
 
-  /* pretendard/Regular/20px */
-  font-family: Pretendard;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: 150%; /* 30px */
-  letter-spacing: -0.4px;
-`;
-
-export const notice_main_desc_css_: CSSObject = css`
-  width: 100%;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
-  overflow: hidden;
-  color: var(--black-gray-888888, #888);
-  text-overflow: ellipsis;
-
-  /* pretendard/Regular/15px */
-  font-family: Pretendard;
-  font-size: 15px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 150%; /* 22.5px */
-  letter-spacing: -0.15px;
-`;
+export const notice_main_desc_css_: CSSObject = {
+  width: "100%",
+  display: "-webkit-box",
+  WebkitBoxOrient: "vertical",
+  WebkitLineClamp: "1",
+  overflow: "hidden",
+  color: "var(--black-gray-888888, #888)",
+  textOverflow: "ellipsis",
+  fontFamily: "Pretendard",
+  fontSize: "16px",
+  fontStyle: "normal",
+  fontWeight: "400",
+  lineHeight: "150%",
+  letterSpacing: "-0.15px",
+};
 
 function NoticeMainItem(prop: InoticeMain) {
   const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
+
+  if (
+    content?.noticeTitle === undefined ||
+    style?.noticeTitle === undefined ||
+    content?.noticeDesc === undefined ||
+    style?.noticeDesc === undefined
+  ) {
+    return <></>;
+  }
 
   return (
     <div css={item_container}>
       <div css={title_container}>
         <div css={title_inner_container}>
           <p css={tag}>NEW</p>
-          <p css={notice_main_title_css_}>{content?.noticeTitle || title_}</p>
+          {isEditable ? (
+            <EditableText
+              text={content.noticeTitle as string}
+              className="noticeTitle"
+              isTextArea={false}
+              defaultCss={style.noticeTitle as CSSObject}
+              onChangeText={(key, value) => onChangeContent(key, value)}
+              onChangeCss={(key, value) => onChangeStyle(key, value)}
+            />
+          ) : (
+            <p css={notice_main_title_css_}>{content?.noticeTitle || title_}</p>
+          )}
         </div>
         <p css={date_style}>{date_}</p>
       </div>
-      <p css={notice_main_desc_css_}>{content?.noticeDesc || desc_}</p>
+      {isEditable ? (
+        <EditableText
+          text={content.noticeDesc as string}
+          className="noticeDesc"
+          isTextArea={false}
+          defaultCss={style.noticeDesc as CSSObject}
+          onChangeText={(key, value) => onChangeContent(key, value)}
+          onChangeCss={(key, value) => onChangeStyle(key, value)}
+        />
+      ) : (
+        <p css={notice_main_desc_css_}>{content?.noticeDesc || desc_}</p>
+      )}
     </div>
   );
 }
@@ -103,6 +130,47 @@ export default function NoticeMain(prop: InoticeMain) {
   const [editableContent, setEditableContent] = useState<any>(null);
   const [editableStyle, setEditableStyle] = useState<any>(null);
 
+  useEffect(() => {
+    if (content?.noticeTitle !== editableContent?.noticeTitle) {
+      setEditableContent({
+        ...initialContent,
+        noticeTitle: content?.noticeTitle ?? initialContent.noticeTitle,
+      });
+    }
+    if (content?.noticeDesc !== editableContent?.noticeDesc) {
+      setEditableContent({
+        ...initialContent,
+        noticeDesc: content?.noticeDesc ?? initialContent.noticeDesc,
+      });
+    }
+  }, [content]);
+
+  useEffect(() => {
+    if (style?.noticeTitle !== editableStyle?.noticeTitle) {
+      setEditableStyle({
+        ...initialStyle,
+        noticeTitle: style?.noticeTitle ?? initialStyle.noticeTitle,
+      });
+    }
+    if (style?.noticeDesc !== editableStyle?.noticeDesc) {
+      setEditableStyle({
+        ...initialStyle,
+        noticeDesc: style?.noticeDesc ?? initialStyle.noticeDesc,
+      });
+    }
+  }, [style]);
+
+  const handleEditContent = useCallback(
+    (key: string, value: string) => {
+      setEditableContent((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeContent?.(key, value);
+    },
+    [onChangeContent]
+  );
+
   function handleEditStyle(key: string, value: CSSObject) {
     setEditableStyle({
       ...editableStyle,
@@ -110,7 +178,6 @@ export default function NoticeMain(prop: InoticeMain) {
     });
     onChangeStyle?.(key, value);
   }
-
   if (!editableContent) {
     return <></>;
   }
@@ -124,10 +191,11 @@ export default function NoticeMain(prop: InoticeMain) {
             {Array.from({ length: count }, (_, index) => (
               <NoticeMainItem
                 key={index}
-                content={content}
                 isEditable={isEditable}
-                onChangeContent={onChangeContent}
-                onChangeStyle={onChangeStyle}
+                content={editableContent}
+                style={editableStyle}
+                onChangeContent={handleEditContent}
+                onChangeStyle={handleEditStyle}
               />
             ))}
           </div>
@@ -136,13 +204,6 @@ export default function NoticeMain(prop: InoticeMain) {
     </OuterWrap>
   );
 }
-
-const container = css`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-`;
 
 const title_style = css`
   color: #486284;

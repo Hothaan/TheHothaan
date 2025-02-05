@@ -30,6 +30,13 @@ import IntermediaryMatchPrice from "./templateStructureForCapture/intermediaryMa
 import IntermediaryMatchServiceIntroduce from "./templateStructureForCapture/intermediaryMatch/IntermediaryMatchServiceIntroduce";
 import IntermediaryMatchEstimateInquiry from "./templateStructureForCapture/intermediaryMatch/IntermediaryMatchEstimateInquiry";
 import IntermediaryMatchFAQ from "./templateStructureForCapture/intermediaryMatch/IntermediaryMatchFAQ";
+import IntermediaryMatchFindId from "./templateStructureForCapture/intermediaryMatch/IntermediaryMatchFindId";
+import IntermediaryMatchFindPw from "./templateStructureForCapture/intermediaryMatch/IntermediaryMatchFindPw";
+import IntermediaryMatchMyProfile from "./templateStructureForCapture/intermediaryMatch/IntermediaryMatchMyProfile";
+import IntermediaryMatchLogin from "./templateStructureForCapture/intermediaryMatch/IntermediaryMatchLogin";
+import IntermediaryMatchJoin from "./templateStructureForCapture/intermediaryMatch/IntermediaryMatchJoin";
+import IntermediaryMatchWithDrawer from "./templateStructureForCapture/intermediaryMatch/IntermediaryMatchWithDrawer";
+import IntermediaryMatchSearch from "./templateStructureForCapture/intermediaryMatch/IntermediaryMatchSearch";
 
 /* 홈페이지 게시판 */
 import HomePageBoardMain from "./templateStructureForCapture/homepageBoard/HomePageBoardMain";
@@ -74,13 +81,13 @@ export const templateMapForCapture: {
   "중개·매칭-서비스소개": IntermediaryMatchServiceIntroduce,
   "중개·매칭-견적문의": IntermediaryMatchEstimateInquiry,
   "중개·매칭-FAQ": IntermediaryMatchFAQ,
-  "중개·매칭-내프로필": IntermediaryMatchMain,
-  "중개·매칭-회원탈퇴": IntermediaryMatchMain,
-  "중개·매칭-로그인": IntermediaryMatchMain,
-  "중개·매칭-회원가입": IntermediaryMatchMain,
-  "중개·매칭-아이디찾기": IntermediaryMatchMain,
-  "중개·매칭-비밀번호찾기": IntermediaryMatchMain,
-  "중개·매칭-검색": IntermediaryMatchMain,
+  "중개·매칭-내프로필": IntermediaryMatchMyProfile,
+  "중개·매칭-회원탈퇴": IntermediaryMatchWithDrawer,
+  "중개·매칭-로그인": IntermediaryMatchLogin,
+  "중개·매칭-회원가입": IntermediaryMatchJoin,
+  "중개·매칭-아이디찾기": IntermediaryMatchFindId,
+  "중개·매칭-비밀번호찾기": IntermediaryMatchFindPw,
+  "중개·매칭-검색": IntermediaryMatchSearch,
 
   "홈페이지·게시판-메인": HomePageBoardMain,
   "홈페이지·게시판-인사말": HomePageBoardGreetings,

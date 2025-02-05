@@ -489,6 +489,8 @@ export default function ServiceStep3Page() {
     if (isImageSaved) {
       setLoading(false);
       setIsModalOpen(false);
+      localStorage.removeItem("changedContent");
+      localStorage.removeItem("changedStyle");
       if (steps.step3 && currentStep < totalStep) {
         handleNavigation(`/service/step${currentStep + 1}`);
       } else {

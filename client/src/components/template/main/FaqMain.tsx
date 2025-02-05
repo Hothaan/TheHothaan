@@ -1,17 +1,15 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";
 import { ReactComponent as ChevUp } from "@svgs/template/faqMain/chevUp.svg";
 import EditableText from "@components/service/editableText/EditableText";
 
 const title_ = "FAQ";
 
-const item_title_ =
-  "FAQ 제목입니다. FAQ 제목입니다. FAQ 제목입니다. FAQ 제목입니다. ";
+const item_title_ = "FAQ 제목입니다.";
 
-const item_desc_ =
-  "FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. FAQ 내용입니다. ";
+const item_desc_ = "FAQ 내용입니다.";
 
 export interface IfaqMainContent {
   faqTitle?: string;
@@ -30,30 +28,25 @@ interface IfaqMain {
   onChangeStyle: (key: string, value: CSSObject) => void;
 }
 
-export const faq_main_item_title_css_ = css`
-  color: #486284;
+export const faq_main_item_title_css_: CSSObject = {
+  color: "#486284",
+  fontFamily: "Pretendard",
+  fontSize: " 15px",
+  fontStyle: "normal",
+  lineHeight: "150%",
+  letterSpacing: "-0.15px",
+};
 
-  /* pretendard/Regular/15px */
-  font-family: Pretendard;
-  font-size: 15px;
-  font-style: normal;
-
-  line-height: 150%; /* 22.5px */
-  letter-spacing: -0.15px;
-`;
-
-export const faq_main_item_desc_css_ = css`
-  margin-top: 20px;
-  color: #486284;
-
-  /* pretendard/Regular/15px */
-  font-family: Pretendard;
-  font-size: 15px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 150%; /* 22.5px */
-  letter-spacing: -0.15px;
-`;
+export const faq_main_item_desc_css_: CSSObject = {
+  marginTop: "20px",
+  color: "#486284",
+  fontFamily: "Pretendard",
+  fontSize: "15px",
+  fontStyle: "normal",
+  fontWeight: "400",
+  lineHeight: "150%",
+  letterSpacing: "-0.15px",
+};
 
 function FaqMainItem(prop: IfaqMain) {
   const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
@@ -97,7 +90,7 @@ function FaqMainItem(prop: IfaqMain) {
       {Array.from({ length: count }, (_, index) => {
         if (index === 1) {
           return (
-            <div css={item}>
+            <div css={item} key={index}>
               <div css={title_container}>
                 {isEditable ? (
                   <EditableText
@@ -138,7 +131,7 @@ function FaqMainItem(prop: IfaqMain) {
           );
         } else {
           return (
-            <div css={item}>
+            <div css={item} key={index}>
               <div css={title_container}>
                 {isEditable ? (
                   <EditableText
@@ -186,42 +179,45 @@ export default function FaqMain(prop: IfaqMain) {
   const [editableStyle, setEditableStyle] = useState<any>(null);
 
   useEffect(() => {
-    if (content) {
-      if (content?.faqTitle) {
-        setEditableContent({
-          ...initialContent,
-          faqTitlefaqTitle: content.faqTitle,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          faqTitle: initialContent.faqTitle,
-        });
-      }
-
-      if (content?.faqDesc) {
-        setEditableContent({
-          ...initialContent,
-          faqDesc: content.faqDesc,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          faqDesc: initialContent.faqDesc,
-        });
-      }
-
-      setEditableStyle(initialStyle);
+    if (content?.faqTitle !== editableContent?.faqTitle) {
+      setEditableContent({
+        ...initialContent,
+        faqTitle: content?.faqTitle ?? initialContent.faqTitle,
+      });
+    }
+    if (content?.faqDesc !== editableContent?.faqDesc) {
+      setEditableContent({
+        ...initialContent,
+        faqDesc: content?.faqDesc ?? initialContent.faqDesc,
+      });
     }
   }, [content]);
 
-  function handleEditContent(key: string, value: string) {
-    setEditableContent({
-      ...editableContent,
-      [key]: value,
-    });
-    onChangeContent?.(key, value);
-  }
+  useEffect(() => {
+    if (style?.faqTitle !== editableStyle?.faqTitle) {
+      setEditableStyle({
+        ...initialStyle,
+        faqTitle: style?.faqTitle ?? initialStyle.faqTitle,
+      });
+    }
+    if (style?.faqDesc !== editableStyle?.faqDesc) {
+      setEditableStyle({
+        ...initialStyle,
+        faqDesc: style?.faqDesc ?? initialStyle.faqDesc,
+      });
+    }
+  }, [style]);
+
+  const handleEditContent = useCallback(
+    (key: string, value: string) => {
+      setEditableContent((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeContent?.(key, value);
+    },
+    [onChangeContent]
+  );
 
   function handleEditStyle(key: string, value: CSSObject) {
     setEditableStyle({

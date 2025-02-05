@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Title from "../commonComponent/Title";
 import ImageBox from "../commonComponent/ImageBox";
 import { OuterWrap } from "../commonComponent/Wrap";
@@ -23,16 +23,14 @@ interface Ifeed {
   onChangeStyle: (key: string, value: CSSObject) => void;
 }
 
-export const feed_item_title_css_ = css`
-  color: #486284;
-
-  /* mall/subject */
-  font-family: Inter;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-`;
+export const feed_item_title_css_: CSSObject = {
+  color: "#486284",
+  fontFamily: "Inter",
+  fontSize: "20px",
+  fontStyle: "normal",
+  fontWeight: "400",
+  lineHeight: "normal",
+};
 
 function FeedItem(prop: Ifeed) {
   const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
@@ -92,29 +90,33 @@ export default function Feed(prop: Ifeed) {
   const [editableStyle, setEditableStyle] = useState<any>(null);
 
   useEffect(() => {
-    if (content) {
-      if (content?.feedTitle) {
-        setEditableContent({
-          ...initialContent,
-          feedTitle: content.feedTitle,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          feedTitle: initialContent.feedTitle,
-        });
-      }
-      setEditableStyle(initialStyle);
+    if (content?.feedTitle !== editableContent?.feedTitle) {
+      setEditableContent({
+        ...initialContent,
+        feedTitle: content?.feedTitle ?? initialContent.feedTitle,
+      });
     }
   }, [content]);
 
-  function handleEditContent(key: string, value: string) {
-    setEditableContent({
-      ...editableContent,
-      [key]: value,
-    });
-    onChangeContent?.(key, value);
-  }
+  useEffect(() => {
+    if (style?.feedTitle !== editableStyle?.feedTitle) {
+      setEditableStyle({
+        ...initialStyle,
+        feedTitle: style?.feedTitle ?? initialStyle.feedTitle,
+      });
+    }
+  }, [style]);
+
+  const handleEditContent = useCallback(
+    (key: string, value: string) => {
+      setEditableContent((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeContent?.(key, value);
+    },
+    [onChangeContent]
+  );
 
   function handleEditStyle(key: string, value: CSSObject) {
     setEditableStyle({

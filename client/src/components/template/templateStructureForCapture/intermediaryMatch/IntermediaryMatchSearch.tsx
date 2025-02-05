@@ -103,13 +103,17 @@ export default function IntermediaryMatchSearch() {
   //   }));
   // }
 
-  // if (!generatedText || !headerData) {
-  //   return <Loading />;
-  // }
+  if (!generatedText || !headerData) {
+    return <Loading />;
+  }
 
   return (
     <div className="templateImage">
-      <Header serviceType="중개·매칭" />
+      <Header
+        serviceType="중개·매칭"
+        categories={headerData.categories}
+        logo={headerData.logo}
+      />
       <Search option="통합 검색" />
       <Footer serviceType="중개·매칭" />
     </div>

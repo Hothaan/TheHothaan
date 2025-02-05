@@ -72,16 +72,16 @@ export default function IntermediaryMatchJoin() {
     }
   }, [projectIdValue]);
 
-  // if (!generatedText || !headerData) {
-  //   return <Loading />;
-  // }
+  if (!generatedText || !headerData) {
+    return <Loading />;
+  }
 
   return (
     <div className="templateImage">
       <Header
-        // categories={headerData.categories}
-        // logo={headerData.logo}
         serviceType="중개·매칭"
+        categories={headerData.categories}
+        logo={headerData.logo}
       />
       <Join />
       <Footer

@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";
 import EditableText from "@components/service/editableText/EditableText";
 
@@ -27,21 +27,20 @@ interface InormalBoardMain {
   onChangeStyle: (key: string, value: CSSObject) => void;
 }
 
-export const normal_board_main_title_css_ = css`
-  width: 50%;
-  color: var(--Greys-Blue-Grey-800, #444a6d);
-  font-family: "Noto Sans KR";
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 20px; /* 142.857% */
+export const normal_board_main_title_css_: CSSObject = {
+  color: "var(--Greys-Blue-Grey-800, #444a6d)",
+  fontFamily: "Noto Sans KR",
+  fontSize: "14px",
+  fontStyle: "normal",
+  fontWeight: "400",
+  lineHeight: "20px",
 
-  text-overflow: ellipsis;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
-`;
+  textOverflow: "ellipsis",
+  overflow: "hidden",
+  display: "-webkit-box",
+  WebkitBoxOrient: "vertical",
+  WebkitLineClamp: "1",
+};
 
 export function NormalBoardMainItem(prop: InormalBoardMain) {
   const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
@@ -97,30 +96,33 @@ export default function NormalBoardMain(prop: InormalBoardMain) {
   const [editableStyle, setEditableStyle] = useState<any>(null);
 
   useEffect(() => {
-    if (content) {
-      if (content?.boardTitle) {
-        setEditableContent({
-          ...initialContent,
-          boardTitle: content.boardTitle,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          boardTitle: initialContent.boardTitle,
-        });
-      }
-
-      setEditableStyle(initialStyle);
+    if (content?.boardTitle !== editableContent?.boardTitle) {
+      setEditableContent({
+        ...initialContent,
+        boardTitle: content?.boardTitle ?? initialContent.boardTitle,
+      });
     }
   }, [content]);
 
-  function handleEditContent(key: string, value: string) {
-    setEditableContent({
-      ...editableContent,
-      [key]: value,
-    });
-    onChangeContent?.(key, value);
-  }
+  useEffect(() => {
+    if (style?.boardTitle !== editableStyle?.boardTitle) {
+      setEditableStyle({
+        ...initialStyle,
+        boardTitle: style?.boardTitle ?? initialStyle.boardTitle,
+      });
+    }
+  }, [style]);
+
+  const handleEditContent = useCallback(
+    (key: string, value: string) => {
+      setEditableContent((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeContent?.(key, value);
+    },
+    [onChangeContent]
+  );
 
   function handleEditStyle(key: string, value: CSSObject) {
     setEditableStyle({

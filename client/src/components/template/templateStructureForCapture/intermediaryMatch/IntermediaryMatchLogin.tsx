@@ -70,24 +70,23 @@ export default function IntermediaryMatchLogin() {
     }
   }, [projectIdValue]);
 
-  // if (!generatedText || !headerData) {
-  //   return <Loading />;
-  // }
+  if (!generatedText || !headerData) {
+    return <Loading />;
+  }
 
   return (
     <div className="templateImage">
       <Header
-        // categories={headerData.categories || undefined}
-        // logo={headerData.logo || undefined}
         serviceType="중개·매칭"
+        categories={headerData.categories}
+        logo={headerData.logo}
       />
       <Login
-        // option={
-        //   generatedText.option
-        //     ? (generatedText.option as Tlogin)
-        //     : "기본 로그인"
-        // }
-        option={"기본 로그인"}
+        option={
+          generatedText.option
+            ? (generatedText.option as Tlogin)
+            : "기본 로그인"
+        }
       />
       <Footer
         //  logo={headerData.logo}

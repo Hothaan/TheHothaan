@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { OuterWrap, InnerWrap, ContentsWrap } from "../commonComponent/Wrap";
 import Title from "../commonComponent/Title";
 import Pagination from "../commonComponent/Pagination";
@@ -322,42 +322,45 @@ export default function Board(prop: Iboard) {
   const [editableStyle, setEditableStyle] = useState<any>(null);
 
   useEffect(() => {
-    if (content) {
-      if (content?.boardTitle) {
-        setEditableContent({
-          ...initialContent,
-          boardTitle: content.boardTitle,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          boardTitle: initialContent.boardTitle,
-        });
-      }
-
-      if (content?.boardDesc) {
-        setEditableContent({
-          ...initialContent,
-          boardDesc: content.boardDesc,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          boardDesc: initialContent.boardDesc,
-        });
-      }
-
-      setEditableStyle(initialStyle);
+    if (content?.boardTitle !== editableContent?.boardTitle) {
+      setEditableContent({
+        ...initialContent,
+        boardTitle: content?.boardTitle ?? initialContent.boardTitle,
+      });
+    }
+    if (content?.boardDesc !== editableContent?.boardDesc) {
+      setEditableContent({
+        ...initialContent,
+        boardDesc: content?.boardDesc ?? initialContent.boardDesc,
+      });
     }
   }, [content]);
 
-  function handleEditContent(key: string, value: string) {
-    setEditableContent({
-      ...editableContent,
-      [key]: value,
-    });
-    onChangeContent?.(key, value);
-  }
+  useEffect(() => {
+    if (style?.boardTitle !== editableStyle?.boardTitle) {
+      setEditableStyle({
+        ...initialStyle,
+        boardTitle: style?.boardTitle ?? initialStyle.boardTitle,
+      });
+    }
+    if (style?.boardDesc !== editableStyle?.boardDesc) {
+      setEditableStyle({
+        ...initialStyle,
+        boardDesc: style?.boardDesc ?? initialStyle.boardDesc,
+      });
+    }
+  }, [style]);
+
+  const handleEditContent = useCallback(
+    (key: string, value: string) => {
+      setEditableContent((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeContent?.(key, value);
+    },
+    [onChangeContent]
+  );
 
   function handleEditStyle(key: string, value: CSSObject) {
     setEditableStyle({

@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { OuterWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 import EditableText from "@components/service/editableText/EditableText";
@@ -39,51 +39,68 @@ const circle_text_ = "lorem ipsum";
 const input_text_ = "lorem ipsum";
 const input_button_ = "lorem ipsum";
 
-export const matching_service_introduce_main_banner_title_css_ = css`
-  color: #486284;
-  text-align: center;
+export const matching_service_introduce_main_banner_title_css_: CSSObject = {
+  width: "100%",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
 
-  /* H1 */
-  font-family: Inter;
-  font-size: 96px;
-  font-style: normal;
-  font-weight: 900;
-  line-height: 150%; /* 144px */
-`;
+  color: "#486284",
+  textAlign: "center",
+  fontFamily: "Inter",
+  fontSize: "96px",
+  fontStyle: "normal",
+  fontWeight: "900",
+  lineHeight: "150%",
+};
 
-export const matching_service_introduce_main_banner_desc_css_ = css`
-  color: #486284;
-  text-align: center;
+export const matching_service_introduce_main_banner_desc_css_: CSSObject = {
+  wordBreak: "keep-all",
+  display: "-webkit-box",
+  WebkitBoxOrient: "vertical",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  height: "100px",
+  WebkitLineClamp: "2",
 
-  /* h2_middle */
-  font-family: Inter;
-  font-size: 32px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-`;
+  color: "#486284",
+  textAlign: "center",
+  fontFamily: "Inter",
+  fontSize: "32px",
+  fontStyle: "normal",
+  fontWeight: "400",
+  lineHeight: "normal",
+};
 
-export const matching_service_introduce_main_item_title_css_ = css`
-  color: #486284;
-  text-align: center;
-  font-family: Pretendard;
-  font-size: 60px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: 80px; /* 133.333% */
-`;
+export const matching_service_introduce_main_item_title_css_: CSSObject = {
+  width: "100%",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
 
-export const matching_service_introduce_main_item_desc_css_ = css`
-  color: #486284;
-  text-align: center;
+  color: "#486284",
+  textAlign: "center",
+  fontFamily: "Pretendard",
+  fontSize: "60px",
+  fontStyle: "normal",
+  fontWeight: "700",
+  lineHeight: "80px",
+};
 
-  /* h2_middle */
-  font-family: Inter;
-  font-size: 32px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-`;
+export const matching_service_introduce_main_item_desc_css_: CSSObject = {
+  width: "100%",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+
+  color: " #486284",
+  textAlign: "center",
+  fontFamily: "Inter",
+  fontSize: "32px",
+  fontStyle: "normal",
+  fontWeight: "400",
+  lineHeight: "normal",
+};
 
 function MatchingServiceIntroduceMainItem(prop: ImatchingServiceIntroduceMain) {
   const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
@@ -169,77 +186,111 @@ export default function MatchingServiceIntroduceMain(
   const [editableStyle, setEditableStyle] = useState<any>(null);
 
   useEffect(() => {
-    if (content) {
-      if (content?.MatchingServiceIntroduceMainBannerTitle) {
-        setEditableContent({
-          ...initialContent,
-          MatchingServiceIntroduceMainBannerTitle:
-            content.MatchingServiceIntroduceMainBannerTitle,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          MatchingServiceIntroduceMainBannerTitle:
-            initialContent.MatchingServiceIntroduceMainBannerTitle,
-        });
-      }
+    if (
+      content?.MatchingServiceIntroduceMainBannerTitle !==
+      editableContent?.MatchingServiceIntroduceMainBannerTitle
+    ) {
+      setEditableContent({
+        ...initialContent,
+        MatchingServiceIntroduceMainBannerTitle:
+          content?.MatchingServiceIntroduceMainBannerTitle ??
+          initialContent.MatchingServiceIntroduceMainBannerTitle,
+      });
+    }
+    if (
+      content?.MatchingServiceIntroduceMainBannerDesc !==
+      editableContent?.MatchingServiceIntroduceMainBannerDesc
+    ) {
+      setEditableContent({
+        ...initialContent,
+        MatchingServiceIntroduceMainBannerDesc:
+          content?.MatchingServiceIntroduceMainBannerDesc ??
+          initialContent.MatchingServiceIntroduceMainBannerDesc,
+      });
+    }
 
-      if (content?.MatchingServiceIntroduceMainBannerDesc) {
-        setEditableContent({
-          ...initialContent,
+    if (
+      content?.MatchingServiceIntroduceMainItemTitle !==
+      editableContent?.MatchingServiceIntroduceMainItemTitle
+    ) {
+      setEditableContent({
+        ...initialContent,
+        MatchingServiceIntroduceMainItemTitle:
+          content?.MatchingServiceIntroduceMainItemTitle ??
+          initialContent.MatchingServiceIntroduceMainItemTitle,
+      });
+    }
 
-          MatchingServiceIntroduceMainBannerDesc:
-            content.MatchingServiceIntroduceMainBannerDesc,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          MatchingServiceIntroduceMainBannerDesc:
-            initialContent.MatchingServiceIntroduceMainBannerDesc,
-        });
-      }
-
-      if (content?.MatchingServiceIntroduceMainItemTitle) {
-        setEditableContent({
-          ...initialContent,
-
-          MatchingServiceIntroduceMainItemTitle:
-            content.MatchingServiceIntroduceMainItemTitle,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          MatchingServiceIntroduceMainItemTitle:
-            initialContent.MatchingServiceIntroduceMainItemTitle,
-        });
-      }
-
-      if (content?.MatchingServiceIntroduceMainItemDesc) {
-        setEditableContent({
-          ...initialContent,
-
-          MatchingServiceIntroduceMainItemDesc:
-            content.MatchingServiceIntroduceMainItemDesc,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          MatchingServiceIntroduceMainItemDesc:
-            initialContent.MatchingServiceIntroduceMainItemDesc,
-        });
-      }
-
-      setEditableStyle(initialStyle);
+    if (
+      content?.MatchingServiceIntroduceMainItemDesc !==
+      editableContent?.MatchingServiceIntroduceMainItemDesc
+    ) {
+      setEditableContent({
+        ...initialContent,
+        MatchingServiceIntroduceMainItemDesc:
+          content?.MatchingServiceIntroduceMainItemDesc ??
+          initialContent.MatchingServiceIntroduceMainItemDesc,
+      });
     }
   }, [content]);
 
-  function handleEditContent(key: string, value: string) {
-    setEditableContent({
-      ...editableContent,
-      [key]: value,
-    });
-    onChangeContent?.(key, value);
-  }
+  useEffect(() => {
+    if (
+      style?.MatchingServiceIntroduceMainBannerTitle !==
+      editableStyle?.MatchingServiceIntroduceMainBannerTitle
+    ) {
+      setEditableStyle({
+        ...initialStyle,
+        MatchingServiceIntroduceMainBannerTitle:
+          style?.MatchingServiceIntroduceMainBannerTitle ??
+          initialStyle.MatchingServiceIntroduceMainBannerTitle,
+      });
+    }
+    if (
+      style?.MatchingServiceIntroduceMainBannerDesc !==
+      editableStyle?.MatchingServiceIntroduceMainBannerDesc
+    ) {
+      setEditableStyle({
+        ...initialStyle,
+        MatchingServiceIntroduceMainBannerDesc:
+          style?.MatchingServiceIntroduceMainBannerDesc ??
+          initialStyle.MatchingServiceIntroduceMainBannerDesc,
+      });
+    }
+    if (
+      style?.MatchingServiceIntroduceMainItemTitle !==
+      editableStyle?.MatchingServiceIntroduceMainItemTitle
+    ) {
+      setEditableStyle({
+        ...initialStyle,
+        MatchingServiceIntroduceMainItemTitle:
+          style?.MatchingServiceIntroduceMainItemTitle ??
+          initialStyle.MatchingServiceIntroduceMainItemTitle,
+      });
+    }
+    if (
+      style?.MatchingServiceIntroduceMainItemDesc !==
+      editableStyle?.MatchingServiceIntroduceMainItemDesc
+    ) {
+      setEditableStyle({
+        ...initialStyle,
+        MatchingServiceIntroduceMainItemDesc:
+          style?.MatchingServiceIntroduceMainItemDesc ??
+          initialStyle.MatchingServiceIntroduceMainItemDesc,
+      });
+    }
+  }, [style]);
+
+  const handleEditContent = useCallback(
+    (key: string, value: string) => {
+      setEditableContent((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeContent?.(key, value);
+    },
+    [onChangeContent]
+  );
 
   function handleEditStyle(key: string, value: CSSObject) {
     setEditableStyle({

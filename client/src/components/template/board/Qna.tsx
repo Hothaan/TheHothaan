@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { OuterWrap, ContentsWrap } from "../commonComponent/Wrap";
 import Title from "../commonComponent/Title";
 import BreadCrumble from "../commonComponent/BreadCrumble";
@@ -345,30 +345,33 @@ export default function Qna(prop: Iqna) {
   const [editableStyle, setEditableStyle] = useState<any>(null);
 
   useEffect(() => {
-    if (content) {
-      if (content?.qnaTitle) {
-        setEditableContent({
-          ...initialContent,
-          qnaTitle: content.qnaTitle,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          qnaTitle: initialContent.qnaTitle,
-        });
-      }
-
-      setEditableStyle(initialStyle);
+    if (content?.qnaTitle !== editableContent?.qnaTitle) {
+      setEditableContent({
+        ...initialContent,
+        qnaTitle: content?.qnaTitle ?? initialContent.qnaTitle,
+      });
     }
   }, [content]);
 
-  function handleEditContent(key: string, value: string) {
-    setEditableContent({
-      ...editableContent,
-      [key]: value,
-    });
-    onChangeContent?.(key, value);
-  }
+  useEffect(() => {
+    if (style?.qnaTitle !== editableStyle?.qnaTitle) {
+      setEditableStyle({
+        ...initialStyle,
+        qnaTitle: style?.qnaTitle ?? initialStyle.qnaTitle,
+      });
+    }
+  }, [style]);
+
+  const handleEditContent = useCallback(
+    (key: string, value: string) => {
+      setEditableContent((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeContent?.(key, value);
+    },
+    [onChangeContent]
+  );
 
   function handleEditStyle(key: string, value: CSSObject) {
     setEditableStyle({

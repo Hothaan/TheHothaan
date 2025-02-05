@@ -70,16 +70,16 @@ export default function IntermediaryMatchFindId() {
     }
   }, [projectIdValue]);
 
-  // if (!generatedText || !headerData) {
-  //   return <Loading />;
-  // }
+  if (!generatedText || !headerData) {
+    return <Loading />;
+  }
 
   return (
     <div className="templateImage">
       <Header
-        // categories={headerData.categories || undefined}
-        // logo={headerData.logo || undefined}
         serviceType="중개·매칭"
+        categories={headerData.categories}
+        logo={headerData.logo}
       />
       <FindId />
       <Footer

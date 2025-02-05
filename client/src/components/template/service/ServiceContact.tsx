@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { OuterWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 import EditableText from "@components/service/editableText/EditableText";
@@ -36,27 +36,22 @@ export const service_contact_title_css_: CSSObject = {
   lineHeight: "normal",
 };
 
-export const service_contact_button_css_ = css`
-  display: flex;
-  padding: 12px 20px;
-  justify-content: center;
-  align-items: center;
-
-  width: fit-content;
-
-  border-radius: 50px;
-  background: var(--Neutral-10, #486284);
-
-  color: var(--Neutral-0, #fff);
-
-  /* h2_small */
-  font-family: Inter;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 160%; /* 32px */
-  text-align: center;
-`;
+export const service_contact_button_css_: CSSObject = {
+  display: "flex",
+  padding: "12px 20px",
+  justifyContent: "center",
+  alignItems: "center",
+  width: "fit-content",
+  borderRadius: "50px",
+  background: "var(--Neutral-10, #486284)",
+  color: "var(--Neutral-0, #fff)",
+  fontFamily: "Inter",
+  fontSize: "20px",
+  fontStyle: "normal",
+  fontWeight: "400",
+  lineHeight: "160%",
+  textAlign: "center",
+};
 
 export default function ServiceContact(prop: IserviceContact) {
   const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
@@ -77,31 +72,51 @@ export default function ServiceContact(prop: IserviceContact) {
   const [editableStyle, setEditableStyle] = useState<any>(null);
 
   useEffect(() => {
-    if (content) {
-      if (content?.serviceContactTitle) {
-        setEditableContent({
-          ...initialContent,
-          serviceContactTitle: content.serviceContactTitle,
-        });
-      }
-      if (content?.serviceContactButton) {
-        setEditableContent({
-          ...initialContent,
-          serviceContactButton: content.serviceContactButton,
-        });
-      }
-
-      setEditableStyle(initialStyle);
+    if (content?.serviceContactTitle !== editableContent?.serviceContactTitle) {
+      setEditableContent({
+        ...initialContent,
+        serviceContactTitle:
+          content?.serviceContactTitle ?? initialContent.serviceContactTitle,
+      });
+    }
+    if (
+      content?.serviceContactButton !== editableContent?.serviceContactButton
+    ) {
+      setEditableContent({
+        ...initialContent,
+        serviceContactButton:
+          content?.serviceContactButton ?? initialContent.serviceContactButton,
+      });
     }
   }, [content]);
 
-  function handleEditContent(key: string, value: string) {
-    setEditableContent({
-      ...editableContent,
-      [key]: value,
-    });
-    onChangeContent?.(key, value);
-  }
+  useEffect(() => {
+    if (style?.serviceContactTitle !== editableStyle?.serviceContactTitle) {
+      setEditableStyle({
+        ...initialStyle,
+        serviceContactTitle:
+          style?.serviceContactTitle ?? initialStyle.serviceContactTitle,
+      });
+    }
+    if (style?.serviceContactButton !== editableStyle?.serviceContactButton) {
+      setEditableStyle({
+        ...initialStyle,
+        serviceContactButton:
+          style?.serviceContactButton ?? initialStyle.serviceContactButton,
+      });
+    }
+  }, [style]);
+
+  const handleEditContent = useCallback(
+    (key: string, value: string) => {
+      setEditableContent((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeContent?.(key, value);
+    },
+    [onChangeContent]
+  );
 
   function handleEditStyle(key: string, value: CSSObject) {
     setEditableStyle({
@@ -111,7 +126,10 @@ export default function ServiceContact(prop: IserviceContact) {
     onChangeStyle?.(key, value);
   }
 
-  if (!editableContent) {
+  console.log(editableContent);
+  console.log(editableStyle);
+
+  if (!editableContent || !editableStyle) {
     return <></>;
   }
 
@@ -131,10 +149,10 @@ export default function ServiceContact(prop: IserviceContact) {
         <div css={contents_container}>
           {isEditable ? (
             <EditableText
-              text={editableContent.serviceContactTitle}
+              text={editableContent.serviceContactTitle as string}
               className="serviceContactTitle"
               isTextArea={false}
-              defaultCss={editableStyle.serviceContactTitle}
+              defaultCss={editableStyle.serviceContactTitle as CSSObject}
               onChangeText={(key, value) => handleEditContent(key, value)}
               onChangeCss={(key, value) => handleEditStyle(key, value)}
             />
@@ -145,11 +163,11 @@ export default function ServiceContact(prop: IserviceContact) {
           )}
           {isEditable ? (
             <EditableText
-              text={editableContent.serviceContactButton}
+              text={editableContent.serviceContactButton as string}
               className="serviceContactButton"
               isTextArea={false}
               hasBg={true}
-              defaultCss={editableStyle.serviceContactButton}
+              defaultCss={editableStyle.serviceContactButton as CSSObject}
               onChangeText={(key, value) => handleEditContent(key, value)}
               onChangeCss={(key, value) => handleEditStyle(key, value)}
             />

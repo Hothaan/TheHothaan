@@ -159,9 +159,11 @@ export default function ShoppingMallMain() {
     return null;
   }
 
-  const [pageContent, setPageContent] = useState<{
-    [key: string]: string;
-  } | null>(getLocalContent());
+  const [pageContent, setPageContent] =
+    useState<IshoppingMallMainContent | null>(getLocalContent());
+  // const [pageContent, setPageContent] = useState<{
+  //   [key: string]: string;
+  // } | null>(getLocalContent());
   const [pageStyle, setPageStyle] = useState<IshoppingMallMainStyle | null>(
     getLocalStyle()
   );
@@ -331,18 +333,18 @@ export default function ShoppingMallMain() {
     }
   }, [pageStyle]);
 
-  // function handleChangeContent(key: string, value: string) {
-  //   setPageContent({ ...pageContent, [key]: value });
-  // }
-
   function handleChangeContent(key: string, value: string) {
-    if (pageContent?.[key] !== value) {
-      setPageContent((prev) => ({
-        ...prev,
-        [key]: value,
-      }));
-    }
+    setPageContent({ ...pageContent, [key]: value });
   }
+
+  // function handleChangeContent(key: string, value: string) {
+  //   if (pageContent?.[key] !== value) {
+  //     setPageContent((prev) => ({
+  //       ...prev,
+  //       [key]: value,
+  //     }));
+  //   }
+  // }
 
   function handleChangeStyle(key: string, value: CSSObject) {
     setPageStyle({ ...pageStyle, [key]: value });

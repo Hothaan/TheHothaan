@@ -1,8 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { OuterWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
+import EditableText from "@components/service/editableText/EditableText";
 
 const image_desc_ =
   "lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non";
@@ -32,7 +33,11 @@ interface IproductIntroduceMain {
 }
 
 export const product_introduce_image_desc_css_: CSSObject = {
-  width: "calc(100% - 140px)",
+  maxWidth: "calc(100% - 140px)",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+
   position: "absolute",
   bottom: "70px",
   left: "70px",
@@ -46,6 +51,11 @@ export const product_introduce_image_desc_css_: CSSObject = {
 };
 
 export const product_introduce_title_css_: CSSObject = {
+  width: "100%",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+
   color: "#486284",
   fontFamily: "Inter",
   fontSize: "96px",
@@ -63,6 +73,11 @@ export const product_introduce_title_css_: CSSObject = {
 };
 
 export const product_introduce_desc_css_: CSSObject = {
+  width: "100%",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+
   color: "#486284",
   fontFamily: "Inter",
   fontSize: "32px",
@@ -74,22 +89,6 @@ export const product_introduce_desc_css_: CSSObject = {
 
 export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
   const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
-
-  const initial = {
-    productIntroduceImageDesc: {
-      text: content?.productIntroduceImageDesc || image_desc_,
-      css:
-        style?.productIntroduceImageDesc || product_introduce_image_desc_css_,
-    },
-    productIntroduceTitle: {
-      text: content?.productIntroduceTitle || title_,
-      css: style?.productIntroduceTitle || product_introduce_title_css_,
-    },
-    productIntroduceDesc: {
-      text: content?.productIntroduceDesc || desc_,
-      css: style?.productIntroduceDesc || product_introduce_desc_css_,
-    },
-  };
 
   const initialContent = {
     productIntroduceImageDesc:
@@ -111,51 +110,76 @@ export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
   const [editableStyle, setEditableStyle] = useState<any>(null);
 
   useEffect(() => {
-    if (content) {
-      if (content?.productIntroduceImageDesc) {
-        setEditableContent({
-          ...initialContent,
-          productIntroduceImageDesc: content.productIntroduceImageDesc,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          productIntroduceImageDesc: initialContent.productIntroduceImageDesc,
-        });
-      }
-      if (content?.productIntroduceTitle) {
-        setEditableContent({
-          ...initialContent,
-          productIntroduceTitle: content.productIntroduceTitle,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          productIntroduceTitle: initialContent.productIntroduceTitle,
-        });
-      }
-      if (content?.productIntroduceDesc) {
-        setEditableContent({
-          ...initialContent,
-          productIntroduceDesc: content.productIntroduceDesc,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          productIntroduceDesc: initialContent.productIntroduceDesc,
-        });
-      }
-      setEditableStyle(initialStyle);
+    if (
+      content?.productIntroduceTitle !== editableContent?.productIntroduceTitle
+    ) {
+      setEditableContent({
+        ...initialContent,
+        productIntroduceTitle:
+          content?.productIntroduceTitle ??
+          initialContent.productIntroduceTitle,
+      });
+    }
+    if (
+      content?.productIntroduceDesc !== editableContent?.productIntroduceDesc
+    ) {
+      setEditableContent({
+        ...initialContent,
+        productIntroduceDesc:
+          content?.productIntroduceDesc ?? initialContent.productIntroduceDesc,
+      });
+    }
+    if (
+      content?.productIntroduceImageDesc !==
+      editableContent?.productIntroduceImageDesc
+    ) {
+      setEditableContent({
+        ...initialContent,
+        productIntroduceImageDesc:
+          content?.productIntroduceImageDesc ??
+          initialContent.productIntroduceImageDesc,
+      });
     }
   }, [content]);
 
-  function handleEditContent(key: string, value: string) {
-    setEditableContent({
-      ...editableContent,
-      [key]: value,
-    });
-    onChangeContent?.(key, value);
-  }
+  useEffect(() => {
+    if (style?.productIntroduceTitle !== editableStyle?.productIntroduceTitle) {
+      setEditableStyle({
+        ...initialStyle,
+        productIntroduceTitle:
+          style?.productIntroduceTitle ?? initialStyle.productIntroduceTitle,
+      });
+    }
+    if (style?.productIntroduceDesc !== editableStyle?.productIntroduceDesc) {
+      setEditableStyle({
+        ...initialStyle,
+        productIntroduceDesc:
+          style?.productIntroduceDesc ?? initialStyle.productIntroduceDesc,
+      });
+    }
+    if (
+      style?.productIntroduceImageDesc !==
+      editableStyle?.productIntroduceImageDesc
+    ) {
+      setEditableStyle({
+        ...initialStyle,
+        productIntroduceImageDesc:
+          style?.productIntroduceImageDesc ??
+          initialStyle.productIntroduceImageDesc,
+      });
+    }
+  }, [style]);
+
+  const handleEditContent = useCallback(
+    (key: string, value: string) => {
+      setEditableContent((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeContent?.(key, value);
+    },
+    [onChangeContent]
+  );
 
   function handleEditStyle(key: string, value: CSSObject) {
     setEditableStyle({
@@ -183,64 +207,145 @@ export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
               icon: "width: 110px; height: 110px;",
             }}
           />
-          <p
-            css={
-              editableStyle?.productIntroduceImageDesc ||
-              product_introduce_image_desc_css_
-            }
-          >
-            {editableContent?.productIntroduceImageDesc || image_desc_}
-          </p>
+          {isEditable ? (
+            <EditableText
+              text={editableContent.productIntroduceImageDesc as string}
+              className="productIntroduceImageDesc"
+              isTextArea={false}
+              defaultCss={editableStyle.productIntroduceImageDesc as CSSObject}
+              onChangeText={(key, value) => onChangeContent(key, value)}
+              onChangeCss={(key, value) => onChangeStyle(key, value)}
+            />
+          ) : (
+            <p
+              css={
+                editableStyle?.productIntroduceImageDesc ||
+                product_introduce_image_desc_css_
+              }
+            >
+              {editableContent?.productIntroduceImageDesc || image_desc_}
+            </p>
+          )}
         </div>
         <div css={text_container}>
-          <p
-            css={
-              editableStyle?.productIntroduceTitle ||
-              product_introduce_title_css_
-            }
-          >
-            {editableContent?.productIntroduceTitle || title_}
-          </p>
-          <p
-            css={
-              editableStyle?.productIntroduceDesc || product_introduce_desc_css_
-            }
-          >
-            {editableContent?.productIntroduceDesc || desc_}
-          </p>
-          <p
-            css={
-              editableStyle?.productIntroduceDesc || product_introduce_desc_css_
-            }
-          >
-            {editableContent?.productIntroduceDesc || desc_}
-          </p>
+          {isEditable ? (
+            <EditableText
+              text={editableContent.productIntroduceTitle as string}
+              className="productIntroduceTitle"
+              isTextArea={false}
+              defaultCss={editableStyle.productIntroduceTitle as CSSObject}
+              onChangeText={(key, value) => onChangeContent(key, value)}
+              onChangeCss={(key, value) => onChangeStyle(key, value)}
+            />
+          ) : (
+            <p
+              css={
+                editableStyle?.productIntroduceTitle ||
+                product_introduce_title_css_
+              }
+            >
+              {editableContent?.productIntroduceTitle || title_}
+            </p>
+          )}
+          {isEditable ? (
+            <EditableText
+              text={editableContent.productIntroduceDesc as string}
+              className="productIntroduceDesc"
+              isTextArea={false}
+              defaultCss={editableStyle.productIntroduceDesc as CSSObject}
+              onChangeText={(key, value) => onChangeContent(key, value)}
+              onChangeCss={(key, value) => onChangeStyle(key, value)}
+            />
+          ) : (
+            <p
+              css={
+                editableStyle?.productIntroduceDesc ||
+                product_introduce_desc_css_
+              }
+            >
+              {editableContent?.productIntroduceDesc || desc_}
+            </p>
+          )}
+          {isEditable ? (
+            <EditableText
+              text={editableContent.productIntroduceDesc as string}
+              className="productIntroduceDesc"
+              isTextArea={false}
+              defaultCss={editableStyle.productIntroduceDesc as CSSObject}
+              onChangeText={(key, value) => onChangeContent(key, value)}
+              onChangeCss={(key, value) => onChangeStyle(key, value)}
+            />
+          ) : (
+            <p
+              css={
+                editableStyle?.productIntroduceDesc ||
+                product_introduce_desc_css_
+              }
+            >
+              {editableContent?.productIntroduceDesc || desc_}
+            </p>
+          )}
         </div>
       </div>
       <div css={container}>
         <div css={text_container}>
-          <p
-            css={
-              editableStyle?.productIntroduceTitle ||
-              product_introduce_title_css_
-            }
-          >
-            {editableContent?.productIntroduceTitle || title_}
-          </p>
-          <p
-            css={
-              editableStyle?.productIntroduceDesc || product_introduce_desc_css_
-            }
-          >
-            {editableContent?.productIntroduceDesc || desc_}
-          </p>
-          <p
-            css={
-              editableStyle?.productIntroduceDesc || product_introduce_desc_css_
-            }
-          >
-            {editableContent?.productIntroduceDesc || desc_}
-          </p>
+          {isEditable ? (
+            <EditableText
+              text={editableContent.productIntroduceTitle as string}
+              className="productIntroduceTitle"
+              isTextArea={false}
+              defaultCss={editableStyle.productIntroduceTitle as CSSObject}
+              onChangeText={(key, value) => onChangeContent(key, value)}
+              onChangeCss={(key, value) => onChangeStyle(key, value)}
+            />
+          ) : (
+            <p
+              css={
+                editableStyle?.productIntroduceTitle ||
+                product_introduce_title_css_
+              }
+            >
+              {editableContent?.productIntroduceTitle || title_}
+            </p>
+          )}
+          {isEditable ? (
+            <EditableText
+              text={editableContent.productIntroduceDesc as string}
+              className="productIntroduceDesc"
+              isTextArea={false}
+              defaultCss={editableStyle.productIntroduceDesc as CSSObject}
+              onChangeText={(key, value) => onChangeContent(key, value)}
+              onChangeCss={(key, value) => onChangeStyle(key, value)}
+            />
+          ) : (
+            <p
+              css={
+                editableStyle?.productIntroduceDesc ||
+                product_introduce_desc_css_
+              }
+            >
+              {editableContent?.productIntroduceDesc || desc_}
+            </p>
+          )}
+          {isEditable ? (
+            <EditableText
+              text={editableContent.productIntroduceDesc as string}
+              className="productIntroduceDesc"
+              isTextArea={false}
+              defaultCss={editableStyle.productIntroduceDesc as CSSObject}
+              onChangeText={(key, value) => onChangeContent(key, value)}
+              onChangeCss={(key, value) => onChangeStyle(key, value)}
+            />
+          ) : (
+            <p
+              css={
+                editableStyle?.productIntroduceDesc ||
+                product_introduce_desc_css_
+              }
+            >
+              {editableContent?.productIntroduceDesc || desc_}
+            </p>
+          )}
         </div>
         <div css={image_container}>
           <ImageBox
@@ -253,14 +358,25 @@ export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
               icon: "width: 110px; height: 110px;",
             }}
           />
-          <p
-            css={
-              editableStyle?.productIntroduceImageDesc ||
-              product_introduce_image_desc_css_
-            }
-          >
-            {editableContent?.productIntroduceImageDesc || image_desc_}
-          </p>
+          {isEditable ? (
+            <EditableText
+              text={editableContent.productIntroduceImageDesc as string}
+              className="productIntroduceImageDesc"
+              isTextArea={false}
+              defaultCss={editableStyle.productIntroduceImageDesc as CSSObject}
+              onChangeText={(key, value) => onChangeContent(key, value)}
+              onChangeCss={(key, value) => onChangeStyle(key, value)}
+            />
+          ) : (
+            <p
+              css={
+                editableStyle?.productIntroduceImageDesc ||
+                product_introduce_image_desc_css_
+              }
+            >
+              {editableContent?.productIntroduceImageDesc || image_desc_}
+            </p>
+          )}
         </div>
       </div>
     </OuterWrap>
