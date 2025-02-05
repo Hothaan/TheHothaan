@@ -139,6 +139,5 @@ exports.getFileByProjectAndFeature = async (projectId, featureId) => {
     projectId,
     featureId,
   ]);
-  const result = Array.isArray(rows) ? rows : [rows];
-  return result;
+  return rows.length > 0 ? rows[0] : null;
 };
