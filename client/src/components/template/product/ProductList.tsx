@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Title from "../commonComponent/Title";
 import { OuterWrap, InnerWrap, ContentsWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
@@ -156,7 +156,7 @@ function ProductListItem(prop: IproductList) {
             {isEditable ? (
               <EditableText
                 text={content.productListProductTitle}
-                className="reviewTitle"
+                className="productListProductTitle"
                 isTextArea={false}
                 defaultCss={style.productListProductTitle}
                 onChangeText={(key, value) => onChangeContent(key, value)}
@@ -171,10 +171,10 @@ function ProductListItem(prop: IproductList) {
             )}
             {isEditable ? (
               <EditableText
-                text={content.productListProductTitle}
-                className="reviewTitle"
+                text={content.productListProductDesc}
+                className="productListProductDesc"
                 isTextArea={false}
-                defaultCss={style.productListProductTitle}
+                defaultCss={style.productListProductDesc}
                 onChangeText={(key, value) => onChangeContent(key, value)}
                 onChangeCss={(key, value) => onChangeStyle(key, value)}
               />
@@ -217,55 +217,71 @@ export default function ProductList(prop: IproductList) {
       style?.productListProductDesc || product_list_desc_css_,
   };
 
-  const [editableContent, setEditableContent] = useState<any>(null);
-  const [editableStyle, setEditableStyle] = useState<any>(null);
+  const [editableContent, setEditableContent] = useState<any>(initialContent);
+  const [editableStyle, setEditableStyle] = useState<any>(initialStyle);
 
   useEffect(() => {
-    if (content) {
-      if (content?.productListCategories) {
-        setEditableContent({
-          ...initialContent,
-          productListCategories: content.productListCategories,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          productListCategories: initialContent.productListCategories,
-        });
+    setEditableContent((prev: any) => {
+      const updatedContent = { ...prev };
+
+      if (content?.productListCategories !== prev?.productListCategories) {
+        updatedContent.productListCategories =
+          content?.productListCategories ??
+          initialContent.productListCategories;
       }
-      if (content?.productListProductTitle) {
-        setEditableContent({
-          ...initialContent,
-          productListProductTitle: content.productListProductTitle,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          productListProductTitle: initialContent.productListProductTitle,
-        });
+      if (content?.productListProductTitle !== prev?.productListProductTitle) {
+        updatedContent.productListProductTitle =
+          content?.productListProductTitle ??
+          initialContent.productListProductTitle;
       }
-      if (content?.productListProductDesc) {
-        setEditableContent({
-          ...initialContent,
-          productListProductDesc: content.productListProductDesc,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          productListProductDesc: initialContent.productListProductDesc,
-        });
+      if (content?.productListProductDesc !== prev?.productListProductDesc) {
+        updatedContent.productListProductDesc =
+          content?.productListProductDesc ??
+          initialContent.productListProductDesc;
       }
-      setEditableStyle(initialStyle);
-    }
+
+      // 변경된 값이 있다면 상태 업데이트
+      return JSON.stringify(prev) === JSON.stringify(updatedContent)
+        ? prev
+        : updatedContent;
+    });
   }, [content]);
 
-  function handleEditContent(key: string, value: string) {
-    setEditableContent({
-      ...editableContent,
-      [key]: value,
+  useEffect(() => {
+    setEditableStyle((prev: any) => {
+      const updatedStyle = { ...prev };
+
+      if (style?.productListCategories !== prev?.productListCategories) {
+        updatedStyle.productListCategories =
+          style?.productListCategories ?? initialStyle.productListCategories;
+      }
+      if (style?.productListProductTitle !== prev?.productListProductTitle) {
+        updatedStyle.productListProductTitle =
+          style?.productListProductTitle ??
+          initialStyle.productListProductTitle;
+      }
+      if (style?.productListProductDesc !== prev?.productListProductDesc) {
+        updatedStyle.productListProductDesc =
+          style?.productListProductDesc ?? initialStyle.productListProductDesc;
+      }
+
+      // 변경된 값이 있다면 상태 업데이트
+      return JSON.stringify(prev) === JSON.stringify(updatedStyle)
+        ? prev
+        : updatedStyle;
     });
-    onChangeContent?.(key, value);
-  }
+  }, [style]);
+
+  const handleEditContent = useCallback(
+    (key: string, value: string) => {
+      setEditableContent((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeContent?.(key, value);
+    },
+    [onChangeContent]
+  );
 
   function handleEditStyle(key: string, value: CSSObject) {
     setEditableStyle({

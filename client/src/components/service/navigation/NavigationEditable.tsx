@@ -15,8 +15,8 @@ import Loading from "@components/common/ui/Loading/loading";
 import useIsProduction from "@hooks/useIsProduction";
 
 export interface INavigationEditable {
-  imageUrlArr: TimageUrl[] | null;
-  imageNameArr: TimageName[] | null;
+  imageUrlArr: string[] | null;
+  imageNameArr: string[] | null;
   listData: string[];
   selectedItem: string;
   setSelectedItem: React.Dispatch<React.SetStateAction<string>>;
@@ -116,7 +116,7 @@ export default function NavigationEditable(prop: INavigationEditable) {
                 >
                   <div css={image_container}>
                     <img
-                      src={imageUrlArr[idx]?.imageUrl}
+                      src={imageUrlArr[idx]}
                       alt="template thumbnail"
                       css={image_style}
                     />
@@ -138,7 +138,7 @@ export default function NavigationEditable(prop: INavigationEditable) {
                 >
                   <div css={image_container}>
                     <img
-                      src={`/images/${imageNameArr[idx]?.imageName}`}
+                      src={`/images/${imageNameArr[idx]}`}
                       alt="template thumbnail"
                       css={image_style}
                     />

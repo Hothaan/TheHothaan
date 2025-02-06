@@ -42,17 +42,22 @@ interface IeditableText {
   isTextArea: boolean;
   defaultCss: CSSObject;
   hasBg?: boolean;
+  activeEditor?: string | null;
+  setActiveEditor?: (classname?: string) => void;
   onChangeText?: (key: string, text: string) => void;
   onChangeCss?: (key: string, css: CSSObject) => void;
 }
 
 export default function EditableText(prop: IeditableText) {
   const {
+    id,
     className,
     text,
     isTextArea,
     defaultCss,
     hasBg,
+    activeEditor,
+    setActiveEditor,
     onChangeText,
     onChangeCss,
   } = prop;
@@ -65,6 +70,18 @@ export default function EditableText(prop: IeditableText) {
   // const [styles, setStyles] = useState<CSSObject>({
   //   ...defaultCss,
   // });
+
+  useEffect(() => {
+    // 다른 에디터가 클릭되면 현재 에디터의 isEditing을 false로 설정
+    if (activeEditor !== className) {
+      setIsEditing(false);
+    }
+  }, [activeEditor]);
+
+  const handleEditorClick = () => {
+    setIsEditing(true);
+    setActiveEditor?.(className); // 현재 에디터 ID를 부모에 전달
+  };
 
   useEffect(() => {
     if (onChangeText && className && text) {
@@ -273,10 +290,7 @@ export default function EditableText(prop: IeditableText) {
   }
 
   return (
-    <div
-      style={{ position: "relative", width: "auto", zIndex: "10" }}
-      ref={divRef}
-    >
+    <div style={{ position: "relative", width: "auto" }} ref={divRef}>
       {isEditing && (
         <div
           ref={toolbarRef}
@@ -294,7 +308,7 @@ export default function EditableText(prop: IeditableText) {
         <textarea
           css={[defaultCss, input_style(isEditing)]}
           value={text}
-          onClick={() => setIsEditing(!isEditing)}
+          onClick={handleEditorClick}
           onChange={(e) => onChangeText?.(className as string, e.target.value)}
           className={className}
         />
@@ -304,7 +318,7 @@ export default function EditableText(prop: IeditableText) {
             type="text"
             css={[defaultCss, input_style(isEditing), width_fit_auto]}
             value={text}
-            onClick={() => setIsEditing(!isEditing)}
+            onClick={handleEditorClick}
             onChange={(e) =>
               onChangeText?.(className as string, e.target.value)
             }
@@ -316,7 +330,7 @@ export default function EditableText(prop: IeditableText) {
           type="text"
           css={[defaultCss, input_style(isEditing)]}
           value={text}
-          onClick={() => setIsEditing(!isEditing)}
+          onClick={handleEditorClick}
           onChange={(e) => onChangeText?.(className as string, e.target.value)}
           className={className}
         />

@@ -13,6 +13,8 @@ import NavigationEditable from "../navigation/NavigationEditable";
 import { ReactComponent as LogoLight } from "@svgs/common/logoLight.svg";
 /* store */
 import { TserviceDefaultData } from "@store/serviceDefaultDataStore";
+import { imageNameStore } from "@store/imageNameStore";
+import { imageUrlStore } from "@store/imageUrlStore";
 /* hooks */
 import useIsProduction from "@hooks/useIsProduction";
 /* api */
@@ -28,8 +30,8 @@ import {
 import { AxiosResponse } from "axios";
 
 interface IFullPageModal {
-  imageUrlArr: TimageUrl[] | null;
-  imageNameArr: TimageName[] | null;
+  imageUrlArr: string[] | null;
+  imageNameArr: string[] | null;
   projectType: string;
   listData: string[];
   selectedItem: string;
@@ -45,12 +47,13 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
     projectType,
     listData,
     selectedItem,
-    // featureData,
     onClick,
     setSelectedItem,
   } = prop;
 
   const [projectId, setProjectId] = useState<string | null>(null);
+  const { imageName, setImageName } = imageNameStore();
+  const { imageUrl, setImageUrl } = imageUrlStore();
   const [isInitalToast, setisInitalToast] = useState(true);
   const [isSavedToast, setisSavedToast] = useState(false);
   const [featureData, setFeatureData] = useState<
@@ -139,6 +142,7 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
   useEffect(() => {
     if (isImageSaved) {
       setIsLoadingModalOpen(false);
+      onClick(false);
     }
   }, [isImageSaved]);
 
@@ -228,21 +232,31 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
         (res): res is PromiseRejectedResult => res.status === "rejected"
       );
 
-      console.log("fulfilledResponses:", fulfilledResponses);
-      console.log("rejectedResponses:", rejectedResponses);
+      // console.log("fulfilledResponses:", fulfilledResponses);
+      // console.log("rejectedResponses:", rejectedResponses);
 
       if (fulfilledResponses.length > 0) {
-        const imageNameMapping = fulfilledResponses.map((res, idx) => ({
-          imageName: res.value.data.imageName,
-          parameter: parameterArr[idx],
-        }));
-        const imageUrlMapping = fulfilledResponses.map((res, idx) => ({
-          imageUrl: res.value.data.url,
-          parameter: parameterArr[idx],
-        }));
+        // const imageNameMapping = fulfilledResponses.map((res, idx) => ({
+        //   imageName: res.value.data.imageName,
+        //   parameter: parameterArr[idx],
+        // }));
+        // const imageUrlMapping = fulfilledResponses.map((res, idx) => ({
+        //   imageUrl: res.value.data.url,
+        //   parameter: parameterArr[idx],
+        // }));
 
-        localStorage.setItem("imageName", JSON.stringify(imageNameMapping));
-        localStorage.setItem("imageUrl", JSON.stringify(imageUrlMapping));
+        const imageNameOnlyMapping = fulfilledResponses.map(
+          (res, idx) => res.value.data.imageName
+        );
+
+        const imageUrlOnlyMapping = fulfilledResponses.map(
+          (res, idx) => res.value.data.url
+        );
+
+        // localStorage.setItem("imageName", JSON.stringify(imageNameMapping));
+        setImageName(imageNameOnlyMapping);
+        // localStorage.setItem("imageUrl", JSON.stringify(imageUrlMapping));
+        setImageUrl(imageUrlOnlyMapping);
       }
 
       if (rejectedResponses.length > 0) {

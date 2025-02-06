@@ -18,6 +18,9 @@ import ButtonArrowIconControler, {
 } from "@components/service/button/ButtonArrowIconControler";
 import Loading from "@components/common/ui/Loading/loading";
 import { IfetchedfeatureResponseData } from "@components/template/types";
+/* store */
+import { imageNameStore } from "@store/imageNameStore";
+import { imageUrlStore } from "@store/imageUrlStore";
 /* api */
 import { getFeatureData } from "@api/project/getFeatureData";
 import { generateFiles } from "@api/project/generateFiles";
@@ -56,8 +59,10 @@ export default function ServicePreviewPage() {
   const [isFullpageModalOpen, setIsFullpageModalOpen] = useState(false);
   const [isLoadingModalOpen, setIsLoadingModalOpen] = useState(false);
   const navigate = useNavigate();
-  const [imageNameArr, setImageNameArr] = useState<TimageName[] | null>(null);
-  const [imageUrlArr, setImageUrlArr] = useState<TimageUrl[] | null>(null);
+  const { imageName, setImageName } = imageNameStore();
+  const { imageUrl, setImageUrl } = imageUrlStore();
+  // const [imageNameArr, setImageNameArr] = useState<string[]>(imageName);
+  // const [imageUrlArr, setImageUrlArr] = useState<string[]>(imageUrl);
   const [featureData, setFeatureData] = useState<
     IfetchedfeatureResponseData[] | null
   >(null);
@@ -86,12 +91,16 @@ export default function ServicePreviewPage() {
     }
   }
 
+  console.log(imageUrl);
+
   useEffect(() => {
     const sessionData = sessionStorage.getItem("serviceInfo");
     if (sessionData) {
       setServiceInfo(JSON.parse(sessionData));
     }
   }, []);
+
+  console.log(imageUrl);
 
   useEffect(() => {
     const sessionData = sessionStorage.getItem("serviceData");
@@ -172,19 +181,19 @@ export default function ServicePreviewPage() {
     }
   }, [listData]);
 
-  useEffect(() => {
-    const localData = localStorage.getItem("imageName");
-    if (localData) {
-      setImageNameArr(JSON.parse(localData));
-    }
-  }, [selectedItem]);
+  // useEffect(() => {
+  //   const localData = localStorage.getItem("imageName");
+  //   if (localData) {
+  //     setImageNameArr(JSON.parse(localData));
+  //   }
+  // }, [selectedItem]);
 
-  useEffect(() => {
-    const localData = localStorage.getItem("imageUrl");
-    if (localData) {
-      setImageUrlArr(JSON.parse(localData));
-    }
-  }, [selectedItem]);
+  // useEffect(() => {
+  //   const localData = localStorage.getItem("imageUrl");
+  //   if (localData) {
+  //     setImageUrlArr(JSON.parse(localData));
+  //   }
+  // }, [selectedItem]);
 
   function handleSelectItem(e: React.MouseEvent<HTMLLIElement>) {
     const idx = parseInt(e.currentTarget.dataset.idx || "0");
@@ -335,8 +344,8 @@ export default function ServicePreviewPage() {
   // }
 
   const fullPageModal = {
-    imageUrlArr: imageUrlArr,
-    imageNameArr: imageNameArr,
+    imageUrlArr: imageUrl,
+    imageNameArr: imageName,
     projectType:
       (serviceDefaultData && serviceDefaultData.serviceType.text) || "쇼핑몰",
     listData: listData,
@@ -370,14 +379,13 @@ export default function ServicePreviewPage() {
     }
   }, [isFail]);
 
+  console.log(imageUrl[0]);
+
   if (isFail) {
     return <Loading />;
   }
 
-  if (isProduction && !imageUrlArr) {
-    return <Loading />;
-  }
-  if (!isProduction && !imageNameArr) {
+  if (!imageUrl || !imageName) {
     return <Loading />;
   }
 
@@ -401,7 +409,7 @@ export default function ServicePreviewPage() {
             </div>
             <ul css={list}>
               {isProduction === true ? (
-                imageUrlArr && listData.length > 0 ? (
+                imageUrl && listData.length > 0 ? (
                   listData.map((item, idx) => (
                     <li
                       css={[list_item, list_item_color(selectedItem === item)]}
@@ -414,7 +422,7 @@ export default function ServicePreviewPage() {
                     >
                       <div css={image_container}>
                         <img
-                          src={imageUrlArr[idx].imageUrl}
+                          src={imageUrl[idx]}
                           alt="template thumbnail"
                           css={image_style}
                         />
@@ -430,7 +438,7 @@ export default function ServicePreviewPage() {
                 ) : (
                   <Loading />
                 )
-              ) : imageNameArr && listData.length > 0 ? (
+              ) : imageName && listData.length > 0 ? (
                 listData.map((item, idx) => (
                   <li
                     css={[list_item, list_item_color(selectedItem === item)]}
@@ -443,7 +451,7 @@ export default function ServicePreviewPage() {
                   >
                     <div css={image_container}>
                       <img
-                        src={`/images/${imageNameArr[idx].imageName}`}
+                        src={`/images/${imageName[idx]}`}
                         alt="template thumbnail"
                         css={image_style}
                       />
@@ -480,13 +488,13 @@ export default function ServicePreviewPage() {
             }}
           >
             {isProduction === true ? (
-              imageUrlArr && listData.length > 0 ? (
+              imageUrl && listData.length > 0 ? (
                 <div css={preview}>
                   <img
                     src={
-                      imageUrlArr[
+                      imageUrl[
                         listData.findIndex((item) => item === selectedItem)
-                      ]?.imageUrl || ""
+                      ] || ""
                     }
                     alt="template thumbnail"
                     css={preview_style}
@@ -495,13 +503,13 @@ export default function ServicePreviewPage() {
               ) : (
                 <Loading />
               )
-            ) : imageNameArr && listData.length > 0 ? (
+            ) : imageName && listData.length > 0 ? (
               <div css={preview}>
                 <img
                   src={`/images/${
-                    imageNameArr[
+                    imageName[
                       listData.findIndex((item) => item === selectedItem)
-                    ]?.imageName || ""
+                    ] || ""
                   }`}
                   alt="template thumbnail"
                   css={preview_style}

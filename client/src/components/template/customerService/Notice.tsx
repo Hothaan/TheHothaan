@@ -39,10 +39,19 @@ export const notice_title_option_text_css_: CSSObject = {
   fontStyle: "normal",
   fontWeight: "400",
   lineHeight: "160%",
+
+  width: "100%",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
 };
 
 export const notice_title_option_image_css_: CSSObject = {
   width: "100%",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+
   color: "#486284",
   fontFamily: "Montserrat",
   fontSize: "17px",
@@ -284,17 +293,36 @@ export default function Notice(prop: Inotice) {
   const [editableStyle, setEditableStyle] = useState<any>(null);
 
   useEffect(() => {
-    if (content?.noticeTitle !== editableContent?.noticeTitle) {
-      setEditableContent({
-        ...initialContent,
-        noticeTitle: content?.noticeTitle ?? initialContent.noticeTitle,
-      });
-    }
+    setEditableContent((prev: any) => {
+      const updatedContent = { ...prev };
 
-    if (style?.noticeTitle !== editableStyle?.noticeTitle) {
-      setEditableStyle(initialStyle);
-    }
-  }, [content, style]);
+      if (content?.noticeTitle !== prev?.noticeTitle) {
+        updatedContent.noticeTitle =
+          content?.noticeTitle ?? initialContent.noticeTitle;
+      }
+
+      // 변경된 값이 있다면 상태 업데이트
+      return JSON.stringify(prev) === JSON.stringify(updatedContent)
+        ? prev
+        : updatedContent;
+    });
+  }, [content]);
+
+  useEffect(() => {
+    setEditableStyle((prev: any) => {
+      const updatedStyle = { ...prev };
+
+      if (style?.noticeTitle !== prev?.noticeTitle) {
+        updatedStyle.noticeTitle =
+          style?.noticeTitle ?? initialStyle.noticeTitle;
+      }
+
+      // 변경된 값이 있다면 상태 업데이트
+      return JSON.stringify(prev) === JSON.stringify(updatedStyle)
+        ? prev
+        : updatedStyle;
+    });
+  }, [style]);
 
   const handleEditContent = useCallback(
     (key: string, value: string) => {
@@ -306,6 +334,19 @@ export default function Notice(prop: Inotice) {
     },
     [onChangeContent]
   );
+
+  useEffect(() => {
+    if (content?.noticeTitle !== editableContent?.noticeTitle) {
+      setEditableContent({
+        ...initialContent,
+        noticeTitle: content?.noticeTitle ?? initialContent.noticeTitle,
+      });
+    }
+
+    if (style?.noticeTitle !== editableStyle?.noticeTitle) {
+      setEditableStyle(initialStyle);
+    }
+  }, [content, style]);
 
   function handleEditStyle(key: string, value: CSSObject) {
     setEditableStyle({

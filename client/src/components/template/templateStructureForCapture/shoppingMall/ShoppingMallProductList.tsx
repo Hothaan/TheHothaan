@@ -219,6 +219,8 @@ export default function ShoppingMallProductList() {
     return <Loading />;
   }
 
+  console.log(pageContent);
+
   return (
     <div className="templateImage">
       <Header

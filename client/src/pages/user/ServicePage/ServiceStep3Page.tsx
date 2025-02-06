@@ -158,13 +158,6 @@ export default function ServiceStep3Page() {
     }
   }, [serviceDefaultData]);
 
-  // useEffect(() => {
-  //   if (isReady && generatedTextData && generatedTextData.length > 0) {
-  //     console.log("Generated text data has changed, calling saveImages...");
-  //     saveImages();
-  //   }
-  // }, [isReady]);
-
   useEffect(() => {
     if (featureData) {
       console.log("Generated text data has changed, calling saveImages...");
@@ -444,28 +437,31 @@ export default function ServiceStep3Page() {
         (res): res is PromiseRejectedResult => res.status === "rejected"
       );
 
-      console.log("fulfilledResponses:", fulfilledResponses);
-      console.log("rejectedResponses:", rejectedResponses);
+      // console.log("fulfilledResponses:", fulfilledResponses);
+      // console.log("rejectedResponses:", rejectedResponses);
 
       if (fulfilledResponses.length > 0) {
-        const imageNameMapping = fulfilledResponses.map((res, idx) => ({
-          imageName: res.value.data.imageName,
-          parameter: parameterArr[idx],
-        }));
+        // const imageNameMapping = fulfilledResponses.map((res, idx) => ({
+        //   imageName: res.value.data.imageName,
+        //   parameter: parameterArr[idx],
+        // }));
+
+        // const imageUrlMapping = fulfilledResponses.map((res, idx) => ({
+        //   imageUrl: res.value.data.url,
+        //   parameter: parameterArr[idx],
+        // }));
+
         const imageNameOnlyMapping = fulfilledResponses.map(
           (res, idx) => res.value.data.imageName
         );
-        const imageUrlMapping = fulfilledResponses.map((res, idx) => ({
-          imageUrl: res.value.data.url,
-          parameter: parameterArr[idx],
-        }));
+
         const imageUrlOnlyMapping = fulfilledResponses.map(
           (res, idx) => res.value.data.url
         );
 
-        localStorage.setItem("imageName", JSON.stringify(imageNameMapping));
+        // localStorage.setItem("imageName", JSON.stringify(imageNameMapping));
         setImageName(imageNameOnlyMapping);
-        localStorage.setItem("imageUrl", JSON.stringify(imageUrlMapping));
+        // localStorage.setItem("imageUrl", JSON.stringify(imageUrlMapping));
         setImageUrl(imageUrlOnlyMapping);
       }
 

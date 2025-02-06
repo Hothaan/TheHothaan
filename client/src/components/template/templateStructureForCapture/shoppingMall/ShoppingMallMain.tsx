@@ -432,7 +432,7 @@ export default function ShoppingMallMain() {
           productListDesc: product_list_option_list_desc_css,
         }}
         option="list"
-        isEditable={true}
+        // isEditable={true}
         onChangeContent={handleChangeContent}
         onChangeStyle={handleChangeStyle}
       />

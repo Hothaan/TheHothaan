@@ -31,6 +31,8 @@ interface IproductList {
   option: "main" | "list";
   onChangeContent: (key: string, value: string) => void;
   onChangeStyle: (key: string, value: CSSObject) => void;
+  activeEditor?: string | null;
+  setActiveEditor?: (classname?: string) => void;
 }
 
 export const product_list_option_main_title_css: CSSObject = {
@@ -222,6 +224,10 @@ export default function ProductListMain(prop: IproductList) {
   const { option, content, style, isEditable, onChangeContent, onChangeStyle } =
     prop;
 
+  const [activeEditor, setActiveEditor] = useState<string | undefined>(
+    undefined
+  );
+
   const count = 3;
 
   const item_rows_container = css`
@@ -312,6 +318,8 @@ export default function ProductListMain(prop: IproductList) {
                 content={editableContent}
                 style={editableStyle}
                 isEditable={isEditable}
+                activeEditor={activeEditor}
+                setActiveEditor={setActiveEditor}
                 onChangeContent={handleEditContent}
                 onChangeStyle={handleEditStyle}
               />
@@ -335,6 +343,8 @@ export default function ProductListMain(prop: IproductList) {
                     content={editableContent}
                     style={editableStyle}
                     isEditable={isEditable}
+                    activeEditor={activeEditor}
+                    setActiveEditor={setActiveEditor}
                     onChangeContent={handleEditContent}
                     onChangeStyle={handleEditStyle}
                   />
