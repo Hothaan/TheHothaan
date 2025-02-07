@@ -21,7 +21,9 @@ export default function DropDown(prop: IdropDown) {
     <div css={dropdown_container(size)} onClick={onClick}>
       <div css={selected_container(show)}>
         <p css={selected_text(isFontFamily, selected)}>{selected}</p>
-        <ArrowDown />
+        <div css={arrowDown_icon_container}>
+          <ArrowDown />
+        </div>
       </div>
       {show && (
         <ul css={option_container(size)} onMouseLeave={onClick}>
@@ -39,6 +41,10 @@ export default function DropDown(prop: IdropDown) {
     </div>
   );
 }
+
+const arrowDown_icon_container = css`
+  transform: rotate(180deg);
+`;
 
 const option_text = (isFontFamily: boolean, option: string) => css`
   width: 100%;
@@ -86,6 +92,7 @@ const selected_container = (showFontFamilyOptions: boolean) => css`
 `;
 const option_container = (size: TdropdownContainerSize) => css`
   position: absolute;
+  bottom: 100%;
 
   display: flex;
   width: ${size};
@@ -95,7 +102,7 @@ const option_container = (size: TdropdownContainerSize) => css`
   gap: 16px;
 
   border-right: 1px solid var(--DEDEDE, #dedede);
-  border-bottom: 1px solid var(--DEDEDE, #dedede);
+  border-top: 1px solid var(--DEDEDE, #dedede);
   border-left: 1px solid var(--DEDEDE, #dedede);
 
   background: var(--FFF, #fff);

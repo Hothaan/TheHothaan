@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { OuterWrap, ContentsWrap } from "../commonComponent/Wrap";
 import Title from "../commonComponent/Title";
 import BreadCrumble from "../commonComponent/BreadCrumble";
@@ -29,6 +29,9 @@ interface Inotice {
   option?: Tnotice;
   onChangeContent: (key: string, value: string) => void;
   onChangeStyle: (key: string, value: CSSObject) => void;
+  index?: number;
+  activeEditor?: string | null;
+  setActiveEditor?: (classname?: string) => void;
 }
 
 export const notice_title_option_text_css_: CSSObject = {
@@ -47,11 +50,6 @@ export const notice_title_option_text_css_: CSSObject = {
 };
 
 export const notice_title_option_image_css_: CSSObject = {
-  width: "100%",
-  overflow: "hidden",
-  textOverflow: "ellipsis",
-  whiteSpace: "nowrap",
-
   color: "#486284",
   fontFamily: "Montserrat",
   fontSize: "17px",
@@ -59,6 +57,11 @@ export const notice_title_option_image_css_: CSSObject = {
   fontWeight: "500",
   lineHeight: "normal",
   textTransform: "capitalize",
+
+  width: "100%",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
 };
 
 function NoticeTitle() {
@@ -92,7 +95,15 @@ function NoticeTitle() {
 }
 
 function NoticeTable(prop: Inotice) {
-  const { content, isEditable, onChangeContent, onChangeStyle, style } = prop;
+  const {
+    content,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    style,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   const count = 10;
 
@@ -136,6 +147,7 @@ function NoticeTable(prop: Inotice) {
   `;
   const col2 = css`
     width: calc(100% - 60px - 100px - 50px - 24px);
+    padding: 16px 12px 16px 0px;
   `;
   const col3 = css`
     width: 100px;
@@ -176,6 +188,9 @@ function NoticeTable(prop: Inotice) {
                   defaultCss={style?.noticeTitle as CSSObject}
                   onChangeText={(key, value) => onChangeContent(key, value)}
                   onChangeCss={(key, value) => onChangeStyle(key, value)}
+                  id={"noticeTitle" + index}
+                  activeEditor={activeEditor}
+                  setActiveEditor={setActiveEditor}
                 />
               ) : (
                 <p css={style.noticeTitle || notice_title_option_text_css_}>
@@ -193,7 +208,15 @@ function NoticeTable(prop: Inotice) {
 }
 
 function NoticeGalleryBoard(prop: Inotice) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
+  const {
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   const count = 8;
 
@@ -232,6 +255,9 @@ function NoticeGalleryBoard(prop: Inotice) {
               defaultCss={style.noticeTitle as CSSObject}
               onChangeText={(key, value) => onChangeContent(key, value)}
               onChangeCss={(key, value) => onChangeStyle(key, value)}
+              id={"noticeTitle" + index}
+              activeEditor={activeEditor}
+              setActiveEditor={setActiveEditor}
             />
           ) : (
             <p css={style?.noticeTitle || notice_title_option_image_css_}>
@@ -289,73 +315,6 @@ export default function Notice(prop: Inotice) {
         : notice_title_option_image_css_),
   };
 
-  const [editableContent, setEditableContent] = useState<any>(null);
-  const [editableStyle, setEditableStyle] = useState<any>(null);
-
-  useEffect(() => {
-    setEditableContent((prev: any) => {
-      const updatedContent = { ...prev };
-
-      if (content?.noticeTitle !== prev?.noticeTitle) {
-        updatedContent.noticeTitle =
-          content?.noticeTitle ?? initialContent.noticeTitle;
-      }
-
-      // 변경된 값이 있다면 상태 업데이트
-      return JSON.stringify(prev) === JSON.stringify(updatedContent)
-        ? prev
-        : updatedContent;
-    });
-  }, [content]);
-
-  useEffect(() => {
-    setEditableStyle((prev: any) => {
-      const updatedStyle = { ...prev };
-
-      if (style?.noticeTitle !== prev?.noticeTitle) {
-        updatedStyle.noticeTitle =
-          style?.noticeTitle ?? initialStyle.noticeTitle;
-      }
-
-      // 변경된 값이 있다면 상태 업데이트
-      return JSON.stringify(prev) === JSON.stringify(updatedStyle)
-        ? prev
-        : updatedStyle;
-    });
-  }, [style]);
-
-  const handleEditContent = useCallback(
-    (key: string, value: string) => {
-      setEditableContent((prev: any) => ({
-        ...prev,
-        [key]: value,
-      }));
-      onChangeContent?.(key, value);
-    },
-    [onChangeContent]
-  );
-
-  useEffect(() => {
-    if (content?.noticeTitle !== editableContent?.noticeTitle) {
-      setEditableContent({
-        ...initialContent,
-        noticeTitle: content?.noticeTitle ?? initialContent.noticeTitle,
-      });
-    }
-
-    if (style?.noticeTitle !== editableStyle?.noticeTitle) {
-      setEditableStyle(initialStyle);
-    }
-  }, [content, style]);
-
-  function handleEditStyle(key: string, value: CSSObject) {
-    setEditableStyle({
-      ...editableStyle,
-      [key]: value,
-    });
-    onChangeStyle?.(key, value);
-  }
-
   const container = css`
     width: 100%;
     display: flex;
@@ -363,6 +322,97 @@ export default function Notice(prop: Inotice) {
     justify-content: center;
     gap: 50px;
   `;
+
+  const [activeEditor, setActiveEditor] = useState<string | undefined>(
+    undefined
+  );
+
+  const updateValues = (source: any, initial: any) => {
+    return Object.keys(initial).reduce((acc, key) => {
+      const value = source?.[key];
+      acc[key] = value === "" ? initial[key] : value ?? initial[key];
+      return acc;
+    }, {} as any);
+  };
+
+  const [editableContent, setEditableContent] = useState(() =>
+    updateValues(content, initialContent)
+  );
+  const [editableStyle, setEditableStyle] = useState(() =>
+    updateValues(style, initialStyle)
+  );
+
+  // `useMemo`로 최적화된 업데이트 값 생성
+  const updatedContent = useMemo(
+    () => updateValues(content, initialContent),
+    [content, initialContent]
+  );
+  const updatedStyle = useMemo(
+    () => updateValues(style, initialStyle),
+    [style, initialStyle]
+  );
+
+  useEffect(() => {
+    setEditableContent((prev: any) => {
+      // 기존 객체와 새 객체를 비교하여 변경된 경우에만 업데이트
+      if (!shallowEqual(prev, updatedContent)) {
+        return { ...prev, ...updatedContent };
+      }
+      return prev;
+    });
+  }, [updatedContent]);
+
+  useEffect(() => {
+    setEditableStyle((prev: any) => {
+      if (!shallowEqual(prev, updatedStyle)) {
+        return updatedStyle;
+      }
+      return prev;
+    });
+  }, [updatedStyle]);
+
+  // 얕은 비교를 수행하는 함수
+  const shallowEqual = (objA: any, objB: any) => {
+    if (Object.is(objA, objB)) return true;
+
+    if (
+      !objA ||
+      !objB ||
+      typeof objA !== "object" ||
+      typeof objB !== "object"
+    ) {
+      return false;
+    }
+
+    const keysA = Object.keys(objA);
+    const keysB = Object.keys(objB);
+
+    if (keysA.length !== keysB.length) return false;
+
+    return keysA.every((key) => Object.is(objA[key], objB[key]));
+  };
+
+  const handleEditContent = useCallback(
+    (key: string, value: string) => {
+      setEditableContent((prev: any) => {
+        if (prev[key] === value) return prev; // 값이 동일하면 업데이트 안 함
+        return { ...prev, [key]: value };
+      });
+      onChangeContent?.(key, value);
+    },
+    [onChangeContent]
+  );
+
+  const handleEditStyle = useCallback(
+    (key: string, value: CSSObject) => {
+      setEditableStyle((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeStyle?.(key, value);
+    },
+    [onChangeStyle]
+  );
 
   return (
     <OuterWrap padding="100px 0">
@@ -376,6 +426,8 @@ export default function Notice(prop: Inotice) {
               isEditable={isEditable}
               onChangeContent={handleEditContent}
               onChangeStyle={handleEditStyle}
+              activeEditor={activeEditor}
+              setActiveEditor={setActiveEditor}
             />
           ) : (
             <NoticeGalleryBoard
@@ -384,6 +436,8 @@ export default function Notice(prop: Inotice) {
               isEditable={isEditable}
               onChangeContent={handleEditContent}
               onChangeStyle={handleEditStyle}
+              activeEditor={activeEditor}
+              setActiveEditor={setActiveEditor}
             />
           )}
           <NoticeSearch />

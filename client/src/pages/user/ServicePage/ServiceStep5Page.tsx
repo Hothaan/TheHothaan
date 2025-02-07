@@ -27,7 +27,8 @@ import { TimageName, TimageUrl } from "./ServiceStep4Page";
 export type Tformat = "pdf" | "png" | "jpg";
 export default function ServiceStep5Page() {
   const isProduction = true; //임시
-  const projectId = "395"; //임시
+  // const projectId = "395"; //임시
+  const [projectId, setProjectId] = useState<string | null>(null);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -40,6 +41,13 @@ export default function ServiceStep5Page() {
   const [selectedItem, setSelectedItem] = useState<string>(listData[0]);
   const [imageNameArr, setImageNameArr] = useState<TimageName[] | null>(null);
   const [imageUrlArr, setImageUrlArr] = useState<TimageUrl[] | null>(null);
+
+  useEffect(() => {
+    const sessionData = sessionStorage.getItem("projectId");
+    if (sessionData) {
+      setProjectId(JSON.parse(sessionData));
+    }
+  }, []);
 
   const fullPageModal = {
     imageUrlArr: imageUrlArr,

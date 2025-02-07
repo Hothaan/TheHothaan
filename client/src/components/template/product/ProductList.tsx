@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import Title from "../commonComponent/Title";
 import { OuterWrap, InnerWrap, ContentsWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
@@ -33,6 +33,9 @@ interface IproductList {
   isEditable?: boolean;
   onChangeContent: (key: string, value: string) => void;
   onChangeStyle: (key: string, value: CSSObject) => void;
+  index?: number;
+  activeEditor?: string | null;
+  setActiveEditor?: (classname?: string) => void;
 }
 
 export const product_list_title_css_: CSSObject = {
@@ -43,6 +46,11 @@ export const product_list_title_css_: CSSObject = {
   fontStyle: "normal",
   fontWeight: "400",
   lineHeight: "normal",
+
+  width: "100%",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
 };
 
 export const product_list_desc_css_: CSSObject = {
@@ -53,6 +61,11 @@ export const product_list_desc_css_: CSSObject = {
   fontStyle: "normal",
   fontWeight: "400",
   lineHeight: "normal",
+
+  width: "100%",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
 };
 
 export const product_list_nav_item_css_: CSSObject = {
@@ -63,10 +76,24 @@ export const product_list_nav_item_css_: CSSObject = {
   fontWeight: "500",
   lineHeight: "normal",
   textTransform: "capitalize",
+
+  width: "100%",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
 };
 
 function ProductListItem(prop: IproductList) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
+  const {
+    index,
+    activeEditor,
+    setActiveEditor,
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+  } = prop;
 
   const slide_item = css`
     width: 100%;
@@ -161,6 +188,9 @@ function ProductListItem(prop: IproductList) {
                 defaultCss={style.productListProductTitle}
                 onChangeText={(key, value) => onChangeContent(key, value)}
                 onChangeCss={(key, value) => onChangeStyle(key, value)}
+                id={"productListProductTitle" + index}
+                activeEditor={activeEditor}
+                setActiveEditor={setActiveEditor}
               />
             ) : (
               <p
@@ -177,6 +207,9 @@ function ProductListItem(prop: IproductList) {
                 defaultCss={style.productListProductDesc}
                 onChangeText={(key, value) => onChangeContent(key, value)}
                 onChangeCss={(key, value) => onChangeStyle(key, value)}
+                id={"productListProductDesc" + index}
+                activeEditor={activeEditor}
+                setActiveEditor={setActiveEditor}
               />
             ) : (
               <p css={style?.productListProductDesc || product_list_desc_css_}>
@@ -217,79 +250,96 @@ export default function ProductList(prop: IproductList) {
       style?.productListProductDesc || product_list_desc_css_,
   };
 
-  const [editableContent, setEditableContent] = useState<any>(initialContent);
-  const [editableStyle, setEditableStyle] = useState<any>(initialStyle);
+  const [activeEditor, setActiveEditor] = useState<string | undefined>(
+    undefined
+  );
+
+  const updateValues = (source: any, initial: any) => {
+    return Object.keys(initial).reduce((acc, key) => {
+      const value = source?.[key];
+      acc[key] = value === "" ? initial[key] : value ?? initial[key];
+      return acc;
+    }, {} as any);
+  };
+
+  const [editableContent, setEditableContent] = useState(() =>
+    updateValues(content, initialContent)
+  );
+  const [editableStyle, setEditableStyle] = useState(() =>
+    updateValues(style, initialStyle)
+  );
+
+  // `useMemo`로 최적화된 업데이트 값 생성
+  const updatedContent = useMemo(
+    () => updateValues(content, initialContent),
+    [content, initialContent]
+  );
+  const updatedStyle = useMemo(
+    () => updateValues(style, initialStyle),
+    [style, initialStyle]
+  );
 
   useEffect(() => {
     setEditableContent((prev: any) => {
-      const updatedContent = { ...prev };
-
-      if (content?.productListCategories !== prev?.productListCategories) {
-        updatedContent.productListCategories =
-          content?.productListCategories ??
-          initialContent.productListCategories;
+      // 기존 객체와 새 객체를 비교하여 변경된 경우에만 업데이트
+      if (!shallowEqual(prev, updatedContent)) {
+        return { ...prev, ...updatedContent };
       }
-      if (content?.productListProductTitle !== prev?.productListProductTitle) {
-        updatedContent.productListProductTitle =
-          content?.productListProductTitle ??
-          initialContent.productListProductTitle;
-      }
-      if (content?.productListProductDesc !== prev?.productListProductDesc) {
-        updatedContent.productListProductDesc =
-          content?.productListProductDesc ??
-          initialContent.productListProductDesc;
-      }
-
-      // 변경된 값이 있다면 상태 업데이트
-      return JSON.stringify(prev) === JSON.stringify(updatedContent)
-        ? prev
-        : updatedContent;
+      return prev;
     });
-  }, [content]);
+  }, [updatedContent]);
 
   useEffect(() => {
     setEditableStyle((prev: any) => {
-      const updatedStyle = { ...prev };
-
-      if (style?.productListCategories !== prev?.productListCategories) {
-        updatedStyle.productListCategories =
-          style?.productListCategories ?? initialStyle.productListCategories;
+      if (!shallowEqual(prev, updatedStyle)) {
+        return updatedStyle;
       }
-      if (style?.productListProductTitle !== prev?.productListProductTitle) {
-        updatedStyle.productListProductTitle =
-          style?.productListProductTitle ??
-          initialStyle.productListProductTitle;
-      }
-      if (style?.productListProductDesc !== prev?.productListProductDesc) {
-        updatedStyle.productListProductDesc =
-          style?.productListProductDesc ?? initialStyle.productListProductDesc;
-      }
-
-      // 변경된 값이 있다면 상태 업데이트
-      return JSON.stringify(prev) === JSON.stringify(updatedStyle)
-        ? prev
-        : updatedStyle;
+      return prev;
     });
-  }, [style]);
+  }, [updatedStyle]);
+
+  // 얕은 비교를 수행하는 함수
+  const shallowEqual = (objA: any, objB: any) => {
+    if (Object.is(objA, objB)) return true;
+
+    if (
+      !objA ||
+      !objB ||
+      typeof objA !== "object" ||
+      typeof objB !== "object"
+    ) {
+      return false;
+    }
+
+    const keysA = Object.keys(objA);
+    const keysB = Object.keys(objB);
+
+    if (keysA.length !== keysB.length) return false;
+
+    return keysA.every((key) => Object.is(objA[key], objB[key]));
+  };
 
   const handleEditContent = useCallback(
     (key: string, value: string) => {
-      setEditableContent((prev: any) => ({
-        ...prev,
-        [key]: value,
-      }));
+      setEditableContent((prev: any) => {
+        if (prev[key] === value) return prev; // 값이 동일하면 업데이트 안 함
+        return { ...prev, [key]: value };
+      });
       onChangeContent?.(key, value);
     },
     [onChangeContent]
   );
 
-  function handleEditStyle(key: string, value: CSSObject) {
-    setEditableStyle({
-      ...editableStyle,
-      [key]: value,
-    });
-    onChangeStyle?.(key, value);
-  }
+  const handleEditStyle = useCallback(
+    (key: string, value: CSSObject) => {
+      setEditableStyle((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeStyle?.(key, value);
+    },
+    [onChangeStyle]
+  );
 
   if (!editableContent) {
     return <></>;
@@ -310,8 +360,13 @@ export default function ProductList(prop: IproductList) {
                       className="productListCategories"
                       isTextArea={false}
                       defaultCss={editableStyle.productListCategories}
-                      onChangeText={(key, value) => onChangeContent(key, value)}
-                      onChangeCss={(key, value) => onChangeStyle(key, value)}
+                      onChangeText={(key, value) =>
+                        handleEditContent(key, value)
+                      }
+                      onChangeCss={(key, value) => handleEditStyle(key, value)}
+                      id={"productListCategories" + index}
+                      activeEditor={activeEditor}
+                      setActiveEditor={setActiveEditor}
                     />
                   ) : (
                     <p css={editableStyle?.productListCategories}>
@@ -334,6 +389,9 @@ export default function ProductList(prop: IproductList) {
                     isEditable={isEditable}
                     onChangeContent={handleEditContent}
                     onChangeStyle={handleEditStyle}
+                    index={index2}
+                    activeEditor={activeEditor}
+                    setActiveEditor={setActiveEditor}
                   />
                 ))}
               </div>

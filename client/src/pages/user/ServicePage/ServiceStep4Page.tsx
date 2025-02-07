@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 /* components */
 import ButtonArrowIcon from "@components/service/button/ButtonArrowIcon";
@@ -91,16 +91,12 @@ export default function ServicePreviewPage() {
     }
   }
 
-  console.log(imageUrl);
-
   useEffect(() => {
     const sessionData = sessionStorage.getItem("serviceInfo");
     if (sessionData) {
       setServiceInfo(JSON.parse(sessionData));
     }
   }, []);
-
-  console.log(imageUrl);
 
   useEffect(() => {
     const sessionData = sessionStorage.getItem("serviceData");
@@ -343,17 +339,28 @@ export default function ServicePreviewPage() {
   //   }
   // }
 
-  const fullPageModal = {
-    imageUrlArr: imageUrl,
-    imageNameArr: imageName,
-    projectType:
-      (serviceDefaultData && serviceDefaultData.serviceType.text) || "쇼핑몰",
-    listData: listData,
-    selectedItem: selectedItem,
-    featureData: featureData,
-    onClick: handleChangeisFullpageModalOpen,
-    setSelectedItem: setSelectedItem,
-  };
+  const fullPageModal = useMemo(
+    () => ({
+      imageUrlArr: imageUrl,
+      imageNameArr: imageName,
+      projectType: serviceDefaultData?.serviceType?.text || "쇼핑몰",
+      listData: listData,
+      selectedItem: selectedItem,
+      featureData: featureData,
+      isOpen: isFullpageModalOpen,
+      onClick: handleChangeisFullpageModalOpen,
+      setSelectedItem: setSelectedItem,
+    }),
+    [
+      isFullpageModalOpen,
+      imageUrl,
+      imageName,
+      serviceDefaultData,
+      listData,
+      selectedItem,
+      featureData,
+    ]
+  );
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -368,6 +375,13 @@ export default function ServicePreviewPage() {
   }, []);
 
   useEffect(() => {
+    if (!isFullpageModalOpen) {
+      localStorage.removeItem("changedContent");
+      localStorage.removeItem("changedStyle");
+    }
+  }, [isFullpageModalOpen]);
+
+  useEffect(() => {
     if (isFail) {
       window.confirm(
         "프로젝트가 생성을 건너뛰고 접근하셨습니다. 스탭 1부터 진행해주세요."
@@ -378,8 +392,6 @@ export default function ServicePreviewPage() {
       return () => clearTimeout(timer);
     }
   }, [isFail]);
-
-  console.log(imageUrl[0]);
 
   if (isFail) {
     return <Loading />;

@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import Title from "../commonComponent/Title";
 import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
@@ -31,7 +31,10 @@ export interface IreviewStyle {
 interface Ireview {
   content?: IreviewContent | null;
   style?: IreviewStyle | null;
+  index?: number;
   isEditable?: boolean;
+  activeEditor?: string | null;
+  setActiveEditor?: (classname?: string) => void;
   onChangeContent: (key: string, value: string) => void;
   onChangeStyle: (key: string, value: CSSObject) => void;
 }
@@ -85,7 +88,16 @@ export const review_item_caption_role_css: CSSObject = {
 };
 
 function ReviewItem(prop: Ireview) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
+  const {
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    index,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   if (
     content?.reviewTitle === undefined ||
@@ -123,6 +135,9 @@ function ReviewItem(prop: Ireview) {
             defaultCss={style.reviewTitle}
             onChangeText={(key, value) => onChangeContent(key, value)}
             onChangeCss={(key, value) => onChangeStyle(key, value)}
+            id={"reviewTitle" + index}
+            activeEditor={activeEditor}
+            setActiveEditor={setActiveEditor}
           />
         ) : (
           <p css={style?.reviewTitle}>{content?.reviewTitle || title_}</p>
@@ -135,6 +150,9 @@ function ReviewItem(prop: Ireview) {
             defaultCss={style.reviewDesc}
             onChangeText={(key, value) => onChangeContent(key, value)}
             onChangeCss={(key, value) => onChangeStyle(key, value)}
+            id={"reviewDesc" + index}
+            activeEditor={activeEditor}
+            setActiveEditor={setActiveEditor}
           />
         ) : (
           <p css={style?.reviewDesc}>{content?.reviewDesc || desc_}</p>
@@ -148,6 +166,9 @@ function ReviewItem(prop: Ireview) {
               defaultCss={style.reviewName}
               onChangeText={(key, value) => onChangeContent(key, value)}
               onChangeCss={(key, value) => onChangeStyle(key, value)}
+              id={"reviewName" + index}
+              activeEditor={activeEditor}
+              setActiveEditor={setActiveEditor}
             />
           ) : (
             <p css={style?.reviewName}>{content?.reviewName || name_}</p>
@@ -160,6 +181,9 @@ function ReviewItem(prop: Ireview) {
               defaultCss={style.reviewRole}
               onChangeText={(key, value) => onChangeContent(key, value)}
               onChangeCss={(key, value) => onChangeStyle(key, value)}
+              id={"reviewRole" + index}
+              activeEditor={activeEditor}
+              setActiveEditor={setActiveEditor}
             />
           ) : (
             <p css={style?.reviewRole}>{content?.reviewRole || role_}</p>
@@ -172,6 +196,9 @@ function ReviewItem(prop: Ireview) {
 
 export default function Review(prop: Ireview) {
   const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
+  const [activeEditor, setActiveEditor] = useState<string | undefined>(
+    undefined
+  );
 
   const count = 7;
 
@@ -189,54 +216,90 @@ export default function Review(prop: Ireview) {
     reviewRole: style?.reviewRole || review_item_caption_role_css,
   };
 
-  const [editableContent, setEditableContent] = useState<any>(null);
-  const [editableStyle, setEditableStyle] = useState<any>(null);
+  const updateValues = (source: any, initial: any) => {
+    return Object.keys(initial).reduce((acc, key) => {
+      const value = source?.[key];
+      acc[key] = value === "" ? initial[key] : value ?? initial[key];
+      return acc;
+    }, {} as any);
+  };
+
+  const [editableContent, setEditableContent] = useState(() =>
+    updateValues(content, initialContent)
+  );
+  const [editableStyle, setEditableStyle] = useState(() =>
+    updateValues(style, initialStyle)
+  );
+
+  // `useMemo`로 최적화된 업데이트 값 생성
+  const updatedContent = useMemo(
+    () => updateValues(content, initialContent),
+    [content, initialContent]
+  );
+  const updatedStyle = useMemo(
+    () => updateValues(style, initialStyle),
+    [style, initialStyle]
+  );
 
   useEffect(() => {
-    if (content) {
-      if (content?.reviewTitle) {
-        setEditableContent({
-          ...initialContent,
-          reviewTitle: content.reviewTitle,
-        });
+    setEditableContent((prev: any) => {
+      // 객체 비교를 수행하여 변경된 경우에만 업데이트
+      if (!shallowEqual(prev, updatedContent)) {
+        return updatedContent;
       }
-      if (content?.reviewDesc) {
-        setEditableContent({
-          ...initialContent,
-          reviewDesc: content.reviewDesc,
-        });
-      }
-      if (content?.reviewName) {
-        setEditableContent({
-          ...initialContent,
-          reviewName: content.reviewName,
-        });
-      }
-      if (content?.reviewRole) {
-        setEditableContent({
-          ...initialContent,
-          reviewRole: content.reviewRole,
-        });
-      }
-      setEditableStyle(initialStyle);
-    }
-  }, [content]);
-
-  function handleEditContent(key: string, value: string) {
-    setEditableContent({
-      ...editableContent,
-      [key]: value,
+      return prev;
     });
-    onChangeContent?.(key, value);
-  }
+  }, [updatedContent]);
 
-  function handleEditStyle(key: string, value: CSSObject) {
-    setEditableStyle({
-      ...editableStyle,
-      [key]: value,
+  useEffect(() => {
+    setEditableStyle((prev: any) => {
+      if (!shallowEqual(prev, updatedStyle)) {
+        return updatedStyle;
+      }
+      return prev;
     });
-    onChangeStyle?.(key, value);
-  }
+  }, [updatedStyle]);
+
+  // 얕은 비교를 수행하는 함수
+  const shallowEqual = (objA: any, objB: any) => {
+    if (Object.is(objA, objB)) return true;
+    if (
+      typeof objA !== "object" ||
+      typeof objB !== "object" ||
+      objA === null ||
+      objB === null
+    )
+      return false;
+
+    const keysA = Object.keys(objA);
+    const keysB = Object.keys(objB);
+
+    if (keysA.length !== keysB.length) return false;
+
+    return keysA.every((key) => objA[key] === objB[key]);
+  };
+
+  const handleEditContent = useCallback(
+    (key: string, value: string) => {
+      setEditableContent((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeContent?.(key, value);
+    },
+    [onChangeContent]
+  );
+
+  const handleEditStyle = useCallback(
+    (key: string, value: CSSObject) => {
+      setEditableStyle((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeStyle?.(key, value);
+    },
+    [onChangeStyle]
+  );
 
   if (!editableContent) {
     return <></>;
@@ -253,9 +316,12 @@ export default function Review(prop: Ireview) {
           {Array.from({ length: count }, (_, index) => (
             <ReviewItem
               key={index}
+              index={index}
               content={editableContent}
               style={editableStyle}
               isEditable={isEditable}
+              activeEditor={activeEditor}
+              setActiveEditor={setActiveEditor}
               onChangeContent={handleEditContent}
               onChangeStyle={handleEditStyle}
             />

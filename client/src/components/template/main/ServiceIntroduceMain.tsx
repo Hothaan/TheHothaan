@@ -185,60 +185,6 @@ export default function ServiceIntroduce(prop: IserviceIntroduce) {
               {editableContent?.serviceIntroduceDesc || desc_}
             </p>
           )}
-
-          {isEditable ? (
-            <EditableText
-              text={editableContent?.serviceIntroduceDesc || desc_}
-              defaultCss={
-                editableStyle?.serviceIntroduceDesc ||
-                service_introduce_desc_css
-              }
-              isTextArea={true}
-              className="serviceIntroduceDesc"
-              onChangeText={(key, value) => handleEditContent(key, value)}
-              onChangeCss={(key, value) => handleEditStyle(key, value)}
-            />
-          ) : (
-            <p
-              css={
-                editableStyle?.serviceIntroduceDesc ||
-                service_introduce_desc_css
-              }
-            >
-              {editableContent?.serviceIntroduceDesc || desc_}
-            </p>
-          )}
-
-          {isEditable ? (
-            <EditableText
-              text={editableContent?.serviceIntroduceDesc || desc_}
-              defaultCss={
-                editableStyle?.serviceIntroduceDesc ||
-                service_introduce_desc_css
-              }
-              isTextArea={true}
-              className="serviceIntroduceDesc"
-              onChangeText={(key, value) => handleEditContent(key, value)}
-              onChangeCss={(key, value) => handleEditStyle(key, value)}
-            />
-          ) : (
-            <p
-              css={
-                editableStyle?.serviceIntroduceDesc ||
-                service_introduce_desc_css
-              }
-            >
-              {editableContent?.serviceIntroduceDesc || desc_}
-            </p>
-          )}
-
-          {/*           
-          <p css={pass_desc_line}>
-            {editableContent?.serviceIntroduceDesc || desc_}
-          </p>
-          <p css={pass_desc_line}>
-            {editableContent?.serviceIntroduceDesc || desc_}
-          </p> */}
         </div>
       </div>
     </OuterWrap>

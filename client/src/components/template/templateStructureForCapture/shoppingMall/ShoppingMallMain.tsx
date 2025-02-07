@@ -9,6 +9,7 @@ import Header, { Iheader } from "@components/template/common/header/Header";
 import Footer from "@components/template/common/footer/Footer";
 import Mainbanner from "@components/template/main/Mainbanner";
 import ProductListMain from "@components/template/main/ProductListMain";
+import ProductListMainOptionList from "@components/template/main/ProductListMainList";
 import Review from "@components/template/product/Review";
 import ServiceIntroduction from "@components/template/service/ServiceIntroduction";
 import ServiceContact from "@components/template/service/ServiceContact";
@@ -168,8 +169,6 @@ export default function ShoppingMallMain() {
     getLocalStyle()
   );
 
-  console.log(generatedText);
-
   function updateInitialContent() {
     if (generatedText && generatedText.content) {
       const initialContent = {
@@ -219,29 +218,6 @@ export default function ShoppingMallMain() {
     setPageStyle({ ...initialStyle });
   }
 
-  //featureData가 들어오면 초기 콘텐츠와 스타일 업데이트
-  // useEffect(() => {
-  //   if (generatedText) {
-  //     const localContent = localStorage.getItem("changedContent");
-  //     const hasLocalContent = localContent
-  //       ? JSON.parse(localContent)?.[featureKey]?.content
-  //       : null;
-
-  //     if (!hasLocalContent) {
-  //       updateInitialContent();
-  //     }
-
-  //     const localStyle = localStorage.getItem("changedStyle");
-  //     const hasLocalStyle = localStyle
-  //       ? JSON.parse(localStyle)?.[featureKey]?.style
-  //       : null;
-
-  //     if (!hasLocalStyle) {
-  //       updateInitialStyle();
-  //     }
-  //   }
-  // }, [generatedText]);
-
   useEffect(() => {
     if (generatedText) {
       const localContent = localStorage.getItem("changedContent");
@@ -263,27 +239,6 @@ export default function ShoppingMallMain() {
       }
     }
   }, [generatedText, pageContent]);
-
-  // useEffect(() => {
-  //   if (pageContent) {
-  //     const localContent = localStorage.getItem("changedContent");
-  //     const updatedContent = localContent
-  //       ? {
-  //           ...JSON.parse(localContent),
-  //           [featureKey]: {
-  //             featureId: generatedText?.feature_id,
-  //             content: { ...pageContent },
-  //           },
-  //         }
-  //       : {
-  //           [featureKey]: {
-  //             featureId: generatedText?.feature_id,
-  //             content: { ...pageContent },
-  //           },
-  //         };
-  //     localStorage.setItem("changedContent", JSON.stringify(updatedContent));
-  //   }
-  // }, [pageContent]);
 
   useEffect(() => {
     if (pageContent) {
@@ -337,20 +292,9 @@ export default function ShoppingMallMain() {
     setPageContent({ ...pageContent, [key]: value });
   }
 
-  // function handleChangeContent(key: string, value: string) {
-  //   if (pageContent?.[key] !== value) {
-  //     setPageContent((prev) => ({
-  //       ...prev,
-  //       [key]: value,
-  //     }));
-  //   }
-  // }
-
   function handleChangeStyle(key: string, value: CSSObject) {
     setPageStyle({ ...pageStyle, [key]: value });
   }
-
-  console.log(pageContent);
 
   if (!pageContent || !headerData) {
     return <Loading />;
@@ -422,7 +366,7 @@ export default function ShoppingMallMain() {
         onChangeContent={handleChangeContent}
         onChangeStyle={handleChangeStyle}
       />
-      <ProductListMain
+      <ProductListMainOptionList
         content={{
           productListTitle: pageContent?.productListTitle,
           productListDesc: pageContent?.productListDesc,
@@ -431,7 +375,6 @@ export default function ShoppingMallMain() {
           productListTitle: product_list_option_list_title_css,
           productListDesc: product_list_option_list_desc_css,
         }}
-        option="list"
         // isEditable={true}
         onChangeContent={handleChangeContent}
         onChangeStyle={handleChangeStyle}

@@ -141,9 +141,6 @@ export default function IntermediaryMatchServiceIntroduction(
 
   useEffect(() => {
     setEditableStyle((prev: any) => {
-      console.log("prev:", prev); // 디버깅용 콘솔 출력
-      console.log("style:", style); // 현재 style 값 확인
-
       const updatedStyle = { ...prev };
 
       updatedStyle.IntermediaryMatchServiceIntroductionTitle =
@@ -153,8 +150,6 @@ export default function IntermediaryMatchServiceIntroduction(
       updatedStyle.IntermediaryMatchServiceIntroductionDesc =
         style?.IntermediaryMatchServiceIntroductionDesc ??
         initialStyle.IntermediaryMatchServiceIntroductionDesc;
-
-      console.log("updatedStyle:", updatedStyle); // 최종 업데이트되는 값 확인
 
       return JSON.stringify(prev) === JSON.stringify(updatedStyle)
         ? prev
@@ -180,9 +175,6 @@ export default function IntermediaryMatchServiceIntroduction(
     });
     onChangeStyle?.(key, value);
   }
-
-  console.log(editableStyle);
-
   if (!editableContent) {
     return <></>;
   }

@@ -2,7 +2,7 @@
 import { css, CSSObject } from "@emotion/react";
 import { OuterWrap, ContentsWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import EditableText from "@components/service/editableText/EditableText";
 
 const banner_title_ = "headline h1";
@@ -35,6 +35,9 @@ interface IbrandIntroduce {
   isEditable?: boolean;
   onChangeContent: (key: string, value: string) => void;
   onChangeStyle: (key: string, value: CSSObject) => void;
+  index?: number;
+  activeEditor?: string | null;
+  setActiveEditor?: (classname?: string) => void;
 }
 
 export const brandIntroduce_item_title_css: CSSObject = {
@@ -45,6 +48,11 @@ export const brandIntroduce_item_title_css: CSSObject = {
   fontWeight: "900",
   lineHeight: "150%",
   textTransform: "capitalize",
+
+  width: "100%",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
 };
 
 export const brandIntroduce_item_desc_css: CSSObject = {
@@ -54,6 +62,14 @@ export const brandIntroduce_item_desc_css: CSSObject = {
   fontStyle: "normal",
   fontWeight: "400",
   lineHeight: "normal",
+
+  display: "-webkit-box",
+  width: "100%",
+  WebkitBoxOrient: "vertical",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  height: "312px",
+  WebkitLineClamp: "6",
 };
 
 export const brandIntroduce_banner_title_css: CSSObject = {
@@ -65,6 +81,11 @@ export const brandIntroduce_banner_title_css: CSSObject = {
   fontWeight: "900",
   lineHeight: "150%",
   textTransform: "capitalize",
+
+  width: "100%",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
 };
 
 export const brandIntroduce_banner_desc_css: CSSObject = {
@@ -77,10 +98,26 @@ export const brandIntroduce_banner_desc_css: CSSObject = {
   fontWeight: "400",
   lineHeight: "normal",
   maxWidth: "676px",
+
+  display: "-webkit-box",
+  WebkitBoxOrient: "vertical",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  height: "100px",
+  WebkitLineClamp: "2",
 };
 
 function BrandIntroduceItem(prop: IbrandIntroduce) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
+  const {
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    index,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   if (
     content?.brandIntroduceItemTitle === undefined ||
@@ -106,11 +143,14 @@ function BrandIntroduceItem(prop: IbrandIntroduce) {
       {isEditable ? (
         <EditableText
           text={content.brandIntroduceItemTitle}
-          className="reviewTitle"
+          className="brandIntroduceItemTitle"
           isTextArea={false}
           defaultCss={style.brandIntroduceItemTitle}
           onChangeText={(key, value) => onChangeContent(key, value)}
           onChangeCss={(key, value) => onChangeStyle(key, value)}
+          id={"brandIntroduceItemTitle" + index}
+          activeEditor={activeEditor}
+          setActiveEditor={setActiveEditor}
         />
       ) : (
         <p
@@ -122,11 +162,15 @@ function BrandIntroduceItem(prop: IbrandIntroduce) {
       {isEditable ? (
         <EditableText
           text={content.brandIntroduceItemDesc}
-          className="reviewTitle"
-          isTextArea={false}
+          className="brandIntroduceItemDesc"
+          isTextArea={true}
           defaultCss={style.brandIntroduceItemDesc}
           onChangeText={(key, value) => onChangeContent(key, value)}
           onChangeCss={(key, value) => onChangeStyle(key, value)}
+          id={"brandIntroduceItemDesc" + index}
+          isWidth100={true}
+          activeEditor={activeEditor}
+          setActiveEditor={setActiveEditor}
         />
       ) : (
         <p css={style?.brandIntroduceItemDesc || brandIntroduce_item_desc_css}>
@@ -141,25 +185,6 @@ export default function BrandIntroduce(prop: IbrandIntroduce) {
   const { isEditable, content, style, onChangeContent, onChangeStyle } = prop;
 
   const count = 2;
-
-  const initial = {
-    brandIntroduceBannerTitle: {
-      text: content?.brandIntroduceBannerTitle,
-      css: style?.brandIntroduceBannerTitle,
-    },
-    brandIntroduceBannerDesc: {
-      text: content?.brandIntroduceBannerDesc,
-      css: style?.brandIntroduceBannerDesc,
-    },
-    brandIntroduceItemTitle: {
-      text: content?.brandIntroduceItemTitle,
-      css: style?.brandIntroduceItemTitle,
-    },
-    brandIntroduceItemDesc: {
-      text: content?.brandIntroduceItemDesc,
-      css: style?.brandIntroduceItemDesc,
-    },
-  };
 
   const initialContent = {
     brandIntroduceBannerTitle:
@@ -180,77 +205,96 @@ export default function BrandIntroduce(prop: IbrandIntroduce) {
       style?.brandIntroduceItemDesc || brandIntroduce_item_desc_css,
   };
 
-  const [editableContent, setEditableContent] = useState<any>(null);
-  const [editableStyle, setEditableStyle] = useState<any>(null);
+  const [activeEditor, setActiveEditor] = useState<string | undefined>(
+    undefined
+  );
+
+  const updateValues = (source: any, initial: any) => {
+    return Object.keys(initial).reduce((acc, key) => {
+      const value = source?.[key];
+      acc[key] = value === "" ? initial[key] : value ?? initial[key];
+      return acc;
+    }, {} as any);
+  };
+
+  const [editableContent, setEditableContent] = useState(() =>
+    updateValues(content, initialContent)
+  );
+  const [editableStyle, setEditableStyle] = useState(() =>
+    updateValues(style, initialStyle)
+  );
+
+  // `useMemo`로 최적화된 업데이트 값 생성
+  const updatedContent = useMemo(
+    () => updateValues(content, initialContent),
+    [content, initialContent]
+  );
+  const updatedStyle = useMemo(
+    () => updateValues(style, initialStyle),
+    [style, initialStyle]
+  );
 
   useEffect(() => {
-    if (content) {
-      if (content?.brandIntroduceBannerTitle) {
-        setEditableContent({
-          ...initialContent,
-          brandIntroduceBannerTitle: content.brandIntroduceBannerTitle,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          brandIntroduceBannerTitle: initialContent.brandIntroduceBannerTitle,
-        });
+    setEditableContent((prev: any) => {
+      // 기존 객체와 새 객체를 비교하여 변경된 경우에만 업데이트
+      if (!shallowEqual(prev, updatedContent)) {
+        return { ...prev, ...updatedContent };
       }
+      return prev;
+    });
+  }, [updatedContent]);
 
-      if (content?.brandIntroduceBannerDesc) {
-        setEditableContent({
-          ...initialContent,
-          brandIntroduceBannerDesc: content.brandIntroduceBannerDesc,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          brandIntroduceBannerDesc: initialContent.brandIntroduceBannerDesc,
-        });
+  useEffect(() => {
+    setEditableStyle((prev: any) => {
+      if (!shallowEqual(prev, updatedStyle)) {
+        return updatedStyle;
       }
+      return prev;
+    });
+  }, [updatedStyle]);
 
-      if (content?.brandIntroduceItemTitle) {
-        setEditableContent({
-          ...initialContent,
-          brandIntroduceItemTitle: content.brandIntroduceItemTitle,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          brandIntroduceItemTitle: initialContent.brandIntroduceItemTitle,
-        });
-      }
+  // 얕은 비교를 수행하는 함수
+  const shallowEqual = (objA: any, objB: any) => {
+    if (Object.is(objA, objB)) return true;
 
-      if (content?.brandIntroduceItemDesc) {
-        setEditableContent({
-          ...initialContent,
-          brandIntroduceItemDesc: content.brandIntroduceItemDesc,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          brandIntroduceItemDesc: initialContent.brandIntroduceItemDesc,
-        });
-      }
-      setEditableStyle(initialStyle);
+    if (
+      !objA ||
+      !objB ||
+      typeof objA !== "object" ||
+      typeof objB !== "object"
+    ) {
+      return false;
     }
-  }, [content]);
 
-  function handleEditContent(key: string, value: string) {
-    setEditableContent({
-      ...editableContent,
-      [key]: value,
-    });
-    onChangeContent?.(key, value);
-  }
+    const keysA = Object.keys(objA);
+    const keysB = Object.keys(objB);
 
-  function handleEditStyle(key: string, value: CSSObject) {
-    setEditableStyle({
-      ...editableStyle,
-      [key]: value,
-    });
-    onChangeStyle?.(key, value);
-  }
+    if (keysA.length !== keysB.length) return false;
+
+    return keysA.every((key) => Object.is(objA[key], objB[key]));
+  };
+
+  const handleEditContent = useCallback(
+    (key: string, value: string) => {
+      setEditableContent((prev: any) => {
+        if (prev[key] === value) return prev; // 값이 동일하면 업데이트 안 함
+        return { ...prev, [key]: value };
+      });
+      onChangeContent?.(key, value);
+    },
+    [onChangeContent]
+  );
+
+  const handleEditStyle = useCallback(
+    (key: string, value: CSSObject) => {
+      setEditableStyle((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeStyle?.(key, value);
+    },
+    [onChangeStyle]
+  );
 
   if (!editableContent) {
     return <></>;
@@ -270,22 +314,52 @@ export default function BrandIntroduce(prop: IbrandIntroduce) {
           }}
         />
         <div css={container}>
-          <p
-            css={
-              editableStyle?.brandIntroduceBannerTitle ||
-              brandIntroduce_banner_title_css
-            }
-          >
-            {editableContent?.brandIntroduceBannerTitle || banner_title_}
-          </p>
-          <p
-            css={
-              editableStyle?.brandIntroduceBannerDesc ||
-              brandIntroduce_banner_desc_css
-            }
-          >
-            {editableContent?.brandIntroduceBannerDesc || banner_desc_}
-          </p>
+          {isEditable ? (
+            <EditableText
+              text={editableContent.brandIntroduceBannerTitle}
+              className="brandIntroduceBannerTitle"
+              isTextArea={false}
+              defaultCss={editableStyle.brandIntroduceBannerTitle}
+              onChangeText={(key, value) => handleEditContent(key, value)}
+              onChangeCss={(key, value) => handleEditStyle(key, value)}
+              id={"brandIntroduceBannerTitle"}
+              activeEditor={activeEditor}
+              setActiveEditor={setActiveEditor}
+            />
+          ) : (
+            <p
+              css={
+                editableStyle?.brandIntroduceBannerTitle ||
+                brandIntroduce_banner_title_css
+              }
+            >
+              {editableContent?.brandIntroduceBannerTitle || banner_title_}
+            </p>
+          )}
+          {isEditable ? (
+            <EditableText
+              text={editableContent.brandIntroduceBannerDesc}
+              className="brandIntroduceBannerDesc"
+              isTextArea={true}
+              defaultCss={editableStyle.brandIntroduceBannerDesc}
+              onChangeText={(key, value) => handleEditContent(key, value)}
+              onChangeCss={(key, value) => handleEditStyle(key, value)}
+              id={"brandIntroduceBannerDesc"}
+              activeEditor={activeEditor}
+              setActiveEditor={setActiveEditor}
+              isWidth100={true}
+              justifyContent="center"
+            />
+          ) : (
+            <p
+              css={
+                editableStyle?.brandIntroduceBannerDesc ||
+                brandIntroduce_banner_title_css
+              }
+            >
+              {editableContent?.brandIntroduceBannerDesc || banner_title_}
+            </p>
+          )}
         </div>
       </div>
       <OuterWrap padding="290px">
@@ -299,6 +373,9 @@ export default function BrandIntroduce(prop: IbrandIntroduce) {
                 isEditable={isEditable}
                 onChangeContent={handleEditContent}
                 onChangeStyle={handleEditStyle}
+                index={index}
+                activeEditor={activeEditor}
+                setActiveEditor={setActiveEditor}
               />
             ))}
           </div>

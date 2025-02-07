@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { OuterWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 import EditableText from "@components/service/editableText/EditableText";
@@ -21,6 +21,7 @@ export const mainBanner_title_css_: CSSObject = {
   fontWeight: "900",
   lineHeight: "150%",
   textTransform: "capitalize",
+
   width: "100%",
   overflow: "hidden",
   textOverflow: "ellipsis",
@@ -36,7 +37,7 @@ export const mainBanner_desc_css_: CSSObject = {
   fontWeight: "400",
   lineHeight: "150%",
   marginBottom: "80px",
-  maxWidth: "676px",
+  // maxWidth: "676px",
 
   display: "-webkit-box",
   WebkitBoxOrient: "vertical",
@@ -102,71 +103,90 @@ export default function Mainbanner(prop: ImainBanner) {
     mainBannerButton: style?.mainBannerButton || mainBanner_button_css_,
   };
 
-  const [editableContent, setEditableContent] = useState<any>(null);
-  const [editableStyle, setEditableStyle] = useState<any>(null);
+  const updateValues = (source: any, initial: any) => {
+    return Object.keys(initial).reduce((acc, key) => {
+      const value = source?.[key];
+      acc[key] = value === "" ? initial[key] : value ?? initial[key];
+      return acc;
+    }, {} as any);
+  };
+
+  const [editableContent, setEditableContent] = useState(() =>
+    updateValues(content, initialContent)
+  );
+  const [editableStyle, setEditableStyle] = useState(() =>
+    updateValues(style, initialStyle)
+  );
+
+  // `useMemo`로 최적화된 업데이트 값 생성
+  const updatedContent = useMemo(
+    () => updateValues(content, initialContent),
+    [content, initialContent]
+  );
+  const updatedStyle = useMemo(
+    () => updateValues(style, initialStyle),
+    [style, initialStyle]
+  );
 
   useEffect(() => {
     setEditableContent((prev: any) => {
-      const updatedContent = { ...prev };
-
-      if (content?.mainBannerTitle !== prev?.mainBannerTitle) {
-        updatedContent.mainBannerTitle =
-          content?.mainBannerTitle ?? initialContent.mainBannerTitle;
+      // 객체 비교를 수행하여 변경된 경우에만 업데이트
+      if (!shallowEqual(prev, updatedContent)) {
+        return updatedContent;
       }
-      if (content?.mainBannerDesc !== prev?.mainBannerDesc) {
-        updatedContent.mainBannerDesc =
-          content?.mainBannerDesc ?? initialContent.mainBannerDesc;
-      }
-      if (content?.mainBannerButton !== prev?.mainBannerButton) {
-        updatedContent.mainBannerButton =
-          content?.mainBannerButton ?? initialContent.mainBannerButton;
-      }
-      // 변경된 값이 있다면 상태 업데이트
-      return JSON.stringify(prev) === JSON.stringify(updatedContent)
-        ? prev
-        : updatedContent;
+      return prev;
     });
-  }, [content]);
+  }, [updatedContent]);
 
   useEffect(() => {
     setEditableStyle((prev: any) => {
-      const updatedStyle = { ...prev };
-
-      if (style?.mainBannerTitle !== prev?.mainBannerTitle) {
-        updatedStyle.mainBannerTitle =
-          style?.mainBannerTitle ?? initialStyle.mainBannerTitle;
+      if (!shallowEqual(prev, updatedStyle)) {
+        return updatedStyle;
       }
-      if (style?.mainBannerDesc !== prev?.mainBannerDesc) {
-        updatedStyle.mainBannerDesc =
-          style?.mainBannerDesc ?? initialStyle.mainBannerDesc;
-      }
-      if (style?.mainBannerButton !== prev?.mainBannerButton) {
-        updatedStyle.mainBannerButton =
-          style?.mainBannerButton ?? initialStyle.mainBannerButton;
-      }
-
-      // 변경된 값이 있다면 상태 업데이트
-      return JSON.stringify(prev) === JSON.stringify(updatedStyle)
-        ? prev
-        : updatedStyle;
+      return prev;
     });
-  }, [style]);
+  }, [updatedStyle]);
 
-  function handleEditContent(key: string, value: string) {
-    setEditableContent({
-      ...editableContent,
-      [key]: value,
-    });
-    onChangeContent?.(key, value);
-  }
+  // 얕은 비교를 수행하는 함수
+  const shallowEqual = (objA: any, objB: any) => {
+    if (Object.is(objA, objB)) return true;
+    if (
+      typeof objA !== "object" ||
+      typeof objB !== "object" ||
+      objA === null ||
+      objB === null
+    )
+      return false;
 
-  function handleEditStyle(key: string, value: CSSObject) {
-    setEditableStyle({
-      ...editableStyle,
-      [key]: value,
-    });
-    onChangeStyle?.(key, value);
-  }
+    const keysA = Object.keys(objA);
+    const keysB = Object.keys(objB);
+
+    if (keysA.length !== keysB.length) return false;
+
+    return keysA.every((key) => objA[key] === objB[key]);
+  };
+
+  const handleEditContent = useCallback(
+    (key: string, value: string) => {
+      setEditableContent((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeContent?.(key, value);
+    },
+    [onChangeContent]
+  );
+
+  const handleEditStyle = useCallback(
+    (key: string, value: CSSObject) => {
+      setEditableStyle((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeStyle?.(key, value);
+    },
+    [onChangeStyle]
+  );
 
   if (!editableContent) {
     return <></>;
@@ -191,11 +211,12 @@ export default function Mainbanner(prop: ImainBanner) {
               text={editableContent.mainBannerTitle}
               isTextArea={false}
               defaultCss={editableStyle.mainBannerTitle}
-              activeEditor={activeEditor}
-              setActiveEditor={setActiveEditor}
               className="mainBannerTitle"
               onChangeText={(key, value) => handleEditContent(key, value)}
               onChangeCss={(key, value) => handleEditStyle(key, value)}
+              id={"mainBannerTitle"}
+              activeEditor={activeEditor}
+              setActiveEditor={setActiveEditor}
             />
           ) : (
             <p css={editableStyle.mainBannerTitle}>
@@ -207,11 +228,14 @@ export default function Mainbanner(prop: ImainBanner) {
               text={editableContent.mainBannerDesc}
               defaultCss={editableStyle.mainBannerDesc}
               isTextArea={true}
-              activeEditor={activeEditor}
-              setActiveEditor={setActiveEditor}
               className="mainBannerDesc"
               onChangeText={(key, value) => handleEditContent(key, value)}
               onChangeCss={(key, value) => handleEditStyle(key, value)}
+              id={"mainBannerDesc"}
+              activeEditor={activeEditor}
+              setActiveEditor={setActiveEditor}
+              isWidth100={true}
+              justifyContent="start"
             />
           ) : (
             <p css={editableStyle.mainBannerDesc}>
@@ -220,6 +244,7 @@ export default function Mainbanner(prop: ImainBanner) {
           )}
           {isEditable ? (
             <EditableText
+              id={"mainBannerButton"}
               text={editableContent.mainBannerButton}
               className="mainBannerButton"
               isTextArea={false}

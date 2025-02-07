@@ -110,64 +110,58 @@ export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
   const [editableStyle, setEditableStyle] = useState<any>(null);
 
   useEffect(() => {
-    if (
-      content?.productIntroduceTitle !== editableContent?.productIntroduceTitle
-    ) {
-      setEditableContent({
-        ...initialContent,
-        productIntroduceTitle:
-          content?.productIntroduceTitle ??
-          initialContent.productIntroduceTitle,
-      });
-    }
-    if (
-      content?.productIntroduceDesc !== editableContent?.productIntroduceDesc
-    ) {
-      setEditableContent({
-        ...initialContent,
-        productIntroduceDesc:
-          content?.productIntroduceDesc ?? initialContent.productIntroduceDesc,
-      });
-    }
-    if (
-      content?.productIntroduceImageDesc !==
-      editableContent?.productIntroduceImageDesc
-    ) {
-      setEditableContent({
-        ...initialContent,
-        productIntroduceImageDesc:
+    setEditableContent((prev: any) => {
+      const updatedContent = { ...prev };
+
+      if (
+        content?.productIntroduceImageDesc !== prev?.productIntroduceImageDesc
+      ) {
+        updatedContent.productIntroduceImageDesc =
           content?.productIntroduceImageDesc ??
-          initialContent.productIntroduceImageDesc,
-      });
-    }
+          initialContent.productIntroduceImageDesc;
+      }
+      if (content?.productIntroduceTitle !== prev?.productIntroduceTitle) {
+        updatedContent.productIntroduceTitle =
+          content?.productIntroduceTitle ??
+          initialContent.productIntroduceTitle;
+      }
+      if (content?.productIntroduceDesc !== prev?.productIntroduceDesc) {
+        updatedContent.productIntroduceDesc =
+          content?.productIntroduceDesc ?? initialContent.productIntroduceDesc;
+      }
+
+      // 변경된 값이 있다면 상태 업데이트
+      return JSON.stringify(prev) === JSON.stringify(updatedContent)
+        ? prev
+        : updatedContent;
+    });
   }, [content]);
 
   useEffect(() => {
-    if (style?.productIntroduceTitle !== editableStyle?.productIntroduceTitle) {
-      setEditableStyle({
-        ...initialStyle,
-        productIntroduceTitle:
-          style?.productIntroduceTitle ?? initialStyle.productIntroduceTitle,
-      });
-    }
-    if (style?.productIntroduceDesc !== editableStyle?.productIntroduceDesc) {
-      setEditableStyle({
-        ...initialStyle,
-        productIntroduceDesc:
-          style?.productIntroduceDesc ?? initialStyle.productIntroduceDesc,
-      });
-    }
-    if (
-      style?.productIntroduceImageDesc !==
-      editableStyle?.productIntroduceImageDesc
-    ) {
-      setEditableStyle({
-        ...initialStyle,
-        productIntroduceImageDesc:
+    setEditableStyle((prev: any) => {
+      const updatedStyle = { ...prev };
+
+      if (
+        style?.productIntroduceImageDesc !== prev?.productIntroduceImageDesc
+      ) {
+        updatedStyle.productIntroduceImageDesc =
           style?.productIntroduceImageDesc ??
-          initialStyle.productIntroduceImageDesc,
-      });
-    }
+          initialStyle.productIntroduceImageDesc;
+      }
+      if (style?.productIntroduceTitle !== prev?.productIntroduceTitle) {
+        updatedStyle.productIntroduceTitle =
+          style?.productIntroduceTitle ?? initialStyle.productIntroduceTitle;
+      }
+      if (style?.productIntroduceDesc !== prev?.productIntroduceDesc) {
+        updatedStyle.productIntroduceDesc =
+          style?.productIntroduceDesc ?? initialStyle.productIntroduceDesc;
+      }
+
+      // 변경된 값이 있다면 상태 업데이트
+      return JSON.stringify(prev) === JSON.stringify(updatedStyle)
+        ? prev
+        : updatedStyle;
+    });
   }, [style]);
 
   const handleEditContent = useCallback(
@@ -213,8 +207,8 @@ export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
               className="productIntroduceImageDesc"
               isTextArea={false}
               defaultCss={editableStyle.productIntroduceImageDesc as CSSObject}
-              onChangeText={(key, value) => onChangeContent(key, value)}
-              onChangeCss={(key, value) => onChangeStyle(key, value)}
+              onChangeText={(key, value) => handleEditContent(key, value)}
+              onChangeCss={(key, value) => handleEditStyle(key, value)}
             />
           ) : (
             <p
@@ -234,8 +228,8 @@ export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
               className="productIntroduceTitle"
               isTextArea={false}
               defaultCss={editableStyle.productIntroduceTitle as CSSObject}
-              onChangeText={(key, value) => onChangeContent(key, value)}
-              onChangeCss={(key, value) => onChangeStyle(key, value)}
+              onChangeText={(key, value) => handleEditContent(key, value)}
+              onChangeCss={(key, value) => handleEditStyle(key, value)}
             />
           ) : (
             <p
@@ -253,27 +247,8 @@ export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
               className="productIntroduceDesc"
               isTextArea={false}
               defaultCss={editableStyle.productIntroduceDesc as CSSObject}
-              onChangeText={(key, value) => onChangeContent(key, value)}
-              onChangeCss={(key, value) => onChangeStyle(key, value)}
-            />
-          ) : (
-            <p
-              css={
-                editableStyle?.productIntroduceDesc ||
-                product_introduce_desc_css_
-              }
-            >
-              {editableContent?.productIntroduceDesc || desc_}
-            </p>
-          )}
-          {isEditable ? (
-            <EditableText
-              text={editableContent.productIntroduceDesc as string}
-              className="productIntroduceDesc"
-              isTextArea={false}
-              defaultCss={editableStyle.productIntroduceDesc as CSSObject}
-              onChangeText={(key, value) => onChangeContent(key, value)}
-              onChangeCss={(key, value) => onChangeStyle(key, value)}
+              onChangeText={(key, value) => handleEditContent(key, value)}
+              onChangeCss={(key, value) => handleEditStyle(key, value)}
             />
           ) : (
             <p
@@ -295,8 +270,8 @@ export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
               className="productIntroduceTitle"
               isTextArea={false}
               defaultCss={editableStyle.productIntroduceTitle as CSSObject}
-              onChangeText={(key, value) => onChangeContent(key, value)}
-              onChangeCss={(key, value) => onChangeStyle(key, value)}
+              onChangeText={(key, value) => handleEditContent(key, value)}
+              onChangeCss={(key, value) => handleEditStyle(key, value)}
             />
           ) : (
             <p
@@ -314,27 +289,8 @@ export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
               className="productIntroduceDesc"
               isTextArea={false}
               defaultCss={editableStyle.productIntroduceDesc as CSSObject}
-              onChangeText={(key, value) => onChangeContent(key, value)}
-              onChangeCss={(key, value) => onChangeStyle(key, value)}
-            />
-          ) : (
-            <p
-              css={
-                editableStyle?.productIntroduceDesc ||
-                product_introduce_desc_css_
-              }
-            >
-              {editableContent?.productIntroduceDesc || desc_}
-            </p>
-          )}
-          {isEditable ? (
-            <EditableText
-              text={editableContent.productIntroduceDesc as string}
-              className="productIntroduceDesc"
-              isTextArea={false}
-              defaultCss={editableStyle.productIntroduceDesc as CSSObject}
-              onChangeText={(key, value) => onChangeContent(key, value)}
-              onChangeCss={(key, value) => onChangeStyle(key, value)}
+              onChangeText={(key, value) => handleEditContent(key, value)}
+              onChangeCss={(key, value) => handleEditStyle(key, value)}
             />
           ) : (
             <p
@@ -364,8 +320,8 @@ export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
               className="productIntroduceImageDesc"
               isTextArea={false}
               defaultCss={editableStyle.productIntroduceImageDesc as CSSObject}
-              onChangeText={(key, value) => onChangeContent(key, value)}
-              onChangeCss={(key, value) => onChangeStyle(key, value)}
+              onChangeText={(key, value) => handleEditContent(key, value)}
+              onChangeCss={(key, value) => handleEditStyle(key, value)}
             />
           ) : (
             <p

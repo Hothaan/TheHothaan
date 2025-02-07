@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { OuterWrap, ContentsWrap } from "../commonComponent/Wrap";
 import Title from "../commonComponent/Title";
 import { ReactComponent as Arrow } from "@svgs/template/processArrow.svg";
@@ -30,6 +30,9 @@ interface Icart {
   isEditable?: boolean;
   onChangeContent: (key: string, value: string) => void;
   onChangeStyle: (key: string, value: CSSObject) => void;
+  index?: number;
+  activeEditor?: string | null;
+  setActiveEditor?: (classname?: string) => void;
 }
 
 export const cart_title_css = {
@@ -41,6 +44,11 @@ export const cart_title_css = {
   fontStyle: "normal",
   fontWeight: "500",
   lineHeight: "160%",
+
+  width: "100%",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
 };
 
 function CartTitle() {
@@ -90,7 +98,15 @@ function CartTitle() {
 }
 
 function CartOrder(prop: Icart) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
+  const {
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   const container = css`
     display: flex;
@@ -405,6 +421,11 @@ function CartOrder(prop: Icart) {
                       defaultCss={style.cartTitle}
                       onChangeText={(key, value) => onChangeContent(key, value)}
                       onChangeCss={(key, value) => onChangeStyle(key, value)}
+                      id={"cartTitle"}
+                      activeEditor={activeEditor}
+                      setActiveEditor={setActiveEditor}
+                      isWidth100={true}
+                      justifyContent="start"
                     />
                   ) : (
                     <p
@@ -661,63 +682,100 @@ export default function Cart(prop: Icart) {
   const initialStyle = {
     cartTitle: style?.cartTitle || cart_title_css,
   };
+  const [activeEditor, setActiveEditor] = useState<string | undefined>(
+    undefined
+  );
 
-  const [editableContent, setEditableContent] = useState<any>(null);
-  const [editableStyle, setEditableStyle] = useState<any>(null);
+  const updateValues = (source: any, initial: any) => {
+    return Object.keys(initial).reduce((acc, key) => {
+      const value = source?.[key];
+      acc[key] = value === "" ? initial[key] : value ?? initial[key];
+      return acc;
+    }, {} as any);
+  };
+
+  const [editableContent, setEditableContent] = useState(() =>
+    updateValues(content, initialContent)
+  );
+  const [editableStyle, setEditableStyle] = useState(() =>
+    updateValues(style, initialStyle)
+  );
+
+  // `useMemo`로 최적화된 업데이트 값 생성
+  const updatedContent = useMemo(
+    () => updateValues(content, initialContent),
+    [content, initialContent]
+  );
+  const updatedStyle = useMemo(
+    () => updateValues(style, initialStyle),
+    [style, initialStyle]
+  );
 
   useEffect(() => {
     setEditableContent((prev: any) => {
-      const updatedContent = { ...prev };
-
-      if (content?.cartTitle !== prev?.cartTitle) {
-        updatedContent.cartTitle =
-          content?.cartTitle ?? initialContent.cartTitle;
+      // 기존 객체와 새 객체를 비교하여 변경된 경우에만 업데이트
+      if (!shallowEqual(prev, updatedContent)) {
+        return { ...prev, ...updatedContent };
       }
-      // 변경된 값이 있다면 상태 업데이트
-      return JSON.stringify(prev) === JSON.stringify(updatedContent)
-        ? prev
-        : updatedContent;
+      return prev;
     });
-  }, [content]);
+  }, [updatedContent]);
 
   useEffect(() => {
     setEditableStyle((prev: any) => {
-      const updatedStyle = { ...prev };
-
-      if (style?.cartTitle !== prev?.cartTitle) {
-        updatedStyle.cartTitle = style?.cartTitle ?? initialStyle.cartTitle;
+      if (!shallowEqual(prev, updatedStyle)) {
+        return updatedStyle;
       }
-
-      // 변경된 값이 있다면 상태 업데이트
-      return JSON.stringify(prev) === JSON.stringify(updatedStyle)
-        ? prev
-        : updatedStyle;
+      return prev;
     });
-  }, [style]);
+  }, [updatedStyle]);
+
+  // 얕은 비교를 수행하는 함수
+  const shallowEqual = (objA: any, objB: any) => {
+    if (Object.is(objA, objB)) return true;
+
+    if (
+      !objA ||
+      !objB ||
+      typeof objA !== "object" ||
+      typeof objB !== "object"
+    ) {
+      return false;
+    }
+
+    const keysA = Object.keys(objA);
+    const keysB = Object.keys(objB);
+
+    if (keysA.length !== keysB.length) return false;
+
+    return keysA.every((key) => Object.is(objA[key], objB[key]));
+  };
 
   const handleEditContent = useCallback(
     (key: string, value: string) => {
-      setEditableContent((prev: any) => ({
-        ...prev,
-        [key]: value,
-      }));
+      setEditableContent((prev: any) => {
+        if (prev[key] === value) return prev; // 값이 동일하면 업데이트 안 함
+        return { ...prev, [key]: value };
+      });
       onChangeContent?.(key, value);
     },
     [onChangeContent]
   );
 
-  function handleEditStyle(key: string, value: CSSObject) {
-    setEditableStyle({
-      ...editableStyle,
-      [key]: value,
-    });
-    onChangeStyle?.(key, value);
-  }
+  const handleEditStyle = useCallback(
+    (key: string, value: CSSObject) => {
+      setEditableStyle((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeStyle?.(key, value);
+    },
+    [onChangeStyle]
+  );
 
   if (!editableContent) {
     return <></>;
   }
-
   return (
     <OuterWrap padding="200px 0">
       <ContentsWrap>
@@ -729,6 +787,8 @@ export default function Cart(prop: Icart) {
             isEditable={isEditable}
             onChangeContent={handleEditContent}
             onChangeStyle={handleEditStyle}
+            activeEditor={activeEditor}
+            setActiveEditor={setActiveEditor}
           />
           <CartInfo />
         </div>

@@ -186,99 +186,91 @@ export default function MatchingServiceIntroduceMain(
   const [editableStyle, setEditableStyle] = useState<any>(null);
 
   useEffect(() => {
-    if (
-      content?.MatchingServiceIntroduceMainBannerTitle !==
-      editableContent?.MatchingServiceIntroduceMainBannerTitle
-    ) {
-      setEditableContent({
-        ...initialContent,
-        MatchingServiceIntroduceMainBannerTitle:
+    setEditableContent((prev: any) => {
+      const updatedContent = { ...prev };
+
+      if (
+        content?.MatchingServiceIntroduceMainBannerTitle !==
+        prev?.MatchingServiceIntroduceMainBannerTitle
+      ) {
+        updatedContent.MatchingServiceIntroduceMainBannerTitle =
           content?.MatchingServiceIntroduceMainBannerTitle ??
-          initialContent.MatchingServiceIntroduceMainBannerTitle,
-      });
-    }
-    if (
-      content?.MatchingServiceIntroduceMainBannerDesc !==
-      editableContent?.MatchingServiceIntroduceMainBannerDesc
-    ) {
-      setEditableContent({
-        ...initialContent,
-        MatchingServiceIntroduceMainBannerDesc:
+          initialContent.MatchingServiceIntroduceMainBannerTitle;
+      }
+      if (
+        content?.MatchingServiceIntroduceMainBannerDesc !==
+        prev?.MatchingServiceIntroduceMainBannerDesc
+      ) {
+        updatedContent.MatchingServiceIntroduceMainBannerDesc =
           content?.MatchingServiceIntroduceMainBannerDesc ??
-          initialContent.MatchingServiceIntroduceMainBannerDesc,
-      });
-    }
-
-    if (
-      content?.MatchingServiceIntroduceMainItemTitle !==
-      editableContent?.MatchingServiceIntroduceMainItemTitle
-    ) {
-      setEditableContent({
-        ...initialContent,
-        MatchingServiceIntroduceMainItemTitle:
+          initialContent.MatchingServiceIntroduceMainBannerDesc;
+      }
+      if (
+        content?.MatchingServiceIntroduceMainItemTitle !==
+        prev?.MatchingServiceIntroduceMainItemTitle
+      ) {
+        updatedContent.MatchingServiceIntroduceMainItemTitle =
           content?.MatchingServiceIntroduceMainItemTitle ??
-          initialContent.MatchingServiceIntroduceMainItemTitle,
-      });
-    }
-
-    if (
-      content?.MatchingServiceIntroduceMainItemDesc !==
-      editableContent?.MatchingServiceIntroduceMainItemDesc
-    ) {
-      setEditableContent({
-        ...initialContent,
-        MatchingServiceIntroduceMainItemDesc:
+          initialContent.MatchingServiceIntroduceMainItemTitle;
+      }
+      if (
+        content?.MatchingServiceIntroduceMainItemDesc !==
+        prev?.MatchingServiceIntroduceMainItemDesc
+      ) {
+        updatedContent.MatchingServiceIntroduceMainItemDesc =
           content?.MatchingServiceIntroduceMainItemDesc ??
-          initialContent.MatchingServiceIntroduceMainItemDesc,
-      });
-    }
+          initialContent.MatchingServiceIntroduceMainItemDesc;
+      }
+
+      // 변경된 값이 있다면 상태 업데이트
+      return JSON.stringify(prev) === JSON.stringify(updatedContent)
+        ? prev
+        : updatedContent;
+    });
   }, [content]);
 
   useEffect(() => {
-    if (
-      style?.MatchingServiceIntroduceMainBannerTitle !==
-      editableStyle?.MatchingServiceIntroduceMainBannerTitle
-    ) {
-      setEditableStyle({
-        ...initialStyle,
-        MatchingServiceIntroduceMainBannerTitle:
+    setEditableStyle((prev: any) => {
+      const updatedStyle = { ...prev };
+
+      if (
+        style?.MatchingServiceIntroduceMainBannerTitle !==
+        prev?.MatchingServiceIntroduceMainBannerTitle
+      ) {
+        updatedStyle.MatchingServiceIntroduceMainBannerTitle =
           style?.MatchingServiceIntroduceMainBannerTitle ??
-          initialStyle.MatchingServiceIntroduceMainBannerTitle,
-      });
-    }
-    if (
-      style?.MatchingServiceIntroduceMainBannerDesc !==
-      editableStyle?.MatchingServiceIntroduceMainBannerDesc
-    ) {
-      setEditableStyle({
-        ...initialStyle,
-        MatchingServiceIntroduceMainBannerDesc:
+          initialStyle.MatchingServiceIntroduceMainBannerTitle;
+      }
+      if (
+        style?.MatchingServiceIntroduceMainBannerDesc !==
+        prev?.MatchingServiceIntroduceMainBannerDesc
+      ) {
+        updatedStyle.MatchingServiceIntroduceMainBannerDesc =
           style?.MatchingServiceIntroduceMainBannerDesc ??
-          initialStyle.MatchingServiceIntroduceMainBannerDesc,
-      });
-    }
-    if (
-      style?.MatchingServiceIntroduceMainItemTitle !==
-      editableStyle?.MatchingServiceIntroduceMainItemTitle
-    ) {
-      setEditableStyle({
-        ...initialStyle,
-        MatchingServiceIntroduceMainItemTitle:
+          initialStyle.MatchingServiceIntroduceMainBannerDesc;
+      }
+      if (
+        style?.MatchingServiceIntroduceMainItemTitle !==
+        prev?.MatchingServiceIntroduceMainItemTitle
+      ) {
+        updatedStyle.MatchingServiceIntroduceMainItemTitle =
           style?.MatchingServiceIntroduceMainItemTitle ??
-          initialStyle.MatchingServiceIntroduceMainItemTitle,
-      });
-    }
-    if (
-      style?.MatchingServiceIntroduceMainItemDesc !==
-      editableStyle?.MatchingServiceIntroduceMainItemDesc
-    ) {
-      setEditableStyle({
-        ...initialStyle,
-        MatchingServiceIntroduceMainItemDesc:
+          initialStyle.MatchingServiceIntroduceMainItemTitle;
+      }
+      if (
+        style?.MatchingServiceIntroduceMainItemDesc !==
+        prev?.MatchingServiceIntroduceMainItemDesc
+      ) {
+        updatedStyle.MatchingServiceIntroduceMainItemDesc =
           style?.MatchingServiceIntroduceMainItemDesc ??
-          initialStyle.MatchingServiceIntroduceMainItemDesc,
-      });
-    }
+          initialStyle.MatchingServiceIntroduceMainItemDesc;
+      }
+
+      // 변경된 값이 있다면 상태 업데이트
+      return JSON.stringify(prev) === JSON.stringify(updatedStyle)
+        ? prev
+        : updatedStyle;
+    });
   }, [style]);
 
   const handleEditContent = useCallback(
@@ -347,40 +339,8 @@ export default function MatchingServiceIntroduceMain(
                 onChangeCss={(key, value) => handleEditStyle(key, value)}
               />
             ) : (
-              <p css={editableStyle.MatchingServiceIntroduceMainBannerTitle}>
-                {editableContent?.MatchingServiceIntroduceMainBannerTitle}
-              </p>
-            )}
-            {isEditable ? (
-              <EditableText
-                text={editableContent?.MatchingServiceIntroduceMainBannerDesc}
-                defaultCss={
-                  editableStyle?.MatchingServiceIntroduceMainBannerDesc
-                }
-                isTextArea={true}
-                className="MatchingServiceIntroduceMainBannerDesc"
-                onChangeText={(key, value) => handleEditContent(key, value)}
-                onChangeCss={(key, value) => handleEditStyle(key, value)}
-              />
-            ) : (
-              <p css={editableStyle.MatchingServiceIntroduceMainBannerTitle}>
-                {editableContent?.MatchingServiceIntroduceMainBannerTitle}
-              </p>
-            )}
-            {isEditable ? (
-              <EditableText
-                text={editableContent?.MatchingServiceIntroduceMainBannerDesc}
-                defaultCss={
-                  editableStyle?.MatchingServiceIntroduceMainBannerDesc
-                }
-                isTextArea={true}
-                className="MatchingServiceIntroduceMainBannerDesc"
-                onChangeText={(key, value) => handleEditContent(key, value)}
-                onChangeCss={(key, value) => handleEditStyle(key, value)}
-              />
-            ) : (
-              <p css={editableStyle.MatchingServiceIntroduceMainBannerTitle}>
-                {editableContent?.MatchingServiceIntroduceMainBannerTitle}
+              <p css={editableStyle.MatchingServiceIntroduceMainBannerDesc}>
+                {editableContent?.MatchingServiceIntroduceMainBannerDesc}
               </p>
             )}
           </div>

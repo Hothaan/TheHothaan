@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import Title from "../commonComponent/Title";
 import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
@@ -29,6 +29,9 @@ interface IserviceIntroduction {
   isEditable?: boolean;
   onChangeContent: (key: string, value: string) => void;
   onChangeStyle: (key: string, value: CSSObject) => void;
+  index?: number;
+  activeEditor?: string | null;
+  setActiveEditor?: (classname?: string) => void;
 }
 
 export const service_introduction_title_css_: CSSObject = {
@@ -41,10 +44,8 @@ export const service_introduction_title_css_: CSSObject = {
   fontStyle: "normal",
   fontWeight: "800",
   lineHeight: "normal",
-
   display: "-webkit-box",
   WebkitBoxOrient: "vertical",
-  // overflow: "hidden",
   textOverflow: "ellipsis",
   WebkitLineClamp: "1",
 };
@@ -65,7 +66,16 @@ export const service_introduction_desc_css_: CSSObject = {
 };
 
 function ServiceIntroductionItem(prop: IserviceIntroduction) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
+  const {
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    index,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   if (
     content?.serviceIntroductionTitle === undefined ||
@@ -98,6 +108,9 @@ function ServiceIntroductionItem(prop: IserviceIntroduction) {
               defaultCss={style.serviceIntroductionTitle}
               onChangeText={(key, value) => onChangeContent(key, value)}
               onChangeCss={(key, value) => onChangeStyle(key, value)}
+              id={"serviceIntroductionTitle" + index}
+              activeEditor={activeEditor}
+              setActiveEditor={setActiveEditor}
             />
           ) : (
             <p
@@ -117,6 +130,9 @@ function ServiceIntroductionItem(prop: IserviceIntroduction) {
               defaultCss={style.serviceIntroductionDesc}
               onChangeText={(key, value) => onChangeContent(key, value)}
               onChangeCss={(key, value) => onChangeStyle(key, value)}
+              id={"serviceIntroductionDesc" + index}
+              activeEditor={activeEditor}
+              setActiveEditor={setActiveEditor}
             />
           ) : (
             <p
@@ -136,7 +152,9 @@ function ServiceIntroductionItem(prop: IserviceIntroduction) {
 
 export default function ServiceIntroduction(prop: IserviceIntroduction) {
   const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
-
+  const [activeEditor, setActiveEditor] = useState<string | undefined>(
+    undefined
+  );
   const count = 3;
 
   const initialContent = {
@@ -151,42 +169,90 @@ export default function ServiceIntroduction(prop: IserviceIntroduction) {
       style?.serviceIntroductionDesc || service_introduction_desc_css_,
   };
 
-  const [editableContent, setEditableContent] = useState<any>(null);
-  const [editableStyle, setEditableStyle] = useState<any>(null);
+  const updateValues = (source: any, initial: any) => {
+    return Object.keys(initial).reduce((acc, key) => {
+      const value = source?.[key];
+      acc[key] = value === "" ? initial[key] : value ?? initial[key];
+      return acc;
+    }, {} as any);
+  };
+
+  const [editableContent, setEditableContent] = useState(() =>
+    updateValues(content, initialContent)
+  );
+  const [editableStyle, setEditableStyle] = useState(() =>
+    updateValues(style, initialStyle)
+  );
+
+  // `useMemo`로 최적화된 업데이트 값 생성
+  const updatedContent = useMemo(
+    () => updateValues(content, initialContent),
+    [content, initialContent]
+  );
+  const updatedStyle = useMemo(
+    () => updateValues(style, initialStyle),
+    [style, initialStyle]
+  );
 
   useEffect(() => {
-    if (content) {
-      if (content?.serviceIntroductionTitle) {
-        setEditableContent({
-          ...initialContent,
-          serviceIntroductionTitle: content.serviceIntroductionTitle,
-        });
+    setEditableContent((prev: any) => {
+      // 객체 비교를 수행하여 변경된 경우에만 업데이트
+      if (!shallowEqual(prev, updatedContent)) {
+        return updatedContent;
       }
-      if (content?.serviceIntroductionDesc) {
-        setEditableContent({
-          ...initialContent,
-          serviceIntroductionDesc: content.serviceIntroductionDesc,
-        });
+      return prev;
+    });
+  }, [updatedContent]);
+
+  useEffect(() => {
+    setEditableStyle((prev: any) => {
+      if (!shallowEqual(prev, updatedStyle)) {
+        return updatedStyle;
       }
-      setEditableStyle(initialStyle);
-    }
-  }, [content]);
-
-  function handleEditContent(key: string, value: string) {
-    setEditableContent({
-      ...editableContent,
-      [key]: value,
+      return prev;
     });
-    onChangeContent?.(key, value);
-  }
+  }, [updatedStyle]);
 
-  function handleEditStyle(key: string, value: CSSObject) {
-    setEditableStyle({
-      ...editableStyle,
-      [key]: value,
-    });
-    onChangeStyle?.(key, value);
-  }
+  // 얕은 비교를 수행하는 함수
+  const shallowEqual = (objA: any, objB: any) => {
+    if (Object.is(objA, objB)) return true;
+    if (
+      typeof objA !== "object" ||
+      typeof objB !== "object" ||
+      objA === null ||
+      objB === null
+    )
+      return false;
+
+    const keysA = Object.keys(objA);
+    const keysB = Object.keys(objB);
+
+    if (keysA.length !== keysB.length) return false;
+
+    return keysA.every((key) => objA[key] === objB[key]);
+  };
+
+  const handleEditContent = useCallback(
+    (key: string, value: string) => {
+      setEditableContent((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeContent?.(key, value);
+    },
+    [onChangeContent]
+  );
+
+  const handleEditStyle = useCallback(
+    (key: string, value: CSSObject) => {
+      setEditableStyle((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeStyle?.(key, value);
+    },
+    [onChangeStyle]
+  );
 
   if (!editableContent) {
     return <></>;
@@ -212,6 +278,9 @@ export default function ServiceIntroduction(prop: IserviceIntroduction) {
               isEditable={isEditable}
               onChangeContent={handleEditContent}
               onChangeStyle={handleEditStyle}
+              index={index}
+              activeEditor={activeEditor}
+              setActiveEditor={setActiveEditor}
             />
           ))}
         </div>

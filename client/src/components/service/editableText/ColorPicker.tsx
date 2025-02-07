@@ -5,13 +5,13 @@ export interface IcolorPicker {
   show: boolean;
   selected: string;
   options: readonly string[];
-  direction: string;
+  // direction: string;
   onClick: () => void;
   onSelect: (color: string) => void;
 }
 
 export default function ColorPicker(prop: IcolorPicker) {
-  const { show, selected, direction, options, onClick, onSelect } = prop;
+  const { show, selected, options, onClick, onSelect } = prop;
   return (
     <div css={container}>
       <button
@@ -20,7 +20,7 @@ export default function ColorPicker(prop: IcolorPicker) {
         onClick={onClick}
       ></button>
       {show && (
-        <div css={option_container(direction)}>
+        <div css={option_container}>
           <ul css={option_box}>
             {options.map((option, idx) => (
               <li
@@ -52,11 +52,11 @@ const selected_color = (selected: string) => css`
   border: 1px solid #dedede;
 `;
 
-const option_container = (direction: string) => css`
+const option_container = css`
   position: absolute;
   right: 0;
-  bottom: ${direction === "top" ? "calc(100% + 40px)" : "-40px"};
-  transform: ${direction === "bottom" ? "translateY(100%)" : "none"};
+  bottom: calc(100% + 40px);
+  // transform: "translateY(100%)" : "none"};
 
   z-index: 10;
 

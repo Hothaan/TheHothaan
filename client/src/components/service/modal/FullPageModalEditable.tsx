@@ -36,6 +36,7 @@ interface IFullPageModal {
   listData: string[];
   selectedItem: string;
   featureData: IfetchedfeatureResponseData[] | null;
+  isOpen: boolean;
   onClick: (isModalOpen: boolean) => void;
   setSelectedItem: React.Dispatch<React.SetStateAction<string>>;
 }
@@ -47,6 +48,7 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
     projectType,
     listData,
     selectedItem,
+    isOpen,
     onClick,
     setSelectedItem,
   } = prop;
@@ -112,6 +114,15 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
       setIsLoadingModalOpen(true);
     },
   };
+
+  console.log(isOpen);
+
+  useEffect(() => {
+    if (!isOpen) {
+      localStorage.removeItem("changedContent");
+      localStorage.removeItem("changedStyle");
+    }
+  }, [isOpen]);
 
   async function fetchFeatureData(isProduction: boolean, projectId: string) {
     try {

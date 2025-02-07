@@ -150,7 +150,7 @@ export default function ShoppingMallProductList() {
         ? JSON.parse(localContent)?.[featureKey]?.content
         : null;
 
-      if (!hasLocalContent) {
+      if (!hasLocalContent && !pageContent) {
         updateInitialContent();
       }
 
@@ -159,11 +159,11 @@ export default function ShoppingMallProductList() {
         ? JSON.parse(localStyle)?.[featureKey]?.style
         : null;
 
-      if (!hasLocalStyle) {
+      if (!hasLocalStyle && !pageStyle) {
         updateInitialStyle();
       }
     }
-  }, [generatedText]);
+  }, [generatedText, pageContent]);
 
   useEffect(() => {
     if (pageContent) {
@@ -218,8 +218,6 @@ export default function ShoppingMallProductList() {
   if (!generatedText || !headerData) {
     return <Loading />;
   }
-
-  console.log(pageContent);
 
   return (
     <div className="templateImage">

@@ -70,8 +70,6 @@ export default function PersonalInquiryRegisterPage() {
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] || null;
-
-    console.log(file?.name);
     setFileName(file?.name || "");
     setFormData({ ...formData, file: file });
   };

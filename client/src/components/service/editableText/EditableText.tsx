@@ -41,7 +41,9 @@ interface IeditableText {
   text: string;
   isTextArea: boolean;
   defaultCss: CSSObject;
+  isWidth100?: boolean;
   hasBg?: boolean;
+  justifyContent?: string;
   activeEditor?: string | null;
   setActiveEditor?: (classname?: string) => void;
   onChangeText?: (key: string, text: string) => void;
@@ -52,19 +54,26 @@ export default function EditableText(prop: IeditableText) {
   const {
     id,
     className,
+    isWidth100,
     text,
     isTextArea,
     defaultCss,
     hasBg,
     activeEditor,
+    justifyContent,
     setActiveEditor,
     onChangeText,
     onChangeCss,
   } = prop;
 
   const divRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
   const toolbarRef = useRef<HTMLDivElement>(null);
-  const [toolbarPosition, setToolbarPosition] = useState({ top: 0, left: 0 });
+  const [toolbarPosition, setToolbarPosition] = useState<{
+    top: string | number;
+    left: string | number;
+  }>({ top: 0, left: 0 });
+  const [toolbarTransform, setToolbarTransform] = useState(``);
   const [colorPickerPosition, setColorPickerPosition] = useState("top");
   const [isEditing, setIsEditing] = useState(false);
   // const [styles, setStyles] = useState<CSSObject>({
@@ -73,14 +82,20 @@ export default function EditableText(prop: IeditableText) {
 
   useEffect(() => {
     // 다른 에디터가 클릭되면 현재 에디터의 isEditing을 false로 설정
-    if (activeEditor !== className) {
+    if (activeEditor !== id) {
       setIsEditing(false);
     }
   }, [activeEditor]);
 
   const handleEditorClick = () => {
-    setIsEditing(true);
-    setActiveEditor?.(className); // 현재 에디터 ID를 부모에 전달
+    if (isEditing) {
+      // 현재 편집 중인 상태에서 다시 클릭하면 false로 변경
+      setIsEditing(false);
+      setActiveEditor?.(undefined);
+    } else {
+      setIsEditing(true);
+      setActiveEditor?.(id);
+    }
   };
 
   useEffect(() => {
@@ -96,8 +111,9 @@ export default function EditableText(prop: IeditableText) {
   }, [defaultCss]);
 
   useLayoutEffect(() => {
-    if (isEditing && divRef.current && toolbarRef.current) {
+    if (isEditing && divRef.current && toolbarRef.current && inputRef.current) {
       const divRect = divRef.current.getBoundingClientRect();
+      const InputRect = inputRef.current.getBoundingClientRect();
       const toolbarRect = toolbarRef.current.getBoundingClientRect();
 
       const viewportWidth = window.innerWidth;
@@ -108,18 +124,16 @@ export default function EditableText(prop: IeditableText) {
 
       const minimalPadding: number = 20;
 
-      const needHeightSpace =
-        toolbarRect.height - minimalPadding + colorPickerHeight;
-      const needWidthSpace =
-        toolbarRect.width - minimalPadding + colorPickerWidth;
+      const needHeightSpace = toolbarRect.height + colorPickerHeight;
+      const needWidthSpace = toolbarRect.width + colorPickerWidth;
 
       let top = 0;
 
-      if (divRect.top <= needHeightSpace) {
+      if (InputRect.top <= needHeightSpace) {
         // 위쪽 공간이 없을 때 아래 배치
-        top = minimalPadding + divRect.height;
+        top = minimalPadding + InputRect.height;
         setColorPickerPosition("bottom");
-      } else if (divRect.bottom + toolbarRect.height > viewportHeight) {
+      } else if (InputRect.bottom + toolbarRect.height > viewportHeight) {
         // 아래쪽 공간이 부족할 때 위에 배치
         top = -minimalPadding - toolbarRect.height;
         setColorPickerPosition("top");
@@ -129,19 +143,28 @@ export default function EditableText(prop: IeditableText) {
         setColorPickerPosition("top");
       }
 
-      let left = divRect.left;
+      let left: string | number = InputRect.left;
+      let transform: string = ``;
 
-      if (divRect.left <= needWidthSpace) {
+      if (InputRect.left < 0) {
+        // 부모 요소가 화면 바깥(왼쪽)으로 나가 있으면 툴바를 화면 왼쪽 끝에 맞춤
+        left = -InputRect.left + minimalPadding;
+      } else if (InputRect.left <= needWidthSpace) {
         // 왼쪽 공간이 부족할 때 오른쪽에 배치
         left = 0;
-      } else if (divRect.right + toolbarRect.width > viewportWidth) {
+      } else if (InputRect.left + toolbarRect.width > viewportWidth) {
         // 오른쪽 공간이 부족할 때 화면 끝에 맞추기
-        left = viewportWidth - toolbarRect.width - minimalPadding;
+        // left = viewportWidth - toolbarRect.width - minimalPadding;
+        // left = viewportWidth - toolbarRect.width - toolbarRect.width;
+        left = `100%`;
+        // transform = `translateX(-50%)`;
+        // transform = `translateX(${minimalPadding}px)`;
       } else {
         left = 0;
       }
 
       setToolbarPosition({ top, left });
+      setToolbarTransform(transform);
     }
   }, [isEditing]);
 
@@ -197,7 +220,6 @@ export default function EditableText(prop: IeditableText) {
 
   const colorPicker: IcolorPicker = {
     show: showColorPickerOptions,
-    direction: colorPickerPosition,
     selected: defaultCss.color as string,
     options: selectableColorArr,
     onClick: () => {
@@ -290,15 +312,28 @@ export default function EditableText(prop: IeditableText) {
   }
 
   return (
-    <div style={{ position: "relative", width: "auto" }} ref={divRef}>
+    <div
+      style={{
+        position: "relative",
+        width: isWidth100 ? "100%" : "auto",
+        display: isWidth100 ? "flex" : "block",
+        justifyContent: justifyContent || "start",
+      }}
+      ref={divRef}
+    >
       {isEditing && (
         <div
           ref={toolbarRef}
           style={{
-            position: "absolute",
-            top: `${toolbarPosition.top}px`,
-            left: `${toolbarPosition.left}px`,
+            // position: "absolute",
+            position: "fixed",
+            bottom: "40px",
+            left: "50%",
+            transform: `translateX(-50%)`,
             zIndex: 100,
+            // top: `${toolbarPosition.top}px`,
+            // left: `${toolbarPosition.left}px`,
+            // transform: toolbarTransform,
           }}
         >
           <Toolbar />
@@ -306,6 +341,8 @@ export default function EditableText(prop: IeditableText) {
       )}
       {isTextArea ? (
         <textarea
+          // id={id}
+          ref={inputRef as React.RefObject<HTMLTextAreaElement>}
           css={[defaultCss, input_style(isEditing)]}
           value={text}
           onClick={handleEditorClick}
@@ -315,7 +352,9 @@ export default function EditableText(prop: IeditableText) {
       ) : hasBg ? (
         <div css={[defaultCss, width_fit_content]}>
           <input
+            // id={id}
             type="text"
+            ref={inputRef as React.RefObject<HTMLInputElement>}
             css={[defaultCss, input_style(isEditing), width_fit_auto]}
             value={text}
             onClick={handleEditorClick}
@@ -327,7 +366,9 @@ export default function EditableText(prop: IeditableText) {
         </div>
       ) : (
         <input
+          // id={id}
           type="text"
+          ref={inputRef as React.RefObject<HTMLInputElement>}
           css={[defaultCss, input_style(isEditing)]}
           value={text}
           onClick={handleEditorClick}
@@ -403,7 +444,8 @@ const toolbar = css`
   align-items: center;
   padding: 12px 8px;
   border-radius: 8px;
-  background: var(--Neutral-Background, #fff);
+  background: #eff2f6;
+  // border: 1px solid #486284;
   box-shadow: 0px 327px 91px 0px rgba(0, 0, 0, 0),
     0px 209px 84px 0px rgba(0, 0, 0, 0.01),
     0px 118px 71px 0px rgba(0, 0, 0, 0.05),

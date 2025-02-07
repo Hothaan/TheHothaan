@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { OuterWrap, ContentsWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 import BreadCrumble from "../commonComponent/BreadCrumble";
@@ -38,6 +38,9 @@ interface IproductDetail {
   isEditable?: boolean;
   onChangeContent: (key: string, value: string) => void;
   onChangeStyle: (key: string, value: CSSObject) => void;
+  index?: number;
+  activeEditor?: string | null;
+  setActiveEditor?: (classname?: string) => void;
 }
 
 export const product_detail_product_title_css_: CSSObject = {
@@ -47,6 +50,11 @@ export const product_detail_product_title_css_: CSSObject = {
   fontStyle: "normal",
   fontWeight: "400",
   lineHeight: "normal",
+
+  width: "100%",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
 };
 
 export const product_detail_product_desc_css_: CSSObject = {
@@ -57,6 +65,13 @@ export const product_detail_product_desc_css_: CSSObject = {
   fontStyle: "normal",
   fontWeight: "400",
   lineHeight: "160%",
+
+  display: "-webkit-box",
+  WebkitBoxOrient: "vertical",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  height: "100px",
+  WebkitLineClamp: "2",
 };
 
 export const product_detail_more_product__option_main_title_css: CSSObject = {
@@ -69,11 +84,9 @@ export const product_detail_more_product__option_main_title_css: CSSObject = {
   lineHeight: "normal",
 
   width: "100%",
-  textOverflow: "ellipsis",
   overflow: "hidden",
-  display: "-webkit-box",
-  WebkitBoxOrient: "vertical",
-  WebkitLineClamp: "1",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
 };
 
 export const product_detail_more_product__option_main_desc_css: CSSObject = {
@@ -84,10 +97,23 @@ export const product_detail_more_product__option_main_desc_css: CSSObject = {
   fontStyle: "normal",
   fontWeight: "400",
   lineHeight: "normal",
+
+  width: "100%",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
 };
 
 function ProductDetailInfo(prop: IproductDetail) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
+  const {
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   const top_container = css`
     width: 100%;
@@ -160,8 +186,9 @@ function ProductDetailInfo(prop: IproductDetail) {
   const product_amount_controller_container = css`
     width: 100%;
     display: flex;
-    padding: 10px 0px;
     align-items: center;
+    height: auto;
+    padding: 10px 0px;
     justify-content: space-between;
     gap: 20px;
     align-self: stretch;
@@ -169,16 +196,13 @@ function ProductDetailInfo(prop: IproductDetail) {
   `;
 
   const product_amount_name = css`
-    align-self: stretch;
     width: 100%;
     color: #486284;
-
-    /* 13 */
     font-family: Inter;
     font-size: 13px;
     font-style: normal;
     font-weight: 500;
-    line-height: 160%; /* 20.8px */
+    line-height: 100%;
   `;
 
   const product_amount_controller = css`
@@ -276,6 +300,9 @@ function ProductDetailInfo(prop: IproductDetail) {
               defaultCss={style.productDetailProductTitle}
               onChangeText={(key, value) => onChangeContent(key, value)}
               onChangeCss={(key, value) => onChangeStyle(key, value)}
+              id={"productDetailProductTitle"}
+              activeEditor={activeEditor}
+              setActiveEditor={setActiveEditor}
             />
           ) : (
             <p
@@ -300,6 +327,10 @@ function ProductDetailInfo(prop: IproductDetail) {
               defaultCss={style.productDetailProductDesc}
               onChangeText={(key, value) => onChangeContent(key, value)}
               onChangeCss={(key, value) => onChangeStyle(key, value)}
+              id={"productDetailProductDesc"}
+              activeEditor={activeEditor}
+              setActiveEditor={setActiveEditor}
+              isWidth100={true}
             />
           ) : (
             <p
@@ -317,7 +348,6 @@ function ProductDetailInfo(prop: IproductDetail) {
             <p css={product_amount_name}>
               {content?.productDetailProductTitle || product_title_}
             </p>
-
             <div css={product_amount_controller}>
               <div css={icon_container}>
                 <Minus />
@@ -360,7 +390,15 @@ function ProductDetailAccordion() {
 }
 
 function ProductDetailList(prop: IproductDetail) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
+  const {
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   const count = 3;
 
@@ -454,6 +492,9 @@ function ProductDetailList(prop: IproductDetail) {
                   defaultCss={style.productDetailMoreProductTitle as CSSObject}
                   onChangeText={(key, value) => onChangeContent(key, value)}
                   onChangeCss={(key, value) => onChangeStyle(key, value)}
+                  id={"productDetailMoreProductTitle" + index}
+                  activeEditor={activeEditor}
+                  setActiveEditor={setActiveEditor}
                 />
               ) : (
                 <p css={style?.productDetailMoreProductTitle}>
@@ -468,6 +509,9 @@ function ProductDetailList(prop: IproductDetail) {
                   defaultCss={style.productDetailMoreProductDesc as CSSObject}
                   onChangeText={(key, value) => onChangeContent(key, value)}
                   onChangeCss={(key, value) => onChangeStyle(key, value)}
+                  id={"productDetailMoreProductDesc" + index}
+                  activeEditor={activeEditor}
+                  setActiveEditor={setActiveEditor}
                 />
               ) : (
                 <p css={style?.productDetailMoreProductDesc}>
@@ -526,79 +570,96 @@ export default function ProductDetail(prop: IproductDetail) {
       product_detail_more_product__option_main_desc_css,
   };
 
-  const [editableContent, setEditableContent] = useState<any>(null);
-  const [editableStyle, setEditableStyle] = useState<any>(null);
+  const [activeEditor, setActiveEditor] = useState<string | undefined>(
+    undefined
+  );
+
+  const updateValues = (source: any, initial: any) => {
+    return Object.keys(initial).reduce((acc, key) => {
+      const value = source?.[key];
+      acc[key] = value === "" ? initial[key] : value ?? initial[key];
+      return acc;
+    }, {} as any);
+  };
+
+  const [editableContent, setEditableContent] = useState(() =>
+    updateValues(content, initialContent)
+  );
+  const [editableStyle, setEditableStyle] = useState(() =>
+    updateValues(style, initialStyle)
+  );
+
+  // `useMemo`로 최적화된 업데이트 값 생성
+  const updatedContent = useMemo(
+    () => updateValues(content, initialContent),
+    [content, initialContent]
+  );
+  const updatedStyle = useMemo(
+    () => updateValues(style, initialStyle),
+    [style, initialStyle]
+  );
 
   useEffect(() => {
-    if (content) {
-      if (content?.productDetailProductTitle) {
-        setEditableContent({
-          ...initialContent,
-          productDetailProductTitle: content.productDetailProductTitle,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          productDetailProductTitle: initialContent.productDetailProductTitle,
-        });
+    setEditableContent((prev: any) => {
+      // 기존 객체와 새 객체를 비교하여 변경된 경우에만 업데이트
+      if (!shallowEqual(prev, updatedContent)) {
+        return { ...prev, ...updatedContent };
       }
+      return prev;
+    });
+  }, [updatedContent]);
 
-      if (content?.productDetailProductDesc) {
-        setEditableContent({
-          ...initialContent,
-          productDetailProductDesc: content.productDetailProductDesc,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          productDetailProductDesc: initialContent.productDetailProductDesc,
-        });
+  useEffect(() => {
+    setEditableStyle((prev: any) => {
+      if (!shallowEqual(prev, updatedStyle)) {
+        return updatedStyle;
       }
+      return prev;
+    });
+  }, [updatedStyle]);
 
-      if (content?.productDetailMoreProductTitle) {
-        setEditableContent({
-          ...initialContent,
-          productDetailMoreProductTitle: content.productDetailMoreProductTitle,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          productDetailMoreProductTitle:
-            initialContent.productDetailMoreProductTitle,
-        });
-      }
+  // 얕은 비교를 수행하는 함수
+  const shallowEqual = (objA: any, objB: any) => {
+    if (Object.is(objA, objB)) return true;
 
-      if (content?.productDetailMoreProductDesc) {
-        setEditableContent({
-          ...initialContent,
-          productDetailMoreProductDesc: content.productDetailMoreProductDesc,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          productDetailMoreProductDesc:
-            initialContent.productDetailMoreProductDesc,
-        });
-      }
-      setEditableStyle(initialStyle);
+    if (
+      !objA ||
+      !objB ||
+      typeof objA !== "object" ||
+      typeof objB !== "object"
+    ) {
+      return false;
     }
-  }, [content]);
 
-  function handleEditContent(key: string, value: string) {
-    setEditableContent({
-      ...editableContent,
-      [key]: value,
-    });
-    onChangeContent?.(key, value);
-  }
+    const keysA = Object.keys(objA);
+    const keysB = Object.keys(objB);
 
-  function handleEditStyle(key: string, value: CSSObject) {
-    setEditableStyle({
-      ...editableStyle,
-      [key]: value,
-    });
-    onChangeStyle?.(key, value);
-  }
+    if (keysA.length !== keysB.length) return false;
+
+    return keysA.every((key) => Object.is(objA[key], objB[key]));
+  };
+
+  const handleEditContent = useCallback(
+    (key: string, value: string) => {
+      setEditableContent((prev: any) => {
+        if (prev[key] === value) return prev; // 값이 동일하면 업데이트 안 함
+        return { ...prev, [key]: value };
+      });
+      onChangeContent?.(key, value);
+    },
+    [onChangeContent]
+  );
+
+  const handleEditStyle = useCallback(
+    (key: string, value: CSSObject) => {
+      setEditableStyle((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeStyle?.(key, value);
+    },
+    [onChangeStyle]
+  );
 
   const container = css`
     display: flex;
@@ -607,8 +668,6 @@ export default function ProductDetail(prop: IproductDetail) {
     align-items: center;
     gap: 50px;
   `;
-
-  console.log(editableContent);
 
   if (
     !editableContent ||
@@ -630,6 +689,8 @@ export default function ProductDetail(prop: IproductDetail) {
             isEditable={isEditable}
             onChangeContent={handleEditContent}
             onChangeStyle={handleEditStyle}
+            activeEditor={activeEditor}
+            setActiveEditor={setActiveEditor}
           />
           <ProductDetailAccordion />
           <ProductDetailList
@@ -638,6 +699,8 @@ export default function ProductDetail(prop: IproductDetail) {
             isEditable={isEditable}
             onChangeContent={handleEditContent}
             onChangeStyle={handleEditStyle}
+            activeEditor={activeEditor}
+            setActiveEditor={setActiveEditor}
           />
           <ProductDetailReview />
           <Pagination />
