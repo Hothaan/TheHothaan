@@ -18,11 +18,16 @@ import { ReactComponent as PreviewGray } from "@svgs/service/previewGray.svg";
 import { ReactComponent as Download } from "@svgs//common/download.svg";
 /* api */
 import { generateFiles } from "@api/project/generateFiles";
+import { getFeatureData } from "@api/project/getFeatureData";
+/* store */
+import { imageNameStore } from "@store/imageNameStore";
+import { imageUrlStore } from "@store/imageUrlStore";
 /* etc */
 import axios from "axios";
 import { IserviceInfo } from "./ServiceStep1Page";
 import { IserviceData } from "./ServiceStep2Page";
 import { TimageName, TimageUrl } from "./ServiceStep4Page";
+import { IfetchedfeatureResponseData } from "@components/template/types";
 
 export type Tformat = "pdf" | "png" | "jpg";
 export default function ServiceStep5Page() {
@@ -35,12 +40,46 @@ export default function ServiceStep5Page() {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isLoadingModalOpen, setIsLoadingModalOpen] = useState(false);
   const [isFullpageModalOpen, setIsFullpageModalOpen] = useState(false);
+  const [featureData, setFeatureData] = useState<
+    IfetchedfeatureResponseData[] | null
+  >(null);
   const [serviceDefaultData, setServiceDefaultData] =
     useState<IserviceData | null>(null);
   const [listData, setListData] = useState<string[]>([]);
+  const [selectedIdx, setSelectedIdx] = useState<number>(0);
   const [selectedItem, setSelectedItem] = useState<string>(listData[0]);
-  const [imageNameArr, setImageNameArr] = useState<TimageName[] | null>(null);
-  const [imageUrlArr, setImageUrlArr] = useState<TimageUrl[] | null>(null);
+  const { imageName, setImageName } = imageNameStore();
+  const { imageUrl, setImageUrl } = imageUrlStore();
+  const [isFail, setIsFail] = useState(false);
+
+  async function fetchFeatureData(isProduction: boolean, projectId: string) {
+    try {
+      const response = await getFeatureData(isProduction, projectId);
+      if (response.status === 200) {
+        const data = response.data.featureResponseData.map(
+          (item: IfetchedfeatureResponseData) => {
+            return { ...item, feature: item.feature.split(" ").join("") };
+          }
+        );
+        setFeatureData(data);
+      } else {
+        console.error("getFeatureData error", response.status);
+        setIsFail(true);
+      }
+    } catch (error) {
+      console.error(error);
+      setIsFail(true);
+      // window.location.href = "/error";
+    }
+  }
+
+  console.log(selectedIdx);
+
+  useEffect(() => {
+    if (projectId) {
+      fetchFeatureData(isProduction, projectId);
+    }
+  }, [projectId]);
 
   useEffect(() => {
     const sessionData = sessionStorage.getItem("projectId");
@@ -48,17 +87,6 @@ export default function ServiceStep5Page() {
       setProjectId(JSON.parse(sessionData));
     }
   }, []);
-
-  const fullPageModal = {
-    imageUrlArr: imageUrlArr,
-    imageNameArr: imageNameArr,
-    projectType:
-      (serviceDefaultData && serviceDefaultData.serviceType.text) || "쇼핑몰",
-    listData: listData,
-    selectedItem: selectedItem,
-    onClick: handleChangeisFullpageModalOpen,
-    setSelectedItem: setSelectedItem,
-  };
 
   function handleChangeisFullpageModalOpen(isFullpageModalOpen: boolean) {
     setIsFullpageModalOpen(isFullpageModalOpen);
@@ -97,6 +125,27 @@ export default function ServiceStep5Page() {
       // window.location.href = "/error";
     }
   }
+
+  function makeListData() {
+    if (featureData) {
+      return featureData.map((item: IfetchedfeatureResponseData) => {
+        return item.feature;
+      });
+    }
+  }
+
+  useEffect(() => {
+    const data = makeListData();
+    if (data) {
+      setListData(data);
+    }
+  }, [featureData]);
+
+  useEffect(() => {
+    if (listData) {
+      setSelectedItem(listData[0]);
+    }
+  }, [listData]);
 
   async function generateNdownloadFile(format: Tformat) {
     if (!projectId || !format) {
@@ -236,7 +285,22 @@ export default function ServiceStep5Page() {
         </div>
       </div>
       {isLoadingModalOpen && <LoadingModal {...loadingModal} />}
-      {isFullpageModalOpen && <FullPageModalUneditable {...fullPageModal} />}
+      {isFullpageModalOpen && (
+        <FullPageModalUneditable
+          imageUrlArr={imageUrl}
+          imageNameArr={imageName}
+          projectType={
+            (serviceDefaultData && serviceDefaultData.serviceType.text) ||
+            "쇼핑몰"
+          }
+          listData={listData}
+          selectedIdx={selectedIdx}
+          setSelectedIdx={setSelectedIdx}
+          selectedItem={selectedItem}
+          setSelectedItem={setSelectedItem}
+          onClick={handleChangeisFullpageModalOpen}
+        />
+      )}
     </>
   );
 }

@@ -110,6 +110,10 @@ function ProductListItem(prop: IproductList) {
     gap: 14px;
   `;
 
+  const product_info_outer_container = css`
+    display: flex;
+    justify-content: space-between;
+  `;
   const product_info_container = css`
     display: flex;
     flex-direction: column;
@@ -179,53 +183,60 @@ function ProductListItem(prop: IproductList) {
       />
       <div css={info_container}>
         <div css={text_container}>
-          <div css={product_info_container}>
-            {isEditable ? (
-              <EditableText
-                text={content.productListProductTitle}
-                className="productListProductTitle"
-                isTextArea={false}
-                defaultCss={style.productListProductTitle}
-                onChangeText={(key, value) => onChangeContent(key, value)}
-                onChangeCss={(key, value) => onChangeStyle(key, value)}
-                id={"productListProductTitle" + index}
-                activeEditor={activeEditor}
-                setActiveEditor={setActiveEditor}
-              />
-            ) : (
-              <p
-                css={style?.productListProductTitle || product_list_title_css_}
-              >
-                {content?.productListProductTitle || product_title_}
-              </p>
-            )}
-            {isEditable ? (
-              <EditableText
-                text={content.productListProductDesc}
-                className="productListProductDesc"
-                isTextArea={false}
-                defaultCss={style.productListProductDesc}
-                onChangeText={(key, value) => onChangeContent(key, value)}
-                onChangeCss={(key, value) => onChangeStyle(key, value)}
-                id={"productListProductDesc" + index}
-                activeEditor={activeEditor}
-                setActiveEditor={setActiveEditor}
-              />
-            ) : (
-              <p css={style?.productListProductDesc || product_list_desc_css_}>
-                {content?.productListProductDesc || product_desc_}
-              </p>
-            )}
+          <div css={product_info_outer_container}>
+            <div css={product_info_container}>
+              {isEditable ? (
+                <EditableText
+                  text={content.productListProductTitle}
+                  className="productListProductTitle"
+                  isTextArea={false}
+                  defaultCss={style.productListProductTitle}
+                  onChangeText={(key, value) => onChangeContent(key, value)}
+                  onChangeCss={(key, value) => onChangeStyle(key, value)}
+                  id={"productListProductTitle" + index}
+                  activeEditor={activeEditor}
+                  setActiveEditor={setActiveEditor}
+                />
+              ) : (
+                <p
+                  css={
+                    style?.productListProductTitle || product_list_title_css_
+                  }
+                >
+                  {content?.productListProductTitle || product_title_}
+                </p>
+              )}
+
+              {isEditable ? (
+                <EditableText
+                  text={content.productListProductDesc}
+                  className="productListProductDesc"
+                  isTextArea={false}
+                  defaultCss={style.productListProductDesc}
+                  onChangeText={(key, value) => onChangeContent(key, value)}
+                  onChangeCss={(key, value) => onChangeStyle(key, value)}
+                  id={"productListProductDesc" + index}
+                  activeEditor={activeEditor}
+                  setActiveEditor={setActiveEditor}
+                />
+              ) : (
+                <p
+                  css={style?.productListProductDesc || product_list_desc_css_}
+                >
+                  {content?.productListProductDesc || product_desc_}
+                </p>
+              )}
+            </div>
+            <div css={icon_container}>
+              <Heart />
+              <Bag />
+            </div>
           </div>
           <div css={product_price_container}>
             <p css={product_price_sale}>50,000원</p>
             <p css={product_price}>70,000원</p>
             <p css={product_price_sale}>36%</p>
           </div>
-        </div>
-        <div css={icon_container}>
-          <Heart />
-          <Bag />
         </div>
       </div>
     </div>

@@ -13,21 +13,17 @@ import NavigationUnEditable, {
 } from "../navigation/NavigationUnEditable";
 /* store */
 import { TserviceDefaultData } from "@store/serviceDefaultDataStore";
-/* etc */
-import {
-  TimageName,
-  TimageUrl,
-} from "@pages/user/ServicePage/ServiceStep4Page";
-import { IfetchedfeatureResponseData } from "@components/template/types";
 
 interface IFullPageModal {
-  imageUrlArr: TimageUrl[] | null;
-  imageNameArr: TimageName[] | null;
+  imageUrlArr: string[] | null;
+  imageNameArr: string[] | null;
   projectType: string;
   listData: string[];
-  selectedItem: string;
   onClick: (isModalOpen: boolean) => void;
+  selectedItem: string;
   setSelectedItem: React.Dispatch<React.SetStateAction<string>>;
+  selectedIdx: number;
+  setSelectedIdx: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export default function FullPageModalUneditable(prop: IFullPageModal) {
@@ -36,10 +32,11 @@ export default function FullPageModalUneditable(prop: IFullPageModal) {
     imageNameArr,
     projectType,
     listData,
-    selectedItem,
-    // featureData,
     onClick,
+    selectedItem,
     setSelectedItem,
+    selectedIdx,
+    setSelectedIdx,
   } = prop;
   const [isToast, setIsToast] = useState(true);
   const [isNaviOpen, setIsNaviOpen] = useState<boolean>(false);
@@ -59,19 +56,23 @@ export default function FullPageModalUneditable(prop: IFullPageModal) {
     setIsToast: setIsToast,
   };
 
-  const navigation: INavigationUnEditable = {
-    imageUrlArr: imageUrlArr,
-    imageNameArr: imageNameArr,
-    listData: listData,
-    selectedItem: selectedItem,
-    setSelectedItem: setSelectedItem,
-    isOpen: isNaviOpen,
-    setIsOpen: setIsNaviOpen,
-  };
+  if (!imageUrlArr) {
+    return <></>;
+  }
 
   return (
     <>
-      <NavigationUnEditable {...navigation} />
+      <NavigationUnEditable
+        imageUrlArr={imageUrlArr}
+        imageNameArr={imageNameArr}
+        listData={listData}
+        isOpen={isNaviOpen}
+        setIsOpen={setIsNaviOpen}
+        selectedItem={selectedItem}
+        setSelectedItem={setSelectedItem}
+        selectedIdx={selectedIdx}
+        setSelectedIdx={setSelectedIdx}
+      />
       <div css={wrap}>
         <div css={title_bar}>
           <LogoLight />
@@ -89,7 +90,9 @@ export default function FullPageModalUneditable(prop: IFullPageModal) {
         </div>
         <div css={content_container}>
           <div css={content(isNaviOpen)}>
-            <div css={scroll_item}>편집 불가능한 텍스트</div>
+            <div css={scroll_item}>
+              <img src={imageUrlArr[selectedIdx]} alt="img" />
+            </div>
           </div>
         </div>
       </div>
@@ -156,16 +159,16 @@ const content = (isOpen: boolean) => css`
   width: calc(100% - 40px);
   padding-left: ${isOpen ? "220px" : "0"};
   height: calc(100% - 40px);
-  border-radius: 20px;
   overflow-y: auto;
 `;
 
 const scroll_item = css`
   width: 100%;
-  border-radius: 20px;
+  overflow: hidden;
   background: #ededed;
-  height: 2000px;
 
-  /* 임시 */
-  padding: 100px;
+  img {
+    width: 100%;
+    object-fit: cover;
+  }
 `;

@@ -81,6 +81,7 @@ export const brandIntroduce_banner_title_css: CSSObject = {
   fontWeight: "900",
   lineHeight: "150%",
   textTransform: "capitalize",
+  textAlign: "center",
 
   width: "100%",
   overflow: "hidden",
@@ -325,6 +326,8 @@ export default function BrandIntroduce(prop: IbrandIntroduce) {
               id={"brandIntroduceBannerTitle"}
               activeEditor={activeEditor}
               setActiveEditor={setActiveEditor}
+              // isWidth100={true}
+              justifyContent="center"
             />
           ) : (
             <p

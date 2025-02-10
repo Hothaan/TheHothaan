@@ -61,8 +61,6 @@ export default function ServicePreviewPage() {
   const navigate = useNavigate();
   const { imageName, setImageName } = imageNameStore();
   const { imageUrl, setImageUrl } = imageUrlStore();
-  // const [imageNameArr, setImageNameArr] = useState<string[]>(imageName);
-  // const [imageUrlArr, setImageUrlArr] = useState<string[]>(imageUrl);
   const [featureData, setFeatureData] = useState<
     IfetchedfeatureResponseData[] | null
   >(null);

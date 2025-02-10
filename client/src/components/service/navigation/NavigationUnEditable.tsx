@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useState, Dispatch } from "react";
+import { useState, useEffect } from "react";
 import { ReactComponent as Edit } from "@svgs/service/edit.svg";
 import { ReactComponent as Preview } from "@svgs/service/previewGray.svg";
 import { ReactComponent as Button } from "@svgs/service/navigationButton.svg";
@@ -18,13 +18,15 @@ interface IlistItem {
 }
 
 export interface INavigationUnEditable {
-  imageUrlArr: TimageUrl[] | null;
-  imageNameArr: TimageName[] | null;
+  imageUrlArr: string[] | null;
+  imageNameArr: string[] | null;
   listData: string[];
-  selectedItem: string;
-  setSelectedItem: React.Dispatch<React.SetStateAction<string>>;
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  selectedItem: string;
+  setSelectedItem: React.Dispatch<React.SetStateAction<string>>;
+  selectedIdx: number;
+  setSelectedIdx: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export default function NavigationUnEditable(prop: INavigationUnEditable) {
@@ -34,18 +36,14 @@ export default function NavigationUnEditable(prop: INavigationUnEditable) {
     listData,
     selectedItem,
     setSelectedItem,
+    selectedIdx,
+    setSelectedIdx,
     isOpen,
     setIsOpen,
   } = prop;
-  // const listData: IlistItem[] = [
-  //   { title: "메인" },
-  //   { title: "상품" },
-  //   { title: "공지사항" },
-  //   { title: "FAQ" },
-  // ];
 
   // const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [currentIdx, setCurrentIdx] = useState<number>(0);
+  // const [currentIdx, setCurrentIdx] = useState<number>(0);
   // const [selectedItem, setSelectedItem] = useState<string>(listData[0].title);
 
   function handleSelectItem(e: React.MouseEvent<HTMLLIElement>) {
@@ -53,30 +51,31 @@ export default function NavigationUnEditable(prop: INavigationUnEditable) {
     if (idx !== null) {
       setSelectedItem(listData[idx]);
       setSelectedItem(listData[idx]);
+      setSelectedIdx(idx);
       // setIsOpen(false);
     }
   }
 
   function handleSelectPrevItem() {
-    if (currentIdx === 0) {
+    if (selectedIdx === 0) {
       return;
     } else {
-      setSelectedItem(listData[currentIdx - 1]);
-      setCurrentIdx(currentIdx - 1);
+      setSelectedItem(listData[selectedIdx - 1]);
+      setSelectedIdx(selectedIdx - 1);
     }
   }
 
   function handleNextPrevItem() {
-    if (currentIdx === listData.length - 1) {
+    if (selectedIdx === listData.length - 1) {
       return;
     } else {
-      setSelectedItem(listData[currentIdx + 1]);
-      setCurrentIdx(currentIdx + 1);
+      setSelectedItem(listData[selectedIdx + 1]);
+      setSelectedIdx(selectedIdx + 1);
     }
   }
 
   const buttonSelectPrevItemAside: IbuttonArrowControler = {
-    currentIdx: currentIdx,
+    currentIdx: selectedIdx,
     total: listData.length - 1,
     direction: "up",
     onClick: () => {
@@ -85,7 +84,7 @@ export default function NavigationUnEditable(prop: INavigationUnEditable) {
   };
 
   const buttonSelectNextItemAside: IbuttonArrowControler = {
-    currentIdx: currentIdx,
+    currentIdx: selectedIdx,
     total: listData.length - 1,
     direction: "down",
     onClick: () => {
@@ -106,20 +105,33 @@ export default function NavigationUnEditable(prop: INavigationUnEditable) {
         <Preview />
         <p css={list_title}>모든화면</p>
       </div>
-      <ul css={list}>
-        {listData.map((item, idx) => (
-          <li
-            css={[list_item, list_item_color(selectedItem === item)]}
-            onClick={handleSelectItem}
-            data-idx={idx}
-          >
-            <div css={image_container}></div>
-            <div css={list_item_info_container(selectedItem === item)}>
-              <p css={list_item_title}>{item}</p>
-            </div>
-          </li>
-        ))}
-      </ul>
+      <div css={list_container}>
+        <ul css={list}>
+          {imageUrlArr &&
+            listData.length > 0 &&
+            listData.map((item, idx) => (
+              <li
+                css={[list_item, list_item_color(selectedItem === item)]}
+                onClick={handleSelectItem}
+                data-idx={idx}
+                key={idx}
+              >
+                <div css={image_container}>
+                  <img
+                    src={imageUrlArr[idx]}
+                    alt="template thumbnail"
+                    css={image_style}
+                  />
+                </div>
+                <div css={list_item_info_container(selectedItem === item)}>
+                  <p css={list_item_title}>{item}</p>
+                  {selectedItem === item && <Edit />}
+                </div>
+              </li>
+            ))}
+        </ul>
+      </div>
+
       <div css={aside_controler}>
         <ButtonArrowIconControler {...buttonSelectPrevItemAside} />
         <p css={pagination}>
@@ -131,6 +143,12 @@ export default function NavigationUnEditable(prop: INavigationUnEditable) {
     </aside>
   );
 }
+
+const image_style = css`
+  object-fit: cover;
+  width: 100%;
+`;
+
 const side_nav = (isOpen: boolean) => css`
   position: fixed;
   z-index: 11;
@@ -140,7 +158,7 @@ const side_nav = (isOpen: boolean) => css`
   left: 0;
   display: flex;
   width: 200px;
-  height: 100%;
+  height: calc(100% - 47px);
   flex-shrink: 0;
   flex-direction: column;
   align-items: flex-start;
@@ -174,6 +192,11 @@ const list_title_container = css`
   align-items: center;
   gap: 10px;
 `;
+
+const list_container = css`
+  height: 100%;
+  overflow: auto;
+`;
 const list_title = css`
   color: var(--383838, #383838);
   font-family: Pretendard;
@@ -184,7 +207,9 @@ const list_title = css`
 `;
 const list = css`
   width: 100%;
-
+  height: auto;
+  overflow: auto;
+  // height: calc(100vh - 70px);
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -199,7 +224,8 @@ const list_item = css`
   flex-direction: column;
   justify-content: space-between;
 
-  border-radius: 10px;
+  border-radius: 12px;
+  overflow: hidden;
   position: relative;
   border: 2px solid transparent;
   background: var(--FFF, #fff);
@@ -264,7 +290,10 @@ const image_container = css`
   align-self: stretch;
   flex-wrap: wrap;
   background-color: #f6f6f6;
+
+  overflow: hidden;
 `;
+
 const preview_container = css`
   display: flex;
   flex-direction: column;
