@@ -3,6 +3,8 @@ import { css, CSSObject } from "@emotion/react";
 
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+/* store */
+import { projectIdStore } from "@store/projectIdStore";
 
 /* component */
 import Header, { Iheader } from "@components/template/common/header/Header";
@@ -104,6 +106,7 @@ export default function HomePageBoardMain() {
   /* only projectId */
   const { isProduction } = useIsProduction();
   const { projectId } = useParams();
+  const { projectId: storedProjectId, setProjectId } = projectIdStore();
   const [projectIdValue, setProjectIdValue] = useState<string | null>(null);
 
   const [headerData, setHeaderData] = useState<Iheader | null>(null);
@@ -142,11 +145,11 @@ export default function HomePageBoardMain() {
 
   useEffect(() => {
     if (projectId === undefined) {
-      setProjectIdValue(sessionStorage.getItem("projectId"));
+      setProjectIdValue(storedProjectId); // Zustand에서 가져온 값 사용
     } else {
       setProjectIdValue(projectId);
     }
-  }, [projectId]);
+  }, [projectId, storedProjectId]);
 
   useEffect(() => {
     if (projectIdValue) {

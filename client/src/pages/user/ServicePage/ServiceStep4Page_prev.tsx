@@ -1,21 +1,22 @@
 /** @jsxImportSource @emotion/react */
-import { css, CSSObject } from "@emotion/react";
+import { css } from "@emotion/react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+/* components */
 import { IloadingModal } from "@components/common/ui/Modal/LoadingModal";
 import LoadingModal from "@components/common/ui/Modal/LoadingModal";
-import { serviceDefaultDataStore } from "@store/serviceDefaultDataStore";
-import EditableText from "@components/service/editableText/EditableText";
 import { Ibutton } from "@components/common/button/Button";
 import Button from "@components/common/button/Button";
 import TemplateSlide from "@components/service/templateSlide/TemplateSlide";
+/* store */
+import { serviceInfoStore } from "@store/serviceInfoStore";
 
 export default function ServiceStep4Page() {
   const navigate = useNavigate();
   const location = useLocation();
   const totalStep = 5;
   const [currentStep, setCurrentStep] = useState<number>(1);
-  const { serviceDefaultData } = serviceDefaultDataStore();
+  const { serviceInfo, setServiceInfo } = serviceInfoStore();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const nextButtonData: Ibutton = {
     size: "XL",
@@ -31,9 +32,7 @@ export default function ServiceStep4Page() {
     isOpen: isModalOpen,
     content: {
       title:
-        serviceDefaultData.serviceTitle === ""
-          ? "프로젝트"
-          : serviceDefaultData.serviceTitle,
+        serviceInfo.serviceTitle === "" ? "프로젝트" : serviceInfo.serviceTitle,
       desc: [
         "기획안 파일을 생성 중이예요!",
         <br key="1" />,

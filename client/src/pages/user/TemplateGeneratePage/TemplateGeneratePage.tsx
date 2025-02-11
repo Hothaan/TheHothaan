@@ -1,4 +1,6 @@
 import { useParams } from "react-router-dom";
+/* store */
+import { projectIdStore } from "@store/projectIdStore";
 import { templateMapForCapture } from "@components/template/templateMapping";
 
 export default function TemplateGeneratePage() {

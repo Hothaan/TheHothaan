@@ -258,6 +258,7 @@ function NoticeGalleryBoard(prop: Inotice) {
               id={"noticeTitle" + index}
               activeEditor={activeEditor}
               setActiveEditor={setActiveEditor}
+              isWidth100={true}
             />
           ) : (
             <p css={style?.noticeTitle || notice_title_option_image_css_}>

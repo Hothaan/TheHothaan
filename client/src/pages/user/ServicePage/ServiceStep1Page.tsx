@@ -1,18 +1,19 @@
 /** @jsxImportSource @emotion/react */
-import { css, CSSObject } from "@emotion/react";
+import { css } from "@emotion/react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+/* components */
 import { ItextField } from "@components/common/form/TextField";
 import TextField from "@components/common/form/TextField";
 import { ItextArea } from "@components/common/form/TextArea";
 import TextArea from "@components/common/form/TextArea";
-import { serviceStepStore, TserviceStep } from "@store/serviceStepStore";
-import {
-  serviceDefaultDataStore,
-  TserviceDefaultData,
-} from "@store/serviceDefaultDataStore";
 import { Ibutton } from "@components/common/button/Button";
 import Button from "@components/common/button/Button";
+/* store */
+import { serviceInfoStore } from "@store/serviceInfoStore";
+import { serviceStepStore, TserviceStep } from "@store/serviceStepStore";
+/* hooks */
+import { useStep2to1 } from "@hooks/backStep";
 
 export interface IserviceInfo {
   serviceTitle: string;
@@ -25,14 +26,10 @@ interface IformData {
 }
 
 export default function ServiceStep1Page() {
-  const [serviceInfo, setserviceInfo] = useState<TserviceDefaultData | null>(
-    null
-  );
+  const { serviceInfo, setServiceInfo } = serviceInfoStore();
   const { steps, setSteps } = serviceStepStore();
-  const [formData, setFormData] = useState<IformData>({
-    serviceTitle: "",
-    serviceDesc: "",
-  });
+  const step2to1 = useStep2to1();
+  const [formData, setFormData] = useState<IformData>(serviceInfo);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -40,16 +37,7 @@ export default function ServiceStep1Page() {
   const [currentStep, setCurrentStep] = useState<number>(1);
 
   useEffect(() => {
-    if (sessionStorage.getItem("serviceInfo") !== null) {
-      let sessionData = JSON.parse(
-        sessionStorage.getItem("serviceInfo") as string
-      );
-      setFormData({
-        serviceTitle: sessionData.serviceTitle,
-        serviceDesc: sessionData.serviceDesc,
-      });
-      setserviceInfo(sessionData);
-    }
+    step2to1();
   }, []);
 
   function handleNavigation(path: string) {
@@ -74,14 +62,7 @@ export default function ServiceStep1Page() {
   }
 
   function saveDataInStore(formData: IformData) {
-    sessionStorage.setItem(
-      "serviceInfo",
-      JSON.stringify({
-        ...serviceInfo,
-        serviceTitle: formData.serviceTitle,
-        serviceDesc: formData.serviceDesc,
-      })
-    );
+    setServiceInfo(formData);
   }
 
   const prevButtonData: Ibutton = {
@@ -93,6 +74,7 @@ export default function ServiceStep1Page() {
     },
     disabled: false,
   };
+
   const nextButtonData: Ibutton = {
     size: "XL",
     bg: "gradient",

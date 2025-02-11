@@ -20,36 +20,43 @@ import { ReactComponent as Download } from "@svgs//common/download.svg";
 import { generateFiles } from "@api/project/generateFiles";
 import { getFeatureData } from "@api/project/getFeatureData";
 /* store */
+import { projectIdStore } from "@store/projectIdStore";
+import { serviceInfoStore } from "@store/serviceInfoStore";
+import { serviceDataStore } from "@store/serviceDataStore";
 import { imageNameStore } from "@store/imageNameStore";
 import { imageUrlStore } from "@store/imageUrlStore";
+import { pngStore } from "@store/pngStore";
+import { jpgStore } from "@store/jpgStore";
+import { pdfStore } from "@store/pdfStore";
+import { featureDataStore } from "@store/featureDataStore";
+
 /* etc */
 import axios from "axios";
-import { IserviceInfo } from "./ServiceStep1Page";
-import { IserviceData } from "./ServiceStep2Page";
-import { TimageName, TimageUrl } from "./ServiceStep4Page";
 import { IfetchedfeatureResponseData } from "@components/template/types";
 
 export type Tformat = "pdf" | "png" | "jpg";
 export default function ServiceStep5Page() {
   const isProduction = true; //임시
-  // const projectId = "395"; //임시
-  const [projectId, setProjectId] = useState<string | null>(null);
-
+  const { projectId, setProjectId } = projectIdStore();
+  const { serviceInfo, setServiceInfo } = serviceInfoStore();
+  const { serviceData, setServiceData } = serviceDataStore();
   const location = useLocation();
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isLoadingModalOpen, setIsLoadingModalOpen] = useState(false);
   const [isFullpageModalOpen, setIsFullpageModalOpen] = useState(false);
-  const [featureData, setFeatureData] = useState<
-    IfetchedfeatureResponseData[] | null
-  >(null);
-  const [serviceDefaultData, setServiceDefaultData] =
-    useState<IserviceData | null>(null);
+  const { featureData, setFeatureData } = featureDataStore();
+  // const [featureData, setFeatureData] = useState<
+  //   IfetchedfeatureResponseData[] | null
+  // >(null);
   const [listData, setListData] = useState<string[]>([]);
   const [selectedIdx, setSelectedIdx] = useState<number>(0);
   const [selectedItem, setSelectedItem] = useState<string>(listData[0]);
   const { imageName, setImageName } = imageNameStore();
   const { imageUrl, setImageUrl } = imageUrlStore();
+  const { png, setPng } = pngStore();
+  const { jpg, setJpg } = jpgStore();
+  const { pdf, setPdf } = pdfStore();
   const [isFail, setIsFail] = useState(false);
 
   async function fetchFeatureData(isProduction: boolean, projectId: string) {
@@ -73,20 +80,11 @@ export default function ServiceStep5Page() {
     }
   }
 
-  console.log(selectedIdx);
-
   useEffect(() => {
     if (projectId) {
       fetchFeatureData(isProduction, projectId);
     }
   }, [projectId]);
-
-  useEffect(() => {
-    const sessionData = sessionStorage.getItem("projectId");
-    if (sessionData) {
-      setProjectId(JSON.parse(sessionData));
-    }
-  }, []);
 
   function handleChangeisFullpageModalOpen(isFullpageModalOpen: boolean) {
     setIsFullpageModalOpen(isFullpageModalOpen);
@@ -152,16 +150,41 @@ export default function ServiceStep5Page() {
       return;
     }
     setIsLoadingModalOpen(true);
-    const localData = localStorage.getItem(format);
-    if (localData) {
-      downloadFile(localData);
+    const alreadyDownloaded = (): string | null => {
+      switch (format) {
+        case "pdf":
+          return pdf ? pdf : null;
+        case "png":
+          return png ? png : null;
+        case "jpg":
+          return jpg ? jpg : null;
+        default:
+          return null;
+      }
+    };
+    // const localData = localStorage.getItem(format);
+    if (typeof alreadyDownloaded === "string") {
+      downloadFile(alreadyDownloaded);
     } else {
       try {
         const response = await generateFiles(isProduction, projectId, format);
         if (response.status === 200) {
           const domain = "dolllpitoxic3.mycafe24.com";
           const url = "http://" + domain + response.data.downloadUrl;
-          localStorage.setItem(format, url);
+          switch (format) {
+            case "pdf":
+              setPdf(url);
+              break;
+            case "png":
+              setPng(url);
+              break;
+            case "jpg":
+              setJpg(url);
+              break;
+            default:
+              break;
+          }
+          // localStorage.setItem(format, url);
           downloadFile(url);
         }
       } catch (error) {
@@ -211,15 +234,6 @@ export default function ServiceStep5Page() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
-
-  const [serviceInfo, setServiceInfo] = useState<IserviceInfo | null>(null);
-
-  useEffect(() => {
-    const sessionData = sessionStorage.getItem("serviceInfo");
-    if (sessionData) {
-      setServiceInfo(JSON.parse(sessionData));
-    }
   }, []);
 
   const loadingModal: IloadingModal = {
@@ -290,8 +304,7 @@ export default function ServiceStep5Page() {
           imageUrlArr={imageUrl}
           imageNameArr={imageName}
           projectType={
-            (serviceDefaultData && serviceDefaultData.serviceType.text) ||
-            "쇼핑몰"
+            (serviceData && serviceData.serviceType.text) || "자유형"
           }
           listData={listData}
           selectedIdx={selectedIdx}

@@ -71,7 +71,7 @@ export const product_detail_product_desc_css_: CSSObject = {
   overflow: "hidden",
   textOverflow: "ellipsis",
   height: "100px",
-  WebkitLineClamp: "2",
+  WebkitLineClamp: "4",
 };
 
 export const product_detail_more_product__option_main_title_css: CSSObject = {
@@ -124,11 +124,13 @@ function ProductDetailInfo(prop: IproductDetail) {
   const top_info_container = css`
     display: flex;
     width: 100%;
-    height: 100%;
+    // height: 100%;
+    height: auto;
     flex-direction: column;
     align-items: flex-start;
     align-self: stretch;
-    gap: 50px;
+    // gap: 50px;
+    justify-content: space-between;
   `;
 
   const breadCrumble_container = css`
@@ -323,7 +325,7 @@ function ProductDetailInfo(prop: IproductDetail) {
             <EditableText
               text={content.productDetailProductDesc}
               className="productDetailProductDesc"
-              isTextArea={false}
+              isTextArea={true}
               defaultCss={style.productDetailProductDesc}
               onChangeText={(key, value) => onChangeContent(key, value)}
               onChangeCss={(key, value) => onChangeStyle(key, value)}
@@ -666,7 +668,6 @@ export default function ProductDetail(prop: IproductDetail) {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 50px;
   `;
 
   if (

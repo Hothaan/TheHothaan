@@ -81,6 +81,7 @@ const choose_device = (isDisabled?: boolean) => css`
   border: 2px solid transparent;
 
   transition: 0.3s ease;
+  cursor: ${isDisabled ? "default" : "pointer"};
 
   &:hover {
     background: ${isDisabled ? "#d0d0d0" : " #eef7fd"};

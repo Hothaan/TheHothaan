@@ -1,4 +1,6 @@
 import { useParams } from "react-router-dom";
+/* store */
+import { projectIdStore } from "@store/projectIdStore";
 import { useState, useEffect } from "react";
 
 /* component */
@@ -20,6 +22,7 @@ export default function ShoppingMallFindId() {
 
   const { isProduction } = useIsProduction();
   const { projectId } = useParams();
+  const { projectId: storedProjectId, setProjectId } = projectIdStore();
   const [projectIdValue, setProjectIdValue] = useState<string | null>(null);
   const [headerData, setHeaderData] = useState<Iheader | null>(null);
   const [generatedText, setGeneratedText] = useState<IgeneratedText | null>(
@@ -57,11 +60,11 @@ export default function ShoppingMallFindId() {
 
   useEffect(() => {
     if (projectId === undefined) {
-      setProjectIdValue(sessionStorage.getItem("projectId"));
+      setProjectIdValue(storedProjectId); // Zustand에서 가져온 값 사용
     } else {
       setProjectIdValue(projectId);
     }
-  }, [projectId]);
+  }, [projectId, storedProjectId]);
 
   useEffect(() => {
     if (projectIdValue) {

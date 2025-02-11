@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css, CSSObject } from "@emotion/react";
+import { css } from "@emotion/react";
 import { useState, useEffect, useRef } from "react";
 /* components */
 import { IloadingModal } from "@components/common/ui/Modal/LoadingModal";
@@ -12,21 +12,17 @@ import NavigationEditable from "../navigation/NavigationEditable";
 /* svgs */
 import { ReactComponent as LogoLight } from "@svgs/common/logoLight.svg";
 /* store */
-import { TserviceDefaultData } from "@store/serviceDefaultDataStore";
+import { serviceInfoStore } from "@store/serviceInfoStore";
+import { serviceDataStore } from "@store/serviceDataStore";
 import { imageNameStore } from "@store/imageNameStore";
 import { imageUrlStore } from "@store/imageUrlStore";
-/* hooks */
-import useIsProduction from "@hooks/useIsProduction";
+import { projectIdStore } from "@store/projectIdStore";
+import { featureDataStore } from "@store/featureDataStore";
 /* api */
 import { getFeatureData } from "@api/project/getFeatureData";
 import { updateFeatureData } from "@api/project/updateFeatureData";
 import { saveImageDb } from "@api/image/saveImageDb";
-import { generateFiles } from "@api/project/generateFiles";
 /* etc */
-import {
-  TimageName,
-  TimageUrl,
-} from "@pages/user/ServicePage/ServiceStep4Page";
 import { AxiosResponse } from "axios";
 
 interface IFullPageModal {
@@ -47,39 +43,32 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
     imageNameArr,
     projectType,
     listData,
+    featureData,
     selectedItem,
     isOpen,
     onClick,
     setSelectedItem,
   } = prop;
 
-  const [projectId, setProjectId] = useState<string | null>(null);
+  const { serviceInfo, setServiceInfo } = serviceInfoStore();
+  const { serviceData, setServiceData } = serviceDataStore();
+  const { projectId, setProjectId } = projectIdStore();
   const { imageName, setImageName } = imageNameStore();
   const { imageUrl, setImageUrl } = imageUrlStore();
   const [isInitalToast, setisInitalToast] = useState(true);
   const [isSavedToast, setisSavedToast] = useState(false);
-  const [featureData, setFeatureData] = useState<
+  const [instance, setInstance] = useState<
     IfetchedfeatureResponseData[] | null
-  >(null);
+  >(featureData);
+  const { setFeatureData } = featureDataStore();
   const isProduction = true;
   const [isImageSaved, setIsImgageSaved] = useState<boolean>(false);
-  const [serviceDefaultData, setServiceDefaultData] =
-    useState<TserviceDefaultData | null>(null);
   const [isLoadingModalOpen, setIsLoadingModalOpen] = useState(false);
   const [templateKey, setTemplateKey] = useState<string>(
     `${projectType}-${selectedItem}`
   );
   const TemplateToRender = templateMapForCapture[templateKey];
   const [isFail, setIsFail] = useState(false);
-
-  useEffect(() => {
-    const sessionData = sessionStorage.getItem("projectId");
-    if (sessionData) {
-      setProjectId(JSON.parse(sessionData));
-    } else {
-      setIsFail(true);
-    }
-  }, []);
 
   const initialToast = {
     text: "✅ ESC를 누르거나 상단 우측 축소 버튼을 눌러 풀화면 화면 종료할 수 있어요.",
@@ -92,13 +81,6 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
     isToast: isSavedToast,
     setIsToast: setisSavedToast,
   };
-
-  useEffect(() => {
-    const sessionData = sessionStorage.getItem("serviceData");
-    if (sessionData) {
-      setServiceDefaultData(JSON.parse(sessionData));
-    }
-  }, []);
 
   useEffect(() => {
     setTemplateKey(`${projectType}-${selectedItem}`);
@@ -114,8 +96,6 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
       setIsLoadingModalOpen(true);
     },
   };
-
-  console.log(isOpen);
 
   useEffect(() => {
     if (!isOpen) {
@@ -145,11 +125,18 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
     }
   }
 
+  const isFirstRender = useRef(true);
+
   useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return; // 최초 렌더링 시에는 실행되지 않음
+    }
     if (featureData) {
       saveImages();
     }
   }, [featureData]);
+
   useEffect(() => {
     if (isImageSaved) {
       setIsLoadingModalOpen(false);
@@ -209,20 +196,14 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
   }
 
   async function saveImages() {
-    const projectId = sessionStorage.getItem("projectId");
-    if (
-      !projectId ||
-      !featureData ||
-      featureData.length === 0 ||
-      !serviceDefaultData
-    ) {
+    if (!projectId || !instance || instance.length === 0 || !serviceData) {
       console.error("Missing required data for saveImages");
       return;
     }
 
-    const projectType = serviceDefaultData.serviceType.text as string;
-    const featureId = featureData.map((item) => item.feature_id);
-    const parameterArr = featureData.map(
+    const projectType = serviceData.serviceType.text as string;
+    const featureId = instance.map((item) => item.feature_id);
+    const parameterArr = instance.map(
       (item) => `${projectType}-${item.feature}`
     );
     try {
@@ -367,8 +348,7 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
     isOpen: isLoadingModalOpen,
     bubble: "열심히 수정 중!",
     content: {
-      title:
-        (serviceDefaultData && serviceDefaultData.serviceTitle) || "프로젝트",
+      title: (serviceInfo && serviceInfo.serviceTitle) || "프로젝트",
       desc: [
         "기획안 파일을 수정 중이예요!",
         <br key="1" />,
@@ -402,7 +382,7 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
       <div css={wrap}>
         <div css={title_bar}>
           <LogoLight />
-          <p css={title}>{serviceDefaultData?.serviceTitle || "프로젝트"}</p>
+          <p css={title}>{serviceInfo?.serviceTitle || "프로젝트"}</p>
           <div css={button_wrap}>
             <div css={button_container}>
               <Button {...buttonSave} />

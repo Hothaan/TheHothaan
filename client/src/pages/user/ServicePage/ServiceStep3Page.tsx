@@ -2,9 +2,14 @@
 import { css, CSSObject } from "@emotion/react";
 import { useState, useEffect, useRef } from "react";
 /* store */
+import { projectIdStore } from "@store/projectIdStore";
 import { serviceStepStore } from "@store/serviceStepStore";
 import { imageNameStore } from "@store/imageNameStore";
 import { imageUrlStore } from "@store/imageUrlStore";
+import { serviceInfoStore } from "@store/serviceInfoStore";
+import { serviceDataStore } from "@store/serviceDataStore";
+import { projectDataStore } from "@store/projectDataStore";
+import { featureDataStore } from "@store/featureDataStore";
 /* components */
 import Loading from "@components/common/ui/Loading/loading";
 import { IloadingModal } from "@components/common/ui/Modal/LoadingModal";
@@ -17,6 +22,7 @@ import { IfetchedfeatureResponseData } from "@components/template/types";
 import useIsProduction from "@hooks/useIsProduction";
 import useNavigation from "@hooks/useNavigation";
 import useLocationControl from "@hooks/useLocationControl";
+import { useStep4to3 } from "@hooks/backStep";
 /* api */
 import {
   getServiceTypeMenu,
@@ -29,8 +35,6 @@ import { createProject } from "@api/project/createProject";
 import { generateText } from "@api/project/generateText";
 import { getFeatureData } from "@api/project/getFeatureData";
 /* etc */
-import { IserviceInfo } from "./ServiceStep1Page";
-import { IserviceData } from "./ServiceStep2Page";
 import { AxiosResponse } from "axios";
 
 /* 임시 */
@@ -62,67 +66,72 @@ export interface IsendData {
 
 export default function ServiceStep3Page() {
   const [isFail, setIsFail] = useState(false);
-  // const [generatedTextData, setGeneratedTextData] = useState<
-  //   IgeneratedText[] | null
-  // >(null);
   const { handleNavigation } = useNavigation();
   const { currentLocation } = useLocationControl();
   const totalStep = 5;
   const { steps, setSteps } = serviceStepStore();
+  const { projectId, setProjectId } = projectIdStore();
+  const { projectData, setProjectData } = projectDataStore();
   const { imageName, setImageName } = imageNameStore();
   const { imageUrl, setImageUrl } = imageUrlStore();
   const [currentStep, setCurrentStep] = useState<number>(2);
   const { isProduction } = useIsProduction();
-  // const isProduction = true;
-  const [featureData, setFeatureData] = useState<
+  const step4to3 = useStep4to3();
+  const [loading, setLoading] = useState(false);
+  const [prevFeatureData, setPrevFeatureData] = useState<
     IfetchedfeatureResponseData[] | null
   >(null);
-  const [loading, setLoading] = useState(false);
-  const [serviceInfo, setServiceInfo] = useState<IserviceInfo | null>(null);
-  const [serviceDefaultData, setServiceDefaultData] =
-    useState<IserviceData | null>(null);
+  const { featureData, setFeatureData } = featureDataStore();
+  const { serviceInfo, setServiceInfo } = serviceInfoStore();
+  const { serviceData, setServiceData } = serviceDataStore();
   const [formData, setFormData] = useState<TserviceTypeMenu | null>(null);
   const [sendData, setSendData] = useState<IsendData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  // const [isReady, setIsReady] = useState<boolean>(false);
   const [isImageSaved, setIsImgageSaved] = useState<boolean>(false);
+  const isFirstRenderProjectId = useRef(true);
+  const isFirstRenderFeatureData = useRef(true);
+  const [localProjectId, setLocalProjectId] = useState<string | null>(null);
 
   useEffect(() => {
-    const sessionData = sessionStorage.getItem("serviceData");
-    if (sessionData) {
-      setServiceDefaultData(JSON.parse(sessionData));
-    } else {
-      setIsFail(true);
-    }
+    setLocalProjectId(null);
   }, []);
 
   useEffect(() => {
-    const sessionData = sessionStorage.getItem("serviceInfo");
-    if (sessionData) {
-      setServiceInfo(JSON.parse(sessionData));
-    } else {
-      setIsFail(true);
+    console.log(localProjectId);
+    if (localProjectId) {
+      console.log("projectId changed, calling fetchGeneratedText...");
+      fetchGeneratedText();
     }
+  }, [localProjectId]);
+
+  // `projectId`가 변경될 때 상태 업데이트
+  useEffect(() => {
+    if (isFirstRenderProjectId.current) {
+      isFirstRenderProjectId.current = false;
+      return; // 최초 렌더링 시 실행 방지
+    }
+    setLocalProjectId(projectId);
+  }, [projectId]);
+
+  useEffect(() => {
+    step4to3();
   }, []);
 
-  // useEffect(() => {
-  //   const localData = localStorage.getItem("generatedTextData");
-  //   if (localData) {
-  //     setGeneratedTextData(JSON.parse(localData));
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (serviceInfo.serviceTitle === "" || serviceInfo.serviceDesc === "") {
+      setIsFail(true);
+    } else {
+      setIsFail(false);
+    }
+  }, [serviceInfo]);
 
   async function fetchServiceTypeMenu() {
-    if (
-      !loading &&
-      serviceDefaultData &&
-      serviceDefaultData.serviceType.number
-    ) {
+    if (!loading && serviceData && serviceData.serviceType.number) {
       setLoading(true);
       try {
         const response = await getServiceTypeMenu(
           isProduction,
-          serviceDefaultData.serviceType.number
+          serviceData.serviceType.number
         );
         if (response.status === 200) {
           setFormData(
@@ -147,18 +156,28 @@ export default function ServiceStep3Page() {
   }
 
   useEffect(() => {
-    if (serviceDefaultData) {
-      const sessionData = sessionStorage.getItem("projectData(formData)");
-      if (sessionData) {
-        const parsedData = JSON.parse(sessionData);
-        setFormData(parsedData);
+    if (
+      serviceData &&
+      serviceData.device.number &&
+      serviceData.device.text &&
+      serviceData.serviceType.number &&
+      serviceData.serviceType.text
+    ) {
+      if (projectData) {
+        setFormData(projectData);
       } else {
         fetchServiceTypeMenu();
       }
+    } else {
+      setIsFail(true);
     }
-  }, [serviceDefaultData]);
+  }, [serviceData]);
 
   useEffect(() => {
+    if (isFirstRenderFeatureData.current) {
+      isFirstRenderFeatureData.current = false;
+      return;
+    }
     if (featureData) {
       console.log("Generated text data has changed, calling saveImages...");
       saveImages();
@@ -266,7 +285,7 @@ export default function ServiceStep3Page() {
   }
 
   function makeSendData(formData: TserviceTypeMenu | null): void {
-    if (serviceDefaultData && serviceInfo) {
+    if (serviceData && serviceInfo) {
       const data = {
         user_email: "test@test.com",
         project_name: serviceInfo.serviceTitle,
@@ -274,11 +293,11 @@ export default function ServiceStep3Page() {
         selections: [
           {
             type: "device",
-            value: serviceDefaultData.device.text,
+            value: serviceData.device.text,
           },
           {
             type: "service",
-            value: serviceDefaultData.serviceType.text,
+            value: serviceData.serviceType.text,
           },
         ],
       };
@@ -316,28 +335,33 @@ export default function ServiceStep3Page() {
       try {
         const response = await createProject(isProduction, sendData);
         if (response.statusText === "Created") {
-          sessionStorage.setItem("projectId", response.data.projectId);
-          sessionStorage.setItem(
-            "projectData(formData)",
-            JSON.stringify(formData)
-          );
-          sessionStorage.setItem(
-            "projectData(sendData)",
-            JSON.stringify(sendData)
-          );
+          setProjectId(response.data.projectId);
+          if (formData) {
+            setProjectData(formData);
+          }
         }
       } catch (error) {
         console.error("API 요청 실패:", error);
         // window.location.href = "/error";
       } finally {
-        fetchGeneratedText();
+        // fetchGeneratedText();
       }
     }
   }
 
-  async function fetchGeneratedText() {
-    const projectId = sessionStorage.getItem("projectId");
+  // useEffect(() => {
+  //   if (isFirstRender.current) {
+  //     isFirstRender.current = false;
+  //     return;
+  //   }
+  //   console.log(projectId);
+  //   if (projectId) {
+  //     console.log("projectId changed, calling fetchGeneratedText...");
+  //     fetchGeneratedText();
+  //   }
+  // }, [projectId]);
 
+  async function fetchGeneratedText() {
     if (!projectId || isNaN(parseInt(projectId))) {
       console.error("Invalid or missing projectId:", projectId);
       return;
@@ -403,18 +427,17 @@ export default function ServiceStep3Page() {
   }
 
   async function saveImages() {
-    const projectId = sessionStorage.getItem("projectId");
     if (
       !projectId ||
       !featureData ||
       featureData.length === 0 ||
-      !serviceDefaultData
+      !serviceData
     ) {
       console.error("Missing required data for saveImages");
       return;
     }
 
-    const projectType = serviceDefaultData.serviceType.text as string;
+    const projectType = serviceData.serviceType.text as string;
     const featureId = featureData.map((item) => item.feature_id);
     const parameterArr = featureData.map(
       (item) => `${projectType}-${item.feature}`

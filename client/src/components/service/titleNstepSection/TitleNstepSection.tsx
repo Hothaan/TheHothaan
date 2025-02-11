@@ -1,13 +1,14 @@
 /** @jsxImportSource @emotion/react */
-import { css, CSSObject } from "@emotion/react";
+import { css } from "@emotion/react";
 import React from "react";
 import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { ReactComponent as ChevRight } from "@svgs//service/chevRight.svg";
 import { IbuttonStep } from "@components/service/button/ButtonStep";
 import ButtonStep from "@components/service/button/ButtonStep";
-import { serviceDefaultDataStore } from "@store/serviceDefaultDataStore";
 import { renderWithKeys } from "@hooks/renderWidthKeys";
+/* store */
+import { serviceInfoStore } from "@store/serviceInfoStore";
 
 export default function TitleNstepSection() {
   const location = useLocation();
@@ -45,11 +46,17 @@ export default function TitleNstepSection() {
   const activeStep = stepData.find((step) => step.status === "active");
 
   useEffect(() => {
-    const { serviceDefaultData } = serviceDefaultDataStore.getState();
-    const serviceInfo = sessionStorage.getItem("serviceInfo");
-    const serviceTitle = serviceInfo
-      ? JSON.parse(serviceInfo).serviceTitle
-      : null;
+    const { serviceInfo } = serviceInfoStore.getState();
+    const serviceTitle = (serviceInfo: {
+      serviceTitle: string;
+      serviceDesc: string;
+    }): string => {
+      if (serviceInfo.serviceTitle !== "") {
+        return serviceInfo.serviceTitle;
+      } else {
+        return "프로젝트";
+      }
+    };
     const currentStep = parseInt(location.pathname.slice(-1));
     const newStepData = [...stepData];
 
@@ -57,7 +64,7 @@ export default function TitleNstepSection() {
       if (step.step === 4) {
         step.title = [
           <span css={gradient_text} key="1">
-            {serviceTitle ? serviceTitle : "프로젝트"}
+            {serviceTitle(serviceInfo)}
           </span>,
           <span key="2"> 화면을 구성해봤어요.</span>,
           <br key="3" />,
@@ -67,7 +74,7 @@ export default function TitleNstepSection() {
       if (step.step === 5) {
         step.title = [
           <span css={gradient_text} key="1">
-            {serviceTitle ? serviceTitle : "프로젝트"}
+            {serviceTitle(serviceInfo)}
           </span>,
           <span key="2"> 기획안 파일이 생성되었어요 👀🎉</span>,
         ];

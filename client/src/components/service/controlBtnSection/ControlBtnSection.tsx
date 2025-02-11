@@ -1,10 +1,9 @@
 /** @jsxImportSource @emotion/react */
-import { css, CSSObject } from "@emotion/react";
+import { css } from "@emotion/react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { serviceStepStore, TserviceStep } from "@store/serviceStepStore";
 import { Ibutton } from "@components/common/button/Button";
-import { serviceDefaultDataStore } from "@store/serviceDefaultDataStore";
 import Button from "@components/common/button/Button";
 
 export default function ControlBtnSection() {

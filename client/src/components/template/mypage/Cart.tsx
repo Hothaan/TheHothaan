@@ -187,16 +187,19 @@ function CartOrder(prop: Icart) {
   `;
 
   const product_item = css`
+    width: 100%;
     display: flex;
     align-items: start;
     justify-content: space-between;
   `;
 
   const checkbox = css`
+    flex-shrink: 0;
     margin-right: 13px;
   `;
 
   const product_info_container = css`
+    width: 100%;
     padding-top: 9px;
     margin-left: 20px;
   `;
@@ -208,6 +211,7 @@ function CartOrder(prop: Icart) {
   `;
 
   const product_item_inner_container = css`
+    width: 100%;
     display: flex;
   `;
 

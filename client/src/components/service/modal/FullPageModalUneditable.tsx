@@ -1,18 +1,12 @@
 /** @jsxImportSource @emotion/react */
-import { css, CSSObject } from "@emotion/react";
-import { useState, useEffect } from "react";
-import { IloadingModal } from "@components/common/ui/Modal/LoadingModal";
-import LoadingModal from "@components/common/ui/Modal/LoadingModal";
-import { serviceDefaultDataStore } from "@store/serviceDefaultDataStore";
+import { css } from "@emotion/react";
+import { useState } from "react";
 import ToastPopup from "@components/common/ui/ToastPopup/ToastPopup";
 import { ReactComponent as LogoLight } from "@svgs//common/logoLight.svg";
 import { ReactComponent as Minimize } from "@svgs//common/buttonMinimizePage.svg";
-import Button, { Ibutton } from "@components/common/button/Button";
-import NavigationUnEditable, {
-  INavigationUnEditable,
-} from "../navigation/NavigationUnEditable";
+import NavigationUnEditable from "../navigation/NavigationUnEditable";
 /* store */
-import { TserviceDefaultData } from "@store/serviceDefaultDataStore";
+import { serviceInfoStore } from "@store/serviceInfoStore";
 
 interface IFullPageModal {
   imageUrlArr: string[] | null;
@@ -39,16 +33,8 @@ export default function FullPageModalUneditable(prop: IFullPageModal) {
     setSelectedIdx,
   } = prop;
   const [isToast, setIsToast] = useState(true);
+  const { serviceInfo, setServiceInfo } = serviceInfoStore();
   const [isNaviOpen, setIsNaviOpen] = useState<boolean>(false);
-  const [serviceDefaultData, setServiceDefaultData] =
-    useState<TserviceDefaultData | null>(null);
-
-  useEffect(() => {
-    const sessionData = sessionStorage.getItem("serviceData");
-    if (sessionData) {
-      setServiceDefaultData(JSON.parse(sessionData));
-    }
-  }, []);
 
   const toast = {
     text: "✅ ESC를 누르거나 상단 우측 축소 버튼을 눌러 풀화면 화면 종료할 수 있어요.",
@@ -76,7 +62,7 @@ export default function FullPageModalUneditable(prop: IFullPageModal) {
       <div css={wrap}>
         <div css={title_bar}>
           <LogoLight />
-          <p css={title}>{serviceDefaultData?.serviceTitle || "프로젝트"}</p>
+          <p css={title}>{serviceInfo?.serviceTitle || "프로젝트"}</p>
           <div css={button_wrap}>
             <button
               type="button"

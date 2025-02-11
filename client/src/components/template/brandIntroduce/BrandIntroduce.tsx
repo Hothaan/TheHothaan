@@ -40,6 +40,43 @@ interface IbrandIntroduce {
   setActiveEditor?: (classname?: string) => void;
 }
 
+export const brandIntroduce_banner_title_css: CSSObject = {
+  marginBottom: "30px",
+  color: "#486284",
+  fontFamily: "Inter",
+  fontSize: "96px",
+  fontStyle: "normal",
+  fontWeight: "900",
+  lineHeight: "150%",
+  textTransform: "capitalize",
+  textAlign: "center",
+
+  width: "100%",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+};
+
+export const brandIntroduce_banner_desc_css: CSSObject = {
+  textAlign: "center",
+  wordBreak: "keep-all",
+  color: "#486284",
+  fontFamily: "Inter",
+  fontSize: "32px",
+  fontStyle: "normal",
+  fontWeight: "400",
+  lineHeight: "normal",
+  // maxWidth: "676px",
+
+  width: "100%",
+  display: "-webkit-box",
+  WebkitBoxOrient: "vertical",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  height: "80px",
+  WebkitLineClamp: "2",
+};
+
 export const brandIntroduce_item_title_css: CSSObject = {
   color: "#486284",
   fontFamily: "Inter",
@@ -70,42 +107,6 @@ export const brandIntroduce_item_desc_css: CSSObject = {
   textOverflow: "ellipsis",
   height: "312px",
   WebkitLineClamp: "6",
-};
-
-export const brandIntroduce_banner_title_css: CSSObject = {
-  marginBottom: "30px",
-  color: "#486284",
-  fontFamily: "Inter",
-  fontSize: "96px",
-  fontStyle: "normal",
-  fontWeight: "900",
-  lineHeight: "150%",
-  textTransform: "capitalize",
-  textAlign: "center",
-
-  width: "100%",
-  overflow: "hidden",
-  textOverflow: "ellipsis",
-  whiteSpace: "nowrap",
-};
-
-export const brandIntroduce_banner_desc_css: CSSObject = {
-  textAlign: "center",
-  wordBreak: "keep-all",
-  color: "#486284",
-  fontFamily: "Inter",
-  fontSize: "32px",
-  fontStyle: "normal",
-  fontWeight: "400",
-  lineHeight: "normal",
-  maxWidth: "676px",
-
-  display: "-webkit-box",
-  WebkitBoxOrient: "vertical",
-  overflow: "hidden",
-  textOverflow: "ellipsis",
-  height: "100px",
-  WebkitLineClamp: "2",
 };
 
 function BrandIntroduceItem(prop: IbrandIntroduce) {

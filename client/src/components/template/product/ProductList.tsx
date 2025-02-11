@@ -332,10 +332,11 @@ export default function ProductList(prop: IproductList) {
 
   const handleEditContent = useCallback(
     (key: string, value: string) => {
-      setEditableContent((prev: any) => {
-        if (prev[key] === value) return prev; // 값이 동일하면 업데이트 안 함
-        return { ...prev, [key]: value };
-      });
+      setEditableContent((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+
       onChangeContent?.(key, value);
     },
     [onChangeContent]

@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
+import { createPortal } from "react-dom";
 import { useState, useRef, useLayoutEffect, useEffect } from "react";
 import {
   TselectableColor,
@@ -231,81 +232,99 @@ export default function EditableText(prop: IeditableText) {
     },
   };
 
-  const Toolbar: React.FC = () => (
-    <div
-      css={toolbar}
-      onMouseLeave={() => {
-        // setIsEditing(false);
-      }}
-    >
-      <div css={font_container}>
-        <DropDown {...fontFamilyDropDown} />
-        <DropDown {...fontSizeDropDown} />
-      </div>
-      <div css={deco_container}>
-        <button
-          onClick={() => {
-            handleChangeStyle("fontWeight", "regular", "bold");
+  const Toolbar: React.FC = () => {
+    return createPortal(
+      <div
+        ref={toolbarRef}
+        style={{
+          // position: "absolute",
+          position: "fixed",
+          bottom: "40px",
+          left: "50%",
+          transform: `translateX(-50%)`,
+          zIndex: 100,
+          // top: `${toolbarPosition.top}px`,
+          // left: `${toolbarPosition.left}px`,
+          // transform: toolbarTransform,
+        }}
+      >
+        <div
+          css={toolbar}
+          onMouseLeave={() => {
+            // setIsEditing(false);
           }}
-          css={button}
         >
-          <Bold />
-        </button>
-        <button
-          onClick={() => {
-            handleChangeStyle("fontStyle", "normal", "italic");
-          }}
-          css={button}
-        >
-          <Italic />
-        </button>
-        <button
-          onClick={() => {
-            handleChangeStyle("textDecoration", "none", "line-through");
-          }}
-          css={button}
-        >
-          <CancleLine />
-        </button>
-        <button
-          onClick={() => {
-            handleChangeStyle("textDecoration", "none", "underline");
-          }}
-          css={button}
-        >
-          <UnderLine />
-        </button>
-        <ColorPicker {...colorPicker} />
-      </div>
-      <span css={divider}></span>
-      <div css={align_container}>
-        <button
-          onClick={() => {
-            handleChangeStyle("textAlign", "left", "left");
-          }}
-          css={button}
-        >
-          <TextAlignLeft />
-        </button>
-        <button
-          onClick={() => {
-            handleChangeStyle("textAlign", "left", "center");
-          }}
-          css={button}
-        >
-          <TextAlignCenter />
-        </button>
-        <button
-          onClick={() => {
-            handleChangeStyle("textAlign", "left", "right");
-          }}
-          css={button}
-        >
-          <TextAlignRight />
-        </button>
-      </div>
-    </div>
-  );
+          <div css={font_container}>
+            <DropDown {...fontFamilyDropDown} />
+            <DropDown {...fontSizeDropDown} />
+          </div>
+          <div css={deco_container}>
+            <button
+              onClick={() => {
+                handleChangeStyle("fontWeight", "regular", "bold");
+              }}
+              css={button}
+            >
+              <Bold />
+            </button>
+            <button
+              onClick={() => {
+                handleChangeStyle("fontStyle", "normal", "italic");
+              }}
+              css={button}
+            >
+              <Italic />
+            </button>
+            <button
+              onClick={() => {
+                handleChangeStyle("textDecoration", "none", "line-through");
+              }}
+              css={button}
+            >
+              <CancleLine />
+            </button>
+            <button
+              onClick={() => {
+                handleChangeStyle("textDecoration", "none", "underline");
+              }}
+              css={button}
+            >
+              <UnderLine />
+            </button>
+            <ColorPicker {...colorPicker} />
+          </div>
+          <span css={divider}></span>
+          <div css={align_container}>
+            <button
+              onClick={() => {
+                handleChangeStyle("textAlign", "left", "left");
+              }}
+              css={button}
+            >
+              <TextAlignLeft />
+            </button>
+            <button
+              onClick={() => {
+                handleChangeStyle("textAlign", "left", "center");
+              }}
+              css={button}
+            >
+              <TextAlignCenter />
+            </button>
+            <button
+              onClick={() => {
+                handleChangeStyle("textAlign", "left", "right");
+              }}
+              css={button}
+            >
+              <TextAlignRight />
+            </button>
+          </div>
+        </div>
+      </div>,
+      document.body
+    );
+  };
 
   if (!text) {
     return <></>;
@@ -318,27 +337,14 @@ export default function EditableText(prop: IeditableText) {
         width: isWidth100 ? "100%" : "auto",
         display: isWidth100 ? "flex" : "block",
         justifyContent: justifyContent || "start",
+        transform: "none",
+        perspective: "none",
+        filter: "none",
+        contain: "none",
       }}
       ref={divRef}
     >
-      {isEditing && (
-        <div
-          ref={toolbarRef}
-          style={{
-            // position: "absolute",
-            position: "fixed",
-            bottom: "40px",
-            left: "50%",
-            transform: `translateX(-50%)`,
-            zIndex: 100,
-            // top: `${toolbarPosition.top}px`,
-            // left: `${toolbarPosition.left}px`,
-            // transform: toolbarTransform,
-          }}
-        >
-          <Toolbar />
-        </div>
-      )}
+      {isEditing && <Toolbar />}
       {isTextArea ? (
         <textarea
           // id={id}

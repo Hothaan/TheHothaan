@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css, CSSObject } from "@emotion/react";
+import { css } from "@emotion/react";
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 /* components */
@@ -19,21 +19,21 @@ import ButtonArrowIconControler, {
 import Loading from "@components/common/ui/Loading/loading";
 import { IfetchedfeatureResponseData } from "@components/template/types";
 /* store */
+import { projectIdStore } from "@store/projectIdStore";
+import { serviceInfoStore } from "@store/serviceInfoStore";
+import { serviceDataStore } from "@store/serviceDataStore";
 import { imageNameStore } from "@store/imageNameStore";
 import { imageUrlStore } from "@store/imageUrlStore";
+import { featureDataStore } from "@store/featureDataStore";
 /* api */
 import { getFeatureData } from "@api/project/getFeatureData";
-import { generateFiles } from "@api/project/generateFiles";
 /* svgs */
 import { ReactComponent as Edit } from "@svgs/service/edit.svg";
 import { ReactComponent as Preview } from "@svgs/service/previewGray.svg";
 /* hooks */
 import useIsProduction from "@hooks/useIsProduction";
 import useNavigation from "@hooks/useNavigation";
-/* etc */
-import { IserviceData } from "./ServiceStep2Page";
-import { IserviceInfo } from "./ServiceStep1Page";
-import axios from "axios";
+import { useStep5to4 } from "@hooks/backStep";
 
 export type TimageName = {
   imageName: string;
@@ -51,22 +51,24 @@ export default function ServicePreviewPage() {
   const { handleNavigation } = useNavigation();
   // const { isProduction } = useIsProduction();
   const isProduction = true;
-  const [projectId, setProjectId] = useState<string | null>(null);
-  const [serviceInfo, setServiceInfo] = useState<IserviceInfo | null>(null);
-  const [serviceDefaultData, setServiceDefaultData] =
-    useState<IserviceData | null>(null);
+  const { projectId, setProjectId } = projectIdStore();
+  const { serviceInfo, setServiceInfo } = serviceInfoStore();
+  const { serviceData, setServiceData } = serviceDataStore();
   const [listData, setListData] = useState<string[]>([]);
   const [isFullpageModalOpen, setIsFullpageModalOpen] = useState(false);
   const [isLoadingModalOpen, setIsLoadingModalOpen] = useState(false);
   const navigate = useNavigate();
+  const step5to4 = useStep5to4();
   const { imageName, setImageName } = imageNameStore();
   const { imageUrl, setImageUrl } = imageUrlStore();
-  const [featureData, setFeatureData] = useState<
-    IfetchedfeatureResponseData[] | null
-  >(null);
+  const { featureData, setFeatureData } = featureDataStore();
   const [currentIdx, setCurrentIdx] = useState<number>(0);
   const [selectedItem, setSelectedItem] = useState<string>(listData[0]);
   const [isFail, setIsFail] = useState(false);
+
+  useEffect(() => {
+    step5to4();
+  }, []);
 
   async function fetchFeatureData(isProduction: boolean, projectId: string) {
     try {
@@ -90,30 +92,9 @@ export default function ServicePreviewPage() {
   }
 
   useEffect(() => {
-    const sessionData = sessionStorage.getItem("serviceInfo");
-    if (sessionData) {
-      setServiceInfo(JSON.parse(sessionData));
-    }
-  }, []);
-
-  useEffect(() => {
-    const sessionData = sessionStorage.getItem("serviceData");
-    if (sessionData) {
-      setServiceDefaultData(JSON.parse(sessionData));
-    }
-  }, []);
-
-  useEffect(() => {
-    const sessionData = sessionStorage.getItem("projectId");
-    if (sessionData) {
-      setProjectId(JSON.parse(sessionData));
-    } else {
+    if (!projectId) {
       setIsFail(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (projectId) {
+    } else {
       fetchFeatureData(isProduction, projectId);
     }
   }, [projectId]);
@@ -280,68 +261,11 @@ export default function ServicePreviewPage() {
     setSelectedItem(feature);
   }
 
-  // const [isFileGenerated, setIsFileGenerated] = useState<boolean>(false);
-
-  // useEffect(() => {
-  //   if (isLoadingModalOpen) {
-  //     generateTemplateFiles();
-  //   }
-  // }, [isLoadingModalOpen]);
-
-  // useEffect(() => {
-  //   if (isFileGenerated) {
-  //     setIsLoadingModalOpen(false);
-  //     navigate("/service/step5");
-  //   }
-  // }, [isFileGenerated]);
-
-  // async function generateTemplateFiles() {
-  //   if (!projectId) {
-  //     return;
-  //   }
-  //   try {
-  //     const pdfResponse = await generateFiles(isProduction, projectId, "pdf");
-  //     const pngResponse = await generateFiles(isProduction, projectId, "png");
-  //     const jpgResponse = await generateFiles(isProduction, projectId, "jpg");
-
-  //     if (pdfResponse.status === 200) {
-  //       const domain = "dolllpitoxic3.mycafe24.com";
-  //       const url = "http://" + domain + pdfResponse.data.downloadUrl;
-  //       localStorage.setItem("pdf", url);
-  //     } else {
-  //     }
-  //     if (pngResponse.status === 200) {
-  //       const domain = "dolllpitoxic3.mycafe24.com";
-  //       const url = "http://" + domain + pdfResponse.data.downloadUrl;
-  //       localStorage.setItem("png", url);
-  //     } else {
-  //     }
-  //     if (jpgResponse.status === 200) {
-  //       const domain = "dolllpitoxic3.mycafe24.com";
-  //       const url = "http://" + domain + pdfResponse.data.downloadUrl;
-  //       localStorage.setItem("jpg", url);
-  //     } else {
-  //     }
-
-  //     if (
-  //       pdfResponse.status === 200 &&
-  //       pdfResponse.status === 200 &&
-  //       pdfResponse.status === 200
-  //     ) {
-  //       setIsFileGenerated(true);
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //     // window.location.href = "/error";
-  //   } finally {
-  //   }
-  // }
-
   const fullPageModal = useMemo(
     () => ({
       imageUrlArr: imageUrl,
       imageNameArr: imageName,
-      projectType: serviceDefaultData?.serviceType?.text || "쇼핑몰",
+      projectType: serviceData?.serviceType?.text || "쇼핑몰",
       listData: listData,
       selectedItem: selectedItem,
       featureData: featureData,
@@ -353,7 +277,7 @@ export default function ServicePreviewPage() {
       isFullpageModalOpen,
       imageUrl,
       imageName,
-      serviceDefaultData,
+      serviceData,
       listData,
       selectedItem,
       featureData,

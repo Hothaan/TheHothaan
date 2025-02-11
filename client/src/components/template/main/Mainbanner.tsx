@@ -217,6 +217,7 @@ export default function Mainbanner(prop: ImainBanner) {
               id={"mainBannerTitle"}
               activeEditor={activeEditor}
               setActiveEditor={setActiveEditor}
+              isWidth100={true}
             />
           ) : (
             <p css={editableStyle.mainBannerTitle}>
