@@ -152,7 +152,13 @@ export default function ShoppingMallMain() {
     }
     return null;
   }
+
   function getLocalStyle() {
+    if (typeof window === "undefined") {
+      // 백엔드 환경에서는 localStorage를 사용할 수 없으므로 generatedText.style을 직접 반환
+      return generatedText?.style || null;
+    }
+
     const localContent = localStorage.getItem("changedStyle");
     if (localContent) {
       const parsed = JSON.parse(localContent);
@@ -160,14 +166,12 @@ export default function ShoppingMallMain() {
         return parsed[featureKey].style;
       }
     }
-    return null;
+
+    return generatedText?.style || null; // localStorage에 없으면 DB에서 가져온 값 사용
   }
 
   const [pageContent, setPageContent] =
     useState<IshoppingMallMainContent | null>(getLocalContent());
-  // const [pageContent, setPageContent] = useState<{
-  //   [key: string]: string;
-  // } | null>(getLocalContent());
   const [pageStyle, setPageStyle] = useState<IshoppingMallMainStyle | null>(
     getLocalStyle()
   );
@@ -231,17 +235,43 @@ export default function ShoppingMallMain() {
       if (!hasLocalContent && !pageContent) {
         updateInitialContent();
       }
+    }
+  }, [generatedText]);
 
-      const localStyle = localStorage.getItem("changedStyle");
+  // useEffect(() => {
+  //   if (generatedText) {
+  //     const localStyle = localStorage.getItem("changedStyle");
+  //     const hasLocalStyle = localStyle
+  //       ? JSON.parse(localStyle)?.[featureKey]?.style
+  //       : null;
+
+  //     if (generatedText.style) {
+  //       // DB에서 가져온 스타일이 있으면 그대로 적용
+  //       setPageStyle(generatedText.style);
+  //     } else if (!hasLocalStyle) {
+  //       // 로컬 저장된 스타일도 없으면 초기 스타일 적용
+  //       updateInitialStyle();
+  //     }
+  //   }
+  // }, [generatedText]);
+
+  useEffect(() => {
+    if (generatedText) {
+      const localStyle =
+        typeof window !== "undefined"
+          ? localStorage.getItem("changedStyle")
+          : null;
       const hasLocalStyle = localStyle
         ? JSON.parse(localStyle)?.[featureKey]?.style
         : null;
 
-      if (!hasLocalStyle && !pageStyle) {
-        updateInitialStyle();
+      // 백엔드 환경에서는 localStorage 사용하지 않고, generatedText.style을 직접 적용
+      if (typeof window === "undefined" || !hasLocalStyle) {
+        if (generatedText?.style !== undefined)
+          setPageStyle(generatedText?.style);
       }
     }
-  }, [generatedText, pageContent]);
+  }, [generatedText]);
 
   useEffect(() => {
     if (pageContent) {
@@ -299,7 +329,7 @@ export default function ShoppingMallMain() {
     setPageStyle({ ...pageStyle, [key]: value });
   }
 
-  if (!pageContent || !headerData) {
+  if (!pageContent || !headerData || !pageStyle) {
     return <Loading />;
   }
 

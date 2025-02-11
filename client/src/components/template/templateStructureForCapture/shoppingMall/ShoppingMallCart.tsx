@@ -39,9 +39,8 @@ export default function ShoppingMallCart() {
   const { projectId: storedProjectId, setProjectId } = projectIdStore();
   const [projectIdValue, setProjectIdValue] = useState<string | null>(null);
   const [headerData, setHeaderData] = useState<Iheader | null>(null);
-  const [generatedText, setGeneratedText] = useState<IgeneratedText | null>(
-    null
-  );
+  const [generatedText, setGeneratedText] =
+    useState<IfetchedfeatureResponseData | null>(null);
 
   async function fetchFeatureData(isProduction: boolean, projectId: string) {
     try {
@@ -135,7 +134,6 @@ export default function ShoppingMallCart() {
     setPageStyle({ ...initialStyle });
   }
 
-  //featureData가 들어오면 초기 콘텐츠와 스타일 업데이트
   useEffect(() => {
     if (generatedText) {
       const localContent = localStorage.getItem("changedContent");
@@ -143,16 +141,24 @@ export default function ShoppingMallCart() {
         ? JSON.parse(localContent)?.[featureKey]?.content
         : null;
 
-      if (!hasLocalContent) {
+      if (!hasLocalContent && !pageContent) {
         updateInitialContent();
       }
+    }
+  }, [generatedText]);
 
+  useEffect(() => {
+    if (generatedText) {
       const localStyle = localStorage.getItem("changedStyle");
       const hasLocalStyle = localStyle
         ? JSON.parse(localStyle)?.[featureKey]?.style
         : null;
 
-      if (!hasLocalStyle) {
+      if (generatedText.style) {
+        // DB에서 가져온 스타일이 있으면 그대로 적용
+        setPageStyle(generatedText.style);
+      } else if (!hasLocalStyle) {
+        // 로컬 저장된 스타일도 없으면 초기 스타일 적용
         updateInitialStyle();
       }
     }

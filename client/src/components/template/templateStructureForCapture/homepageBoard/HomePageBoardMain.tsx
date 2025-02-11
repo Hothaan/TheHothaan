@@ -265,17 +265,8 @@ export default function HomePageBoardMain() {
         ? JSON.parse(localContent)?.[featureKey]?.content
         : null;
 
-      if (!hasLocalContent) {
+      if (!hasLocalContent && !pageContent) {
         updateInitialContent();
-      }
-
-      const localStyle = localStorage.getItem("changedStyle");
-      const hasLocalStyle = localStyle
-        ? JSON.parse(localStyle)?.[featureKey]?.style
-        : null;
-
-      if (!hasLocalStyle) {
-        updateInitialStyle();
       }
     }
   }, [generatedText]);

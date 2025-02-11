@@ -16,4 +16,5 @@ export interface IfetchedfeatureResponseData {
   feature: string;
   content: any;
   option?: string | null;
+  style?: { [key: string]: { [key: string]: string } } | null;
 }

@@ -26,9 +26,8 @@ export default function ShoppingMallWidthDrawer() {
   const { projectId: storedProjectId, setProjectId } = projectIdStore();
   const [projectIdValue, setProjectIdValue] = useState<string | null>(null);
   const [headerData, setHeaderData] = useState<Iheader | null>(null);
-  const [generatedText, setGeneratedText] = useState<IgeneratedText | null>(
-    null
-  );
+  const [generatedText, setGeneratedText] =
+    useState<IfetchedfeatureResponseData | null>(null);
   async function fetchFeatureData(isProduction: boolean, projectId: string) {
     try {
       const response = await getFeatureData(isProduction, projectId);

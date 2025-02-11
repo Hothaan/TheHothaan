@@ -98,10 +98,8 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
   };
 
   useEffect(() => {
-    if (!isOpen) {
-      localStorage.removeItem("changedContent");
-      localStorage.removeItem("changedStyle");
-    }
+    localStorage.removeItem("changedContent");
+    localStorage.removeItem("changedStyle");
   }, [isOpen]);
 
   async function fetchFeatureData(isProduction: boolean, projectId: string) {

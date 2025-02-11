@@ -25,9 +25,8 @@ export default function IntermediaryMatchJoin() {
   const { projectId: storedProjectId, setProjectId } = projectIdStore();
   const [projectIdValue, setProjectIdValue] = useState<string | null>(null);
   const [headerData, setHeaderData] = useState<Iheader | null>(null);
-  const [generatedText, setGeneratedText] = useState<IgeneratedText | null>(
-    null
-  );
+  const [generatedText, setGeneratedText] =
+    useState<IfetchedfeatureResponseData | null>(null);
 
   /* 추가 */
 

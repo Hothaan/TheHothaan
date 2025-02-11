@@ -156,16 +156,24 @@ export default function ShoppingMallBrandIntroduce() {
         ? JSON.parse(localContent)?.[featureKey]?.content
         : null;
 
-      if (!hasLocalContent) {
+      if (!hasLocalContent && !pageContent) {
         updateInitialContent();
       }
+    }
+  }, [generatedText]);
 
+  useEffect(() => {
+    if (generatedText) {
       const localStyle = localStorage.getItem("changedStyle");
       const hasLocalStyle = localStyle
         ? JSON.parse(localStyle)?.[featureKey]?.style
         : null;
 
-      if (!hasLocalStyle) {
+      if (generatedText.style) {
+        // DB에서 가져온 스타일이 있으면 그대로 적용
+        setPageStyle(generatedText.style);
+      } else if (!hasLocalStyle) {
+        // 로컬 저장된 스타일도 없으면 초기 스타일 적용
         updateInitialStyle();
       }
     }
