@@ -10,6 +10,7 @@ import { serviceInfoStore } from "@store/serviceInfoStore";
 import { serviceDataStore } from "@store/serviceDataStore";
 import { projectDataStore } from "@store/projectDataStore";
 import { featureDataStore } from "@store/featureDataStore";
+import { imageDataStore } from "@store/imageDataStore";
 /* components */
 import Loading from "@components/common/ui/Loading/loading";
 import { IloadingModal } from "@components/common/ui/Modal/LoadingModal";
@@ -74,6 +75,7 @@ export default function ServiceStep3Page() {
   const { projectData, setProjectData } = projectDataStore();
   const { imageName, setImageName } = imageNameStore();
   const { imageUrl, setImageUrl } = imageUrlStore();
+  const { imageData, setImageData } = imageDataStore();
   const [currentStep, setCurrentStep] = useState<number>(2);
   const { isProduction } = useIsProduction();
   const step4to3 = useStep4to3();
@@ -346,18 +348,6 @@ export default function ServiceStep3Page() {
     }
   }
 
-  // useEffect(() => {
-  //   if (isFirstRender.current) {
-  //     isFirstRender.current = false;
-  //     return;
-  //   }
-  //   console.log(projectId);
-  //   if (projectId) {
-  //     console.log("projectId changed, calling fetchGeneratedText...");
-  //     fetchGeneratedText();
-  //   }
-  // }, [projectId]);
-
   async function fetchGeneratedText() {
     if (!projectId || isNaN(parseInt(projectId))) {
       console.error("Invalid or missing projectId:", projectId);
@@ -457,20 +447,7 @@ export default function ServiceStep3Page() {
         (res): res is PromiseRejectedResult => res.status === "rejected"
       );
 
-      // console.log("fulfilledResponses:", fulfilledResponses);
-      // console.log("rejectedResponses:", rejectedResponses);
-
       if (fulfilledResponses.length > 0) {
-        // const imageNameMapping = fulfilledResponses.map((res, idx) => ({
-        //   imageName: res.value.data.imageName,
-        //   parameter: parameterArr[idx],
-        // }));
-
-        // const imageUrlMapping = fulfilledResponses.map((res, idx) => ({
-        //   imageUrl: res.value.data.url,
-        //   parameter: parameterArr[idx],
-        // }));
-
         const imageNameOnlyMapping = fulfilledResponses.map(
           (res, idx) => res.value.data.imageName
         );
@@ -479,10 +456,17 @@ export default function ServiceStep3Page() {
           (res, idx) => res.value.data.url
         );
 
-        // localStorage.setItem("imageName", JSON.stringify(imageNameMapping));
+        const imageDataMapping = fulfilledResponses.map((res, idx) => {
+          return {
+            imageName: res.value.data.imageName,
+            imageUrl: res.value.data.url,
+            isSuccess: res.status === "fulfilled" ? true : false,
+          };
+        });
+
         setImageName(imageNameOnlyMapping);
-        // localStorage.setItem("imageUrl", JSON.stringify(imageUrlMapping));
         setImageUrl(imageUrlOnlyMapping);
+        setImageData(imageDataMapping);
       }
 
       if (rejectedResponses.length > 0) {
@@ -491,13 +475,14 @@ export default function ServiceStep3Page() {
           rejectedResponses.map((res) => res.reason)
         );
       } else if (rejectedResponses.length === 0) {
-        setIsImgageSaved(true);
+        // setIsImgageSaved(true);
       }
     } catch (error) {
       console.error("Error saving images:", error);
       // // window.location.href = "/error";
       return null;
     } finally {
+      setIsImgageSaved(true);
     }
   }
 

@@ -232,7 +232,7 @@ export default function ShoppingMallProductList() {
   console.log(headerData);
   console.log(pageStyle);
 
-  if (!pageContent || !headerData || !pageStyle) {
+  if (!generatedText || !headerData || !pageStyle) {
     return <Loading />;
   }
 
