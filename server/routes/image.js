@@ -1,6 +1,6 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const { saveImageFromURL, saveImageToDatabase } = require("../controllers/imageController");
+const { saveImageFromURL, saveImageToDatabase } = require('../controllers/imageController');
 
 /**
  * @swagger
@@ -33,7 +33,7 @@ const { saveImageFromURL, saveImageToDatabase } = require("../controllers/imageC
  *                 path:
  *                   type: string
  */
-router.post("/save", saveImageFromURL);
+router.post('/save', saveImageFromURL);
 
 /**
  * @swagger
@@ -59,6 +59,9 @@ router.post("/save", saveImageFromURL);
  *               feature_id:
  *                 type: integer
  *                 description: 피처 ID
+ *               feature:
+ *                 type: string
+ *                 description: 페이지명
  *     responses:
  *       200:
  *         description: 이미지 저장 성공 및 데이터베이스 기록 완료
@@ -79,7 +82,23 @@ router.post("/save", saveImageFromURL);
  *                   type: string
  *                 url:
  *                   type: string
+ *                 feature:
+ *                   type: string
+ *                   example: "메인"
+ *       500:
+ *         description: 서버 오류
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "서버 오류가 발생했습니다."
+ *                 feature:
+ *                   type: string
+ *                   example: "메인"
  */
-router.post("/save-to-db", saveImageToDatabase);
+router.post('/save-to-db', saveImageToDatabase);
 
 module.exports = router;

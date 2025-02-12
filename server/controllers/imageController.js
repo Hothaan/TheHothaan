@@ -83,7 +83,7 @@ const saveImageFromURL = async (req, res) => {
 
 // 이미지 & DB 저장
 const saveImageToDatabase = async (req, res) => {
-  const { url, project_id, feature_id } = req.body;
+  const { url, project_id, feature_id, feature } = req.body;
   const isProductDetail = url.includes('쇼핑몰-상품상세');
 
   if (!url || !project_id || !feature_id) {
@@ -143,10 +143,11 @@ const saveImageToDatabase = async (req, res) => {
       path: imagePath,
       url: imageUrl,
       imageName: imageName,
+      feature: feature ?? '',
     });
   } catch (error) {
     logger.error('Error generating image from URL:', error.message);
-    res.status(500).json({ message: 'Error generating image from URL' });
+    res.status(500).json({ message: 'Error generating image from URL', feature: feature ?? '' });
   } finally {
     if (browser) {
       await browser.close();
