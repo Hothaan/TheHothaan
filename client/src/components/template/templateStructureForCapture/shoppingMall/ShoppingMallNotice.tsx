@@ -238,7 +238,7 @@ export default function ShoppingMallNotice() {
     undefined
   );
 
-  if (!pageContent || !headerData || !pageStyle || !generatedText) {
+  if (!headerData || !pageStyle || !generatedText) {
     return <Loading />;
   }
 

@@ -4,7 +4,8 @@ export const saveImageDb = async (
   isProduction: boolean,
   url: string,
   projectId: string,
-  featureId: string
+  featureId: string,
+  feature: string
 ) => {
   try {
     const response = await axios.post(
@@ -17,6 +18,7 @@ export const saveImageDb = async (
         }/template/${url}/${projectId}`,
         project_id: projectId,
         feature_id: featureId,
+        feature: feature,
       }
     );
     return response;

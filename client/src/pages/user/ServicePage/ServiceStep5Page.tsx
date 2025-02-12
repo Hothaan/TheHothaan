@@ -29,7 +29,7 @@ import { pngStore } from "@store/pngStore";
 import { jpgStore } from "@store/jpgStore";
 import { pdfStore } from "@store/pdfStore";
 import { featureDataStore } from "@store/featureDataStore";
-
+import { imageDataStore, TimageData } from "@store/imageDataStore";
 /* etc */
 import axios from "axios";
 import { IfetchedfeatureResponseData } from "@components/template/types";
@@ -46,10 +46,8 @@ export default function ServiceStep5Page() {
   const [isLoadingModalOpen, setIsLoadingModalOpen] = useState(false);
   const [isFullpageModalOpen, setIsFullpageModalOpen] = useState(false);
   const { featureData, setFeatureData } = featureDataStore();
-  // const [featureData, setFeatureData] = useState<
-  //   IfetchedfeatureResponseData[] | null
-  // >(null);
   const [listData, setListData] = useState<string[]>([]);
+  const { imageData, setImageData } = imageDataStore();
   const [selectedIdx, setSelectedIdx] = useState<number>(0);
   const [selectedItem, setSelectedItem] = useState<string>(listData[0]);
   const { imageName, setImageName } = imageNameStore();
@@ -125,8 +123,8 @@ export default function ServiceStep5Page() {
   }
 
   function makeListData() {
-    if (featureData) {
-      return featureData.map((item: IfetchedfeatureResponseData) => {
+    if (imageData) {
+      return imageData.map((item: TimageData) => {
         return item.feature;
       });
     }
@@ -137,7 +135,7 @@ export default function ServiceStep5Page() {
     if (data) {
       setListData(data);
     }
-  }, [featureData]);
+  }, [imageData]);
 
   useEffect(() => {
     if (listData) {

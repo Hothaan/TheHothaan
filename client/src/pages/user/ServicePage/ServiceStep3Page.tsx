@@ -426,13 +426,20 @@ export default function ServiceStep3Page() {
 
     const projectType = serviceData.serviceType.text as string;
     const featureId = featureData.map((item) => item.feature_id);
+    const feature = featureData.map((item) => item.feature);
     const parameterArr = featureData.map(
       (item) => `${projectType}-${item.feature}`
     );
     try {
       const responses = await Promise.allSettled(
         parameterArr.map((url, idx) =>
-          saveImageDb(true, url, projectId, featureId[idx].toString())
+          saveImageDb(
+            true,
+            url,
+            projectId,
+            featureId[idx].toString(),
+            feature[idx]
+          )
         )
       );
 
@@ -461,6 +468,7 @@ export default function ServiceStep3Page() {
             imageName: res.value.data.imageName,
             imageUrl: res.value.data.url,
             isSuccess: res.status === "fulfilled" ? true : false,
+            feature: res.value.data.feature,
           };
         });
 

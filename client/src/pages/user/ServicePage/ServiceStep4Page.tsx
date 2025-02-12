@@ -25,6 +25,7 @@ import { serviceDataStore } from "@store/serviceDataStore";
 import { imageNameStore } from "@store/imageNameStore";
 import { imageUrlStore } from "@store/imageUrlStore";
 import { featureDataStore } from "@store/featureDataStore";
+import { imageDataStore } from "@store/imageDataStore";
 /* api */
 import { getFeatureData } from "@api/project/getFeatureData";
 /* svgs */
@@ -34,6 +35,8 @@ import { ReactComponent as Preview } from "@svgs/service/previewGray.svg";
 import useIsProduction from "@hooks/useIsProduction";
 import useNavigation from "@hooks/useNavigation";
 import { useStep5to4 } from "@hooks/backStep";
+/* etc */
+import { TimageData } from "@store/imageDataStore";
 
 export type TimageName = {
   imageName: string;
@@ -61,6 +64,7 @@ export default function ServicePreviewPage() {
   const step5to4 = useStep5to4();
   const { imageName, setImageName } = imageNameStore();
   const { imageUrl, setImageUrl } = imageUrlStore();
+  const { imageData, setImageData } = imageDataStore();
   const { featureData, setFeatureData } = featureDataStore();
   const [currentIdx, setCurrentIdx] = useState<number>(0);
   const [selectedItem, setSelectedItem] = useState<string>(listData[0]);
@@ -136,8 +140,8 @@ export default function ServicePreviewPage() {
   };
 
   function makeListData() {
-    if (featureData) {
-      return featureData.map((item: IfetchedfeatureResponseData) => {
+    if (imageData) {
+      return imageData.map((item: TimageData) => {
         return item.feature;
       });
     }
@@ -148,27 +152,13 @@ export default function ServicePreviewPage() {
     if (data) {
       setListData(data);
     }
-  }, [featureData]);
+  }, [imageData]);
 
   useEffect(() => {
     if (listData) {
       setSelectedItem(listData[0]);
     }
   }, [listData]);
-
-  // useEffect(() => {
-  //   const localData = localStorage.getItem("imageName");
-  //   if (localData) {
-  //     setImageNameArr(JSON.parse(localData));
-  //   }
-  // }, [selectedItem]);
-
-  // useEffect(() => {
-  //   const localData = localStorage.getItem("imageUrl");
-  //   if (localData) {
-  //     setImageUrlArr(JSON.parse(localData));
-  //   }
-  // }, [selectedItem]);
 
   function handleSelectItem(e: React.MouseEvent<HTMLLIElement>) {
     const idx = parseInt(e.currentTarget.dataset.idx || "0");

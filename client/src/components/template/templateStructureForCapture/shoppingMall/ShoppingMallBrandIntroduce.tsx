@@ -238,7 +238,7 @@ export default function ShoppingMallBrandIntroduce() {
     undefined
   );
 
-  if (!pageContent || !headerData || !pageStyle) {
+  if (!generatedText || !headerData || !pageStyle) {
     return <Loading />;
   }
 

@@ -1,10 +1,11 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-type TimageData = {
+export type TimageData = {
   imageName: string;
   imageUrl: string;
   isSuccess: boolean;
+  feature: string;
 };
 
 interface IimageDataStore {

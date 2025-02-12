@@ -201,13 +201,20 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
 
     const projectType = serviceData.serviceType.text as string;
     const featureId = instance.map((item) => item.feature_id);
+    const feature = instance.map((item) => item.feature);
     const parameterArr = instance.map(
       (item) => `${projectType}-${item.feature}`
     );
     try {
       const responses = await Promise.allSettled(
         parameterArr.map((url, idx) =>
-          saveImageDb(true, url, projectId, featureId[idx].toString())
+          saveImageDb(
+            true,
+            url,
+            projectId,
+            featureId[idx].toString(),
+            feature[idx]
+          )
         )
       );
 
@@ -221,20 +228,7 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
       const rejectedResponses = responses.filter(
         (res): res is PromiseRejectedResult => res.status === "rejected"
       );
-
-      // console.log("fulfilledResponses:", fulfilledResponses);
-      // console.log("rejectedResponses:", rejectedResponses);
-
       if (fulfilledResponses.length > 0) {
-        // const imageNameMapping = fulfilledResponses.map((res, idx) => ({
-        //   imageName: res.value.data.imageName,
-        //   parameter: parameterArr[idx],
-        // }));
-        // const imageUrlMapping = fulfilledResponses.map((res, idx) => ({
-        //   imageUrl: res.value.data.url,
-        //   parameter: parameterArr[idx],
-        // }));
-
         const imageNameOnlyMapping = fulfilledResponses.map(
           (res, idx) => res.value.data.imageName
         );
@@ -242,10 +236,7 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
         const imageUrlOnlyMapping = fulfilledResponses.map(
           (res, idx) => res.value.data.url
         );
-
-        // localStorage.setItem("imageName", JSON.stringify(imageNameMapping));
         setImageName(imageNameOnlyMapping);
-        // localStorage.setItem("imageUrl", JSON.stringify(imageUrlMapping));
         setImageUrl(imageUrlOnlyMapping);
       }
 
