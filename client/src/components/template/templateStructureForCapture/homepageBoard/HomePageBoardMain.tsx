@@ -113,6 +113,8 @@ export default function HomePageBoardMain() {
   const [generatedText, setGeneratedText] =
     useState<IfetchedfeatureResponseData | null>(null);
 
+  console.log(generatedText);
+
   async function fetchFeatureData(isProduction: boolean, projectId: string) {
     try {
       const response = await getFeatureData(isProduction, projectId);
@@ -167,6 +169,7 @@ export default function HomePageBoardMain() {
     }
     return null;
   }
+
   function getLocalStyle() {
     const localContent = localStorage.getItem("changedStyle");
     if (localContent) {
@@ -220,7 +223,7 @@ export default function HomePageBoardMain() {
         exploreServiceExploreButton:
           generatedText.content.exploreServiceExploreButton || undefined,
       };
-      setPageContent(initialContent);
+      setPageContent({ ...initialContent });
     }
   }
 
@@ -253,7 +256,6 @@ export default function HomePageBoardMain() {
       exploreServiceExploreButton:
         explore_service_explore_button_css_ || undefined,
     };
-
     setPageStyle({ ...initialStyle });
   }
 
@@ -267,6 +269,23 @@ export default function HomePageBoardMain() {
 
       if (!hasLocalContent && !pageContent) {
         updateInitialContent();
+      }
+    }
+  }, [generatedText]);
+
+  useEffect(() => {
+    if (generatedText) {
+      const localStyle = localStorage.getItem("changedStyle");
+      const hasLocalStyle = localStyle
+        ? JSON.parse(localStyle)?.[featureKey]?.style
+        : null;
+
+      if (generatedText.style) {
+        // DB에서 가져온 스타일이 있으면 그대로 적용
+        setPageStyle(generatedText.style);
+      } else if (!hasLocalStyle) {
+        // 로컬 저장된 스타일도 없으면 초기 스타일 적용
+        updateInitialStyle();
       }
     }
   }, [generatedText]);
@@ -321,13 +340,25 @@ export default function HomePageBoardMain() {
     setPageStyle({ ...pageStyle, [key]: value });
   }
 
+  const [activeEditor, setActiveEditor] = useState<string | undefined>(
+    undefined
+  );
+
+  console.log(pageContent);
+  console.log(pageStyle);
+  console.log(headerData);
+
   if (!pageContent || !headerData || !pageStyle) {
     return <Loading />;
   }
 
   return (
     <div className="templateImage">
-      <Header serviceType="홈페이지·게시판" />
+      <Header
+        categories={headerData.categories}
+        logo={headerData.logo}
+        serviceType="홈페이지·게시판"
+      />
       <Mainbanner
         content={{
           mainBannerTitle: pageContent?.mainBannerTitle,
@@ -342,6 +373,8 @@ export default function HomePageBoardMain() {
         isEditable={true}
         onChangeContent={handleChangeContent}
         onChangeStyle={handleChangeStyle}
+        activeEditor={activeEditor}
+        setActiveEditor={setActiveEditor}
       />
       <ServiceIntroduce
         content={{
@@ -355,6 +388,8 @@ export default function HomePageBoardMain() {
         isEditable={true}
         onChangeContent={handleChangeContent}
         onChangeStyle={handleChangeStyle}
+        activeEditor={activeEditor}
+        setActiveEditor={setActiveEditor}
       />
       <ProductIntroduceMain
         content={{
@@ -370,6 +405,8 @@ export default function HomePageBoardMain() {
         isEditable={true}
         onChangeContent={handleChangeContent}
         onChangeStyle={handleChangeStyle}
+        activeEditor={activeEditor}
+        setActiveEditor={setActiveEditor}
       />
       <NoticeMain
         content={{
@@ -383,6 +420,8 @@ export default function HomePageBoardMain() {
         isEditable={true}
         onChangeContent={handleChangeContent}
         onChangeStyle={handleChangeStyle}
+        activeEditor={activeEditor}
+        setActiveEditor={setActiveEditor}
       />
       <RecruitMain
         content={{
@@ -396,6 +435,8 @@ export default function HomePageBoardMain() {
         isEditable={true}
         onChangeContent={handleChangeContent}
         onChangeStyle={handleChangeStyle}
+        activeEditor={activeEditor}
+        setActiveEditor={setActiveEditor}
       />
       <NewsMain
         content={{
@@ -407,6 +448,8 @@ export default function HomePageBoardMain() {
         isEditable={true}
         onChangeContent={handleChangeContent}
         onChangeStyle={handleChangeStyle}
+        activeEditor={activeEditor}
+        setActiveEditor={setActiveEditor}
       />
       <ExploreServiceMain
         content={{
@@ -424,6 +467,8 @@ export default function HomePageBoardMain() {
         isEditable={true}
         onChangeContent={handleChangeContent}
         onChangeStyle={handleChangeStyle}
+        activeEditor={activeEditor}
+        setActiveEditor={setActiveEditor}
       />
       <Footer serviceType="홈페이지·게시판" />
     </div>

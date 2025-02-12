@@ -78,9 +78,6 @@ export default function ServiceStep3Page() {
   const { isProduction } = useIsProduction();
   const step4to3 = useStep4to3();
   const [loading, setLoading] = useState(false);
-  const [prevFeatureData, setPrevFeatureData] = useState<
-    IfetchedfeatureResponseData[] | null
-  >(null);
   const { featureData, setFeatureData } = featureDataStore();
   const { serviceInfo, setServiceInfo } = serviceInfoStore();
   const { serviceData, setServiceData } = serviceDataStore();

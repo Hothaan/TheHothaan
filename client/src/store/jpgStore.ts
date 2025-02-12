@@ -15,6 +15,6 @@ export const jpgStore = create<IjpgStore>()(
     { name: "jpg" }
   )
 );
-window.addEventListener("beforeunload", () => {
-  localStorage.removeItem("jpg");
-});
+// window.addEventListener("beforeunload", () => {
+//   localStorage.removeItem("jpg");
+// });

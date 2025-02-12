@@ -15,6 +15,6 @@ export const imageUrlStore = create<IimageUrlStore>()(
     { name: "imageUrl" }
   )
 );
-window.addEventListener("beforeunload", () => {
-  localStorage.removeItem("imageUrl");
-});
+// window.addEventListener("beforeunload", () => {
+//   localStorage.removeItem("imageUrl");
+// });

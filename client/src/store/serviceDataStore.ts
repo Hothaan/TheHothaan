@@ -25,6 +25,6 @@ export const serviceDataStore = create<IserviceData>()(
     { name: "serviceData" }
   )
 );
-window.addEventListener("beforeunload", () => {
-  localStorage.removeItem("serviceData");
-});
+// window.addEventListener("beforeunload", () => {
+//   localStorage.removeItem("serviceData");
+// });
