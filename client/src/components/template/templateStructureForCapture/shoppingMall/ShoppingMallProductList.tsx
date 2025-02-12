@@ -12,7 +12,6 @@ import Footer from "@components/template/common/footer/Footer";
 import Loading from "@components/common/ui/Loading/loading";
 
 /* data */
-import { IgeneratedText } from "@pages/user/ServicePage/ServiceStep3Page";
 import { IfetchedfeatureResponseData } from "@components/template/types";
 import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
@@ -25,7 +24,7 @@ import {
 } from "@components/template/product/ProductList";
 
 interface IshoppingMallProductListContent {
-  productListCategories?: string; //수정요청
+  productListCategories?: string;
   productListProductTitle?: string;
   productListProductDesc?: string;
 }
@@ -228,6 +227,10 @@ export default function ShoppingMallProductList() {
   const [activeEditor, setActiveEditor] = useState<string | undefined>(
     undefined
   );
+
+  console.log(pageContent);
+  console.log(headerData);
+  console.log(pageStyle);
 
   if (!pageContent || !headerData || !pageStyle) {
     return <Loading />;
