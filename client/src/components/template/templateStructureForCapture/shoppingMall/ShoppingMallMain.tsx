@@ -155,7 +155,6 @@ export default function ShoppingMallMain() {
 
   function getLocalStyle() {
     if (typeof window === "undefined") {
-      // 백엔드 환경에서는 localStorage를 사용할 수 없으므로 generatedText.style을 직접 반환
       return generatedText?.style || null;
     }
 
@@ -163,11 +162,11 @@ export default function ShoppingMallMain() {
     if (localContent) {
       const parsed = JSON.parse(localContent);
       if (parsed[featureKey]?.style) {
-        return parsed[featureKey].style;
+        return parsed[featureKey].style; // 항상 changedStyle을 우선 반환
       }
     }
 
-    return generatedText?.style || null; // localStorage에 없으면 DB에서 가져온 값 사용
+    return generatedText?.style || null; // changedStyle이 없을 경우에만 generatedText.style 사용
   }
 
   const [pageContent, setPageContent] =
@@ -245,12 +244,12 @@ export default function ShoppingMallMain() {
         ? JSON.parse(localStyle)?.[featureKey]?.style
         : null;
 
-      if (generatedText.style) {
-        // DB에서 가져온 스타일이 있으면 그대로 적용
-        setPageStyle(generatedText.style);
-      } else if (!hasLocalStyle) {
-        // 로컬 저장된 스타일도 없으면 초기 스타일 적용
-        updateInitialStyle();
+      if (hasLocalStyle) {
+        setPageStyle(hasLocalStyle); // 로컬 저장된 스타일이 있으면 항상 그것을 우선 적용
+      } else if (generatedText.style) {
+        setPageStyle(generatedText.style); // 없을 경우에만 DB 스타일 적용
+      } else {
+        updateInitialStyle(); // 둘 다 없으면 초기 스타일 적용
       }
     }
   }, [generatedText]);

@@ -126,7 +126,7 @@ export default function Greetings(prop: Igreetings) {
     greetingsHalfTitle: content?.greetingsHalfTitle || title_,
     greetingsHalfDesc: content?.greetingsHalfDesc || desc_,
     greetingsFullTitle: content?.greetingsFullTitle || title_,
-    greetingsFullDesc: content?.greetingsFullTitle || desc_,
+    greetingsFullDesc: content?.greetingsFullDesc || desc_,
   };
 
   const initialStyle = {
@@ -350,7 +350,7 @@ export default function Greetings(prop: Igreetings) {
             )}
             {isEditable ? (
               <EditableText
-                text={editableContent.greetingsHalfTitle}
+                text={editableContent.greetingsHalfDesc}
                 className="greetingsHalfDesc"
                 id={"greetingsHalfDesc" + 2}
                 isTextArea={true}

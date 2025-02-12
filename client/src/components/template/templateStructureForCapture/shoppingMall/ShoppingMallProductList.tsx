@@ -104,14 +104,19 @@ export default function ShoppingMallProductList() {
   }
 
   function getLocalStyle() {
+    if (typeof window === "undefined") {
+      return generatedText?.style || null;
+    }
+
     const localContent = localStorage.getItem("changedStyle");
     if (localContent) {
       const parsed = JSON.parse(localContent);
       if (parsed[featureKey]?.style) {
-        return parsed[featureKey].style;
+        return parsed[featureKey].style; // 항상 changedStyle을 우선 반환
       }
     }
-    return null;
+
+    return generatedText?.style || null; // changedStyle이 없을 경우에만 generatedText.style 사용
   }
 
   const [pageContent, setPageContent] =
@@ -164,12 +169,12 @@ export default function ShoppingMallProductList() {
         ? JSON.parse(localStyle)?.[featureKey]?.style
         : null;
 
-      if (generatedText.style) {
-        // DB에서 가져온 스타일이 있으면 그대로 적용
-        setPageStyle(generatedText.style);
-      } else if (!hasLocalStyle) {
-        // 로컬 저장된 스타일도 없으면 초기 스타일 적용
-        updateInitialStyle();
+      if (hasLocalStyle) {
+        setPageStyle(hasLocalStyle); // 로컬 저장된 스타일이 있으면 항상 그것을 우선 적용
+      } else if (generatedText.style) {
+        setPageStyle(generatedText.style); // 없을 경우에만 DB 스타일 적용
+      } else {
+        updateInitialStyle(); // 둘 다 없으면 초기 스타일 적용
       }
     }
   }, [generatedText]);
@@ -227,10 +232,6 @@ export default function ShoppingMallProductList() {
   const [activeEditor, setActiveEditor] = useState<string | undefined>(
     undefined
   );
-
-  console.log(pageContent);
-  console.log(headerData);
-  console.log(pageStyle);
 
   if (!generatedText || !headerData || !pageStyle) {
     return <Loading />;

@@ -151,14 +151,19 @@ export default function CommunitySnsMain() {
     return null;
   }
   function getLocalStyle() {
+    if (typeof window === "undefined") {
+      return generatedText?.style || null;
+    }
+
     const localContent = localStorage.getItem("changedStyle");
     if (localContent) {
       const parsed = JSON.parse(localContent);
       if (parsed[featureKey]?.style) {
-        return parsed[featureKey].style;
+        return parsed[featureKey].style; // 항상 changedStyle을 우선 반환
       }
     }
-    return null;
+
+    return generatedText?.style || null; // changedStyle이 없을 경우에만 generatedText.style 사용
   }
 
   const [pageContent, setPageContent] =
