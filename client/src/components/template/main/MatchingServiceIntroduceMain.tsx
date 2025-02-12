@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { OuterWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 import EditableText from "@components/service/editableText/EditableText";
@@ -25,6 +25,9 @@ interface ImatchingServiceIntroduceMain {
   isEditable?: boolean;
   onChangeContent: (key: string, value: string) => void;
   onChangeStyle: (key: string, value: CSSObject) => void;
+  index?: number;
+  activeEditor?: string;
+  setActiveEditor?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 const banner_title_ = "Headline H1";
@@ -103,7 +106,16 @@ export const matching_service_introduce_main_item_desc_css_: CSSObject = {
 };
 
 function MatchingServiceIntroduceMainItem(prop: ImatchingServiceIntroduceMain) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
+  const {
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    index,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   return (
     <div css={item_container}>
@@ -111,10 +123,13 @@ function MatchingServiceIntroduceMainItem(prop: ImatchingServiceIntroduceMain) {
         <EditableText
           text={content?.MatchingServiceIntroduceMainItemTitle as string}
           className="MatchingServiceIntroduceMainItemTitle"
+          id={"MatchingServiceIntroduceMainItemTitle" + index}
           isTextArea={false}
           defaultCss={style?.MatchingServiceIntroduceMainItemTitle as CSSObject}
           onChangeText={(key, value) => onChangeContent(key, value)}
           onChangeCss={(key, value) => onChangeStyle(key, value)}
+          activeEditor={activeEditor}
+          setActiveEditor={setActiveEditor}
         />
       ) : (
         <p css={style?.MatchingServiceIntroduceMainItemTitle}>
@@ -125,10 +140,13 @@ function MatchingServiceIntroduceMainItem(prop: ImatchingServiceIntroduceMain) {
         <EditableText
           text={content?.MatchingServiceIntroduceMainItemDesc as string}
           className="MatchingServiceIntroduceMainItemDesc"
+          id={"MatchingServiceIntroduceMainItemDesc" + index}
           isTextArea={false}
           defaultCss={style?.MatchingServiceIntroduceMainItemDesc as CSSObject}
           onChangeText={(key, value) => onChangeContent(key, value)}
           onChangeCss={(key, value) => onChangeStyle(key, value)}
+          activeEditor={activeEditor}
+          setActiveEditor={setActiveEditor}
         />
       ) : (
         <p css={style?.MatchingServiceIntroduceMainItemDesc}>
@@ -152,7 +170,15 @@ function MatchingServiceIntroduceMainItem(prop: ImatchingServiceIntroduceMain) {
 export default function MatchingServiceIntroduceMain(
   prop: ImatchingServiceIntroduceMain
 ) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
+  const {
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   const count = 3;
 
@@ -182,96 +208,70 @@ export default function MatchingServiceIntroduceMain(
       matching_service_introduce_main_item_desc_css_,
   };
 
-  const [editableContent, setEditableContent] = useState<any>(null);
-  const [editableStyle, setEditableStyle] = useState<any>(null);
+  /* *********** */
+
+  const updateValues = (source: any, initial: any) => {
+    return Object.keys(initial).reduce((acc, key) => {
+      const value = source?.[key];
+      acc[key] = value === "" ? initial[key] : value ?? initial[key];
+      return acc;
+    }, {} as any);
+  };
+
+  const [editableContent, setEditableContent] = useState(() =>
+    updateValues(content, initialContent)
+  );
+  const [editableStyle, setEditableStyle] = useState(() =>
+    updateValues(style, initialStyle)
+  );
+
+  // `useMemo`로 최적화된 업데이트 값 생성
+  const updatedContent = useMemo(
+    () => updateValues(content, initialContent),
+    [content, initialContent]
+  );
+  const updatedStyle = useMemo(
+    () => updateValues(style, initialStyle),
+    [style, initialStyle]
+  );
 
   useEffect(() => {
     setEditableContent((prev: any) => {
-      const updatedContent = { ...prev };
-
-      if (
-        content?.MatchingServiceIntroduceMainBannerTitle !==
-        prev?.MatchingServiceIntroduceMainBannerTitle
-      ) {
-        updatedContent.MatchingServiceIntroduceMainBannerTitle =
-          content?.MatchingServiceIntroduceMainBannerTitle ??
-          initialContent.MatchingServiceIntroduceMainBannerTitle;
+      // 객체 비교를 수행하여 변경된 경우에만 업데이트
+      if (!shallowEqual(prev, updatedContent)) {
+        return updatedContent;
       }
-      if (
-        content?.MatchingServiceIntroduceMainBannerDesc !==
-        prev?.MatchingServiceIntroduceMainBannerDesc
-      ) {
-        updatedContent.MatchingServiceIntroduceMainBannerDesc =
-          content?.MatchingServiceIntroduceMainBannerDesc ??
-          initialContent.MatchingServiceIntroduceMainBannerDesc;
-      }
-      if (
-        content?.MatchingServiceIntroduceMainItemTitle !==
-        prev?.MatchingServiceIntroduceMainItemTitle
-      ) {
-        updatedContent.MatchingServiceIntroduceMainItemTitle =
-          content?.MatchingServiceIntroduceMainItemTitle ??
-          initialContent.MatchingServiceIntroduceMainItemTitle;
-      }
-      if (
-        content?.MatchingServiceIntroduceMainItemDesc !==
-        prev?.MatchingServiceIntroduceMainItemDesc
-      ) {
-        updatedContent.MatchingServiceIntroduceMainItemDesc =
-          content?.MatchingServiceIntroduceMainItemDesc ??
-          initialContent.MatchingServiceIntroduceMainItemDesc;
-      }
-
-      // 변경된 값이 있다면 상태 업데이트
-      return JSON.stringify(prev) === JSON.stringify(updatedContent)
-        ? prev
-        : updatedContent;
+      return prev;
     });
-  }, [content]);
+  }, [updatedContent]);
 
   useEffect(() => {
     setEditableStyle((prev: any) => {
-      const updatedStyle = { ...prev };
-
-      if (
-        style?.MatchingServiceIntroduceMainBannerTitle !==
-        prev?.MatchingServiceIntroduceMainBannerTitle
-      ) {
-        updatedStyle.MatchingServiceIntroduceMainBannerTitle =
-          style?.MatchingServiceIntroduceMainBannerTitle ??
-          initialStyle.MatchingServiceIntroduceMainBannerTitle;
+      if (!shallowEqual(prev, updatedStyle)) {
+        return updatedStyle;
       }
-      if (
-        style?.MatchingServiceIntroduceMainBannerDesc !==
-        prev?.MatchingServiceIntroduceMainBannerDesc
-      ) {
-        updatedStyle.MatchingServiceIntroduceMainBannerDesc =
-          style?.MatchingServiceIntroduceMainBannerDesc ??
-          initialStyle.MatchingServiceIntroduceMainBannerDesc;
-      }
-      if (
-        style?.MatchingServiceIntroduceMainItemTitle !==
-        prev?.MatchingServiceIntroduceMainItemTitle
-      ) {
-        updatedStyle.MatchingServiceIntroduceMainItemTitle =
-          style?.MatchingServiceIntroduceMainItemTitle ??
-          initialStyle.MatchingServiceIntroduceMainItemTitle;
-      }
-      if (
-        style?.MatchingServiceIntroduceMainItemDesc !==
-        prev?.MatchingServiceIntroduceMainItemDesc
-      ) {
-        updatedStyle.MatchingServiceIntroduceMainItemDesc =
-          style?.MatchingServiceIntroduceMainItemDesc ??
-          initialStyle.MatchingServiceIntroduceMainItemDesc;
-      }
-
-      // 변경된 값이 있다면 상태 업데이트
-      return JSON.stringify(prev) === JSON.stringify(updatedStyle)
-        ? prev
-        : updatedStyle;
+      return prev;
     });
-  }, [style]);
+  }, [updatedStyle]);
+
+  // 얕은 비교를 수행하는 함수
+  const shallowEqual = (objA: any, objB: any) => {
+    if (Object.is(objA, objB)) return true;
+    if (
+      typeof objA !== "object" ||
+      typeof objB !== "object" ||
+      objA === null ||
+      objB === null
+    )
+      return false;
+
+    const keysA = Object.keys(objA);
+    const keysB = Object.keys(objB);
+
+    if (keysA.length !== keysB.length) return false;
+
+    return keysA.every((key) => objA[key] === objB[key]);
+  };
 
   const handleEditContent = useCallback(
     (key: string, value: string) => {
@@ -284,17 +284,22 @@ export default function MatchingServiceIntroduceMain(
     [onChangeContent]
   );
 
-  function handleEditStyle(key: string, value: CSSObject) {
-    setEditableStyle({
-      ...editableStyle,
-      [key]: value,
-    });
-    onChangeStyle?.(key, value);
-  }
+  const handleEditStyle = useCallback(
+    (key: string, value: CSSObject) => {
+      setEditableStyle((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeStyle?.(key, value);
+    },
+    [onChangeStyle]
+  );
 
   if (!editableContent) {
     return <></>;
   }
+
+  /* *********** */
 
   return (
     <OuterWrap padding="150px 0">
@@ -321,6 +326,8 @@ export default function MatchingServiceIntroduceMain(
                 className="MatchingServiceIntroduceMainBannerTitle"
                 onChangeText={(key, value) => handleEditContent(key, value)}
                 onChangeCss={(key, value) => handleEditStyle(key, value)}
+                activeEditor={activeEditor}
+                setActiveEditor={setActiveEditor}
               />
             ) : (
               <p css={editableStyle.MatchingServiceIntroduceMainBannerTitle}>
@@ -337,6 +344,8 @@ export default function MatchingServiceIntroduceMain(
                 className="MatchingServiceIntroduceMainBannerDesc"
                 onChangeText={(key, value) => handleEditContent(key, value)}
                 onChangeCss={(key, value) => handleEditStyle(key, value)}
+                activeEditor={activeEditor}
+                setActiveEditor={setActiveEditor}
               />
             ) : (
               <p css={editableStyle.MatchingServiceIntroduceMainBannerDesc}>
@@ -349,11 +358,14 @@ export default function MatchingServiceIntroduceMain(
           {Array.from({ length: count }, (_, index) => (
             <MatchingServiceIntroduceMainItem
               key={index}
+              index={index}
               content={editableContent}
               style={editableStyle}
               isEditable={isEditable}
               onChangeContent={handleEditContent}
               onChangeStyle={handleEditStyle}
+              activeEditor={activeEditor}
+              setActiveEditor={setActiveEditor}
             />
           ))}
         </div>

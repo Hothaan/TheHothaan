@@ -223,7 +223,7 @@ export default function ShoppingMallCart() {
     undefined
   );
 
-  if (!pageContent || !headerData || !pageStyle) {
+  if (!generatedText || !headerData) {
     return <Loading />;
   }
 

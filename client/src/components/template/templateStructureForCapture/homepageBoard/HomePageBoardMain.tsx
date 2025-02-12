@@ -347,7 +347,7 @@ export default function HomePageBoardMain() {
     undefined
   );
 
-  if (!pageContent || !headerData || !pageStyle) {
+  if (!generatedText || !headerData) {
     return <Loading />;
   }
 

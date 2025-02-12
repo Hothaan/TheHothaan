@@ -238,7 +238,7 @@ export default function HomePageBoardGreetings() {
     undefined
   );
 
-  if (!pageContent || !headerData || !pageStyle) {
+  if (!generatedText || !headerData) {
     return <Loading />;
   }
 

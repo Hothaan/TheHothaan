@@ -290,9 +290,7 @@ export default function ProductListMain(prop: IproductList) {
         : product_list_option_list_desc_css),
   };
 
-  // const [activeEditor, setActiveEditor] = useState<string | undefined>(
-  //   undefined
-  // );
+  /* *********** */
 
   const updateValues = (source: any, initial: any) => {
     return Object.keys(initial).reduce((acc, key) => {
@@ -382,6 +380,8 @@ export default function ProductListMain(prop: IproductList) {
   if (!editableContent) {
     return <></>;
   }
+
+  /* *********** */
 
   if (option === "main") {
     return (

@@ -220,7 +220,7 @@ export default function HomePageBoardHistory() {
     undefined
   );
 
-  if (!pageContent || !headerData || !pageStyle) {
+  if (!generatedText || !headerData) {
     return <Loading />;
   }
 

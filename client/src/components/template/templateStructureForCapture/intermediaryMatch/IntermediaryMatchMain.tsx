@@ -160,38 +160,6 @@ export default function IntermediaryMatchMain() {
     }
   }, [projectIdValue]);
 
-  function getLocalContent() {
-    const localContent = localStorage.getItem("changedContent");
-    if (localContent) {
-      const parsed = JSON.parse(localContent);
-      if (parsed[featureKey]?.content) {
-        return parsed[featureKey]?.content;
-      }
-    }
-    return null;
-  }
-  function getLocalStyle() {
-    if (typeof window === "undefined") {
-      return generatedText?.style || null;
-    }
-
-    const localContent = localStorage.getItem("changedStyle");
-    if (localContent) {
-      const parsed = JSON.parse(localContent);
-      if (parsed[featureKey]?.style) {
-        return parsed[featureKey].style; // 항상 changedStyle을 우선 반환
-      }
-    }
-
-    return generatedText?.style || null; // changedStyle이 없을 경우에만 generatedText.style 사용
-  }
-
-  const [pageContent, setPageContent] =
-    useState<IntermediaryMatchMainContent | null>(getLocalContent());
-  const [pageStyle, setPageStyle] = useState<IntermediaryMatchMainStyle | null>(
-    getLocalStyle()
-  );
-
   function updateInitialContent() {
     if (generatedText && generatedText.content) {
       const initialContent = {
@@ -239,7 +207,6 @@ export default function IntermediaryMatchMain() {
     }
   }
 
-  //페이지에 적용될 초기 스타일 저장
   function updateInitialStyle() {
     const initialStyle = {
       mainBannerTitle: mainBanner_title_css_ || undefined,
@@ -276,7 +243,41 @@ export default function IntermediaryMatchMain() {
     setPageStyle({ ...initialStyle });
   }
 
-  //featureData가 들어오면 초기 콘텐츠와 스타일 업데이트
+  /* ********** */
+
+  function getLocalContent() {
+    const localContent = localStorage.getItem("changedContent");
+    if (localContent) {
+      const parsed = JSON.parse(localContent);
+      if (parsed[featureKey]?.content) {
+        return parsed[featureKey]?.content;
+      }
+    }
+    return null;
+  }
+
+  function getLocalStyle() {
+    if (typeof window === "undefined") {
+      return generatedText?.style || null;
+    }
+
+    const localContent = localStorage.getItem("changedStyle");
+    if (localContent) {
+      const parsed = JSON.parse(localContent);
+      if (parsed[featureKey]?.style) {
+        return parsed[featureKey].style; // 항상 changedStyle을 우선 반환
+      }
+    }
+
+    return generatedText?.style || null; // changedStyle이 없을 경우에만 generatedText.style 사용
+  }
+
+  const [pageContent, setPageContent] =
+    useState<IntermediaryMatchMainContent | null>(getLocalContent());
+  const [pageStyle, setPageStyle] = useState<IntermediaryMatchMainStyle | null>(
+    getLocalStyle()
+  );
+
   useEffect(() => {
     if (generatedText) {
       const localContent = localStorage.getItem("changedContent");
@@ -291,23 +292,46 @@ export default function IntermediaryMatchMain() {
   }, [generatedText]);
 
   useEffect(() => {
+    if (generatedText) {
+      const localStyle = localStorage.getItem("changedStyle");
+      const hasLocalStyle = localStyle
+        ? JSON.parse(localStyle)?.[featureKey]?.style
+        : null;
+
+      if (hasLocalStyle) {
+        setPageStyle(hasLocalStyle); // 로컬 저장된 스타일이 있으면 항상 그것을 우선 적용
+      } else if (generatedText.style) {
+        setPageStyle(generatedText.style); // 없을 경우에만 DB 스타일 적용
+      } else {
+        updateInitialStyle(); // 둘 다 없으면 초기 스타일 적용
+      }
+    }
+  }, [generatedText]);
+
+  useEffect(() => {
     if (pageContent) {
       const localContent = localStorage.getItem("changedContent");
-      const updatedContent = localContent
-        ? {
-            ...JSON.parse(localContent),
-            [featureKey]: {
-              featureId: generatedText?.feature_id,
-              content: { ...pageContent },
-            },
-          }
-        : {
-            [featureKey]: {
-              featureId: generatedText?.feature_id,
-              content: { ...pageContent },
-            },
-          };
-      localStorage.setItem("changedContent", JSON.stringify(updatedContent));
+      const existingContent = localContent
+        ? JSON.parse(localContent)?.[featureKey]?.content
+        : null;
+
+      if (JSON.stringify(existingContent) !== JSON.stringify(pageContent)) {
+        const updatedContent = localContent
+          ? {
+              ...JSON.parse(localContent),
+              [featureKey]: {
+                featureId: generatedText?.feature_id,
+                content: { ...pageContent },
+              },
+            }
+          : {
+              [featureKey]: {
+                featureId: generatedText?.feature_id,
+                content: { ...pageContent },
+              },
+            };
+        localStorage.setItem("changedContent", JSON.stringify(updatedContent));
+      }
     }
   }, [pageContent]);
 
@@ -340,9 +364,15 @@ export default function IntermediaryMatchMain() {
     setPageStyle({ ...pageStyle, [key]: value });
   }
 
-  if (!pageContent || !headerData || !pageStyle) {
+  const [activeEditor, setActiveEditor] = useState<string | undefined>(
+    undefined
+  );
+
+  if (!generatedText || !headerData) {
     return <Loading />;
   }
+
+  /* ********** */
 
   return (
     <div className="templateImage">
@@ -365,6 +395,8 @@ export default function IntermediaryMatchMain() {
         isEditable={true}
         onChangeContent={handleChangeContent}
         onChangeStyle={handleChangeStyle}
+        activeEditor={activeEditor}
+        setActiveEditor={setActiveEditor}
       />
       <MatchingServiceIntroduceMain
         content={{
@@ -390,6 +422,8 @@ export default function IntermediaryMatchMain() {
         isEditable={true}
         onChangeContent={handleChangeContent}
         onChangeStyle={handleChangeStyle}
+        activeEditor={activeEditor}
+        setActiveEditor={setActiveEditor}
       />
       <ProductIntroduceMain
         content={{
@@ -405,6 +439,8 @@ export default function IntermediaryMatchMain() {
         isEditable={true}
         onChangeContent={handleChangeContent}
         onChangeStyle={handleChangeStyle}
+        activeEditor={activeEditor}
+        setActiveEditor={setActiveEditor}
       />
       <Review
         content={{
@@ -422,6 +458,8 @@ export default function IntermediaryMatchMain() {
         isEditable={true}
         onChangeContent={handleChangeContent}
         onChangeStyle={handleChangeStyle}
+        activeEditor={activeEditor}
+        setActiveEditor={setActiveEditor}
       />
       <PriceMain
         content={{ priceMainDesc: pageContent?.PriceMainDesc }}
@@ -429,6 +467,8 @@ export default function IntermediaryMatchMain() {
         isEditable={true}
         onChangeContent={handleChangeContent}
         onChangeStyle={handleChangeStyle}
+        activeEditor={activeEditor}
+        setActiveEditor={setActiveEditor}
       />
       <ExploreServiceMain
         content={{

@@ -233,7 +233,7 @@ export default function ShoppingMallProductList() {
     undefined
   );
 
-  if (!generatedText || !headerData || !pageStyle) {
+  if (!generatedText || !headerData) {
     return <Loading />;
   }
 

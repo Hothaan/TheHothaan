@@ -242,7 +242,7 @@ export default function ShoppingMallProductDetail() {
     undefined
   );
 
-  if (!pageContent || !headerData || !pageStyle) {
+  if (!generatedText || !headerData) {
     return <Loading />;
   }
 

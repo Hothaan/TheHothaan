@@ -142,6 +142,56 @@ export default function ShoppingMallMain() {
     }
   }, [projectIdValue]);
 
+  function updateInitialContent() {
+    if (generatedText && generatedText.content) {
+      const initialContent = {
+        mainBannerTitle: generatedText.content.mainBannerTitle || undefined,
+        mainBannerDesc: generatedText.content.mainBannerDesc || undefined,
+        mainBannerButton: generatedText.content.mainBannerButton || undefined,
+        productListTitle: generatedText.content.productListTitle || undefined,
+        productListDesc: generatedText.content.productListDesc || undefined,
+        reviewTitle: generatedText.content.reviewTitle || undefined,
+        reviewDesc: generatedText.content.reviewDesc || undefined,
+        reviewName: generatedText.content.reviewName || undefined,
+        reviewRole: generatedText.content.reviewRole || undefined,
+        serviceIntroductionTitle:
+          generatedText.content.serviceIntroductionTitle || undefined,
+        serviceIntroductionDesc:
+          generatedText.content.serviceIntroductionDesc || undefined,
+        serviceContactTitle:
+          generatedText.content.serviceContactTitle || undefined,
+        serviceContactButton:
+          generatedText.content.serviceContactButton || undefined,
+      };
+      setPageContent(initialContent);
+    }
+  }
+
+  function updateInitialStyle() {
+    const initialStyle = {
+      mainBannerTitle: mainBanner_title_css_ || undefined,
+      mainBannerDesc: mainBanner_desc_css_ || undefined,
+      mainBannerButton: mainBanner_button_css_ || undefined,
+
+      productListTitle: product_list_option_main_title_css || undefined,
+      productListDesc: product_list_option_main_desc_css || undefined,
+
+      reviewTitle: review_item_title_css || undefined,
+      reviewDesc: review_item_desc_css || undefined,
+      reviewName: review_item_caption_name_css || undefined,
+      reviewRole: review_item_caption_role_css || undefined,
+
+      serviceIntroductionTitle: service_introduction_title_css_ || undefined,
+      serviceIntroductionDesc: service_introduction_desc_css_ || undefined,
+
+      serviceContactTitle: service_contact_title_css_ || undefined,
+      serviceContactButton: undefined,
+    };
+    setPageStyle({ ...initialStyle });
+  }
+
+  /* ********** */
+
   function getLocalContent() {
     const localContent = localStorage.getItem("changedContent");
     if (localContent) {
@@ -174,55 +224,6 @@ export default function ShoppingMallMain() {
   const [pageStyle, setPageStyle] = useState<IshoppingMallMainStyle | null>(
     getLocalStyle()
   );
-
-  function updateInitialContent() {
-    if (generatedText && generatedText.content) {
-      const initialContent = {
-        mainBannerTitle: generatedText.content.mainBannerTitle || undefined,
-        mainBannerDesc: generatedText.content.mainBannerDesc || undefined,
-        mainBannerButton: generatedText.content.mainBannerButton || undefined,
-        productListTitle: generatedText.content.productListTitle || undefined,
-        productListDesc: generatedText.content.productListDesc || undefined,
-        reviewTitle: generatedText.content.reviewTitle || undefined,
-        reviewDesc: generatedText.content.reviewDesc || undefined,
-        reviewName: generatedText.content.reviewName || undefined,
-        reviewRole: generatedText.content.reviewRole || undefined,
-        serviceIntroductionTitle:
-          generatedText.content.serviceIntroductionTitle || undefined,
-        serviceIntroductionDesc:
-          generatedText.content.serviceIntroductionDesc || undefined,
-        serviceContactTitle:
-          generatedText.content.serviceContactTitle || undefined,
-        serviceContactButton:
-          generatedText.content.serviceContactButton || undefined,
-      };
-      setPageContent(initialContent);
-    }
-  }
-
-  //페이지에 적용될 초기 스타일 저장
-  function updateInitialStyle() {
-    const initialStyle = {
-      mainBannerTitle: mainBanner_title_css_ || undefined,
-      mainBannerDesc: mainBanner_desc_css_ || undefined,
-      mainBannerButton: mainBanner_button_css_ || undefined,
-
-      productListTitle: product_list_option_main_title_css || undefined,
-      productListDesc: product_list_option_main_desc_css || undefined,
-
-      reviewTitle: review_item_title_css || undefined,
-      reviewDesc: review_item_desc_css || undefined,
-      reviewName: review_item_caption_name_css || undefined,
-      reviewRole: review_item_caption_role_css || undefined,
-
-      serviceIntroductionTitle: service_introduction_title_css_ || undefined,
-      serviceIntroductionDesc: service_introduction_desc_css_ || undefined,
-
-      serviceContactTitle: service_contact_title_css_ || undefined,
-      serviceContactButton: undefined,
-    };
-    setPageStyle({ ...initialStyle });
-  }
 
   useEffect(() => {
     if (generatedText) {
@@ -314,9 +315,11 @@ export default function ShoppingMallMain() {
     undefined
   );
 
-  if (!pageContent || !headerData || !pageStyle) {
+  if (!generatedText || !headerData) {
     return <Loading />;
   }
+
+  /* ********** */
 
   return (
     <div className="templateImage">

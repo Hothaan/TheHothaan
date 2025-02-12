@@ -213,7 +213,7 @@ export default function IntermediaryMatchServiceIntroduce() {
     setPageStyle({ ...pageStyle, [key]: value });
   }
 
-  if (!pageContent || !headerData || !pageStyle) {
+  if (!generatedText || !headerData) {
     return <Loading />;
   }
 
