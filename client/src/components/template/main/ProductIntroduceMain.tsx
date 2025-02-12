@@ -212,8 +212,6 @@ export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
     [onChangeStyle]
   );
 
-  // console.log(activeEditor);
-
   if (!editableContent) {
     return <></>;
   }

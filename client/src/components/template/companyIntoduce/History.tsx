@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { OuterWrap } from "../commonComponent/Wrap";
+import EditableText from "@components/service/editableText/EditableText";
 
 const desc_ =
   "lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non";
@@ -19,52 +20,135 @@ interface Ihistory {
   isEditable?: boolean;
   onChangeContent?: (key: string, value: string) => void;
   onChangeStyle?: (key: string, value: CSSObject) => void;
+  activeEditor?: string;
+  setActiveEditor?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
-export const history_desc_css_ = css`
-  position: relative;
+export const history_desc_css_: CSSObject = {
+  width: "100%",
+  position: "relative",
+  maxWidth: "600px",
+  color: "#486284",
+  fontFamily: "Inter",
+  fontSize: "32px",
+  fontStyle: "normal",
+  fontWeight: "400",
+  lineHeight: "normal",
+  height: "80px",
 
-  max-width: 600px;
-  color: #486284;
-
-  /* h2_middle */
-  font-family: Inter;
-  font-size: 32px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-
-  &:after {
-    display: block;
-    content: "";
-    width: 1px;
-    height: 100%;
-    position: absolute;
-
-    top: 20px;
-    left: -34px;
-  }
-`;
+  display: "-webkit-box",
+  WebkitBoxOrient: "vertical",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  WebkitLineClamp: "2",
+};
 
 export default function History(prop: Ihistory) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
-
-  const initial = {
-    historyDesc: {
-      text: content?.historyDesc || desc_,
-      css: style?.historyDesc || history_desc_css_,
-    },
-  };
-
-  const [edit, setEdit] = useState(initial);
-
-  useEffect(() => {
-    if (content) {
-      setEdit(initial);
-    }
-  }, [content]);
+  const {
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   const count = 6;
+
+  const initialContent = { historyDesc: content?.historyDesc || desc_ };
+  const initialStyle = { historyDesc: style?.historyDesc || history_desc_css_ };
+
+  const updateValues = (source: any, initial: any) => {
+    return Object.keys(initial).reduce((acc, key) => {
+      const value = source?.[key];
+      acc[key] = value === "" ? initial[key] : value ?? initial[key];
+      return acc;
+    }, {} as any);
+  };
+
+  const [editableContent, setEditableContent] = useState(() =>
+    updateValues(content, initialContent)
+  );
+  const [editableStyle, setEditableStyle] = useState(() =>
+    updateValues(style, initialStyle)
+  );
+
+  // `useMemo`로 최적화된 업데이트 값 생성
+  const updatedContent = useMemo(
+    () => updateValues(content, initialContent),
+    [content, initialContent]
+  );
+  const updatedStyle = useMemo(
+    () => updateValues(style, initialStyle),
+    [style, initialStyle]
+  );
+
+  useEffect(() => {
+    setEditableContent((prev: any) => {
+      // 기존 객체와 새 객체를 비교하여 변경된 경우에만 업데이트
+      if (!shallowEqual(prev, updatedContent)) {
+        return { ...prev, ...updatedContent };
+      }
+      return prev;
+    });
+  }, [updatedContent]);
+
+  useEffect(() => {
+    setEditableStyle((prev: any) => {
+      if (!shallowEqual(prev, updatedStyle)) {
+        return updatedStyle;
+      }
+      return prev;
+    });
+  }, [updatedStyle]);
+
+  // 얕은 비교를 수행하는 함수
+  const shallowEqual = (objA: any, objB: any) => {
+    if (Object.is(objA, objB)) return true;
+
+    if (
+      !objA ||
+      !objB ||
+      typeof objA !== "object" ||
+      typeof objB !== "object"
+    ) {
+      return false;
+    }
+
+    const keysA = Object.keys(objA);
+    const keysB = Object.keys(objB);
+
+    if (keysA.length !== keysB.length) return false;
+
+    return keysA.every((key) => Object.is(objA[key], objB[key]));
+  };
+
+  const handleEditContent = useCallback(
+    (key: string, value: string) => {
+      setEditableContent((prev: any) => {
+        if (prev[key] === value) return prev; // 값이 동일하면 업데이트 안 함
+        return { ...prev, [key]: value };
+      });
+      onChangeContent?.(key, value);
+    },
+    [onChangeContent]
+  );
+
+  const handleEditStyle = useCallback(
+    (key: string, value: CSSObject) => {
+      setEditableStyle((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeStyle?.(key, value);
+    },
+    [onChangeStyle]
+  );
+
+  if (!editableContent) {
+    return <></>;
+  }
 
   return (
     <OuterWrap padding="200px 0">
@@ -76,17 +160,41 @@ export default function History(prop: Ihistory) {
               <div css={circle_container}>
                 <span css={circle(index === 0 ? true : false)}></span>
               </div>
-              <p
-                css={[
-                  history_desc_css_,
-                  history_desc_change(
+              {isEditable ? (
+                <div
+                  css={[
+                    history_desc_change(
+                      index === 0 ? true : false,
+                      index === count - 1 ? true : false
+                    ),
+                  ]}
+                >
+                  <EditableText
+                    text={editableContent?.historyDesc}
+                    defaultCss={editableStyle?.historyDesc}
+                    isTextArea={true}
+                    className="historyDesc"
+                    id="historyDesc"
+                    onChangeText={(key, value) => handleEditContent(key, value)}
+                    onChangeCss={(key, value) => handleEditStyle(key, value)}
+                    activeEditor={activeEditor}
+                    setActiveEditor={setActiveEditor}
+                    isWidth100={true}
+                    // justifyContent="center"
+                  />
+                </div>
+              ) : (
+                <div
+                  css={history_desc_change(
                     index === 0 ? true : false,
                     index === count - 1 ? true : false
-                  ),
-                ]}
-              >
-                {content?.historyDesc || desc_}
-              </p>
+                  )}
+                >
+                  <p css={[editableStyle?.historyDesc]}>
+                    {editableContent?.historyDesc}
+                  </p>
+                </div>
+              )}
             </li>
           ))}
         </ul>
@@ -159,9 +267,20 @@ const circle = (isSelected?: boolean) => css`
 `;
 
 const history_desc_change = (isSelected?: boolean, isLast?: boolean) => css`
+  width: 100%;
+  max-width: 600px;
   padding-bottom: ${isLast ? "0px" : isSelected ? "240px" : "140px"};
+  position: relative;
 
   &:after {
     background-color: ${isSelected ? "#486284" : "#D6D6D6"};
+
+    display: block;
+    content: "";
+    width: 1px;
+    height: 100%;
+    position: absolute;
+    top: 20px;
+    left: -34px;
   }
 `;

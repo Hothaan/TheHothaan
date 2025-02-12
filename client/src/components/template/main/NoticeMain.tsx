@@ -33,9 +33,12 @@ interface InoticeMain {
 }
 
 export const notice_main_title_css_: CSSObject = {
+  width: "100%",
   overflow: "hidden",
-  color: "#486284",
   textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+
+  color: "#486284",
   fontFamily: "Pretendard",
   fontSize: "20px",
   fontStyle: "normal",

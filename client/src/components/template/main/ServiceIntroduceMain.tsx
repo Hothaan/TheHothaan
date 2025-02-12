@@ -201,6 +201,7 @@ export default function ServiceIntroduce(prop: IserviceIntroduce) {
               }
               isTextArea={false}
               className="serviceIntroduceTitle"
+              id="serviceIntroduceTitle"
               onChangeText={(key, value) => handleEditContent(key, value)}
               onChangeCss={(key, value) => handleEditStyle(key, value)}
               activeEditor={activeEditor}
@@ -228,6 +229,7 @@ export default function ServiceIntroduce(prop: IserviceIntroduce) {
               }
               isTextArea={true}
               className="serviceIntroduceDesc"
+              id="serviceIntroduceDesc"
               onChangeText={(key, value) => handleEditContent(key, value)}
               onChangeCss={(key, value) => handleEditStyle(key, value)}
               activeEditor={activeEditor}

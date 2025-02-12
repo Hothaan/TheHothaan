@@ -113,8 +113,6 @@ export default function HomePageBoardMain() {
   const [generatedText, setGeneratedText] =
     useState<IfetchedfeatureResponseData | null>(null);
 
-  console.log(generatedText);
-
   async function fetchFeatureData(isProduction: boolean, projectId: string) {
     try {
       const response = await getFeatureData(isProduction, projectId);
@@ -144,48 +142,6 @@ export default function HomePageBoardMain() {
       // window.location.href = "/error";
     }
   }
-
-  useEffect(() => {
-    if (projectId === undefined) {
-      setProjectIdValue(storedProjectId); // Zustand에서 가져온 값 사용
-    } else {
-      setProjectIdValue(projectId);
-    }
-  }, [projectId, storedProjectId]);
-
-  useEffect(() => {
-    if (projectIdValue) {
-      fetchFeatureData(isProduction, projectIdValue);
-    }
-  }, [projectIdValue]);
-
-  function getLocalContent() {
-    const localContent = localStorage.getItem("changedContent");
-    if (localContent) {
-      const parsed = JSON.parse(localContent);
-      if (parsed[featureKey]?.content) {
-        return parsed[featureKey].content;
-      }
-    }
-    return null;
-  }
-
-  function getLocalStyle() {
-    const localContent = localStorage.getItem("changedStyle");
-    if (localContent) {
-      const parsed = JSON.parse(localContent);
-      if (parsed[featureKey]?.style) {
-        return parsed[featureKey].style;
-      }
-    }
-    return null;
-  }
-
-  const [pageContent, setPageContent] =
-    useState<IhomePageBoardMainContent | null>(getLocalContent());
-  const [pageStyle, setPageStyle] = useState<IhomePageBoardMainStyle | null>(
-    getLocalStyle()
-  );
 
   function updateInitialContent() {
     if (generatedText && generatedText.content) {
@@ -258,6 +214,48 @@ export default function HomePageBoardMain() {
     };
     setPageStyle({ ...initialStyle });
   }
+
+  useEffect(() => {
+    if (projectId === undefined) {
+      setProjectIdValue(storedProjectId); // Zustand에서 가져온 값 사용
+    } else {
+      setProjectIdValue(projectId);
+    }
+  }, [projectId, storedProjectId]);
+
+  useEffect(() => {
+    if (projectIdValue) {
+      fetchFeatureData(isProduction, projectIdValue);
+    }
+  }, [projectIdValue]);
+
+  function getLocalContent() {
+    const localContent = localStorage.getItem("changedContent");
+    if (localContent) {
+      const parsed = JSON.parse(localContent);
+      if (parsed[featureKey]?.content) {
+        return parsed[featureKey].content;
+      }
+    }
+    return null;
+  }
+
+  function getLocalStyle() {
+    const localContent = localStorage.getItem("changedStyle");
+    if (localContent) {
+      const parsed = JSON.parse(localContent);
+      if (parsed[featureKey]?.style) {
+        return parsed[featureKey].style;
+      }
+    }
+    return null;
+  }
+
+  const [pageContent, setPageContent] =
+    useState<IhomePageBoardMainContent | null>(getLocalContent());
+  const [pageStyle, setPageStyle] = useState<IhomePageBoardMainStyle | null>(
+    getLocalStyle()
+  );
 
   //featureData가 들어오면 초기 콘텐츠와 스타일 업데이트
   useEffect(() => {
@@ -343,10 +341,6 @@ export default function HomePageBoardMain() {
   const [activeEditor, setActiveEditor] = useState<string | undefined>(
     undefined
   );
-
-  console.log(pageContent);
-  console.log(pageStyle);
-  console.log(headerData);
 
   if (!pageContent || !headerData || !pageStyle) {
     return <Loading />;
@@ -470,7 +464,7 @@ export default function HomePageBoardMain() {
         activeEditor={activeEditor}
         setActiveEditor={setActiveEditor}
       />
-      <Footer serviceType="홈페이지·게시판" />
+      <Footer serviceType="홈페이지·게시판" logo={headerData.logo} />
     </div>
   );
 }

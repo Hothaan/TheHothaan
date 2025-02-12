@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { OuterWrap } from "../commonComponent/Wrap";
 import Title from "../commonComponent/Title";
 import ImageBox from "../commonComponent/ImageBox";
+import EditableText from "@components/service/editableText/EditableText";
 
 const component_title_ = "news board";
 
@@ -24,34 +25,52 @@ interface Inews {
   content?: InewsContent | null;
   style?: InewsStyle | null;
   isEditable?: boolean;
-  onChangeContent?: (key: string, value: string) => void;
-  onChangeStyle?: (key: string, value: CSSObject) => void;
+  onChangeContent: (key: string, value: string) => void;
+  onChangeStyle: (key: string, value: CSSObject) => void;
+  index?: number;
+  activeEditor?: string;
+  setActiveEditor?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
-export const news_title_css_ = css`
-  color: #486284;
+export const news_title_css_: CSSObject = {
+  width: "100%",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
 
-  /* mall/subject */
-  font-family: Inter;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-`;
+  color: "#486284",
+  fontFamily: "Inter",
+  fontSize: "20px",
+  fontStyle: "normal",
+  fontWeight: "400",
+  lineHeight: "normal",
+};
 
-export const news_desc_css_ = css`
-  color: var(--A0A0A0, #a0a0a0);
+export const news_desc_css_: CSSObject = {
+  width: "100%",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
 
-  /* mall/subject_small */
-  font-family: Inter;
-  font-size: 15px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-`;
+  color: "var(--A0A0A0, #a0a0a0)",
+  fontFamily: "Inter",
+  fontSize: "15px",
+  fontStyle: "normal",
+  fontWeight: "400",
+  lineHeight: "normal",
+};
 
 function NewsItem(prop: Inews) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
+  const {
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    activeEditor,
+    setActiveEditor,
+    index,
+  } = prop;
 
   return (
     <div css={item_container}>
@@ -67,56 +86,159 @@ function NewsItem(prop: Inews) {
       />
       <div css={item_info_container}>
         <p css={number_style}>483</p>
-        <p css={style?.newsTitle || news_title_css_}>
-          {content?.newsTitle || item_title_}
-        </p>
-        <p css={style?.newsDesc || news_desc_css_}>
-          {content?.newsDesc || item_desc_}
-        </p>
+        {isEditable ? (
+          <EditableText
+            text={content?.newsTitle as string}
+            className="newsTitle"
+            id={"newsTitle" + index}
+            isTextArea={false}
+            defaultCss={style?.newsTitle as CSSObject}
+            onChangeText={(key, value) => onChangeContent(key, value)}
+            onChangeCss={(key, value) => onChangeStyle(key, value)}
+            activeEditor={activeEditor}
+            setActiveEditor={setActiveEditor}
+            isWidth100={true}
+          />
+        ) : (
+          <p css={style?.newsTitle || news_title_css_}>
+            {content?.newsTitle || item_title_}
+          </p>
+        )}
+        {isEditable ? (
+          <EditableText
+            text={content?.newsDesc as string}
+            className="newsDesc"
+            id={"newsDesc" + index}
+            isTextArea={false}
+            defaultCss={style?.newsDesc as CSSObject}
+            onChangeText={(key, value) => onChangeContent(key, value)}
+            onChangeCss={(key, value) => onChangeStyle(key, value)}
+            activeEditor={activeEditor}
+            setActiveEditor={setActiveEditor}
+            isWidth100={true}
+          />
+        ) : (
+          <p css={style?.newsDesc || news_desc_css_}>
+            {content?.newsDesc || item_desc_}
+          </p>
+        )}
       </div>
     </div>
   );
 }
 
 export default function News(prop: Inews) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
-
-  const initial = {
-    newsTitle: {
-      text: content?.newsTitle || item_title_,
-      css: style?.newsTitle || news_title_css_,
-    },
-    newsDesc: {
-      text: content?.newsDesc || item_desc_,
-      css: style?.newsDesc || news_desc_css_,
-    },
-  };
-
-  const [edit, setEdit] = useState(initial);
-
-  useEffect(() => {
-    if (content) {
-      setEdit(initial);
-    }
-  }, [content]);
-
-  // function handleEdit(
-  //   field: keyof InewsContent,
-  //   updatedText: string,
-  //   updatedCss: CSSObject
-  // ) {
-  //   const updatedState = {
-  //     ...edit,
-  //     [field]: {
-  //       text: updatedText,
-  //       css: updatedCss,
-  //     },
-  //   };
-  //   setEdit(updatedState);
-  //   onChange?.(updatedState);
-  // }
+  const {
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   const count = 4;
+
+  const initialContent = {
+    newsTitle: content?.newsTitle || item_title_,
+    newsDesc: content?.newsDesc || item_desc_,
+  };
+  const initialStyle = {
+    newsTitle: style?.newsTitle || news_title_css_,
+    newsDesc: style?.newsDesc || news_desc_css_,
+  };
+
+  const updateValues = (source: any, initial: any) => {
+    return Object.keys(initial).reduce((acc, key) => {
+      const value = source?.[key];
+      acc[key] = value === "" ? initial[key] : value ?? initial[key];
+      return acc;
+    }, {} as any);
+  };
+
+  const [editableContent, setEditableContent] = useState(() =>
+    updateValues(content, initialContent)
+  );
+  const [editableStyle, setEditableStyle] = useState(() =>
+    updateValues(style, initialStyle)
+  );
+
+  // `useMemo`로 최적화된 업데이트 값 생성
+  const updatedContent = useMemo(
+    () => updateValues(content, initialContent),
+    [content, initialContent]
+  );
+  const updatedStyle = useMemo(
+    () => updateValues(style, initialStyle),
+    [style, initialStyle]
+  );
+
+  useEffect(() => {
+    setEditableContent((prev: any) => {
+      // 기존 객체와 새 객체를 비교하여 변경된 경우에만 업데이트
+      if (!shallowEqual(prev, updatedContent)) {
+        return { ...prev, ...updatedContent };
+      }
+      return prev;
+    });
+  }, [updatedContent]);
+
+  useEffect(() => {
+    setEditableStyle((prev: any) => {
+      if (!shallowEqual(prev, updatedStyle)) {
+        return updatedStyle;
+      }
+      return prev;
+    });
+  }, [updatedStyle]);
+
+  // 얕은 비교를 수행하는 함수
+  const shallowEqual = (objA: any, objB: any) => {
+    if (Object.is(objA, objB)) return true;
+
+    if (
+      !objA ||
+      !objB ||
+      typeof objA !== "object" ||
+      typeof objB !== "object"
+    ) {
+      return false;
+    }
+
+    const keysA = Object.keys(objA);
+    const keysB = Object.keys(objB);
+
+    if (keysA.length !== keysB.length) return false;
+
+    return keysA.every((key) => Object.is(objA[key], objB[key]));
+  };
+
+  const handleEditContent = useCallback(
+    (key: string, value: string) => {
+      setEditableContent((prev: any) => {
+        if (prev[key] === value) return prev; // 값이 동일하면 업데이트 안 함
+        return { ...prev, [key]: value };
+      });
+      onChangeContent?.(key, value);
+    },
+    [onChangeContent]
+  );
+
+  const handleEditStyle = useCallback(
+    (key: string, value: CSSObject) => {
+      setEditableStyle((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeStyle?.(key, value);
+    },
+    [onChangeStyle]
+  );
+
+  if (!editableContent) {
+    return <></>;
+  }
 
   return (
     <OuterWrap padding="100px">
@@ -130,10 +252,14 @@ export default function News(prop: Inews) {
         {Array.from({ length: count }, (_, index) => (
           <NewsItem
             key={index}
-            content={content}
+            index={index}
             isEditable={isEditable}
-            onChangeContent={onChangeContent}
-            onChangeStyle={onChangeStyle}
+            content={editableContent}
+            style={editableStyle}
+            onChangeContent={handleEditContent}
+            onChangeStyle={handleEditStyle}
+            activeEditor={activeEditor}
+            setActiveEditor={setActiveEditor}
           />
         ))}
       </div>
@@ -165,6 +291,7 @@ const item_container = css`
 `;
 
 const item_info_container = css`
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;

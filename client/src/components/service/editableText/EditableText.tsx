@@ -417,7 +417,7 @@ const input_style = (isEditing: boolean) => css`
 const resizeIconUrl = "/assets/images/textEditor/resize.svg";
 
 const textarea = (isEditing: boolean) => css`
-  resize: ${isEditing ? "vertical" : "none"};
+  // resize: ${isEditing ? "vertical" : "none"};
 `;
 const expand_icon = (isEditing: boolean) => css`
   position: absolute;

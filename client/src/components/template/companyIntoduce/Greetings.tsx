@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { OuterWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 import EditableText from "@components/service/editableText/EditableText";
@@ -30,6 +30,8 @@ interface Igreetings {
   isEditable?: boolean;
   onChangeContent?: (key: string, value: string) => void;
   onChangeStyle?: (key: string, value: CSSObject) => void;
+  activeEditor?: string;
+  setActiveEditor?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 export const greetings_full_title_css_: CSSObject = {
@@ -40,10 +42,12 @@ export const greetings_full_title_css_: CSSObject = {
   fontWeight: "900",
   lineHeight: "150%",
   textTransform: "capitalize",
+
   width: "100%",
-  overflow: "hidden" /* 넘치는 텍스트 숨김 */,
-  textOverflow: "ellipsis" /* 말줄임표 적용 */,
-  whiteSpace: "nowrap" /* 텍스트를 한 줄로 처리 */,
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+
   textAlign: "center",
 };
 
@@ -55,14 +59,15 @@ export const greetings_full_desc_css_: CSSObject = {
   fontStyle: "normal",
   fontWeight: "400",
   lineHeight: "normal",
-  maxWidth: "676px",
-  width: "100%",
+  // maxWidth: "676px",
 
+  width: "100%",
   display: "-webkit-box",
   WebkitBoxOrient: "vertical",
   overflow: "hidden",
   textOverflow: "ellipsis",
-  WebkitLineClamp: "2",
+  height: "200px",
+  WebkitLineClamp: "6",
   textAlign: "center",
 };
 
@@ -73,6 +78,11 @@ export const greetings_half_title_css_: CSSObject = {
   fontStyle: "normal",
   fontWeight: "900",
   lineHeight: "150%",
+
+  width: "100%",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
 
   "@media (max-width: 1000px)": {
     color: "#486284",
@@ -92,29 +102,25 @@ export const greetings_half_desc_css_: CSSObject = {
   fontWeight: "400",
   lineHeight: "normal",
   wordBreak: "break-all",
+
+  width: "100%",
+  display: "-webkit-box",
+  WebkitBoxOrient: "vertical",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  WebkitLineClamp: "4",
 };
 
 export default function Greetings(prop: Igreetings) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
-
-  const initial = {
-    greetingsHalfTitle: {
-      text: content?.greetingsHalfTitle || title_,
-      css: style?.greetingsHalfTitle || greetings_half_title_css_,
-    },
-    greetingsHalfDesc: {
-      text: content?.greetingsHalfDesc || desc_,
-      css: style?.greetingsHalfDesc || greetings_half_desc_css_,
-    },
-    greetingsFullTitle: {
-      text: content?.greetingsFullTitle || title_,
-      css: style?.greetingsFullTitle || greetings_full_title_css_,
-    },
-    greetingsFullDesc: {
-      text: content?.greetingsFullDesc || desc_,
-      css: style?.greetingsFullDesc || greetings_full_desc_css_,
-    },
-  };
+  const {
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   const initialContent = {
     greetingsHalfTitle: content?.greetingsHalfTitle || title_,
@@ -130,83 +136,92 @@ export default function Greetings(prop: Igreetings) {
     greetingsFullDesc: style?.greetingsFullDesc || greetings_full_desc_css_,
   };
 
-  const [editableContent, setEditableContent] = useState<any>(initialContent);
-  const [editableStyle, setEditableStyle] = useState<any>(initialStyle);
+  const updateValues = (source: any, initial: any) => {
+    return Object.keys(initial).reduce((acc, key) => {
+      const value = source?.[key];
+      acc[key] = value === "" ? initial[key] : value ?? initial[key];
+      return acc;
+    }, {} as any);
+  };
+
+  const [editableContent, setEditableContent] = useState(() =>
+    updateValues(content, initialContent)
+  );
+  const [editableStyle, setEditableStyle] = useState(() =>
+    updateValues(style, initialStyle)
+  );
+
+  // `useMemo`로 최적화된 업데이트 값 생성
+  const updatedContent = useMemo(
+    () => updateValues(content, initialContent),
+    [content, initialContent]
+  );
+  const updatedStyle = useMemo(
+    () => updateValues(style, initialStyle),
+    [style, initialStyle]
+  );
 
   useEffect(() => {
     setEditableContent((prev: any) => {
-      const updatedContent = { ...prev };
-
-      if (content?.greetingsHalfTitle !== prev?.greetingsHalfTitle) {
-        updatedContent.greetingsHalfTitle =
-          content?.greetingsHalfTitle ?? initialContent.greetingsHalfTitle;
+      // 기존 객체와 새 객체를 비교하여 변경된 경우에만 업데이트
+      if (!shallowEqual(prev, updatedContent)) {
+        return { ...prev, ...updatedContent };
       }
-      if (content?.greetingsHalfDesc !== prev?.greetingsHalfDesc) {
-        updatedContent.greetingsHalfDesc =
-          content?.greetingsHalfDesc ?? initialContent.greetingsHalfDesc;
-      }
-      if (content?.greetingsFullTitle !== prev?.greetingsFullTitle) {
-        updatedContent.greetingsFullTitle =
-          content?.greetingsFullTitle ?? initialContent.greetingsFullTitle;
-      }
-      if (content?.greetingsFullDesc !== prev?.greetingsFullDesc) {
-        updatedContent.greetingsFullDesc =
-          content?.greetingsFullDesc ?? initialContent.greetingsFullDesc;
-      }
-
-      // 변경된 값이 있다면 상태 업데이트
-      return JSON.stringify(prev) === JSON.stringify(updatedContent)
-        ? prev
-        : updatedContent;
+      return prev;
     });
-  }, [content]);
+  }, [updatedContent]);
 
   useEffect(() => {
     setEditableStyle((prev: any) => {
-      const updatedStyle = { ...prev };
-
-      if (style?.greetingsHalfTitle !== prev?.greetingsHalfTitle) {
-        updatedStyle.greetingsHalfTitle =
-          style?.greetingsHalfTitle ?? initialStyle.greetingsHalfTitle;
+      if (!shallowEqual(prev, updatedStyle)) {
+        return updatedStyle;
       }
-      if (style?.greetingsHalfDesc !== prev?.greetingsHalfDesc) {
-        updatedStyle.greetingsHalfDesc =
-          style?.greetingsHalfDesc ?? initialStyle.greetingsHalfDesc;
-      }
-      if (style?.greetingsFullTitle !== prev?.greetingsFullTitle) {
-        updatedStyle.greetingsFullTitle =
-          style?.greetingsFullTitle ?? initialStyle.greetingsFullTitle;
-      }
-      if (style?.greetingsFullDesc !== prev?.greetingsFullDesc) {
-        updatedStyle.greetingsFullDesc =
-          style?.greetingsFullDesc ?? initialStyle.greetingsFullDesc;
-      }
-
-      // 변경된 값이 있다면 상태 업데이트
-      return JSON.stringify(prev) === JSON.stringify(updatedStyle)
-        ? prev
-        : updatedStyle;
+      return prev;
     });
-  }, [style]);
+  }, [updatedStyle]);
+
+  // 얕은 비교를 수행하는 함수
+  const shallowEqual = (objA: any, objB: any) => {
+    if (Object.is(objA, objB)) return true;
+
+    if (
+      !objA ||
+      !objB ||
+      typeof objA !== "object" ||
+      typeof objB !== "object"
+    ) {
+      return false;
+    }
+
+    const keysA = Object.keys(objA);
+    const keysB = Object.keys(objB);
+
+    if (keysA.length !== keysB.length) return false;
+
+    return keysA.every((key) => Object.is(objA[key], objB[key]));
+  };
 
   const handleEditContent = useCallback(
     (key: string, value: string) => {
-      setEditableContent((prev: any) => ({
-        ...prev,
-        [key]: value,
-      }));
+      setEditableContent((prev: any) => {
+        if (prev[key] === value) return prev; // 값이 동일하면 업데이트 안 함
+        return { ...prev, [key]: value };
+      });
       onChangeContent?.(key, value);
     },
     [onChangeContent]
   );
 
-  function handleEditStyle(key: string, value: CSSObject) {
-    setEditableStyle({
-      ...editableStyle,
-      [key]: value,
-    });
-    onChangeStyle?.(key, value);
-  }
+  const handleEditStyle = useCallback(
+    (key: string, value: CSSObject) => {
+      setEditableStyle((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeStyle?.(key, value);
+    },
+    [onChangeStyle]
+  );
 
   if (!editableContent) {
     return <></>;
@@ -233,10 +248,13 @@ export default function Greetings(prop: Igreetings) {
               <EditableText
                 text={editableContent.greetingsHalfTitle}
                 className="greetingsHalfTitle"
+                id={"greetingsHalfTitle" + 1}
                 isTextArea={false}
                 defaultCss={editableStyle.greetingsHalfTitle}
                 onChangeText={(key, value) => handleEditContent(key, value)}
                 onChangeCss={(key, value) => handleEditStyle(key, value)}
+                activeEditor={activeEditor}
+                setActiveEditor={setActiveEditor}
               />
             ) : (
               <p css={editableStyle?.greetingsHalfTitle}>
@@ -245,12 +263,15 @@ export default function Greetings(prop: Igreetings) {
             )}
             {isEditable ? (
               <EditableText
-                text={editableContent.greetingsHalfTitle}
+                text={editableContent.greetingsHalfDesc}
                 className="greetingsHalfDesc"
-                isTextArea={false}
+                id={"greetingsHalfDesc" + 1}
+                isTextArea={true}
                 defaultCss={editableStyle.greetingsHalfDesc}
                 onChangeText={(key, value) => handleEditContent(key, value)}
                 onChangeCss={(key, value) => handleEditStyle(key, value)}
+                activeEditor={activeEditor}
+                setActiveEditor={setActiveEditor}
               />
             ) : (
               <p css={editableStyle?.greetingsHalfDesc}>
@@ -275,10 +296,13 @@ export default function Greetings(prop: Igreetings) {
               <EditableText
                 text={editableContent.greetingsFullTitle}
                 className="greetingsFullTitle"
+                id={"greetingsFullTitle"}
                 isTextArea={false}
                 defaultCss={editableStyle.greetingsFullTitle}
                 onChangeText={(key, value) => handleEditContent(key, value)}
                 onChangeCss={(key, value) => handleEditStyle(key, value)}
+                activeEditor={activeEditor}
+                setActiveEditor={setActiveEditor}
               />
             ) : (
               <p css={editableStyle?.greetingsFullTitle}>
@@ -289,10 +313,14 @@ export default function Greetings(prop: Igreetings) {
               <EditableText
                 text={editableContent.greetingsFullDesc}
                 className="greetingsFullDesc"
-                isTextArea={false}
+                id={"greetingsFullDesc"}
+                isTextArea={true}
                 defaultCss={editableStyle.greetingsFullDesc}
                 onChangeText={(key, value) => handleEditContent(key, value)}
                 onChangeCss={(key, value) => handleEditStyle(key, value)}
+                activeEditor={activeEditor}
+                setActiveEditor={setActiveEditor}
+                isWidth100={true}
               />
             ) : (
               <p css={editableStyle?.greetingsFullDesc}>
@@ -307,10 +335,13 @@ export default function Greetings(prop: Igreetings) {
               <EditableText
                 text={editableContent.greetingsHalfTitle}
                 className="greetingsHalfTitle"
+                id={"greetingsHalfTitle" + 2}
                 isTextArea={false}
                 defaultCss={editableStyle.greetingsHalfTitle}
                 onChangeText={(key, value) => handleEditContent(key, value)}
                 onChangeCss={(key, value) => handleEditStyle(key, value)}
+                activeEditor={activeEditor}
+                setActiveEditor={setActiveEditor}
               />
             ) : (
               <p css={editableStyle?.greetingsHalfTitle}>
@@ -321,10 +352,13 @@ export default function Greetings(prop: Igreetings) {
               <EditableText
                 text={editableContent.greetingsHalfTitle}
                 className="greetingsHalfDesc"
-                isTextArea={false}
+                id={"greetingsHalfDesc" + 2}
+                isTextArea={true}
                 defaultCss={editableStyle.greetingsHalfDesc}
                 onChangeText={(key, value) => handleEditContent(key, value)}
                 onChangeCss={(key, value) => handleEditStyle(key, value)}
+                activeEditor={activeEditor}
+                setActiveEditor={setActiveEditor}
               />
             ) : (
               <p css={editableStyle?.greetingsHalfDesc}>
@@ -375,7 +409,7 @@ const inner_container = css`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: start;
+  justify-content: center;
   gap: 40px;
 `;
 
