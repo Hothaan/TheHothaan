@@ -37,6 +37,7 @@ export const service_introduce_title_css: CSSObject = {
   fontWeight: "900",
   lineHeight: "150%",
   textTransform: "capitalize",
+  textAlign: "center",
 
   width: "100%",
   overflow: "hidden",
@@ -52,13 +53,15 @@ export const service_introduce_desc_css: CSSObject = {
   fontStyle: "normal",
   fontWeight: "400",
   lineHeight: "normal",
-  maxWidth: "676px",
+  textAlign: "center",
 
   display: "-webkit-box",
   WebkitBoxOrient: "vertical",
   overflow: "hidden",
   textOverflow: "ellipsis",
-  WebkitLineClamp: "2",
+  WebkitLineClamp: "6",
+  height: "auto",
+  // height: "360px",
 };
 
 export default function ServiceIntroduce(prop: IserviceIntroduce) {
@@ -202,6 +205,8 @@ export default function ServiceIntroduce(prop: IserviceIntroduce) {
               onChangeCss={(key, value) => handleEditStyle(key, value)}
               activeEditor={activeEditor}
               setActiveEditor={setActiveEditor}
+              isWidth100={true}
+              justifyContent="center"
             />
           ) : (
             <p
@@ -227,6 +232,8 @@ export default function ServiceIntroduce(prop: IserviceIntroduce) {
               onChangeCss={(key, value) => handleEditStyle(key, value)}
               activeEditor={activeEditor}
               setActiveEditor={setActiveEditor}
+              isWidth100={true}
+              justifyContent="center"
             />
           ) : (
             <p
@@ -261,7 +268,7 @@ const container = css`
 
   display: flex;
   flex-direction: column;
-  align-items: start;
-  justify-content: start;
+  align-items: center;
+  justify-content: center;
   gap: 40px;
 `;

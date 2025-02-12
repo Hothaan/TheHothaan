@@ -34,37 +34,33 @@ interface IrecruitMain {
   setActiveEditor?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
-export const recruit_item_title_css_ = css`
-  overflow: hidden;
-  color: #486284;
-  text-overflow: ellipsis;
+export const recruit_item_title_css_: CSSObject = {
+  overflow: "hidden",
+  color: "#486284",
+  textOverflow: "ellipsis",
+  fontFamily: "Pretendard",
+  fontSize: "20px",
+  fontStyle: "normal",
+  fontWeight: "700",
+  lineHeight: "150%",
+  letterSpacing: "-0.4px",
+};
 
-  /* pretendard/Regular/20px */
-  font-family: Pretendard;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: 150%; /* 30px */
-  letter-spacing: -0.4px;
-`;
-
-export const recruit_item_desc_css_ = css`
-  width: 100%;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
-  overflow: hidden;
-  color: var(--black-gray-888888, #888);
-  text-overflow: ellipsis;
-
-  /* pretendard/Regular/15px */
-  font-family: Pretendard;
-  font-size: 15px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 150%; /* 22.5px */
-  letter-spacing: -0.15px;
-`;
+export const recruit_item_desc_css_: CSSObject = {
+  width: "100%",
+  display: "-webkit-box",
+  WebkitBoxOrient: "vertical",
+  WebkitLineClamp: "1",
+  overflow: "hidden",
+  color: "var(--black-gray-888888, #888)",
+  textOverflow: "ellipsis",
+  fontFamily: "Pretendard",
+  fontSize: "15px",
+  fontStyle: "normal",
+  fontWeight: "400",
+  lineHeight: "150%",
+  letterSpacing: "-0.15px",
+};
 
 function RecruitMainItem(prop: IrecruitMain) {
   const {
@@ -125,7 +121,7 @@ function RecruitMainItem(prop: IrecruitMain) {
           onChangeCss={(key, value) => onChangeStyle(key, value)}
           activeEditor={activeEditor}
           setActiveEditor={setActiveEditor}
-          // isWidth100={true}
+          isWidth100={true}
           justifyContent="center"
         />
       ) : (

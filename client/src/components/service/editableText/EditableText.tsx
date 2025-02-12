@@ -25,6 +25,7 @@ import { ReactComponent as Italic } from "@svgs/textEditor/italic.svg";
 import { ReactComponent as TextAlignCenter } from "@svgs/textEditor/textAlignCenter.svg";
 import { ReactComponent as TextAlignLeft } from "@svgs/textEditor/textAlignLeft.svg";
 import { ReactComponent as TextAlignRight } from "@svgs/textEditor/textAlignRight.svg";
+import { ReactComponent as Expand } from "@svgs/textEditor/expand.svg";
 
 interface Istyles {
   color: TselectableColor;
@@ -46,7 +47,7 @@ interface IeditableText {
   hasBg?: boolean;
   justifyContent?: string;
   activeEditor?: string | null;
-  setActiveEditor?: (classname?: string) => void;
+  setActiveEditor?: React.Dispatch<React.SetStateAction<string | undefined>>;
   onChangeText?: (key: string, text: string) => void;
   onChangeCss?: (key: string, css: CSSObject) => void;
 }
@@ -111,63 +112,63 @@ export default function EditableText(prop: IeditableText) {
     }
   }, [defaultCss]);
 
-  useLayoutEffect(() => {
-    if (isEditing && divRef.current && toolbarRef.current && inputRef.current) {
-      const divRect = divRef.current.getBoundingClientRect();
-      const InputRect = inputRef.current.getBoundingClientRect();
-      const toolbarRect = toolbarRef.current.getBoundingClientRect();
+  // useLayoutEffect(() => {
+  //   if (isEditing && divRef.current && toolbarRef.current && inputRef.current) {
+  //     const divRect = divRef.current.getBoundingClientRect();
+  //     const InputRect = inputRef.current.getBoundingClientRect();
+  //     const toolbarRect = toolbarRef.current.getBoundingClientRect();
 
-      const viewportWidth = window.innerWidth;
-      const viewportHeight = window.innerHeight;
+  //     const viewportWidth = window.innerWidth;
+  //     const viewportHeight = window.innerHeight;
 
-      const colorPickerWidth = 400;
-      const colorPickerHeight = 350;
+  //     const colorPickerWidth = 400;
+  //     const colorPickerHeight = 350;
 
-      const minimalPadding: number = 20;
+  //     const minimalPadding: number = 20;
 
-      const needHeightSpace = toolbarRect.height + colorPickerHeight;
-      const needWidthSpace = toolbarRect.width + colorPickerWidth;
+  //     const needHeightSpace = toolbarRect.height + colorPickerHeight;
+  //     const needWidthSpace = toolbarRect.width + colorPickerWidth;
 
-      let top = 0;
+  //     let top = 0;
 
-      if (InputRect.top <= needHeightSpace) {
-        // 위쪽 공간이 없을 때 아래 배치
-        top = minimalPadding + InputRect.height;
-        setColorPickerPosition("bottom");
-      } else if (InputRect.bottom + toolbarRect.height > viewportHeight) {
-        // 아래쪽 공간이 부족할 때 위에 배치
-        top = -minimalPadding - toolbarRect.height;
-        setColorPickerPosition("top");
-      } else {
-        // 기본적으로 위에 배치
-        top = -minimalPadding - toolbarRect.height;
-        setColorPickerPosition("top");
-      }
+  //     if (InputRect.top <= needHeightSpace) {
+  //       // 위쪽 공간이 없을 때 아래 배치
+  //       top = minimalPadding + InputRect.height;
+  //       setColorPickerPosition("bottom");
+  //     } else if (InputRect.bottom + toolbarRect.height > viewportHeight) {
+  //       // 아래쪽 공간이 부족할 때 위에 배치
+  //       top = -minimalPadding - toolbarRect.height;
+  //       setColorPickerPosition("top");
+  //     } else {
+  //       // 기본적으로 위에 배치
+  //       top = -minimalPadding - toolbarRect.height;
+  //       setColorPickerPosition("top");
+  //     }
 
-      let left: string | number = InputRect.left;
-      let transform: string = ``;
+  //     let left: string | number = InputRect.left;
+  //     let transform: string = ``;
 
-      if (InputRect.left < 0) {
-        // 부모 요소가 화면 바깥(왼쪽)으로 나가 있으면 툴바를 화면 왼쪽 끝에 맞춤
-        left = -InputRect.left + minimalPadding;
-      } else if (InputRect.left <= needWidthSpace) {
-        // 왼쪽 공간이 부족할 때 오른쪽에 배치
-        left = 0;
-      } else if (InputRect.left + toolbarRect.width > viewportWidth) {
-        // 오른쪽 공간이 부족할 때 화면 끝에 맞추기
-        // left = viewportWidth - toolbarRect.width - minimalPadding;
-        // left = viewportWidth - toolbarRect.width - toolbarRect.width;
-        left = `100%`;
-        // transform = `translateX(-50%)`;
-        // transform = `translateX(${minimalPadding}px)`;
-      } else {
-        left = 0;
-      }
+  //     if (InputRect.left < 0) {
+  //       // 부모 요소가 화면 바깥(왼쪽)으로 나가 있으면 툴바를 화면 왼쪽 끝에 맞춤
+  //       left = -InputRect.left + minimalPadding;
+  //     } else if (InputRect.left <= needWidthSpace) {
+  //       // 왼쪽 공간이 부족할 때 오른쪽에 배치
+  //       left = 0;
+  //     } else if (InputRect.left + toolbarRect.width > viewportWidth) {
+  //       // 오른쪽 공간이 부족할 때 화면 끝에 맞추기
+  //       // left = viewportWidth - toolbarRect.width - minimalPadding;
+  //       // left = viewportWidth - toolbarRect.width - toolbarRect.width;
+  //       left = `100%`;
+  //       // transform = `translateX(-50%)`;
+  //       // transform = `translateX(${minimalPadding}px)`;
+  //     } else {
+  //       left = 0;
+  //     }
 
-      setToolbarPosition({ top, left });
-      setToolbarTransform(transform);
-    }
-  }, [isEditing]);
+  //     setToolbarPosition({ top, left });
+  //     setToolbarTransform(transform);
+  //   }
+  // }, [isEditing]);
 
   const updateStyles = (newStyle: Partial<Istyles>) => {
     onChangeCss?.(className as string, { ...defaultCss, ...newStyle });
@@ -346,15 +347,20 @@ export default function EditableText(prop: IeditableText) {
     >
       {isEditing && <Toolbar />}
       {isTextArea ? (
-        <textarea
-          // id={id}
-          ref={inputRef as React.RefObject<HTMLTextAreaElement>}
-          css={[defaultCss, input_style(isEditing)]}
-          value={text}
-          onClick={handleEditorClick}
-          onChange={(e) => onChangeText?.(className as string, e.target.value)}
-          className={className}
-        />
+        <>
+          <textarea
+            // id={id}
+            ref={inputRef as React.RefObject<HTMLTextAreaElement>}
+            css={[defaultCss, input_style(isEditing), textarea(isEditing)]}
+            value={text}
+            onClick={handleEditorClick}
+            onChange={(e) =>
+              onChangeText?.(className as string, e.target.value)
+            }
+            className={className}
+          />
+          {/* <Expand css={expand_icon(isEditing)} /> */}
+        </>
       ) : hasBg ? (
         <div css={[defaultCss, width_fit_content]}>
           <input
@@ -406,6 +412,19 @@ const input_style = (isEditing: boolean) => css`
   width: 100%;
   background-color: transparent;
   padding: 0;
+`;
+
+const resizeIconUrl = "/assets/images/textEditor/resize.svg";
+
+const textarea = (isEditing: boolean) => css`
+  resize: ${isEditing ? "vertical" : "none"};
+`;
+const expand_icon = (isEditing: boolean) => css`
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  bottom: 0;
+  right: 0;
 `;
 
 const font_container = css`

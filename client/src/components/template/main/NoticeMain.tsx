@@ -97,6 +97,7 @@ function NoticeMainItem(prop: InoticeMain) {
               onChangeCss={(key, value) => onChangeStyle(key, value)}
               activeEditor={activeEditor}
               setActiveEditor={setActiveEditor}
+              isWidth100={true}
             />
           ) : (
             <p css={notice_main_title_css_}>{content?.noticeTitle || title_}</p>
@@ -115,6 +116,7 @@ function NoticeMainItem(prop: InoticeMain) {
           onChangeCss={(key, value) => onChangeStyle(key, value)}
           activeEditor={activeEditor}
           setActiveEditor={setActiveEditor}
+          isWidth100={true}
         />
       ) : (
         <p css={notice_main_desc_css_}>{content?.noticeDesc || desc_}</p>
@@ -137,6 +139,7 @@ export default function NoticeMain(prop: InoticeMain) {
   const count = 3;
 
   const container = css`
+    width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;

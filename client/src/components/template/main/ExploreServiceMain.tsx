@@ -49,6 +49,9 @@ export const explore_service_title_css_: CSSObject = {
   textTransform: "capitalize",
   width: "100%",
   textAlign: "center",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
 };
 
 export const explore_service_button_css_: CSSObject = {
@@ -66,6 +69,11 @@ export const explore_service_button_css_: CSSObject = {
   fontStyle: "normal",
   fontWeight: "400",
   lineHeight: "160%",
+
+  width: "100%",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
 };
 
 export const explore_service_explore_title_css_: CSSObject = {
@@ -76,6 +84,11 @@ export const explore_service_explore_title_css_: CSSObject = {
   fontWeight: "400",
   lineHeight: "24px",
   letterSpacing: "0.5px",
+
+  width: "100%",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
 };
 
 export const explore_service_explore_button_css_: CSSObject = {
@@ -96,6 +109,10 @@ export const explore_service_explore_button_css_: CSSObject = {
   fontWeight: "400",
   lineHeight: "24px",
   letterSpacing: "0.5px",
+
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
 };
 
 export default function ExploreServiceMain(prop: IexploreService) {

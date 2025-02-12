@@ -34,6 +34,7 @@ export const news_main_item_title_css_: CSSObject = {
   width: "100%",
   overflow: "hidden",
   textOverflow: "ellipsis",
+
   color: "#486284",
   fontFamily: "Pretendard",
   fontSize: "24px",
@@ -84,6 +85,7 @@ function NewsMainItem(prop: InewsMain) {
             onChangeCss={(key, value) => onChangeStyle(key, value)}
             activeEditor={activeEditor}
             setActiveEditor={setActiveEditor}
+            isWidth100={true}
           />
         ) : (
           <p css={style?.newsTitle || news_main_item_title_css_}>

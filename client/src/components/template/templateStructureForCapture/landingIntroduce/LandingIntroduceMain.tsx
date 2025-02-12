@@ -355,7 +355,11 @@ export default function LandingIntroduceMain() {
 
   return (
     <div className="templateImage">
-      <Header serviceType="랜딩·소개" />
+      <Header
+        categories={headerData.categories}
+        logo={headerData.logo}
+        serviceType="랜딩·소개"
+      />
       <Mainbanner
         content={{
           mainBannerTitle: pageContent?.mainBannerTitle,
@@ -385,6 +389,8 @@ export default function LandingIntroduceMain() {
         isEditable={true}
         onChangeContent={handleChangeContent}
         onChangeStyle={handleChangeStyle}
+        activeEditor={activeEditor}
+        setActiveEditor={setActiveEditor}
       />
       <ProductIntroduceMain
         content={{
@@ -400,6 +406,8 @@ export default function LandingIntroduceMain() {
         isEditable={true}
         onChangeContent={handleChangeContent}
         onChangeStyle={handleChangeStyle}
+        activeEditor={activeEditor}
+        setActiveEditor={setActiveEditor}
       />
       <NoticeMain
         content={{
@@ -413,6 +421,8 @@ export default function LandingIntroduceMain() {
         isEditable={true}
         onChangeContent={handleChangeContent}
         onChangeStyle={handleChangeStyle}
+        activeEditor={activeEditor}
+        setActiveEditor={setActiveEditor}
       />
       <RecruitMain
         content={{
@@ -426,6 +436,8 @@ export default function LandingIntroduceMain() {
         isEditable={true}
         onChangeContent={handleChangeContent}
         onChangeStyle={handleChangeStyle}
+        activeEditor={activeEditor}
+        setActiveEditor={setActiveEditor}
       />
       <NewsMain
         content={{
@@ -437,6 +449,8 @@ export default function LandingIntroduceMain() {
         isEditable={true}
         onChangeContent={handleChangeContent}
         onChangeStyle={handleChangeStyle}
+        activeEditor={activeEditor}
+        setActiveEditor={setActiveEditor}
       />
       <ExploreServiceMain
         content={{
@@ -454,6 +468,8 @@ export default function LandingIntroduceMain() {
         isEditable={true}
         onChangeContent={handleChangeContent}
         onChangeStyle={handleChangeStyle}
+        activeEditor={activeEditor}
+        setActiveEditor={setActiveEditor}
       />
       <Footer serviceType="랜딩·소개" />
     </div>

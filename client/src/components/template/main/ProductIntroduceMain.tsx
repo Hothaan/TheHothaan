@@ -40,6 +40,10 @@ export const product_introduce_image_desc_css_: CSSObject = {
   overflow: "hidden",
   textOverflow: "ellipsis",
   whiteSpace: "nowrap",
+  width: "100%",
+  display: "-webkit-box",
+  WebkitBoxOrient: "vertical",
+  WebkitLineClamp: "2",
 
   position: "absolute",
   bottom: "70px",
@@ -80,7 +84,10 @@ export const product_introduce_desc_css_: CSSObject = {
   width: "100%",
   overflow: "hidden",
   textOverflow: "ellipsis",
-  whiteSpace: "nowrap",
+  display: "-webkit-box",
+  WebkitBoxOrient: "vertical",
+  WebkitLineClamp: "6",
+  height: "320px",
 
   color: "#486284",
   fontFamily: "Inter",
@@ -117,6 +124,7 @@ export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
     productIntroduceDesc:
       style?.productIntroduceDesc || product_introduce_desc_css_,
   };
+
   const updateValues = (source: any, initial: any) => {
     return Object.keys(initial).reduce((acc, key) => {
       const value = source?.[key];
@@ -204,6 +212,8 @@ export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
     [onChangeStyle]
   );
 
+  // console.log(activeEditor);
+
   if (!editableContent) {
     return <></>;
   }
@@ -227,12 +237,13 @@ export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
               text={editableContent.productIntroduceImageDesc as string}
               className="productIntroduceImageDesc"
               id={"productIntroduceImageDesc" + 1}
-              isTextArea={false}
+              isTextArea={true}
               defaultCss={editableStyle.productIntroduceImageDesc as CSSObject}
               onChangeText={(key, value) => handleEditContent(key, value)}
               onChangeCss={(key, value) => handleEditStyle(key, value)}
               activeEditor={activeEditor}
               setActiveEditor={setActiveEditor}
+              isWidth100={true}
             />
           ) : (
             <p
@@ -257,6 +268,7 @@ export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
               onChangeCss={(key, value) => handleEditStyle(key, value)}
               activeEditor={activeEditor}
               setActiveEditor={setActiveEditor}
+              isWidth100={true}
             />
           ) : (
             <p
@@ -273,12 +285,13 @@ export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
               text={editableContent.productIntroduceDesc as string}
               className="productIntroduceDesc"
               id={"productIntroduceDesc" + 1}
-              isTextArea={false}
+              isTextArea={true}
               defaultCss={editableStyle.productIntroduceDesc as CSSObject}
               onChangeText={(key, value) => handleEditContent(key, value)}
               onChangeCss={(key, value) => handleEditStyle(key, value)}
               activeEditor={activeEditor}
               setActiveEditor={setActiveEditor}
+              isWidth100={true}
             />
           ) : (
             <p
@@ -321,12 +334,13 @@ export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
               text={editableContent.productIntroduceDesc as string}
               className="productIntroduceDesc"
               id={"productIntroduceDesc" + 2}
-              isTextArea={false}
+              isTextArea={true}
               defaultCss={editableStyle.productIntroduceDesc as CSSObject}
               onChangeText={(key, value) => handleEditContent(key, value)}
               onChangeCss={(key, value) => handleEditStyle(key, value)}
               activeEditor={activeEditor}
               setActiveEditor={setActiveEditor}
+              isWidth100={true}
             />
           ) : (
             <p
@@ -355,12 +369,13 @@ export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
               text={editableContent.productIntroduceImageDesc as string}
               className="productIntroduceImageDesc"
               id={"productIntroduceImageDesc" + 2}
-              isTextArea={false}
+              isTextArea={true}
               defaultCss={editableStyle.productIntroduceImageDesc as CSSObject}
               onChangeText={(key, value) => handleEditContent(key, value)}
               onChangeCss={(key, value) => handleEditStyle(key, value)}
               activeEditor={activeEditor}
               setActiveEditor={setActiveEditor}
+              isWidth100={true}
             />
           ) : (
             <p
