@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { OuterWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 import EditableText from "@components/service/editableText/EditableText";
@@ -25,6 +25,8 @@ export interface IserviceIntroduce {
   isEditable?: boolean;
   onChangeContent?: (key: string, value: string) => void;
   onChangeStyle?: (key: string, value: CSSObject) => void;
+  activeEditor?: string;
+  setActiveEditor?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 export const service_introduce_title_css: CSSObject = {
@@ -35,6 +37,7 @@ export const service_introduce_title_css: CSSObject = {
   fontWeight: "900",
   lineHeight: "150%",
   textTransform: "capitalize",
+
   width: "100%",
   overflow: "hidden",
   textOverflow: "ellipsis",
@@ -59,7 +62,15 @@ export const service_introduce_desc_css: CSSObject = {
 };
 
 export default function ServiceIntroduce(prop: IserviceIntroduce) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
+  const {
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   const initialContent = {
     serviceIntroduceTitle: content?.serviceIntroduceTitle || title_,
@@ -73,54 +84,92 @@ export default function ServiceIntroduce(prop: IserviceIntroduce) {
       style?.serviceIntroduceDesc || service_introduce_desc_css,
   };
 
-  const [editableContent, setEditableContent] = useState<any>(null);
-  const [editableStyle, setEditableStyle] = useState<any>(null);
+  const updateValues = (source: any, initial: any) => {
+    return Object.keys(initial).reduce((acc, key) => {
+      const value = source?.[key];
+      acc[key] = value === "" ? initial[key] : value ?? initial[key];
+      return acc;
+    }, {} as any);
+  };
+
+  const [editableContent, setEditableContent] = useState(() =>
+    updateValues(content, initialContent)
+  );
+  const [editableStyle, setEditableStyle] = useState(() =>
+    updateValues(style, initialStyle)
+  );
+
+  // `useMemo`로 최적화된 업데이트 값 생성
+  const updatedContent = useMemo(
+    () => updateValues(content, initialContent),
+    [content, initialContent]
+  );
+  const updatedStyle = useMemo(
+    () => updateValues(style, initialStyle),
+    [style, initialStyle]
+  );
 
   useEffect(() => {
-    if (content) {
-      if (content?.serviceIntroduceTitle) {
-        setEditableContent({
-          ...initialContent,
-          serviceIntroduceTitle: content.serviceIntroduceTitle,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          serviceIntroduceTitle: initialContent.serviceIntroduceTitle,
-        });
+    setEditableContent((prev: any) => {
+      // 기존 객체와 새 객체를 비교하여 변경된 경우에만 업데이트
+      if (!shallowEqual(prev, updatedContent)) {
+        return { ...prev, ...updatedContent };
       }
+      return prev;
+    });
+  }, [updatedContent]);
 
-      if (content?.serviceIntroduceDesc) {
-        setEditableContent({
-          ...initialContent,
-          serviceIntroduceDesc: content.serviceIntroduceDesc,
-        });
-      } else {
-        setEditableContent({
-          ...initialContent,
-          serviceIntroduceDesc: initialContent.serviceIntroduceDesc,
-        });
+  useEffect(() => {
+    setEditableStyle((prev: any) => {
+      if (!shallowEqual(prev, updatedStyle)) {
+        return updatedStyle;
       }
+      return prev;
+    });
+  }, [updatedStyle]);
 
-      setEditableStyle(initialStyle);
+  // 얕은 비교를 수행하는 함수
+  const shallowEqual = (objA: any, objB: any) => {
+    if (Object.is(objA, objB)) return true;
+
+    if (
+      !objA ||
+      !objB ||
+      typeof objA !== "object" ||
+      typeof objB !== "object"
+    ) {
+      return false;
     }
-  }, [content]);
 
-  function handleEditContent(key: string, value: string) {
-    setEditableContent({
-      ...editableContent,
-      [key]: value,
-    });
-    onChangeContent?.(key, value);
-  }
+    const keysA = Object.keys(objA);
+    const keysB = Object.keys(objB);
 
-  function handleEditStyle(key: string, value: CSSObject) {
-    setEditableStyle({
-      ...editableStyle,
-      [key]: value,
-    });
-    onChangeStyle?.(key, value);
-  }
+    if (keysA.length !== keysB.length) return false;
+
+    return keysA.every((key) => Object.is(objA[key], objB[key]));
+  };
+
+  const handleEditContent = useCallback(
+    (key: string, value: string) => {
+      setEditableContent((prev: any) => {
+        if (prev[key] === value) return prev; // 값이 동일하면 업데이트 안 함
+        return { ...prev, [key]: value };
+      });
+      onChangeContent?.(key, value);
+    },
+    [onChangeContent]
+  );
+
+  const handleEditStyle = useCallback(
+    (key: string, value: CSSObject) => {
+      setEditableStyle((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeStyle?.(key, value);
+    },
+    [onChangeStyle]
+  );
 
   if (!editableContent) {
     return <></>;
@@ -151,6 +200,8 @@ export default function ServiceIntroduce(prop: IserviceIntroduce) {
               className="serviceIntroduceTitle"
               onChangeText={(key, value) => handleEditContent(key, value)}
               onChangeCss={(key, value) => handleEditStyle(key, value)}
+              activeEditor={activeEditor}
+              setActiveEditor={setActiveEditor}
             />
           ) : (
             <p
@@ -174,6 +225,8 @@ export default function ServiceIntroduce(prop: IserviceIntroduce) {
               className="serviceIntroduceDesc"
               onChangeText={(key, value) => handleEditContent(key, value)}
               onChangeCss={(key, value) => handleEditStyle(key, value)}
+              activeEditor={activeEditor}
+              setActiveEditor={setActiveEditor}
             />
           ) : (
             <p

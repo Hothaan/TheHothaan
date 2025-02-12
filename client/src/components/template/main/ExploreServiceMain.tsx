@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { OuterWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 import EditableText from "@components/service/editableText/EditableText";
@@ -33,6 +33,9 @@ interface IexploreService {
   isEditable?: boolean;
   onChangeContent: (key: string, value: string) => void;
   onChangeStyle: (key: string, value: CSSObject) => void;
+  index?: number;
+  activeEditor?: string;
+  setActiveEditor?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 export const explore_service_title_css_: CSSObject = {
@@ -96,7 +99,16 @@ export const explore_service_explore_button_css_: CSSObject = {
 };
 
 export default function ExploreServiceMain(prop: IexploreService) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
+  const {
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
+
   const count = 3;
 
   const initialContent = {
@@ -119,108 +131,92 @@ export default function ExploreServiceMain(prop: IexploreService) {
       style?.exploreServiceExploreButton || explore_service_explore_button_css_,
   };
 
-  const [editableContent, setEditableContent] = useState<any>(null);
-  const [editableStyle, setEditableStyle] = useState<any>(initialStyle);
+  const updateValues = (source: any, initial: any) => {
+    return Object.keys(initial).reduce((acc, key) => {
+      const value = source?.[key];
+      acc[key] = value === "" ? initial[key] : value ?? initial[key];
+      return acc;
+    }, {} as any);
+  };
+
+  const [editableContent, setEditableContent] = useState(() =>
+    updateValues(content, initialContent)
+  );
+  const [editableStyle, setEditableStyle] = useState(() =>
+    updateValues(style, initialStyle)
+  );
+
+  // `useMemo`로 최적화된 업데이트 값 생성
+  const updatedContent = useMemo(
+    () => updateValues(content, initialContent),
+    [content, initialContent]
+  );
+  const updatedStyle = useMemo(
+    () => updateValues(style, initialStyle),
+    [style, initialStyle]
+  );
 
   useEffect(() => {
-    if (content?.exploreServiceTitle !== editableContent?.exploreServiceTitle) {
-      setEditableContent({
-        ...initialContent,
-        exploreServiceTitle:
-          content?.exploreServiceTitle ?? initialContent.exploreServiceTitle,
-      });
-    }
-
-    if (
-      content?.exploreServiceButton !== editableContent?.exploreServiceButton
-    ) {
-      setEditableContent({
-        ...initialContent,
-        exploreServiceButton:
-          content?.exploreServiceButton ?? initialContent.exploreServiceButton,
-      });
-    }
-
-    if (
-      content?.exploreServiceExploreTitle !==
-      editableContent?.exploreServiceExploreTitle
-    ) {
-      setEditableContent({
-        ...initialContent,
-        exploreServiceExploreTitle:
-          content?.exploreServiceExploreTitle ??
-          initialContent.exploreServiceExploreTitle,
-      });
-    }
-
-    if (
-      content?.exploreServiceExploreButton !==
-      editableContent?.exploreServiceExploreButton
-    ) {
-      setEditableContent({
-        ...initialContent,
-        exploreServiceExploreButton:
-          content?.exploreServiceExploreButton ??
-          initialContent.exploreServiceExploreButton,
-      });
-    }
-  }, [content]);
+    setEditableContent((prev: any) => {
+      // 기존 객체와 새 객체를 비교하여 변경된 경우에만 업데이트
+      if (!shallowEqual(prev, updatedContent)) {
+        return { ...prev, ...updatedContent };
+      }
+      return prev;
+    });
+  }, [updatedContent]);
 
   useEffect(() => {
     setEditableStyle((prev: any) => {
-      const updatedStyle = { ...prev };
-
-      if (style?.exploreServiceTitle !== prev?.exploreServiceTitle) {
-        updatedStyle.exploreServiceTitle =
-          style?.exploreServiceTitle ?? initialStyle.exploreServiceTitle;
+      if (!shallowEqual(prev, updatedStyle)) {
+        return updatedStyle;
       }
-
-      if (style?.exploreServiceButton !== prev?.exploreServiceButton) {
-        updatedStyle.exploreServiceButton =
-          style?.exploreServiceButton ?? initialStyle.exploreServiceButton;
-      }
-
-      if (
-        style?.exploreServiceExploreTitle !== prev?.exploreServiceExploreTitle
-      ) {
-        updatedStyle.exploreServiceExploreTitle =
-          style?.exploreServiceExploreTitle ??
-          initialStyle.exploreServiceExploreTitle;
-      }
-
-      if (
-        style?.exploreServiceExploreButton !== prev?.exploreServiceExploreButton
-      ) {
-        updatedStyle.exploreServiceExploreButton =
-          style?.exploreServiceExploreButton ??
-          initialStyle.exploreServiceExploreButton;
-      }
-
-      // 변경된 값이 있다면 상태 업데이트
-      return JSON.stringify(prev) === JSON.stringify(updatedStyle)
-        ? prev
-        : updatedStyle;
+      return prev;
     });
-  }, [style]);
+  }, [updatedStyle]);
+
+  // 얕은 비교를 수행하는 함수
+  const shallowEqual = (objA: any, objB: any) => {
+    if (Object.is(objA, objB)) return true;
+
+    if (
+      !objA ||
+      !objB ||
+      typeof objA !== "object" ||
+      typeof objB !== "object"
+    ) {
+      return false;
+    }
+
+    const keysA = Object.keys(objA);
+    const keysB = Object.keys(objB);
+
+    if (keysA.length !== keysB.length) return false;
+
+    return keysA.every((key) => Object.is(objA[key], objB[key]));
+  };
 
   const handleEditContent = useCallback(
     (key: string, value: string) => {
-      setEditableContent((prev: any) => ({
-        ...prev,
-        [key]: value,
-      }));
+      setEditableContent((prev: any) => {
+        if (prev[key] === value) return prev; // 값이 동일하면 업데이트 안 함
+        return { ...prev, [key]: value };
+      });
       onChangeContent?.(key, value);
     },
     [onChangeContent]
   );
 
-  function handleEditStyle(key: string, value: CSSObject) {
-    setEditableStyle({
-      ...editableStyle,
-      [key]: value,
-    });
-    onChangeStyle?.(key, value);
-  }
+  const handleEditStyle = useCallback(
+    (key: string, value: CSSObject) => {
+      setEditableStyle((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeStyle?.(key, value);
+    },
+    [onChangeStyle]
+  );
 
   if (!editableContent) {
     return <></>;
@@ -249,6 +245,9 @@ export default function ExploreServiceMain(prop: IexploreService) {
                 defaultCss={editableStyle.exploreServiceTitle as CSSObject}
                 onChangeText={(key, value) => handleEditContent(key, value)}
                 onChangeCss={(key, value) => handleEditStyle(key, value)}
+                id={"exploreServiceTitle"}
+                activeEditor={activeEditor}
+                setActiveEditor={setActiveEditor}
               />
             ) : (
               <p css={editableStyle?.exploreServiceTitle}>
@@ -272,6 +271,9 @@ export default function ExploreServiceMain(prop: IexploreService) {
                         handleEditContent(key, value)
                       }
                       onChangeCss={(key, value) => handleEditStyle(key, value)}
+                      id={"exploreServiceExploreTitle" + index}
+                      activeEditor={activeEditor}
+                      setActiveEditor={setActiveEditor}
                     />
                   ) : (
                     <p css={editableStyle?.exploreServiceExploreTitle}>
@@ -293,6 +295,9 @@ export default function ExploreServiceMain(prop: IexploreService) {
                         handleEditContent(key, value)
                       }
                       onChangeCss={(key, value) => handleEditStyle(key, value)}
+                      id={"exploreServiceExploreButton" + index}
+                      activeEditor={activeEditor}
+                      setActiveEditor={setActiveEditor}
                     />
                   ) : (
                     <p css={editableStyle?.exploreServiceExploreButton}>
@@ -311,6 +316,9 @@ export default function ExploreServiceMain(prop: IexploreService) {
                 defaultCss={editableStyle.exploreServiceButton as CSSObject}
                 onChangeText={(key, value) => handleEditContent(key, value)}
                 onChangeCss={(key, value) => onChangeStyle(key, value)}
+                id={"exploreServiceButton"}
+                activeEditor={activeEditor}
+                setActiveEditor={setActiveEditor}
               />
             ) : (
               <p css={editableStyle?.exploreServiceButton}>

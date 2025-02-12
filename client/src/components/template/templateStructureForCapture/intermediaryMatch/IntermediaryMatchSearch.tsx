@@ -93,20 +93,7 @@ export default function IntermediaryMatchSearch() {
       {} as IntermediaryMatchSearchContent
     );
 
-  // function updateSectionContent<T extends keyof IntermediaryMatchSearchContent>(
-  //   section: T,
-  //   updatedContent: Partial<IntermediaryMatchSearchContent[T]>
-  // ) {
-  //   setPageContent((prev) => ({
-  //     ...prev,
-  //     [section]: {
-  //       ...prev?.[section],
-  //       ...updatedContent,
-  //     },
-  //   }));
-  // }
-
-  if (!generatedText || !headerData) {
+  if (!headerData) {
     return <Loading />;
   }
 

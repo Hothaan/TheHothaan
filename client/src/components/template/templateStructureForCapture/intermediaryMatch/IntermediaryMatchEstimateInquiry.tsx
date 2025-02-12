@@ -73,7 +73,7 @@ export default function IntermediaryMatchEstimateInquiry() {
     }
   }, [projectIdValue]);
 
-  if (!generatedText || !headerData) {
+  if (!headerData) {
     return <Loading />;
   }
 

@@ -208,7 +208,7 @@ export default function IntermediaryMatchServiceIntroduce() {
     setPageStyle({ ...pageStyle, [key]: value });
   }
 
-  if (!generatedText || !headerData) {
+  if (!pageContent || !headerData || !pageStyle) {
     return <Loading />;
   }
 

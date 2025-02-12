@@ -94,6 +94,7 @@ export default function ShoppingMallBrandIntroduce() {
       fetchFeatureData(isProduction, projectIdValue);
     }
   }, [projectIdValue]);
+
   function getLocalContent() {
     const localContent = localStorage.getItem("changedContent");
     if (localContent) {
@@ -229,7 +230,11 @@ export default function ShoppingMallBrandIntroduce() {
     setPageStyle({ ...pageStyle, [key]: value });
   }
 
-  if (!generatedText || !headerData) {
+  const [activeEditor, setActiveEditor] = useState<string | undefined>(
+    undefined
+  );
+
+  if (!pageContent || !headerData || !pageStyle) {
     return <Loading />;
   }
 
@@ -256,6 +261,8 @@ export default function ShoppingMallBrandIntroduce() {
         isEditable={true}
         onChangeContent={handleChangeContent}
         onChangeStyle={handleChangeStyle}
+        activeEditor={activeEditor}
+        setActiveEditor={setActiveEditor}
       />
       <Footer logo={headerData.logo} serviceType="쇼핑몰" />
     </div>

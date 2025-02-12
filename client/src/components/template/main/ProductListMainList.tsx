@@ -31,8 +31,8 @@ interface IproductList {
   onChangeContent: (key: string, value: string) => void;
   onChangeStyle: (key: string, value: CSSObject) => void;
   index?: number;
-  activeEditor?: string | null;
-  setActiveEditor?: (classname?: string) => void;
+  activeEditor?: string;
+  setActiveEditor?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 export const product_list_option_list_title_css: CSSObject = {
@@ -152,11 +152,19 @@ function ProductListItemMainOptionList(prop: IproductListItem) {
 }
 
 export default function ProductListMainOptionList(prop: IproductList) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
+  const {
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
-  const [activeEditor, setActiveEditor] = useState<string | undefined>(
-    undefined
-  );
+  // const [activeEditor, setActiveEditor] = useState<string | undefined>(
+  //   undefined
+  // );
 
   const count = 3;
 

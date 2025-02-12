@@ -206,7 +206,7 @@ export default function HomePageBoardGreetings() {
     }
   }, [pageStyle]);
 
-  if (!generatedText || !headerData) {
+  if (!pageContent || !headerData || !pageStyle) {
     return <Loading />;
   }
 

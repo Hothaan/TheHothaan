@@ -200,7 +200,7 @@ export default function HomePageBoardHistory() {
     }
   }, [pageStyle]);
 
-  if (!generatedText || !headerData) {
+  if (!pageContent || !headerData || !pageStyle) {
     return <Loading />;
   }
 

@@ -193,7 +193,7 @@ export default function HomePageBoardMedia() {
     }
   }, [pageStyle]);
 
-  if (!generatedText || !headerData) {
+  if (!pageContent || !headerData || !pageStyle) {
     return <Loading />;
   }
 

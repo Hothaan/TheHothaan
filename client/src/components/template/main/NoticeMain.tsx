@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";
 import EditableText from "@components/service/editableText/EditableText";
 
@@ -27,6 +27,9 @@ interface InoticeMain {
   isEditable?: boolean;
   onChangeContent: (key: string, value: string) => void;
   onChangeStyle: (key: string, value: CSSObject) => void;
+  index?: number;
+  activeEditor?: string;
+  setActiveEditor?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 export const notice_main_title_css_: CSSObject = {
@@ -58,7 +61,16 @@ export const notice_main_desc_css_: CSSObject = {
 };
 
 function NoticeMainItem(prop: InoticeMain) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
+  const {
+    content,
+    style,
+    index,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   if (
     content?.noticeTitle === undefined ||
@@ -78,10 +90,13 @@ function NoticeMainItem(prop: InoticeMain) {
             <EditableText
               text={content.noticeTitle as string}
               className="noticeTitle"
+              id={"noticeTitle" + index}
               isTextArea={false}
               defaultCss={style.noticeTitle as CSSObject}
               onChangeText={(key, value) => onChangeContent(key, value)}
               onChangeCss={(key, value) => onChangeStyle(key, value)}
+              activeEditor={activeEditor}
+              setActiveEditor={setActiveEditor}
             />
           ) : (
             <p css={notice_main_title_css_}>{content?.noticeTitle || title_}</p>
@@ -93,10 +108,13 @@ function NoticeMainItem(prop: InoticeMain) {
         <EditableText
           text={content.noticeDesc as string}
           className="noticeDesc"
+          id={"noticeDesc" + index}
           isTextArea={false}
           defaultCss={style.noticeDesc as CSSObject}
           onChangeText={(key, value) => onChangeContent(key, value)}
           onChangeCss={(key, value) => onChangeStyle(key, value)}
+          activeEditor={activeEditor}
+          setActiveEditor={setActiveEditor}
         />
       ) : (
         <p css={notice_main_desc_css_}>{content?.noticeDesc || desc_}</p>
@@ -106,7 +124,15 @@ function NoticeMainItem(prop: InoticeMain) {
 }
 
 export default function NoticeMain(prop: InoticeMain) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
+  const {
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   const count = 3;
 
@@ -127,57 +153,93 @@ export default function NoticeMain(prop: InoticeMain) {
     noticeDesc: style?.noticeDesc || notice_main_desc_css_,
   };
 
-  const [editableContent, setEditableContent] = useState<any>(null);
-  const [editableStyle, setEditableStyle] = useState<any>(null);
+  const updateValues = (source: any, initial: any) => {
+    return Object.keys(initial).reduce((acc, key) => {
+      const value = source?.[key];
+      acc[key] = value === "" ? initial[key] : value ?? initial[key];
+      return acc;
+    }, {} as any);
+  };
+
+  const [editableContent, setEditableContent] = useState(() =>
+    updateValues(content, initialContent)
+  );
+  const [editableStyle, setEditableStyle] = useState(() =>
+    updateValues(style, initialStyle)
+  );
+
+  // `useMemo`로 최적화된 업데이트 값 생성
+  const updatedContent = useMemo(
+    () => updateValues(content, initialContent),
+    [content, initialContent]
+  );
+  const updatedStyle = useMemo(
+    () => updateValues(style, initialStyle),
+    [style, initialStyle]
+  );
 
   useEffect(() => {
-    if (content?.noticeTitle !== editableContent?.noticeTitle) {
-      setEditableContent({
-        ...initialContent,
-        noticeTitle: content?.noticeTitle ?? initialContent.noticeTitle,
-      });
-    }
-    if (content?.noticeDesc !== editableContent?.noticeDesc) {
-      setEditableContent({
-        ...initialContent,
-        noticeDesc: content?.noticeDesc ?? initialContent.noticeDesc,
-      });
-    }
-  }, [content]);
+    setEditableContent((prev: any) => {
+      // 기존 객체와 새 객체를 비교하여 변경된 경우에만 업데이트
+      if (!shallowEqual(prev, updatedContent)) {
+        return { ...prev, ...updatedContent };
+      }
+      return prev;
+    });
+  }, [updatedContent]);
 
   useEffect(() => {
-    if (style?.noticeTitle !== editableStyle?.noticeTitle) {
-      setEditableStyle({
-        ...initialStyle,
-        noticeTitle: style?.noticeTitle ?? initialStyle.noticeTitle,
-      });
+    setEditableStyle((prev: any) => {
+      if (!shallowEqual(prev, updatedStyle)) {
+        return updatedStyle;
+      }
+      return prev;
+    });
+  }, [updatedStyle]);
+
+  // 얕은 비교를 수행하는 함수
+  const shallowEqual = (objA: any, objB: any) => {
+    if (Object.is(objA, objB)) return true;
+
+    if (
+      !objA ||
+      !objB ||
+      typeof objA !== "object" ||
+      typeof objB !== "object"
+    ) {
+      return false;
     }
-    if (style?.noticeDesc !== editableStyle?.noticeDesc) {
-      setEditableStyle({
-        ...initialStyle,
-        noticeDesc: style?.noticeDesc ?? initialStyle.noticeDesc,
-      });
-    }
-  }, [style]);
+
+    const keysA = Object.keys(objA);
+    const keysB = Object.keys(objB);
+
+    if (keysA.length !== keysB.length) return false;
+
+    return keysA.every((key) => Object.is(objA[key], objB[key]));
+  };
 
   const handleEditContent = useCallback(
     (key: string, value: string) => {
-      setEditableContent((prev: any) => ({
-        ...prev,
-        [key]: value,
-      }));
+      setEditableContent((prev: any) => {
+        if (prev[key] === value) return prev; // 값이 동일하면 업데이트 안 함
+        return { ...prev, [key]: value };
+      });
       onChangeContent?.(key, value);
     },
     [onChangeContent]
   );
 
-  function handleEditStyle(key: string, value: CSSObject) {
-    setEditableStyle({
-      ...editableStyle,
-      [key]: value,
-    });
-    onChangeStyle?.(key, value);
-  }
+  const handleEditStyle = useCallback(
+    (key: string, value: CSSObject) => {
+      setEditableStyle((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeStyle?.(key, value);
+    },
+    [onChangeStyle]
+  );
+
   if (!editableContent) {
     return <></>;
   }
@@ -191,11 +253,14 @@ export default function NoticeMain(prop: InoticeMain) {
             {Array.from({ length: count }, (_, index) => (
               <NoticeMainItem
                 key={index}
+                index={index}
                 isEditable={isEditable}
                 content={editableContent}
                 style={editableStyle}
                 onChangeContent={handleEditContent}
                 onChangeStyle={handleEditStyle}
+                activeEditor={activeEditor}
+                setActiveEditor={setActiveEditor}
               />
             ))}
           </div>

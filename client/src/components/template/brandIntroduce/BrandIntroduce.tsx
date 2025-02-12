@@ -36,8 +36,8 @@ interface IbrandIntroduce {
   onChangeContent: (key: string, value: string) => void;
   onChangeStyle: (key: string, value: CSSObject) => void;
   index?: number;
-  activeEditor?: string | null;
-  setActiveEditor?: (classname?: string) => void;
+  activeEditor?: string;
+  setActiveEditor?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 export const brandIntroduce_banner_title_css: CSSObject = {
@@ -184,7 +184,15 @@ function BrandIntroduceItem(prop: IbrandIntroduce) {
 }
 
 export default function BrandIntroduce(prop: IbrandIntroduce) {
-  const { isEditable, content, style, onChangeContent, onChangeStyle } = prop;
+  const {
+    isEditable,
+    content,
+    style,
+    onChangeContent,
+    onChangeStyle,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   const count = 2;
 
@@ -206,10 +214,6 @@ export default function BrandIntroduce(prop: IbrandIntroduce) {
     brandIntroduceItemDesc:
       style?.brandIntroduceItemDesc || brandIntroduce_item_desc_css,
   };
-
-  const [activeEditor, setActiveEditor] = useState<string | undefined>(
-    undefined
-  );
 
   const updateValues = (source: any, initial: any) => {
     return Object.keys(initial).reduce((acc, key) => {

@@ -71,7 +71,7 @@ export default function ShoppingMallFindId() {
     }
   }, [projectIdValue]);
 
-  if (!generatedText || !headerData) {
+  if (!headerData) {
     return <Loading />;
   }
 

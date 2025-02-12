@@ -15,3 +15,6 @@ export const pngStore = create<IpngStore>()(
     { name: "png" }
   )
 );
+window.addEventListener("beforeunload", () => {
+  localStorage.removeItem("png");
+});

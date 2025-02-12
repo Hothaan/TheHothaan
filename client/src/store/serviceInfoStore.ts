@@ -18,3 +18,6 @@ export const serviceInfoStore = create<IserviceInfo>()(
     { name: "serviceInfo" }
   )
 );
+window.addEventListener("beforeunload", () => {
+  localStorage.removeItem("serviceInfo");
+});

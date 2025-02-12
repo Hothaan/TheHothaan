@@ -72,7 +72,7 @@ export default function IntermediaryMatchFindId() {
     }
   }, [projectIdValue]);
 
-  if (!generatedText || !headerData) {
+  if (!headerData) {
     return <Loading />;
   }
 

@@ -193,7 +193,7 @@ export default function CommunitySnsFeed() {
     setPageStyle({ ...pageStyle, [key]: value });
   }
 
-  if (!generatedText || !headerData) {
+  if (!pageContent || !headerData || !pageStyle) {
     return <Loading />;
   }
 

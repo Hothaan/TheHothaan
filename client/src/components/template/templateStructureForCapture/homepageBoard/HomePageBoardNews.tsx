@@ -193,7 +193,7 @@ export default function HomePageBoardNews() {
     }
   }, [pageStyle]);
 
-  if (!generatedText || !headerData) {
+  if (!pageContent || !headerData || !pageStyle) {
     return <Loading />;
   }
 

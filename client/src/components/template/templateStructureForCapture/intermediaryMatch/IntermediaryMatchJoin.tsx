@@ -74,7 +74,7 @@ export default function IntermediaryMatchJoin() {
     }
   }, [projectIdValue]);
 
-  if (!generatedText || !headerData) {
+  if (!headerData) {
     return <Loading />;
   }
 

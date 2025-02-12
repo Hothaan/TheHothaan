@@ -15,3 +15,6 @@ export const pdfStore = create<IpdfStore>()(
     { name: "pdf" }
   )
 );
+window.addEventListener("beforeunload", () => {
+  localStorage.removeItem("pdf");
+});

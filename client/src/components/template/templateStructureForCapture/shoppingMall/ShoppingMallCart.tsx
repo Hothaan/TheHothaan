@@ -214,7 +214,11 @@ export default function ShoppingMallCart() {
     setPageStyle({ ...pageStyle, [key]: value });
   }
 
-  if (!generatedText || !headerData) {
+  const [activeEditor, setActiveEditor] = useState<string | undefined>(
+    undefined
+  );
+
+  if (!pageContent || !headerData || !pageStyle) {
     return <Loading />;
   }
 
@@ -231,6 +235,8 @@ export default function ShoppingMallCart() {
         isEditable={true}
         onChangeContent={handleChangeContent}
         onChangeStyle={handleChangeStyle}
+        activeEditor={activeEditor}
+        setActiveEditor={setActiveEditor}
       />
       <Footer logo={headerData.logo || undefined} serviceType="쇼핑몰" />
     </div>

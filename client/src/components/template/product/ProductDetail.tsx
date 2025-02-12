@@ -39,8 +39,8 @@ interface IproductDetail {
   onChangeContent: (key: string, value: string) => void;
   onChangeStyle: (key: string, value: CSSObject) => void;
   index?: number;
-  activeEditor?: string | null;
-  setActiveEditor?: (classname?: string) => void;
+  activeEditor?: string;
+  setActiveEditor?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 export const product_detail_product_title_css_: CSSObject = {
@@ -546,7 +546,15 @@ function ProductDetailReview() {
 }
 
 export default function ProductDetail(prop: IproductDetail) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
+  const {
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   const initialContent = {
     productDetailProductTitle:
@@ -572,9 +580,9 @@ export default function ProductDetail(prop: IproductDetail) {
       product_detail_more_product__option_main_desc_css,
   };
 
-  const [activeEditor, setActiveEditor] = useState<string | undefined>(
-    undefined
-  );
+  // const [activeEditor, setActiveEditor] = useState<string | undefined>(
+  //   undefined
+  // );
 
   const updateValues = (source: any, initial: any) => {
     return Object.keys(initial).reduce((acc, key) => {

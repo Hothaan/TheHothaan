@@ -30,8 +30,8 @@ interface Inotice {
   onChangeContent: (key: string, value: string) => void;
   onChangeStyle: (key: string, value: CSSObject) => void;
   index?: number;
-  activeEditor?: string | null;
-  setActiveEditor?: (classname?: string) => void;
+  activeEditor?: string;
+  setActiveEditor?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 export const notice_title_option_text_css_: CSSObject = {
@@ -302,8 +302,16 @@ function NoticeSearch() {
 }
 
 export default function Notice(prop: Inotice) {
-  const { option, style, content, isEditable, onChangeContent, onChangeStyle } =
-    prop;
+  const {
+    option,
+    style,
+    content,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   const initialContent = {
     noticeTitle: content?.noticeTitle || title_,
@@ -324,9 +332,9 @@ export default function Notice(prop: Inotice) {
     gap: 50px;
   `;
 
-  const [activeEditor, setActiveEditor] = useState<string | undefined>(
-    undefined
-  );
+  // const [activeEditor, setActiveEditor] = useState<string | undefined>(
+  //   undefined
+  // );
 
   const updateValues = (source: any, initial: any) => {
     return Object.keys(initial).reduce((acc, key) => {

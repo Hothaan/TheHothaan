@@ -30,8 +30,8 @@ interface IserviceIntroduction {
   onChangeContent: (key: string, value: string) => void;
   onChangeStyle: (key: string, value: CSSObject) => void;
   index?: number;
-  activeEditor?: string | null;
-  setActiveEditor?: (classname?: string) => void;
+  activeEditor?: string;
+  setActiveEditor?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 export const service_introduction_title_css_: CSSObject = {
@@ -151,10 +151,18 @@ function ServiceIntroductionItem(prop: IserviceIntroduction) {
 }
 
 export default function ServiceIntroduction(prop: IserviceIntroduction) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
-  const [activeEditor, setActiveEditor] = useState<string | undefined>(
-    undefined
-  );
+  const {
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
+  // const [activeEditor, setActiveEditor] = useState<string | undefined>(
+  //   undefined
+  // );
   const count = 3;
 
   const initialContent = {

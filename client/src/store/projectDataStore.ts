@@ -16,3 +16,6 @@ export const projectDataStore = create<IprojectDataStore>()(
     { name: "projectData" }
   )
 );
+window.addEventListener("beforeunload", () => {
+  localStorage.removeItem("projectData");
+});

@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { OuterWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 import EditableText from "@components/service/editableText/EditableText";
@@ -25,6 +25,9 @@ interface InewsMain {
   isEditable?: boolean;
   onChangeContent: (key: string, value: string) => void;
   onChangeStyle: (key: string, value: CSSObject) => void;
+  index?: number;
+  activeEditor?: string;
+  setActiveEditor?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 export const news_main_item_title_css_: CSSObject = {
@@ -41,7 +44,16 @@ export const news_main_item_title_css_: CSSObject = {
 };
 
 function NewsMainItem(prop: InewsMain) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
+  const {
+    content,
+    style,
+    isEditable,
+    index,
+    onChangeContent,
+    onChangeStyle,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   if (content?.newsTitle === undefined || style?.newsTitle === undefined) {
     return <></>;
@@ -65,10 +77,13 @@ function NewsMainItem(prop: InewsMain) {
           <EditableText
             text={content.newsTitle as string}
             className="newsTitle"
+            id={"newsTitle" + index}
             isTextArea={false}
             defaultCss={style.newsTitle as CSSObject}
             onChangeText={(key, value) => onChangeContent(key, value)}
             onChangeCss={(key, value) => onChangeStyle(key, value)}
+            activeEditor={activeEditor}
+            setActiveEditor={setActiveEditor}
           />
         ) : (
           <p css={style?.newsTitle || news_main_item_title_css_}>
@@ -81,7 +96,15 @@ function NewsMainItem(prop: InewsMain) {
 }
 
 export default function NewsMain(prop: InewsMain) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
+  const {
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   const count = 6;
 
@@ -92,45 +115,93 @@ export default function NewsMain(prop: InewsMain) {
     newsTitle: style?.newsTitle || news_main_item_title_css_,
   };
 
-  const [editableContent, setEditableContent] = useState<any>(null);
-  const [editableStyle, setEditableStyle] = useState<any>(null);
+  const updateValues = (source: any, initial: any) => {
+    return Object.keys(initial).reduce((acc, key) => {
+      const value = source?.[key];
+      acc[key] = value === "" ? initial[key] : value ?? initial[key];
+      return acc;
+    }, {} as any);
+  };
+
+  const [editableContent, setEditableContent] = useState(() =>
+    updateValues(content, initialContent)
+  );
+  const [editableStyle, setEditableStyle] = useState(() =>
+    updateValues(style, initialStyle)
+  );
+
+  // `useMemo`로 최적화된 업데이트 값 생성
+  const updatedContent = useMemo(
+    () => updateValues(content, initialContent),
+    [content, initialContent]
+  );
+  const updatedStyle = useMemo(
+    () => updateValues(style, initialStyle),
+    [style, initialStyle]
+  );
 
   useEffect(() => {
-    if (content?.newsTitle !== editableContent?.newsTitle) {
-      setEditableContent({
-        ...initialContent,
-        newsTitle: content?.newsTitle ?? initialContent.newsTitle,
-      });
-    }
-  }, [content]);
+    setEditableContent((prev: any) => {
+      // 기존 객체와 새 객체를 비교하여 변경된 경우에만 업데이트
+      if (!shallowEqual(prev, updatedContent)) {
+        return { ...prev, ...updatedContent };
+      }
+      return prev;
+    });
+  }, [updatedContent]);
 
   useEffect(() => {
-    if (style?.newsTitle !== editableStyle?.newsTitle) {
-      setEditableStyle({
-        ...initialStyle,
-        newsTitle: style?.newsTitle ?? initialStyle.newsTitle,
-      });
+    setEditableStyle((prev: any) => {
+      if (!shallowEqual(prev, updatedStyle)) {
+        return updatedStyle;
+      }
+      return prev;
+    });
+  }, [updatedStyle]);
+
+  // 얕은 비교를 수행하는 함수
+  const shallowEqual = (objA: any, objB: any) => {
+    if (Object.is(objA, objB)) return true;
+
+    if (
+      !objA ||
+      !objB ||
+      typeof objA !== "object" ||
+      typeof objB !== "object"
+    ) {
+      return false;
     }
-  }, [style]);
+
+    const keysA = Object.keys(objA);
+    const keysB = Object.keys(objB);
+
+    if (keysA.length !== keysB.length) return false;
+
+    return keysA.every((key) => Object.is(objA[key], objB[key]));
+  };
 
   const handleEditContent = useCallback(
     (key: string, value: string) => {
-      setEditableContent((prev: any) => ({
-        ...prev,
-        [key]: value,
-      }));
+      setEditableContent((prev: any) => {
+        if (prev[key] === value) return prev; // 값이 동일하면 업데이트 안 함
+        return { ...prev, [key]: value };
+      });
       onChangeContent?.(key, value);
     },
     [onChangeContent]
   );
 
-  function handleEditStyle(key: string, value: CSSObject) {
-    setEditableStyle({
-      ...editableStyle,
-      [key]: value,
-    });
-    onChangeStyle?.(key, value);
-  }
+  const handleEditStyle = useCallback(
+    (key: string, value: CSSObject) => {
+      setEditableStyle((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeStyle?.(key, value);
+    },
+    [onChangeStyle]
+  );
+
   if (!editableContent) {
     return <></>;
   }
@@ -143,11 +214,14 @@ export default function NewsMain(prop: InewsMain) {
           {Array.from({ length: count }, (_, index) => (
             <NewsMainItem
               key={index}
+              index={index}
               isEditable={isEditable}
               content={editableContent}
               style={editableStyle}
               onChangeContent={handleEditContent}
               onChangeStyle={handleEditStyle}
+              activeEditor={activeEditor}
+              setActiveEditor={setActiveEditor}
             />
           ))}
         </div>

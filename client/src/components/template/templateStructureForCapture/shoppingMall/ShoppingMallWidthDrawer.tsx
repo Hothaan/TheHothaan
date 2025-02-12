@@ -72,7 +72,7 @@ export default function ShoppingMallWidthDrawer() {
     }
   }, [projectIdValue]);
 
-  if (!generatedText || !headerData) {
+  if (!headerData) {
     return <Loading />;
   }
 

@@ -238,37 +238,19 @@ export default function ShoppingMallMain() {
     }
   }, [generatedText]);
 
-  // useEffect(() => {
-  //   if (generatedText) {
-  //     const localStyle = localStorage.getItem("changedStyle");
-  //     const hasLocalStyle = localStyle
-  //       ? JSON.parse(localStyle)?.[featureKey]?.style
-  //       : null;
-
-  //     if (generatedText.style) {
-  //       // DB에서 가져온 스타일이 있으면 그대로 적용
-  //       setPageStyle(generatedText.style);
-  //     } else if (!hasLocalStyle) {
-  //       // 로컬 저장된 스타일도 없으면 초기 스타일 적용
-  //       updateInitialStyle();
-  //     }
-  //   }
-  // }, [generatedText]);
-
   useEffect(() => {
     if (generatedText) {
-      const localStyle =
-        typeof window !== "undefined"
-          ? localStorage.getItem("changedStyle")
-          : null;
+      const localStyle = localStorage.getItem("changedStyle");
       const hasLocalStyle = localStyle
         ? JSON.parse(localStyle)?.[featureKey]?.style
         : null;
 
-      // 백엔드 환경에서는 localStorage 사용하지 않고, generatedText.style을 직접 적용
-      if (typeof window === "undefined" || !hasLocalStyle) {
-        if (generatedText?.style !== undefined)
-          setPageStyle(generatedText?.style);
+      if (generatedText.style) {
+        // DB에서 가져온 스타일이 있으면 그대로 적용
+        setPageStyle(generatedText.style);
+      } else if (!hasLocalStyle) {
+        // 로컬 저장된 스타일도 없으면 초기 스타일 적용
+        updateInitialStyle();
       }
     }
   }, [generatedText]);
@@ -329,6 +311,10 @@ export default function ShoppingMallMain() {
     setPageStyle({ ...pageStyle, [key]: value });
   }
 
+  const [activeEditor, setActiveEditor] = useState<string | undefined>(
+    undefined
+  );
+
   if (!pageContent || !headerData || !pageStyle) {
     return <Loading />;
   }
@@ -354,6 +340,8 @@ export default function ShoppingMallMain() {
         isEditable={true}
         onChangeContent={handleChangeContent}
         onChangeStyle={handleChangeStyle}
+        activeEditor={activeEditor}
+        setActiveEditor={setActiveEditor}
       />
       <ProductListMain
         content={{
@@ -368,6 +356,8 @@ export default function ShoppingMallMain() {
         isEditable={true}
         onChangeContent={handleChangeContent}
         onChangeStyle={handleChangeStyle}
+        activeEditor={activeEditor}
+        setActiveEditor={setActiveEditor}
       />
       <Review
         content={{
@@ -385,6 +375,8 @@ export default function ShoppingMallMain() {
         isEditable={true}
         onChangeContent={handleChangeContent}
         onChangeStyle={handleChangeStyle}
+        activeEditor={activeEditor}
+        setActiveEditor={setActiveEditor}
       />
       <ServiceIntroduction
         content={{
@@ -398,6 +390,8 @@ export default function ShoppingMallMain() {
         isEditable={true}
         onChangeContent={handleChangeContent}
         onChangeStyle={handleChangeStyle}
+        activeEditor={activeEditor}
+        setActiveEditor={setActiveEditor}
       />
       <ProductListMainOptionList
         content={{
@@ -411,6 +405,8 @@ export default function ShoppingMallMain() {
         // isEditable={true}
         onChangeContent={handleChangeContent}
         onChangeStyle={handleChangeStyle}
+        activeEditor={activeEditor}
+        setActiveEditor={setActiveEditor}
       />
       <ServiceContact
         content={{
@@ -424,6 +420,8 @@ export default function ShoppingMallMain() {
         isEditable={true}
         onChangeContent={handleChangeContent}
         onChangeStyle={handleChangeStyle}
+        activeEditor={activeEditor}
+        setActiveEditor={setActiveEditor}
       />
       <Footer logo={headerData.logo} serviceType="쇼핑몰" />
     </div>

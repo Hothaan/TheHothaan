@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { OuterWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 import EditableText from "@components/service/editableText/EditableText";
@@ -30,6 +30,9 @@ interface IproductIntroduceMain {
   isEditable?: boolean;
   onChangeContent: (key: string, value: string) => void;
   onChangeStyle: (key: string, value: CSSObject) => void;
+  index?: number;
+  activeEditor?: string;
+  setActiveEditor?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 export const product_introduce_image_desc_css_: CSSObject = {
@@ -62,6 +65,7 @@ export const product_introduce_title_css_: CSSObject = {
   fontStyle: "normal",
   fontWeight: "900",
   lineHeight: "150%",
+
   "@media (max-width: 1000px)": {
     color: "#486284",
     fontFamily: "Inter",
@@ -88,7 +92,15 @@ export const product_introduce_desc_css_: CSSObject = {
 };
 
 export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
+  const {
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   const initialContent = {
     productIntroduceImageDesc:
@@ -105,83 +117,92 @@ export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
     productIntroduceDesc:
       style?.productIntroduceDesc || product_introduce_desc_css_,
   };
+  const updateValues = (source: any, initial: any) => {
+    return Object.keys(initial).reduce((acc, key) => {
+      const value = source?.[key];
+      acc[key] = value === "" ? initial[key] : value ?? initial[key];
+      return acc;
+    }, {} as any);
+  };
 
-  const [editableContent, setEditableContent] = useState<any>(null);
-  const [editableStyle, setEditableStyle] = useState<any>(null);
+  const [editableContent, setEditableContent] = useState(() =>
+    updateValues(content, initialContent)
+  );
+  const [editableStyle, setEditableStyle] = useState(() =>
+    updateValues(style, initialStyle)
+  );
+
+  // `useMemo`로 최적화된 업데이트 값 생성
+  const updatedContent = useMemo(
+    () => updateValues(content, initialContent),
+    [content, initialContent]
+  );
+  const updatedStyle = useMemo(
+    () => updateValues(style, initialStyle),
+    [style, initialStyle]
+  );
 
   useEffect(() => {
     setEditableContent((prev: any) => {
-      const updatedContent = { ...prev };
-
-      if (
-        content?.productIntroduceImageDesc !== prev?.productIntroduceImageDesc
-      ) {
-        updatedContent.productIntroduceImageDesc =
-          content?.productIntroduceImageDesc ??
-          initialContent.productIntroduceImageDesc;
+      // 기존 객체와 새 객체를 비교하여 변경된 경우에만 업데이트
+      if (!shallowEqual(prev, updatedContent)) {
+        return { ...prev, ...updatedContent };
       }
-      if (content?.productIntroduceTitle !== prev?.productIntroduceTitle) {
-        updatedContent.productIntroduceTitle =
-          content?.productIntroduceTitle ??
-          initialContent.productIntroduceTitle;
-      }
-      if (content?.productIntroduceDesc !== prev?.productIntroduceDesc) {
-        updatedContent.productIntroduceDesc =
-          content?.productIntroduceDesc ?? initialContent.productIntroduceDesc;
-      }
-
-      // 변경된 값이 있다면 상태 업데이트
-      return JSON.stringify(prev) === JSON.stringify(updatedContent)
-        ? prev
-        : updatedContent;
+      return prev;
     });
-  }, [content]);
+  }, [updatedContent]);
 
   useEffect(() => {
     setEditableStyle((prev: any) => {
-      const updatedStyle = { ...prev };
-
-      if (
-        style?.productIntroduceImageDesc !== prev?.productIntroduceImageDesc
-      ) {
-        updatedStyle.productIntroduceImageDesc =
-          style?.productIntroduceImageDesc ??
-          initialStyle.productIntroduceImageDesc;
+      if (!shallowEqual(prev, updatedStyle)) {
+        return updatedStyle;
       }
-      if (style?.productIntroduceTitle !== prev?.productIntroduceTitle) {
-        updatedStyle.productIntroduceTitle =
-          style?.productIntroduceTitle ?? initialStyle.productIntroduceTitle;
-      }
-      if (style?.productIntroduceDesc !== prev?.productIntroduceDesc) {
-        updatedStyle.productIntroduceDesc =
-          style?.productIntroduceDesc ?? initialStyle.productIntroduceDesc;
-      }
-
-      // 변경된 값이 있다면 상태 업데이트
-      return JSON.stringify(prev) === JSON.stringify(updatedStyle)
-        ? prev
-        : updatedStyle;
+      return prev;
     });
-  }, [style]);
+  }, [updatedStyle]);
+
+  // 얕은 비교를 수행하는 함수
+  const shallowEqual = (objA: any, objB: any) => {
+    if (Object.is(objA, objB)) return true;
+
+    if (
+      !objA ||
+      !objB ||
+      typeof objA !== "object" ||
+      typeof objB !== "object"
+    ) {
+      return false;
+    }
+
+    const keysA = Object.keys(objA);
+    const keysB = Object.keys(objB);
+
+    if (keysA.length !== keysB.length) return false;
+
+    return keysA.every((key) => Object.is(objA[key], objB[key]));
+  };
 
   const handleEditContent = useCallback(
     (key: string, value: string) => {
-      setEditableContent((prev: any) => ({
-        ...prev,
-        [key]: value,
-      }));
+      setEditableContent((prev: any) => {
+        if (prev[key] === value) return prev; // 값이 동일하면 업데이트 안 함
+        return { ...prev, [key]: value };
+      });
       onChangeContent?.(key, value);
     },
     [onChangeContent]
   );
 
-  function handleEditStyle(key: string, value: CSSObject) {
-    setEditableStyle({
-      ...editableStyle,
-      [key]: value,
-    });
-    onChangeStyle?.(key, value);
-  }
+  const handleEditStyle = useCallback(
+    (key: string, value: CSSObject) => {
+      setEditableStyle((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeStyle?.(key, value);
+    },
+    [onChangeStyle]
+  );
 
   if (!editableContent) {
     return <></>;
@@ -205,10 +226,13 @@ export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
             <EditableText
               text={editableContent.productIntroduceImageDesc as string}
               className="productIntroduceImageDesc"
+              id={"productIntroduceImageDesc" + 1}
               isTextArea={false}
               defaultCss={editableStyle.productIntroduceImageDesc as CSSObject}
               onChangeText={(key, value) => handleEditContent(key, value)}
               onChangeCss={(key, value) => handleEditStyle(key, value)}
+              activeEditor={activeEditor}
+              setActiveEditor={setActiveEditor}
             />
           ) : (
             <p
@@ -226,10 +250,13 @@ export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
             <EditableText
               text={editableContent.productIntroduceTitle as string}
               className="productIntroduceTitle"
+              id={"productIntroduceTitle" + 1}
               isTextArea={false}
               defaultCss={editableStyle.productIntroduceTitle as CSSObject}
               onChangeText={(key, value) => handleEditContent(key, value)}
               onChangeCss={(key, value) => handleEditStyle(key, value)}
+              activeEditor={activeEditor}
+              setActiveEditor={setActiveEditor}
             />
           ) : (
             <p
@@ -245,10 +272,13 @@ export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
             <EditableText
               text={editableContent.productIntroduceDesc as string}
               className="productIntroduceDesc"
+              id={"productIntroduceDesc" + 1}
               isTextArea={false}
               defaultCss={editableStyle.productIntroduceDesc as CSSObject}
               onChangeText={(key, value) => handleEditContent(key, value)}
               onChangeCss={(key, value) => handleEditStyle(key, value)}
+              activeEditor={activeEditor}
+              setActiveEditor={setActiveEditor}
             />
           ) : (
             <p
@@ -268,10 +298,13 @@ export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
             <EditableText
               text={editableContent.productIntroduceTitle as string}
               className="productIntroduceTitle"
+              id={"productIntroduceTitle" + 2}
               isTextArea={false}
               defaultCss={editableStyle.productIntroduceTitle as CSSObject}
               onChangeText={(key, value) => handleEditContent(key, value)}
               onChangeCss={(key, value) => handleEditStyle(key, value)}
+              activeEditor={activeEditor}
+              setActiveEditor={setActiveEditor}
             />
           ) : (
             <p
@@ -287,10 +320,13 @@ export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
             <EditableText
               text={editableContent.productIntroduceDesc as string}
               className="productIntroduceDesc"
+              id={"productIntroduceDesc" + 2}
               isTextArea={false}
               defaultCss={editableStyle.productIntroduceDesc as CSSObject}
               onChangeText={(key, value) => handleEditContent(key, value)}
               onChangeCss={(key, value) => handleEditStyle(key, value)}
+              activeEditor={activeEditor}
+              setActiveEditor={setActiveEditor}
             />
           ) : (
             <p
@@ -318,10 +354,13 @@ export default function ProductIntroduceMain(prop: IproductIntroduceMain) {
             <EditableText
               text={editableContent.productIntroduceImageDesc as string}
               className="productIntroduceImageDesc"
+              id={"productIntroduceImageDesc" + 2}
               isTextArea={false}
               defaultCss={editableStyle.productIntroduceImageDesc as CSSObject}
               onChangeText={(key, value) => handleEditContent(key, value)}
               onChangeCss={(key, value) => handleEditStyle(key, value)}
+              activeEditor={activeEditor}
+              setActiveEditor={setActiveEditor}
             />
           ) : (
             <p

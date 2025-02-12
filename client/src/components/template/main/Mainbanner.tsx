@@ -83,13 +83,20 @@ interface ImainBanner {
   isEditable?: boolean;
   onChangeContent: (key: string, value: string) => void;
   onChangeStyle: (key: string, value: CSSObject) => void;
+  activeEditor?: string;
+  setActiveEditor?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 export default function Mainbanner(prop: ImainBanner) {
-  const { isEditable, content, style, onChangeContent, onChangeStyle } = prop;
-  const [activeEditor, setActiveEditor] = useState<string | undefined>(
-    undefined
-  );
+  const {
+    isEditable,
+    content,
+    style,
+    onChangeContent,
+    onChangeStyle,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   const initialContent = {
     mainBannerTitle: content?.mainBannerTitle || title_,

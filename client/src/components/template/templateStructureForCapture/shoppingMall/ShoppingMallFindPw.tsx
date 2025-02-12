@@ -72,7 +72,7 @@ export default function ShoppingMallFindPw() {
     }
   }, [projectIdValue]);
 
-  if (!generatedText || !headerData) {
+  if (!headerData) {
     return <Loading />;
   }
 

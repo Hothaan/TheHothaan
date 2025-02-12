@@ -33,10 +33,11 @@ interface Ireview {
   style?: IreviewStyle | null;
   index?: number;
   isEditable?: boolean;
-  activeEditor?: string | null;
-  setActiveEditor?: (classname?: string) => void;
+
   onChangeContent: (key: string, value: string) => void;
   onChangeStyle: (key: string, value: CSSObject) => void;
+  activeEditor?: string;
+  setActiveEditor?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 export const review_item_title_css: CSSObject = {
@@ -195,10 +196,15 @@ function ReviewItem(prop: Ireview) {
 }
 
 export default function Review(prop: Ireview) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
-  const [activeEditor, setActiveEditor] = useState<string | undefined>(
-    undefined
-  );
+  const {
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   const count = 7;
 

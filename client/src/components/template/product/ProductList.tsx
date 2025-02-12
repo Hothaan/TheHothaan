@@ -34,8 +34,8 @@ interface IproductList {
   onChangeContent: (key: string, value: string) => void;
   onChangeStyle: (key: string, value: CSSObject) => void;
   index?: number;
-  activeEditor?: string | null;
-  setActiveEditor?: (classname?: string) => void;
+  activeEditor?: string;
+  setActiveEditor?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 export const product_list_title_css_: CSSObject = {
@@ -244,7 +244,15 @@ function ProductListItem(prop: IproductList) {
 }
 
 export default function ProductList(prop: IproductList) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
+  const {
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   const initialContent = {
     productListCategories: content?.productListCategories || categories_,
@@ -261,9 +269,9 @@ export default function ProductList(prop: IproductList) {
       style?.productListProductDesc || product_list_desc_css_,
   };
 
-  const [activeEditor, setActiveEditor] = useState<string | undefined>(
-    undefined
-  );
+  // const [activeEditor, setActiveEditor] = useState<string | undefined>(
+  //   undefined
+  // );
 
   const updateValues = (source: any, initial: any) => {
     return Object.keys(initial).reduce((acc, key) => {

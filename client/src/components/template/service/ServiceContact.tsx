@@ -24,8 +24,8 @@ interface IserviceContact {
   onChangeContent: (key: string, value: string) => void;
   onChangeStyle: (key: string, value: CSSObject) => void;
   index?: number;
-  activeEditor?: string | null;
-  setActiveEditor?: (classname?: string) => void;
+  activeEditor?: string;
+  setActiveEditor?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 export const service_contact_title_css_: CSSObject = {
@@ -57,7 +57,15 @@ export const service_contact_button_css_: CSSObject = {
 };
 
 export default function ServiceContact(prop: IserviceContact) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
+  const {
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   const initialContent = {
     serviceContactTitle: content?.serviceContactTitle || title_,
@@ -70,10 +78,6 @@ export default function ServiceContact(prop: IserviceContact) {
     serviceContactButton:
       style?.serviceContactButton || service_contact_button_css_,
   };
-
-  const [activeEditor, setActiveEditor] = useState<string | undefined>(
-    undefined
-  );
 
   const updateValues = (source: any, initial: any) => {
     return Object.keys(initial).reduce((acc, key) => {

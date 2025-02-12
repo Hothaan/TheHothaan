@@ -15,3 +15,6 @@ export const projectIdStore = create<IprojectId>()(
     { name: "projectId" }
   )
 );
+window.addEventListener("beforeunload", () => {
+  localStorage.removeItem("projectId");
+});

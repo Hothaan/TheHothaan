@@ -16,3 +16,7 @@ export const featureDataStore = create<IfeatureDataStore>()(
     { name: "featureData" }
   )
 );
+
+window.addEventListener("beforeunload", () => {
+  localStorage.removeItem("featureData");
+});

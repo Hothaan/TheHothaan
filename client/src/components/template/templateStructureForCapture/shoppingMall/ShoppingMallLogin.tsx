@@ -72,7 +72,7 @@ export default function ShoppingMallLogin() {
     }
   }, [projectIdValue]);
 
-  if (!generatedText || !headerData) {
+  if (!headerData || !generatedText) {
     return <Loading />;
   }
 
