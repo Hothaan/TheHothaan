@@ -694,9 +694,6 @@ export default function Cart(prop: Icart) {
   const initialStyle = {
     cartTitle: style?.cartTitle || cart_title_css,
   };
-  // const [activeEditor, setActiveEditor] = useState<string | undefined>(
-  //   undefined
-  // );
 
   const updateValues = (source: any, initial: any) => {
     return Object.keys(initial).reduce((acc, key) => {

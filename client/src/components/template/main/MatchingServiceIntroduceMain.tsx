@@ -63,8 +63,9 @@ export const matching_service_introduce_main_banner_desc_css_: CSSObject = {
   WebkitBoxOrient: "vertical",
   overflow: "hidden",
   textOverflow: "ellipsis",
-  height: "100px",
-  WebkitLineClamp: "2",
+  width: "100%",
+  height: "300px",
+  WebkitLineClamp: "6",
 
   color: "#486284",
   textAlign: "center",
@@ -147,6 +148,7 @@ function MatchingServiceIntroduceMainItem(prop: ImatchingServiceIntroduceMain) {
           onChangeCss={(key, value) => onChangeStyle(key, value)}
           activeEditor={activeEditor}
           setActiveEditor={setActiveEditor}
+          isWidth100={true}
         />
       ) : (
         <p css={style?.MatchingServiceIntroduceMainItemDesc}>
@@ -324,10 +326,12 @@ export default function MatchingServiceIntroduceMain(
                 }
                 isTextArea={false}
                 className="MatchingServiceIntroduceMainBannerTitle"
+                id="MatchingServiceIntroduceMainBannerTitle"
                 onChangeText={(key, value) => handleEditContent(key, value)}
                 onChangeCss={(key, value) => handleEditStyle(key, value)}
                 activeEditor={activeEditor}
                 setActiveEditor={setActiveEditor}
+                isWidth100={true}
               />
             ) : (
               <p css={editableStyle.MatchingServiceIntroduceMainBannerTitle}>
@@ -342,10 +346,12 @@ export default function MatchingServiceIntroduceMain(
                 }
                 isTextArea={true}
                 className="MatchingServiceIntroduceMainBannerDesc"
+                id="MatchingServiceIntroduceMainBannerDesc"
                 onChangeText={(key, value) => handleEditContent(key, value)}
                 onChangeCss={(key, value) => handleEditStyle(key, value)}
                 activeEditor={activeEditor}
                 setActiveEditor={setActiveEditor}
+                isWidth100={true}
               />
             ) : (
               <p css={editableStyle.MatchingServiceIntroduceMainBannerDesc}>
@@ -422,6 +428,8 @@ const banner_container = css`
 `;
 
 const banner_text_container = css`
+  width: 100%;
+  padding: 100px;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -442,6 +450,7 @@ const item_wrap = css`
 `;
 
 const item_container = css`
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;

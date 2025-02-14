@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 import EditableText from "@components/service/editableText/EditableText";
@@ -25,6 +25,9 @@ interface IintermediaryMatchServiceIntroduction {
   isEditable?: boolean;
   onChangeContent?: (key: string, value: string) => void;
   onChangeStyle?: (key: string, value: CSSObject) => void;
+  index?: number;
+  activeEditor?: string;
+  setActiveEditor?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 export const intermediary_match_service_introduction_title_css_: CSSObject = {
@@ -40,14 +43,14 @@ export const intermediary_match_service_introduction_title_css_: CSSObject = {
   textOverflow: "ellipsis",
   whiteSpace: "nowrap",
 
-  // "@media (max-width: 1000px)": {
-  //   color: "#486284",
-  //   fontFamily: "Inter",
-  //   fontSize: "64px",
-  //   fontStyle: "normal",
-  //   fontWeight: "900",
-  //   lineHeight: "150%",
-  // },
+  "@media (max-width: 1000px)": {
+    color: "#486284",
+    fontFamily: "Inter",
+    fontSize: "64px",
+    fontStyle: "normal",
+    fontWeight: "900",
+    lineHeight: "150%",
+  },
 };
 
 export const intermediary_match_service_introduction_desc_css_: CSSObject = {
@@ -66,22 +69,29 @@ export const intermediary_match_service_introduction_desc_css_: CSSObject = {
   textOverflow: "ellipsis",
   height: "100px",
   WebkitLineClamp: "2",
-  whiteSpace: "nowrap",
 
-  // "@media (max-width: 1000px)": {
-  //   color: "#486284",
-  //   fontFamily: "Inter",
-  //   fontSize: "32px",
-  //   fontStyle: "normal",
-  //   fontWeight: "400",
-  //   lineHeight: "normal",
-  // },
+  "@media (max-width: 1000px)": {
+    color: "#486284",
+    fontFamily: "Inter",
+    fontSize: "32px",
+    fontStyle: "normal",
+    fontWeight: "400",
+    lineHeight: "normal",
+  },
 };
 
 export default function IntermediaryMatchServiceIntroduction(
   prop: IintermediaryMatchServiceIntroduction
 ) {
-  const { isEditable, style, content, onChangeContent, onChangeStyle } = prop;
+  const {
+    isEditable,
+    style,
+    content,
+    onChangeContent,
+    onChangeStyle,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   const initialContent = {
     IntermediaryMatchServiceIntroductionTitle:
@@ -89,15 +99,6 @@ export default function IntermediaryMatchServiceIntroduction(
     IntermediaryMatchServiceIntroductionDesc:
       content?.IntermediaryMatchServiceIntroductionTitle || desc_,
   };
-
-  // const initialStyle = {
-  //   IntermediaryMatchServiceIntroductionTitle:
-  //     style?.IntermediaryMatchServiceIntroductionTitle ||
-  //     intermediary_match_service_introduction_title_css_,
-  //   IntermediaryMatchServiceIntroductionDesc:
-  //     style?.IntermediaryMatchServiceIntroductionDesc ||
-  //     intermediary_match_service_introduction_desc_css_,
-  // };
 
   const initialStyle = {
     IntermediaryMatchServiceIntroductionTitle:
@@ -108,54 +109,70 @@ export default function IntermediaryMatchServiceIntroduction(
       intermediary_match_service_introduction_desc_css_,
   };
 
-  const [editableContent, setEditableContent] = useState<any>(null);
-  const [editableStyle, setEditableStyle] = useState<any>(null);
+  /* *********** */
+
+  const updateValues = (source: any, initial: any) => {
+    return Object.keys(initial).reduce((acc, key) => {
+      const value = source?.[key];
+      acc[key] = value === "" ? initial[key] : value ?? initial[key];
+      return acc;
+    }, {} as any);
+  };
+
+  const [editableContent, setEditableContent] = useState(() =>
+    updateValues(content, initialContent)
+  );
+  const [editableStyle, setEditableStyle] = useState(() =>
+    updateValues(style, initialStyle)
+  );
+
+  // `useMemo`로 최적화된 업데이트 값 생성
+  const updatedContent = useMemo(
+    () => updateValues(content, initialContent),
+    [content, initialContent]
+  );
+  const updatedStyle = useMemo(
+    () => updateValues(style, initialStyle),
+    [style, initialStyle]
+  );
 
   useEffect(() => {
     setEditableContent((prev: any) => {
-      const updatedContent = { ...prev };
-
-      if (
-        content?.IntermediaryMatchServiceIntroductionTitle !==
-        prev?.IntermediaryMatchServiceIntroductionTitle
-      ) {
-        updatedContent.IntermediaryMatchServiceIntroductionTitle =
-          content?.IntermediaryMatchServiceIntroductionTitle ??
-          initialContent.IntermediaryMatchServiceIntroductionTitle;
+      // 객체 비교를 수행하여 변경된 경우에만 업데이트
+      if (!shallowEqual(prev, updatedContent)) {
+        return updatedContent;
       }
-
-      if (
-        content?.IntermediaryMatchServiceIntroductionDesc !==
-        prev?.IntermediaryMatchServiceIntroductionDesc
-      ) {
-        updatedContent.IntermediaryMatchServiceIntroductionDesc =
-          content?.IntermediaryMatchServiceIntroductionDesc ??
-          initialContent.IntermediaryMatchServiceIntroductionDesc;
-      }
-
-      return JSON.stringify(prev) === JSON.stringify(updatedContent)
-        ? prev
-        : updatedContent;
+      return prev;
     });
-  }, [content]);
+  }, [updatedContent]);
 
   useEffect(() => {
     setEditableStyle((prev: any) => {
-      const updatedStyle = { ...prev };
-
-      updatedStyle.IntermediaryMatchServiceIntroductionTitle =
-        style?.IntermediaryMatchServiceIntroductionTitle ??
-        initialStyle.IntermediaryMatchServiceIntroductionTitle;
-
-      updatedStyle.IntermediaryMatchServiceIntroductionDesc =
-        style?.IntermediaryMatchServiceIntroductionDesc ??
-        initialStyle.IntermediaryMatchServiceIntroductionDesc;
-
-      return JSON.stringify(prev) === JSON.stringify(updatedStyle)
-        ? prev
-        : updatedStyle;
+      if (!shallowEqual(prev, updatedStyle)) {
+        return updatedStyle;
+      }
+      return prev;
     });
-  }, [style]);
+  }, [updatedStyle]);
+
+  // 얕은 비교를 수행하는 함수
+  const shallowEqual = (objA: any, objB: any) => {
+    if (Object.is(objA, objB)) return true;
+    if (
+      typeof objA !== "object" ||
+      typeof objB !== "object" ||
+      objA === null ||
+      objB === null
+    )
+      return false;
+
+    const keysA = Object.keys(objA);
+    const keysB = Object.keys(objB);
+
+    if (keysA.length !== keysB.length) return false;
+
+    return keysA.every((key) => objA[key] === objB[key]);
+  };
 
   const handleEditContent = useCallback(
     (key: string, value: string) => {
@@ -168,16 +185,22 @@ export default function IntermediaryMatchServiceIntroduction(
     [onChangeContent]
   );
 
-  function handleEditStyle(key: string, value: CSSObject) {
-    setEditableStyle({
-      ...editableStyle,
-      [key]: value,
-    });
-    onChangeStyle?.(key, value);
-  }
+  const handleEditStyle = useCallback(
+    (key: string, value: CSSObject) => {
+      setEditableStyle((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeStyle?.(key, value);
+    },
+    [onChangeStyle]
+  );
+
   if (!editableContent) {
     return <></>;
   }
+
+  /* *********** */
 
   return (
     <OuterWrap padding="0">
@@ -189,13 +212,17 @@ export default function IntermediaryMatchServiceIntroduction(
                 text={
                   editableContent.IntermediaryMatchServiceIntroductionTitle as string
                 }
-                className="IntermediaryMatchServiceIntroductionTitle"
+                className="intermediaryMatchServiceIntroductionTitle"
                 isTextArea={false}
                 defaultCss={
                   editableStyle.IntermediaryMatchServiceIntroductionTitle as CSSObject
                 }
                 onChangeText={(key, value) => handleEditContent(key, value)}
                 onChangeCss={(key, value) => handleEditStyle(key, value)}
+                id={"IntermediaryMatchServiceIntroductionTitle" + 1}
+                activeEditor={activeEditor}
+                setActiveEditor={setActiveEditor}
+                isWidth100={true}
               />
             ) : (
               <p css={editableStyle?.IntermediaryMatchServiceIntroductionTitle}>
@@ -207,13 +234,17 @@ export default function IntermediaryMatchServiceIntroduction(
                 text={
                   editableContent.IntermediaryMatchServiceIntroductionDesc as string
                 }
-                className="IntermediaryMatchServiceIntroductionDesc"
+                className="intermediaryMatchServiceIntroductionDesc"
                 isTextArea={true}
                 defaultCss={
                   editableStyle.IntermediaryMatchServiceIntroductionDesc as CSSObject
                 }
                 onChangeText={(key, value) => handleEditContent(key, value)}
                 onChangeCss={(key, value) => handleEditStyle(key, value)}
+                id={"IntermediaryMatchServiceIntroductionDesc" + 1}
+                activeEditor={activeEditor}
+                setActiveEditor={setActiveEditor}
+                isWidth100={true}
               />
             ) : (
               <p css={editableStyle?.IntermediaryMatchServiceIntroductionDesc}>
@@ -240,13 +271,17 @@ export default function IntermediaryMatchServiceIntroduction(
                   text={
                     editableContent.IntermediaryMatchServiceIntroductionTitle as string
                   }
-                  className="IntermediaryMatchServiceIntroductionTitle"
+                  className="intermediaryMatchServiceIntroductionTitle"
                   isTextArea={false}
                   defaultCss={
                     editableStyle.IntermediaryMatchServiceIntroductionTitle as CSSObject
                   }
                   onChangeText={(key, value) => handleEditContent(key, value)}
                   onChangeCss={(key, value) => handleEditStyle(key, value)}
+                  id={"IntermediaryMatchServiceIntroductionTitle" + 2}
+                  activeEditor={activeEditor}
+                  setActiveEditor={setActiveEditor}
+                  isWidth100={true}
                 />
               ) : (
                 <p
@@ -260,13 +295,17 @@ export default function IntermediaryMatchServiceIntroduction(
                   text={
                     editableContent.IntermediaryMatchServiceIntroductionDesc as string
                   }
-                  className="IntermediaryMatchServiceIntroductionDesc"
+                  className="intermediaryMatchServiceIntroductionDesc"
                   isTextArea={true}
                   defaultCss={
                     editableStyle.IntermediaryMatchServiceIntroductionDesc as CSSObject
                   }
                   onChangeText={(key, value) => handleEditContent(key, value)}
                   onChangeCss={(key, value) => handleEditStyle(key, value)}
+                  id={"IntermediaryMatchServiceIntroductionDesc" + 2}
+                  activeEditor={activeEditor}
+                  setActiveEditor={setActiveEditor}
+                  isWidth100={true}
                 />
               ) : (
                 <p
@@ -306,13 +345,17 @@ export default function IntermediaryMatchServiceIntroduction(
                   text={
                     editableContent.IntermediaryMatchServiceIntroductionTitle as string
                   }
-                  className="IntermediaryMatchServiceIntroductionTitle"
+                  className="intermediaryMatchServiceIntroductionTitle"
                   isTextArea={false}
                   defaultCss={
                     editableStyle.IntermediaryMatchServiceIntroductionTitle as CSSObject
                   }
                   onChangeText={(key, value) => handleEditContent(key, value)}
                   onChangeCss={(key, value) => handleEditStyle(key, value)}
+                  id={"IntermediaryMatchServiceIntroductionTitle" + 3}
+                  activeEditor={activeEditor}
+                  setActiveEditor={setActiveEditor}
+                  isWidth100={true}
                 />
               ) : (
                 <p
@@ -326,13 +369,17 @@ export default function IntermediaryMatchServiceIntroduction(
                   text={
                     editableContent.IntermediaryMatchServiceIntroductionDesc as string
                   }
-                  className="IntermediaryMatchServiceIntroductionDesc"
+                  className="intermediaryMatchServiceIntroductionDesc"
                   isTextArea={true}
                   defaultCss={
                     editableStyle.IntermediaryMatchServiceIntroductionDesc as CSSObject
                   }
                   onChangeText={(key, value) => handleEditContent(key, value)}
                   onChangeCss={(key, value) => handleEditStyle(key, value)}
+                  id={"IntermediaryMatchServiceIntroductionDesc" + 3}
+                  activeEditor={activeEditor}
+                  setActiveEditor={setActiveEditor}
+                  isWidth100={true}
                 />
               ) : (
                 <p
@@ -350,13 +397,18 @@ export default function IntermediaryMatchServiceIntroduction(
               text={
                 editableContent.IntermediaryMatchServiceIntroductionTitle as string
               }
-              className="IntermediaryMatchServiceIntroductionTitle"
+              className="intermediaryMatchServiceIntroductionTitle"
               isTextArea={false}
               defaultCss={
                 editableStyle.IntermediaryMatchServiceIntroductionTitle as CSSObject
               }
               onChangeText={(key, value) => handleEditContent(key, value)}
               onChangeCss={(key, value) => handleEditStyle(key, value)}
+              id={"IntermediaryMatchServiceIntroductionTitle" + 4}
+              activeEditor={activeEditor}
+              setActiveEditor={setActiveEditor}
+              isWidth100={true}
+              justifyContent="center"
             />
           ) : (
             <p css={editableStyle?.IntermediaryMatchServiceIntroductionTitle}>
@@ -368,13 +420,18 @@ export default function IntermediaryMatchServiceIntroduction(
               text={
                 editableContent.IntermediaryMatchServiceIntroductionDesc as string
               }
-              className="IntermediaryMatchServiceIntroductionDesc"
+              className="intermediaryMatchServiceIntroductionDesc"
               isTextArea={true}
               defaultCss={
                 editableStyle.IntermediaryMatchServiceIntroductionDesc as CSSObject
               }
               onChangeText={(key, value) => handleEditContent(key, value)}
               onChangeCss={(key, value) => handleEditStyle(key, value)}
+              id={"IntermediaryMatchServiceIntroductionDesc" + 4}
+              activeEditor={activeEditor}
+              setActiveEditor={setActiveEditor}
+              isWidth100={true}
+              justifyContent="center"
             />
           ) : (
             <p css={editableStyle?.IntermediaryMatchServiceIntroductionDesc}>
@@ -416,8 +473,9 @@ const banner_3_container = css`
   width: 100%;
 `;
 const banner_4_container = css`
-  width: 100%;
   display: flex;
+  width: calc(100% - 240px);
+  margin: 0 auto;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -433,11 +491,10 @@ const text_wrap = css`
 `;
 
 const text_container_absolute = css`
+  width: calc(100% - 240px);
   position: absolute;
   top: 160px;
   left: 120px;
-  width: 100%;
-  max-width: 680px;
   display: flex;
   flex-direction: column;
   gap: 60px;

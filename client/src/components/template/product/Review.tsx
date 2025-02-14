@@ -31,11 +31,10 @@ export interface IreviewStyle {
 interface Ireview {
   content?: IreviewContent | null;
   style?: IreviewStyle | null;
-  index?: number;
   isEditable?: boolean;
-
   onChangeContent: (key: string, value: string) => void;
   onChangeStyle: (key: string, value: CSSObject) => void;
+  index?: number;
   activeEditor?: string;
   setActiveEditor?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
@@ -132,11 +131,11 @@ function ReviewItem(prop: Ireview) {
           <EditableText
             text={content.reviewTitle}
             className="reviewTitle"
+            id={"reviewTitle" + index}
             isTextArea={false}
             defaultCss={style.reviewTitle}
             onChangeText={(key, value) => onChangeContent(key, value)}
             onChangeCss={(key, value) => onChangeStyle(key, value)}
-            id={"reviewTitle" + index}
             activeEditor={activeEditor}
             setActiveEditor={setActiveEditor}
           />
@@ -147,11 +146,11 @@ function ReviewItem(prop: Ireview) {
           <EditableText
             text={content.reviewDesc}
             className="reviewDesc"
+            id={"reviewDesc" + index}
             isTextArea={true}
             defaultCss={style.reviewDesc}
             onChangeText={(key, value) => onChangeContent(key, value)}
             onChangeCss={(key, value) => onChangeStyle(key, value)}
-            id={"reviewDesc" + index}
             activeEditor={activeEditor}
             setActiveEditor={setActiveEditor}
           />
@@ -163,11 +162,11 @@ function ReviewItem(prop: Ireview) {
             <EditableText
               text={content.reviewName}
               className="reviewName"
+              id={"reviewName" + index}
               isTextArea={false}
               defaultCss={style.reviewName}
               onChangeText={(key, value) => onChangeContent(key, value)}
               onChangeCss={(key, value) => onChangeStyle(key, value)}
-              id={"reviewName" + index}
               activeEditor={activeEditor}
               setActiveEditor={setActiveEditor}
             />
@@ -178,11 +177,11 @@ function ReviewItem(prop: Ireview) {
             <EditableText
               text={content.reviewRole}
               className="reviewRole"
+              id={"reviewRole" + index}
               isTextArea={false}
               defaultCss={style.reviewRole}
               onChangeText={(key, value) => onChangeContent(key, value)}
               onChangeCss={(key, value) => onChangeStyle(key, value)}
-              id={"reviewRole" + index}
               activeEditor={activeEditor}
               setActiveEditor={setActiveEditor}
             />
@@ -221,6 +220,8 @@ export default function Review(prop: Ireview) {
     reviewName: style?.reviewName || review_item_caption_name_css,
     reviewRole: style?.reviewRole || review_item_caption_role_css,
   };
+
+  /* *********** */
 
   const updateValues = (source: any, initial: any) => {
     return Object.keys(initial).reduce((acc, key) => {
@@ -310,6 +311,8 @@ export default function Review(prop: Ireview) {
   if (!editableContent) {
     return <></>;
   }
+
+  /* *********** */
 
   return (
     <OuterWrap padding="80px 0">

@@ -69,11 +69,11 @@ interface IntermediaryMatchMainContent {
   productIntroduceImageDesc?: string;
   productIntroduceTitle?: string;
   productIntroduceDesc?: string;
-  ReviewTitle?: string;
-  ReviewDesc?: string;
-  ReviewName?: string;
-  ReviewRole?: string;
-  PriceMainDesc?: string;
+  reviewTitle?: string; //수정 요청
+  reviewDesc?: string; //수정 요청
+  reviewName?: string; //수정 요청
+  reviewRole?: string; //수정 요청
+  priceMainDesc?: string; //수정 요청
   exploreServiceTitle?: string;
   exploreServiceButton?: string;
   exploreServiceExploreTitle?: string;
@@ -91,11 +91,11 @@ interface IntermediaryMatchMainStyle {
   productIntroduceImageDesc?: CSSObject;
   productIntroduceTitle?: CSSObject;
   productIntroduceDesc?: CSSObject;
-  ReviewTitle?: CSSObject;
-  ReviewDesc?: CSSObject;
-  ReviewName?: CSSObject;
-  ReviewRole?: CSSObject;
-  PriceMainDesc?: CSSObject;
+  reviewTitle?: CSSObject; //수정 요청
+  reviewDesc?: CSSObject; //수정 요청
+  reviewName?: CSSObject; //수정 요청
+  reviewRole?: CSSObject; //수정 요청
+  priceMainDesc?: CSSObject; //수정 요청
   exploreServiceTitle?: CSSObject;
   exploreServiceButton?: CSSObject;
   exploreServiceExploreTitle?: CSSObject;
@@ -187,12 +187,12 @@ export default function IntermediaryMatchMain() {
         productIntroduceDesc:
           generatedText.content.productIntroduceDesc || undefined,
 
-        ReviewTitle: generatedText.content.ReviewTitle || undefined,
-        ReviewDesc: generatedText.content.ReviewDesc || undefined,
-        ReviewName: generatedText.content.ReviewName || undefined,
-        ReviewRole: generatedText.content.ReviewRole || undefined,
+        reviewTitle: generatedText.content.reviewTitle || undefined,
+        reviewDesc: generatedText.content.reviewDesc || undefined,
+        reviewName: generatedText.content.reviewName || undefined,
+        reviewRole: generatedText.content.reviewRole || undefined,
 
-        PriceMainDesc: generatedText.content.PriceMainDesc || undefined,
+        priceMainDesc: generatedText.content.priceMainDesc || undefined,
 
         exploreServiceTitle:
           generatedText.content.exploreServiceTitle || undefined,
@@ -226,12 +226,12 @@ export default function IntermediaryMatchMain() {
       productIntroduceTitle: product_introduce_title_css_ || undefined,
       productIntroduceDesc: product_introduce_desc_css_ || undefined,
 
-      ReviewTitle: review_item_title_css || undefined,
-      ReviewDesc: review_item_desc_css || undefined,
-      ReviewName: review_item_caption_name_css || undefined,
-      ReviewRole: review_item_caption_role_css || undefined,
+      reviewTitle: review_item_title_css || undefined,
+      reviewDesc: review_item_desc_css || undefined,
+      reviewName: review_item_caption_name_css || undefined,
+      reviewRole: review_item_caption_role_css || undefined,
 
-      PriceMainDesc: price_main_item_desc_css_ || undefined,
+      priceMainDesc: price_main_item_desc_css_ || undefined,
 
       exploreServiceTitle: explore_service_title_css_ || undefined,
       exploreServiceButton: explore_service_button_css_ || undefined,
@@ -444,16 +444,16 @@ export default function IntermediaryMatchMain() {
       />
       <Review
         content={{
-          reviewTitle: pageContent?.ReviewTitle,
-          reviewDesc: pageContent?.ReviewDesc,
-          reviewName: pageContent?.ReviewName,
-          reviewRole: pageContent?.ReviewRole,
+          reviewTitle: pageContent?.reviewTitle,
+          reviewDesc: pageContent?.reviewDesc,
+          reviewName: pageContent?.reviewName,
+          reviewRole: pageContent?.reviewRole,
         }}
         style={{
-          reviewTitle: pageStyle?.ReviewTitle,
-          reviewDesc: pageStyle?.ReviewDesc,
-          reviewName: pageStyle?.ReviewName,
-          reviewRole: pageStyle?.ReviewRole,
+          reviewTitle: pageStyle?.reviewTitle,
+          reviewDesc: pageStyle?.reviewDesc,
+          reviewName: pageStyle?.reviewName,
+          reviewRole: pageStyle?.reviewRole,
         }}
         isEditable={true}
         onChangeContent={handleChangeContent}
@@ -462,8 +462,8 @@ export default function IntermediaryMatchMain() {
         setActiveEditor={setActiveEditor}
       />
       <PriceMain
-        content={{ priceMainDesc: pageContent?.PriceMainDesc }}
-        style={{ priceMainDesc: pageStyle?.PriceMainDesc }}
+        content={{ priceMainDesc: pageContent?.priceMainDesc }}
+        style={{ priceMainDesc: pageStyle?.priceMainDesc }}
         isEditable={true}
         onChangeContent={handleChangeContent}
         onChangeStyle={handleChangeStyle}
@@ -486,6 +486,8 @@ export default function IntermediaryMatchMain() {
         isEditable={true}
         onChangeContent={handleChangeContent}
         onChangeStyle={handleChangeStyle}
+        activeEditor={activeEditor}
+        setActiveEditor={setActiveEditor}
       />
       <Footer serviceType="중개·매칭" />
     </div>

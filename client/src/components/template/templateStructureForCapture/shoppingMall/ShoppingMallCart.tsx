@@ -90,6 +90,22 @@ export default function ShoppingMallCart() {
     }
   }, [projectIdValue]);
 
+  function updateInitialContent() {
+    if (generatedText && generatedText.content) {
+      const initialContent = {
+        cartTitle: generatedText.content.cartTitle || undefined,
+      };
+      setPageContent({ ...initialContent });
+    }
+  }
+
+  function updateInitialStyle() {
+    const initialStyle = {
+      cartTitle: cart_title_css || undefined,
+    };
+    setPageStyle({ ...initialStyle });
+  }
+
   function getLocalContent() {
     const localContent = localStorage.getItem("changedContent");
     if (localContent) {
@@ -121,23 +137,6 @@ export default function ShoppingMallCart() {
   const [pageStyle, setPageStyle] = useState<IshoppingMallCartStyle | null>(
     getLocalStyle()
   );
-
-  function updateInitialContent() {
-    if (generatedText && generatedText.content) {
-      const initialContent = {
-        cartTitle: generatedText.content.cartTitle || undefined,
-      };
-      setPageContent({ ...initialContent });
-    }
-  }
-
-  //페이지에 적용될 초기 스타일 저장
-  function updateInitialStyle() {
-    const initialStyle = {
-      cartTitle: cart_title_css || undefined,
-    };
-    setPageStyle({ ...initialStyle });
-  }
 
   useEffect(() => {
     if (generatedText) {

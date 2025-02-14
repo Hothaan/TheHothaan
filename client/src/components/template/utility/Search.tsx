@@ -1,8 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { OuterWrap } from "../commonComponent/Wrap";
 import { ReactComponent as SearchIcon } from "@svgs/template/search/search.svg";
+import EditableText from "@components/service/editableText/EditableText";
 
 const search_result_title_bold_ = "‘검색어’";
 const search_result_title_ = " 검색 결과입니다.";
@@ -11,13 +12,13 @@ const search_result_item_desc_ =
   "Lorem ipsum dolor sit amet consectetur adipiscing eli mattis sit phasellus mollis sit aliquam sit nullam.";
 
 export interface IsearchContent {
-  SearchTitle: string;
-  SearchDesc: string;
+  SearchTitle?: string;
+  SearchDesc?: string;
 }
 
 export interface IsearchStyle {
-  SearchTitle: CSSObject;
-  SearchDesc: CSSObject;
+  SearchTitle?: CSSObject;
+  SearchDesc?: CSSObject;
 }
 
 type TsearchOption = "일반 검색" | "통합 검색";
@@ -26,69 +27,148 @@ interface Isearch {
   content?: IsearchContent | null;
   style?: IsearchStyle | null;
   isEditable?: boolean;
-  onChange?: (content: IsearchContent) => void;
   option?: TsearchOption;
+  onChangeContent?: (key: string, value: string) => void;
+  onChangeStyle?: (key: string, value: CSSObject) => void;
+  index?: number;
+  activeEditor?: string;
+  setActiveEditor?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
-export const search_result_item_title_css_ = css`
-  color: var(--Neutral-colors-600, #6d758f);
+export const search_result_item_title_css_: CSSObject = {
+  color: "var(--Neutral-colors-600, #6d758f)",
+  fontFamily: "Inter",
+  fontSize: "36px",
+  fontStyle: "normal",
+  fontWeight: "800",
+  lineHeight: "normal",
+};
 
-  /* H2 */
-  font-family: Inter;
-  font-size: 36px;
-  font-style: normal;
-  font-weight: 800;
-  line-height: normal;
-`;
-
-export const search_result_item_desc_css_ = css`
-  color: var(--Neutral-colors-600, #6d758f);
-
-  /* h2_small */
-  font-family: Inter;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 160%; /* 32px */
-`;
+export const search_result_item_desc_css_: CSSObject = {
+  color: "var(--Neutral-colors-600, #6d758f)",
+  fontFamily: "Inter",
+  fontSize: "20px",
+  fontStyle: "normal",
+  fontWeight: "400",
+  lineHeight: "160%",
+};
 
 export default function Search(prop: Isearch) {
-  const { content, style, isEditable, onChange, option } = prop;
+  const {
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    activeEditor,
+    setActiveEditor,
+    option,
+  } = prop;
 
-  const initial = {
-    SearchTitle: {
-      text: content?.SearchTitle || search_result_item_title_,
-      css: style?.SearchTitle || search_result_item_title_css_,
-    },
-    SearchDesc: {
-      text: content?.SearchDesc || search_result_item_desc_,
-      css: style?.SearchDesc || search_result_item_desc_css_,
-    },
+  const count = 3;
+
+  const initialContent = {
+    SearchTitle: content?.SearchTitle || search_result_item_title_,
+    SearchDesc: content?.SearchDesc || search_result_item_desc_,
   };
 
-  const [edit, setEdit] = useState(initial);
+  const initialStyle = {
+    SearchTitle: style?.SearchTitle || search_result_item_title_css_,
+    SearchDesc: style?.SearchDesc || search_result_item_desc_css_,
+  };
+
+  /* *********** */
+
+  const updateValues = (source: any, initial: any) => {
+    return Object.keys(initial).reduce((acc, key) => {
+      const value = source?.[key];
+      acc[key] = value === "" ? initial[key] : value ?? initial[key];
+      return acc;
+    }, {} as any);
+  };
+
+  const [editableContent, setEditableContent] = useState(() =>
+    updateValues(content, initialContent)
+  );
+  const [editableStyle, setEditableStyle] = useState(() =>
+    updateValues(style, initialStyle)
+  );
+
+  // `useMemo`로 최적화된 업데이트 값 생성
+  const updatedContent = useMemo(
+    () => updateValues(content, initialContent),
+    [content, initialContent]
+  );
+  const updatedStyle = useMemo(
+    () => updateValues(style, initialStyle),
+    [style, initialStyle]
+  );
 
   useEffect(() => {
-    if (content) {
-      setEdit(initial);
-    }
-  }, [content]);
+    setEditableContent((prev: any) => {
+      // 객체 비교를 수행하여 변경된 경우에만 업데이트
+      if (!shallowEqual(prev, updatedContent)) {
+        return updatedContent;
+      }
+      return prev;
+    });
+  }, [updatedContent]);
 
-  // function handleEdit(
-  //   field: keyof IsearchContent,
-  //   updatedText: string,
-  //   updatedCss: CSSObject
-  // ) {
-  //   const updatedState = {
-  //     ...edit,
-  //     [field]: {
-  //       text: updatedText,
-  //       css: updatedCss,
-  //     },
-  //   };
-  //   setEdit(updatedState);
-  //   onChange?.(updatedState);
-  // }
+  useEffect(() => {
+    setEditableStyle((prev: any) => {
+      if (!shallowEqual(prev, updatedStyle)) {
+        return updatedStyle;
+      }
+      return prev;
+    });
+  }, [updatedStyle]);
+
+  // 얕은 비교를 수행하는 함수
+  const shallowEqual = (objA: any, objB: any) => {
+    if (Object.is(objA, objB)) return true;
+    if (
+      typeof objA !== "object" ||
+      typeof objB !== "object" ||
+      objA === null ||
+      objB === null
+    )
+      return false;
+
+    const keysA = Object.keys(objA);
+    const keysB = Object.keys(objB);
+
+    if (keysA.length !== keysB.length) return false;
+
+    return keysA.every((key) => objA[key] === objB[key]);
+  };
+
+  const handleEditContent = useCallback(
+    (key: string, value: string) => {
+      setEditableContent((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeContent?.(key, value);
+    },
+    [onChangeContent]
+  );
+
+  const handleEditStyle = useCallback(
+    (key: string, value: CSSObject) => {
+      setEditableStyle((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeStyle?.(key, value);
+    },
+    [onChangeStyle]
+  );
+
+  if (!editableContent) {
+    return <></>;
+  }
+
+  /* *********** */
 
   return (
     <OuterWrap padding="100px 0">
@@ -105,30 +185,53 @@ export default function Search(prop: Isearch) {
               </span>
               {search_result_title_}
             </p>
-            <div css={search_result_item_container}>
-              <p css={edit?.SearchTitle?.css || search_result_item_title_css_}>
-                {edit?.SearchTitle?.text || search_result_item_title_}
-              </p>
-              <p css={edit?.SearchDesc?.css || search_result_item_desc_css_}>
-                {edit?.SearchDesc?.text || search_result_item_desc_}
-              </p>
-            </div>
-            <div css={search_result_item_container}>
-              <p css={edit?.SearchTitle?.css || search_result_item_title_css_}>
-                {edit?.SearchTitle?.text || search_result_item_title_}
-              </p>
-              <p css={edit?.SearchDesc?.css || search_result_item_desc_css_}>
-                {edit?.SearchDesc?.text || search_result_item_desc_}
-              </p>
-            </div>
-            <div css={search_result_item_container}>
-              <p css={edit?.SearchTitle?.css || search_result_item_title_css_}>
-                {edit?.SearchTitle?.text || search_result_item_title_}
-              </p>
-              <p css={edit?.SearchDesc?.css || search_result_item_desc_css_}>
-                {edit?.SearchDesc?.text || search_result_item_desc_}
-              </p>
-            </div>
+            {Array.from({ length: count }, (_, index) => (
+              <div css={search_result_item_container}>
+                {isEditable ? (
+                  <EditableText
+                    text={editableContent.SearchTitle}
+                    className="SearchTitle"
+                    isTextArea={false}
+                    defaultCss={editableStyle.SearchTitle}
+                    onChangeText={(key, value) => handleEditContent(key, value)}
+                    onChangeCss={(key, value) => handleEditStyle(key, value)}
+                    id={"SearchTitle" + index}
+                    activeEditor={activeEditor}
+                    setActiveEditor={setActiveEditor}
+                  />
+                ) : (
+                  <p
+                    css={
+                      editableStyle?.SearchTitle ||
+                      search_result_item_title_css_
+                    }
+                  >
+                    {editableContent?.SearchTitle || search_result_item_title_}
+                  </p>
+                )}
+                {isEditable ? (
+                  <EditableText
+                    text={editableContent.SearchDesc}
+                    className="SearchDesc"
+                    isTextArea={false}
+                    defaultCss={editableStyle.SearchDesc}
+                    onChangeText={(key, value) => handleEditContent(key, value)}
+                    onChangeCss={(key, value) => handleEditStyle(key, value)}
+                    id={"SearchDesc" + index}
+                    activeEditor={activeEditor}
+                    setActiveEditor={setActiveEditor}
+                  />
+                ) : (
+                  <p
+                    css={
+                      editableStyle?.SearchDesc || search_result_item_desc_css_
+                    }
+                  >
+                    {editableContent?.SearchDesc || search_result_item_desc_}
+                  </p>
+                )}
+              </div>
+            ))}
           </div>
         )}
       </div>

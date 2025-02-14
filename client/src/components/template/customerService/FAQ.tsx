@@ -5,8 +5,7 @@ import { ReactComponent as ChevUp } from "@svgs/template/faqMain/chevUp.svg";
 
 const title_ = "FAQ";
 
-const item_title_ =
-  "FAQ 제목입니다. FAQ 제목입니다. FAQ 제목입니다. FAQ 제목입니다. ";
+const item_title_ = "FAQ 제목입니다.";
 const item_title_className = "faq_main_item_title";
 
 const item_content_ =

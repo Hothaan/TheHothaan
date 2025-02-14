@@ -86,6 +86,24 @@ export default function IntermediaryMatchPrice() {
     }
   }, [projectIdValue]);
 
+  function updateInitialContent() {
+    if (generatedText && generatedText.content) {
+      const initialContent = {
+        priceMainDesc: generatedText.content.priceMainDesc || undefined,
+      };
+      setPageContent({ ...initialContent });
+    }
+  }
+
+  function updateInitialStyle() {
+    const initialStyle = {
+      priceMainDesc: price_main_item_desc_css_ || undefined,
+    };
+    setPageStyle({ ...initialStyle });
+  }
+
+  /* ********** */
+
   function getLocalContent() {
     const localContent = localStorage.getItem("changedContent");
     if (localContent) {
@@ -96,6 +114,7 @@ export default function IntermediaryMatchPrice() {
     }
     return null;
   }
+
   function getLocalStyle() {
     if (typeof window === "undefined") {
       return generatedText?.style || null;
@@ -117,24 +136,6 @@ export default function IntermediaryMatchPrice() {
   const [pageStyle, setPageStyle] =
     useState<IntermediaryMatchPriceStyle | null>(getLocalStyle());
 
-  function updateInitialContent() {
-    if (generatedText && generatedText.content) {
-      const initialContent = {
-        priceMainDesc: generatedText.content.priceMainDesc || undefined,
-      };
-      setPageContent({ ...initialContent });
-    }
-  }
-
-  //페이지에 적용될 초기 스타일 저장
-  function updateInitialStyle() {
-    const initialStyle = {
-      priceMainDesc: price_main_item_desc_css_ || undefined,
-    };
-    setPageStyle({ ...initialStyle });
-  }
-
-  //featureData가 들어오면 초기 콘텐츠와 스타일 업데이트
   useEffect(() => {
     if (generatedText) {
       const localContent = localStorage.getItem("changedContent");
@@ -149,23 +150,46 @@ export default function IntermediaryMatchPrice() {
   }, [generatedText]);
 
   useEffect(() => {
+    if (generatedText) {
+      const localStyle = localStorage.getItem("changedStyle");
+      const hasLocalStyle = localStyle
+        ? JSON.parse(localStyle)?.[featureKey]?.style
+        : null;
+
+      if (hasLocalStyle) {
+        setPageStyle(hasLocalStyle); // 로컬 저장된 스타일이 있으면 항상 그것을 우선 적용
+      } else if (generatedText.style) {
+        setPageStyle(generatedText.style); // 없을 경우에만 DB 스타일 적용
+      } else {
+        updateInitialStyle(); // 둘 다 없으면 초기 스타일 적용
+      }
+    }
+  }, [generatedText]);
+
+  useEffect(() => {
     if (pageContent) {
       const localContent = localStorage.getItem("changedContent");
-      const updatedContent = localContent
-        ? {
-            ...JSON.parse(localContent),
-            [featureKey]: {
-              featureId: generatedText?.feature_id,
-              content: { ...pageContent },
-            },
-          }
-        : {
-            [featureKey]: {
-              featureId: generatedText?.feature_id,
-              content: { ...pageContent },
-            },
-          };
-      localStorage.setItem("changedContent", JSON.stringify(updatedContent));
+      const existingContent = localContent
+        ? JSON.parse(localContent)?.[featureKey]?.content
+        : null;
+
+      if (JSON.stringify(existingContent) !== JSON.stringify(pageContent)) {
+        const updatedContent = localContent
+          ? {
+              ...JSON.parse(localContent),
+              [featureKey]: {
+                featureId: generatedText?.feature_id,
+                content: { ...pageContent },
+              },
+            }
+          : {
+              [featureKey]: {
+                featureId: generatedText?.feature_id,
+                content: { ...pageContent },
+              },
+            };
+        localStorage.setItem("changedContent", JSON.stringify(updatedContent));
+      }
     }
   }, [pageContent]);
 
@@ -198,9 +222,15 @@ export default function IntermediaryMatchPrice() {
     setPageStyle({ ...pageStyle, [key]: value });
   }
 
+  const [activeEditor, setActiveEditor] = useState<string | undefined>(
+    undefined
+  );
+
   if (!generatedText || !headerData) {
     return <Loading />;
   }
+
+  /* ********** */
 
   return (
     <div className="templateImage">
@@ -215,6 +245,8 @@ export default function IntermediaryMatchPrice() {
         isEditable={true}
         onChangeContent={handleChangeContent}
         onChangeStyle={handleChangeStyle}
+        activeEditor={activeEditor}
+        setActiveEditor={setActiveEditor}
       />
       <Footer serviceType="중개·매칭" />
     </div>
