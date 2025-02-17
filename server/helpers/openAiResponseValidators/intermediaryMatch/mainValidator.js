@@ -10,11 +10,11 @@ function mainValidator(response) {
   if (!response.content.productIntroduceImageDesc) return false;
   if (!response.content.productIntroduceTitle) return false;
   if (!response.content.productIntroduceDesc) return false;
-  if (!response.content.ReviewTitle) return false;
-  if (!response.content.ReviewDesc) return false;
-  if (!response.content.ReviewName) return false;
-  if (!response.content.ReviewRole) return false;
-  if (!response.content.PriceMainDesc) return false;
+  if (!response.content.reviewTitle) return false;
+  if (!response.content.reviewDesc) return false;
+  if (!response.content.reviewName) return false;
+  if (!response.content.reviewRole) return false;
+  if (!response.content.priceMainDesc) return false;
   if (!response.content.exploreServiceTitle) return false;
   if (!response.content.exploreServiceButton) return false;
   if (!response.content.exploreServiceExploreTitle) return false;
