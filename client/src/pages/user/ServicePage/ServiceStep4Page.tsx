@@ -401,6 +401,16 @@ export default function ServicePreviewPage() {
             <p css={caption}>
               내용을 수정하시려면
               <br /> <span css={text_blue}>썸네일을 더블클릭</span>하세요
+              <br />
+              {featureData &&
+                featureData.length > 0 &&
+                `(${featureData.length}건 중 `}
+              {listData && listData.length > 0 && (
+                <>
+                  <span css={text_blue}>{`${listData.length}`}</span>
+                  <span>건 생성 성공)</span>
+                </>
+              )}
             </p>
           </aside>
           <div
@@ -663,11 +673,17 @@ const controller = css`
   transform: translateX(-50%);
   bottom: 60px;
   display: flex;
-  height: 44px;
   justify-content: center;
   align-items: center;
   gap: 20px;
   align-self: stretch;
+  background-color: #fff;
+  padding: 16px 32px;
+  border-radius: 40px;
+  box-shadow: 0px 327px 91px 0px rgba(0, 0, 0, 0),
+    0px 209px 84px 0px rgba(0, 0, 0, 0.01),
+    0px 118px 71px 0px rgba(0, 0, 0, 0.05),
+    0px 52px 52px 0px rgba(0, 0, 0, 0.09), 0px 13px 29px 0px rgba(0, 0, 0, 0.1);
 `;
 
 const pagination = css`
