@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";
 import EditableText from "@components/service/editableText/EditableText";
 
@@ -25,6 +25,9 @@ interface InormalBoardMain {
   isEditable?: boolean;
   onChangeContent: (key: string, value: string) => void;
   onChangeStyle: (key: string, value: CSSObject) => void;
+  index?: number;
+  activeEditor?: string;
+  setActiveEditor?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 export const normal_board_main_title_css_: CSSObject = {
@@ -35,6 +38,7 @@ export const normal_board_main_title_css_: CSSObject = {
   fontWeight: "400",
   lineHeight: "20px",
 
+  width: "100%",
   textOverflow: "ellipsis",
   overflow: "hidden",
   display: "-webkit-box",
@@ -43,7 +47,16 @@ export const normal_board_main_title_css_: CSSObject = {
 };
 
 export function NormalBoardMainItem(prop: InormalBoardMain) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
+  const {
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    index,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   if (content?.boardTitle === undefined || style?.boardTitle === undefined) {
     return <></>;
@@ -55,10 +68,14 @@ export function NormalBoardMainItem(prop: InormalBoardMain) {
         <EditableText
           text={content.boardTitle as string}
           className="boardTitle"
+          id={"boardTitle" + index}
           isTextArea={false}
           defaultCss={style.boardTitle as CSSObject}
           onChangeText={(key, value) => onChangeContent(key, value)}
           onChangeCss={(key, value) => onChangeStyle(key, value)}
+          activeEditor={activeEditor}
+          setActiveEditor={setActiveEditor}
+          isWidth100={true}
         />
       ) : (
         <p
@@ -80,7 +97,15 @@ export function NormalBoardMainItem(prop: InormalBoardMain) {
 }
 
 export default function NormalBoardMain(prop: InormalBoardMain) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
+  const {
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   const count = 3;
 
@@ -92,26 +117,70 @@ export default function NormalBoardMain(prop: InormalBoardMain) {
     boardTitle: style?.boardTitle || normal_board_main_title_css_,
   };
 
-  const [editableContent, setEditableContent] = useState<any>(null);
-  const [editableStyle, setEditableStyle] = useState<any>(null);
+  /* *********** */
+
+  const updateValues = (source: any, initial: any) => {
+    return Object.keys(initial).reduce((acc, key) => {
+      const value = source?.[key];
+      acc[key] = value === "" ? initial[key] : value ?? initial[key];
+      return acc;
+    }, {} as any);
+  };
+
+  const [editableContent, setEditableContent] = useState(() =>
+    updateValues(content, initialContent)
+  );
+  const [editableStyle, setEditableStyle] = useState(() =>
+    updateValues(style, initialStyle)
+  );
+
+  // `useMemo`로 최적화된 업데이트 값 생성
+  const updatedContent = useMemo(
+    () => updateValues(content, initialContent),
+    [content, initialContent]
+  );
+  const updatedStyle = useMemo(
+    () => updateValues(style, initialStyle),
+    [style, initialStyle]
+  );
 
   useEffect(() => {
-    if (content?.boardTitle !== editableContent?.boardTitle) {
-      setEditableContent({
-        ...initialContent,
-        boardTitle: content?.boardTitle ?? initialContent.boardTitle,
-      });
-    }
-  }, [content]);
+    setEditableContent((prev: any) => {
+      // 객체 비교를 수행하여 변경된 경우에만 업데이트
+      if (!shallowEqual(prev, updatedContent)) {
+        return updatedContent;
+      }
+      return prev;
+    });
+  }, [updatedContent]);
 
   useEffect(() => {
-    if (style?.boardTitle !== editableStyle?.boardTitle) {
-      setEditableStyle({
-        ...initialStyle,
-        boardTitle: style?.boardTitle ?? initialStyle.boardTitle,
-      });
-    }
-  }, [style]);
+    setEditableStyle((prev: any) => {
+      if (!shallowEqual(prev, updatedStyle)) {
+        return updatedStyle;
+      }
+      return prev;
+    });
+  }, [updatedStyle]);
+
+  // 얕은 비교를 수행하는 함수
+  const shallowEqual = (objA: any, objB: any) => {
+    if (Object.is(objA, objB)) return true;
+    if (
+      typeof objA !== "object" ||
+      typeof objB !== "object" ||
+      objA === null ||
+      objB === null
+    )
+      return false;
+
+    const keysA = Object.keys(objA);
+    const keysB = Object.keys(objB);
+
+    if (keysA.length !== keysB.length) return false;
+
+    return keysA.every((key) => objA[key] === objB[key]);
+  };
 
   const handleEditContent = useCallback(
     (key: string, value: string) => {
@@ -124,17 +193,22 @@ export default function NormalBoardMain(prop: InormalBoardMain) {
     [onChangeContent]
   );
 
-  function handleEditStyle(key: string, value: CSSObject) {
-    setEditableStyle({
-      ...editableStyle,
-      [key]: value,
-    });
-    onChangeStyle?.(key, value);
-  }
+  const handleEditStyle = useCallback(
+    (key: string, value: CSSObject) => {
+      setEditableStyle((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeStyle?.(key, value);
+    },
+    [onChangeStyle]
+  );
 
   if (!editableContent) {
     return <></>;
   }
+
+  /* *********** */
 
   return (
     <OuterWrap padding="74px 0">
@@ -145,11 +219,14 @@ export default function NormalBoardMain(prop: InormalBoardMain) {
             {Array.from({ length: count }, (_, index) => (
               <NormalBoardMainItem
                 key={index}
+                index={index}
                 content={editableContent}
                 style={editableStyle}
                 isEditable={isEditable}
                 onChangeContent={handleEditContent}
                 onChangeStyle={handleEditStyle}
+                activeEditor={activeEditor}
+                setActiveEditor={setActiveEditor}
               />
             ))}
           </div>

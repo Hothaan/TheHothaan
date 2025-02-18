@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";
 import { ReactComponent as ChevUp } from "@svgs/template/faqMain/chevUp.svg";
 import EditableText from "@components/service/editableText/EditableText";
@@ -26,6 +26,9 @@ interface IfaqMain {
   isEditable?: boolean;
   onChangeContent: (key: string, value: string) => void;
   onChangeStyle: (key: string, value: CSSObject) => void;
+  index?: number;
+  activeEditor?: string;
+  setActiveEditor?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 export const faq_main_item_title_css_: CSSObject = {
@@ -35,6 +38,11 @@ export const faq_main_item_title_css_: CSSObject = {
   fontStyle: "normal",
   lineHeight: "150%",
   letterSpacing: "-0.15px",
+
+  width: "100%",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
 };
 
 export const faq_main_item_desc_css_: CSSObject = {
@@ -46,10 +54,23 @@ export const faq_main_item_desc_css_: CSSObject = {
   fontWeight: "400",
   lineHeight: "150%",
   letterSpacing: "-0.15px",
+
+  width: "100%",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
 };
 
 function FaqMainItem(prop: IfaqMain) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
+  const {
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   const count = 6;
 
@@ -96,10 +117,14 @@ function FaqMainItem(prop: IfaqMain) {
                   <EditableText
                     text={content.faqTitle as string}
                     className="faqTitle"
+                    id={"faqTitle" + index}
                     isTextArea={false}
                     defaultCss={style.faqTitle as CSSObject}
                     onChangeText={(key, value) => onChangeContent(key, value)}
                     onChangeCss={(key, value) => onChangeStyle(key, value)}
+                    isWidth100={true}
+                    activeEditor={activeEditor}
+                    setActiveEditor={setActiveEditor}
                   />
                 ) : (
                   <p
@@ -117,10 +142,14 @@ function FaqMainItem(prop: IfaqMain) {
                 <EditableText
                   text={content.faqDesc as string}
                   className="faqDesc"
+                  id={"faqDesc" + index}
                   isTextArea={false}
                   defaultCss={style.faqDesc as CSSObject}
                   onChangeText={(key, value) => onChangeContent(key, value)}
                   onChangeCss={(key, value) => onChangeStyle(key, value)}
+                  isWidth100={true}
+                  activeEditor={activeEditor}
+                  setActiveEditor={setActiveEditor}
                 />
               ) : (
                 <p css={faq_main_item_desc_css_}>
@@ -137,10 +166,14 @@ function FaqMainItem(prop: IfaqMain) {
                   <EditableText
                     text={content.faqTitle as string}
                     className="faqTitle"
+                    id={"faqTitle" + index}
                     isTextArea={false}
                     defaultCss={style.faqTitle as CSSObject}
                     onChangeText={(key, value) => onChangeContent(key, value)}
                     onChangeCss={(key, value) => onChangeStyle(key, value)}
+                    activeEditor={activeEditor}
+                    setActiveEditor={setActiveEditor}
+                    isWidth100={true}
                   />
                 ) : (
                   <p
@@ -163,7 +196,15 @@ function FaqMainItem(prop: IfaqMain) {
 }
 
 export default function FaqMain(prop: IfaqMain) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
+  const {
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   const initialContent = {
     faqTitle: content?.faqTitle || item_title_,
@@ -175,38 +216,70 @@ export default function FaqMain(prop: IfaqMain) {
     faqDesc: style?.faqDesc || faq_main_item_desc_css_,
   };
 
-  const [editableContent, setEditableContent] = useState<any>(null);
-  const [editableStyle, setEditableStyle] = useState<any>(null);
+  /* *********** */
+
+  const updateValues = (source: any, initial: any) => {
+    return Object.keys(initial).reduce((acc, key) => {
+      const value = source?.[key];
+      acc[key] = value === "" ? initial[key] : value ?? initial[key];
+      return acc;
+    }, {} as any);
+  };
+
+  const [editableContent, setEditableContent] = useState(() =>
+    updateValues(content, initialContent)
+  );
+  const [editableStyle, setEditableStyle] = useState(() =>
+    updateValues(style, initialStyle)
+  );
+
+  // `useMemo`로 최적화된 업데이트 값 생성
+  const updatedContent = useMemo(
+    () => updateValues(content, initialContent),
+    [content, initialContent]
+  );
+  const updatedStyle = useMemo(
+    () => updateValues(style, initialStyle),
+    [style, initialStyle]
+  );
 
   useEffect(() => {
-    if (content?.faqTitle !== editableContent?.faqTitle) {
-      setEditableContent({
-        ...initialContent,
-        faqTitle: content?.faqTitle ?? initialContent.faqTitle,
-      });
-    }
-    if (content?.faqDesc !== editableContent?.faqDesc) {
-      setEditableContent({
-        ...initialContent,
-        faqDesc: content?.faqDesc ?? initialContent.faqDesc,
-      });
-    }
-  }, [content]);
+    setEditableContent((prev: any) => {
+      // 객체 비교를 수행하여 변경된 경우에만 업데이트
+      if (!shallowEqual(prev, updatedContent)) {
+        return updatedContent;
+      }
+      return prev;
+    });
+  }, [updatedContent]);
 
   useEffect(() => {
-    if (style?.faqTitle !== editableStyle?.faqTitle) {
-      setEditableStyle({
-        ...initialStyle,
-        faqTitle: style?.faqTitle ?? initialStyle.faqTitle,
-      });
-    }
-    if (style?.faqDesc !== editableStyle?.faqDesc) {
-      setEditableStyle({
-        ...initialStyle,
-        faqDesc: style?.faqDesc ?? initialStyle.faqDesc,
-      });
-    }
-  }, [style]);
+    setEditableStyle((prev: any) => {
+      if (!shallowEqual(prev, updatedStyle)) {
+        return updatedStyle;
+      }
+      return prev;
+    });
+  }, [updatedStyle]);
+
+  // 얕은 비교를 수행하는 함수
+  const shallowEqual = (objA: any, objB: any) => {
+    if (Object.is(objA, objB)) return true;
+    if (
+      typeof objA !== "object" ||
+      typeof objB !== "object" ||
+      objA === null ||
+      objB === null
+    )
+      return false;
+
+    const keysA = Object.keys(objA);
+    const keysB = Object.keys(objB);
+
+    if (keysA.length !== keysB.length) return false;
+
+    return keysA.every((key) => objA[key] === objB[key]);
+  };
 
   const handleEditContent = useCallback(
     (key: string, value: string) => {
@@ -219,17 +292,22 @@ export default function FaqMain(prop: IfaqMain) {
     [onChangeContent]
   );
 
-  function handleEditStyle(key: string, value: CSSObject) {
-    setEditableStyle({
-      ...editableStyle,
-      [key]: value,
-    });
-    onChangeStyle?.(key, value);
-  }
+  const handleEditStyle = useCallback(
+    (key: string, value: CSSObject) => {
+      setEditableStyle((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeStyle?.(key, value);
+    },
+    [onChangeStyle]
+  );
 
   if (!editableContent) {
     return <></>;
   }
+
+  /* *********** */
 
   return (
     <OuterWrap padding="114px 0">
@@ -242,6 +320,8 @@ export default function FaqMain(prop: IfaqMain) {
             isEditable={isEditable}
             onChangeContent={handleEditContent}
             onChangeStyle={handleEditStyle}
+            activeEditor={activeEditor}
+            setActiveEditor={setActiveEditor}
           />
         </div>
       </InnerWrap>

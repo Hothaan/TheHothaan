@@ -141,7 +141,7 @@ export default function ExploreServiceMain(prop: IexploreService) {
     exploreServiceTitle:
       style?.exploreServiceTitle || explore_service_title_css_,
     exploreServiceButton:
-      style?.exploreServiceTitle || explore_service_button_css_,
+      style?.exploreServiceButton || explore_service_button_css_,
     exploreServiceExploreTitle:
       style?.exploreServiceExploreTitle || explore_service_explore_title_css_,
     exploreServiceExploreButton:

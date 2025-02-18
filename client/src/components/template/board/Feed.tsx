@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import Title from "../commonComponent/Title";
 import ImageBox from "../commonComponent/ImageBox";
 import { OuterWrap } from "../commonComponent/Wrap";
@@ -21,6 +21,9 @@ interface Ifeed {
   isEditable?: boolean;
   onChangeContent: (key: string, value: string) => void;
   onChangeStyle: (key: string, value: CSSObject) => void;
+  index?: number;
+  activeEditor?: string;
+  setActiveEditor?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 export const feed_item_title_css_: CSSObject = {
@@ -30,10 +33,23 @@ export const feed_item_title_css_: CSSObject = {
   fontStyle: "normal",
   fontWeight: "400",
   lineHeight: "normal",
+
+  width: "100%",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
 };
 
 function FeedItem(prop: Ifeed) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
+  const {
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   const count = 36;
 
@@ -59,10 +75,13 @@ function FeedItem(prop: Ifeed) {
             <EditableText
               text={content.feedTitle as string}
               className="feedTitle"
+              id={"feedTitle" + index}
               isTextArea={false}
               defaultCss={style.feedTitle as CSSObject}
               onChangeText={(key, value) => onChangeContent(key, value)}
               onChangeCss={(key, value) => onChangeStyle(key, value)}
+              activeEditor={activeEditor}
+              setActiveEditor={setActiveEditor}
             />
           ) : (
             <p css={style?.feedTitle || feed_item_title_css_}>
@@ -76,7 +95,15 @@ function FeedItem(prop: Ifeed) {
 }
 
 export default function Feed(prop: Ifeed) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
+  const {
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   const initialContent = {
     feedTitle: content?.feedTitle || item_title_,
@@ -86,26 +113,70 @@ export default function Feed(prop: Ifeed) {
     feedTitle: style?.feedTitle || feed_item_title_css_,
   };
 
-  const [editableContent, setEditableContent] = useState<any>(null);
-  const [editableStyle, setEditableStyle] = useState<any>(null);
+  /* *********** */
+
+  const updateValues = (source: any, initial: any) => {
+    return Object.keys(initial).reduce((acc, key) => {
+      const value = source?.[key];
+      acc[key] = value === "" ? initial[key] : value ?? initial[key];
+      return acc;
+    }, {} as any);
+  };
+
+  const [editableContent, setEditableContent] = useState(() =>
+    updateValues(content, initialContent)
+  );
+  const [editableStyle, setEditableStyle] = useState(() =>
+    updateValues(style, initialStyle)
+  );
+
+  // `useMemo`로 최적화된 업데이트 값 생성
+  const updatedContent = useMemo(
+    () => updateValues(content, initialContent),
+    [content, initialContent]
+  );
+  const updatedStyle = useMemo(
+    () => updateValues(style, initialStyle),
+    [style, initialStyle]
+  );
 
   useEffect(() => {
-    if (content?.feedTitle !== editableContent?.feedTitle) {
-      setEditableContent({
-        ...initialContent,
-        feedTitle: content?.feedTitle ?? initialContent.feedTitle,
-      });
-    }
-  }, [content]);
+    setEditableContent((prev: any) => {
+      // 객체 비교를 수행하여 변경된 경우에만 업데이트
+      if (!shallowEqual(prev, updatedContent)) {
+        return updatedContent;
+      }
+      return prev;
+    });
+  }, [updatedContent]);
 
   useEffect(() => {
-    if (style?.feedTitle !== editableStyle?.feedTitle) {
-      setEditableStyle({
-        ...initialStyle,
-        feedTitle: style?.feedTitle ?? initialStyle.feedTitle,
-      });
-    }
-  }, [style]);
+    setEditableStyle((prev: any) => {
+      if (!shallowEqual(prev, updatedStyle)) {
+        return updatedStyle;
+      }
+      return prev;
+    });
+  }, [updatedStyle]);
+
+  // 얕은 비교를 수행하는 함수
+  const shallowEqual = (objA: any, objB: any) => {
+    if (Object.is(objA, objB)) return true;
+    if (
+      typeof objA !== "object" ||
+      typeof objB !== "object" ||
+      objA === null ||
+      objB === null
+    )
+      return false;
+
+    const keysA = Object.keys(objA);
+    const keysB = Object.keys(objB);
+
+    if (keysA.length !== keysB.length) return false;
+
+    return keysA.every((key) => objA[key] === objB[key]);
+  };
 
   const handleEditContent = useCallback(
     (key: string, value: string) => {
@@ -118,17 +189,22 @@ export default function Feed(prop: Ifeed) {
     [onChangeContent]
   );
 
-  function handleEditStyle(key: string, value: CSSObject) {
-    setEditableStyle({
-      ...editableStyle,
-      [key]: value,
-    });
-    onChangeStyle?.(key, value);
-  }
+  const handleEditStyle = useCallback(
+    (key: string, value: CSSObject) => {
+      setEditableStyle((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeStyle?.(key, value);
+    },
+    [onChangeStyle]
+  );
 
   if (!editableContent) {
     return <></>;
   }
+
+  /* *********** */
 
   return (
     <OuterWrap padding="60px 0">
@@ -144,6 +220,8 @@ export default function Feed(prop: Ifeed) {
         isEditable={isEditable}
         onChangeContent={handleEditContent}
         onChangeStyle={handleEditStyle}
+        activeEditor={activeEditor}
+        setActiveEditor={setActiveEditor}
       />
     </OuterWrap>
   );

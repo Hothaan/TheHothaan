@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { OuterWrap, InnerWrap, ContentsWrap } from "../commonComponent/Wrap";
 import Title from "../commonComponent/Title";
 import Pagination from "../commonComponent/Pagination";
@@ -35,43 +35,63 @@ export interface Iboard {
   option?: Tboard;
   onChangeContent: (key: string, value: string) => void;
   onChangeStyle: (key: string, value: CSSObject) => void;
+  index?: number;
+  activeEditor?: string;
+  setActiveEditor?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
-export const board_item_option_image_title_css_ = css`
-  color: #486284;
+export const board_item_option_image_title_css_: CSSObject = {
+  color: "#486284",
+  fontFamily: "Inter",
+  fontSize: "20px",
+  fontStyle: "normal",
+  fontWeight: "400",
+  lineHeight: "normal",
 
-  /* mall/subject */
-  font-family: Inter;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-`;
+  width: "100%",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+};
 
-export const board_item_option_image_desc_css_ = css`
-  color: var(--A0A0A0, #a0a0a0);
+export const board_item_option_image_desc_css_: CSSObject = {
+  color: "var(--A0A0A0, #a0a0a0)",
+  fontFamily: "Inter",
+  fontSize: "15px",
+  fontStyle: "normal",
+  fontWeight: "400",
+  lineHeight: "normal",
 
-  /* mall/subject_small */
-  font-family: Inter;
-  font-size: 15px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-`;
+  width: "100%",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+};
 
-export const board_item_option_text_title_css_ = css`
-  color: #486284;
+export const board_item_option_text_title_css_: CSSObject = {
+  color: "#486284",
+  fontFamily: "Pretendard",
+  fontSize: "18px",
+  fontStyle: "normal",
+  fontWeight: "700",
+  lineHeight: "150%",
 
-  /* pretendard/Bold/18px */
-  font-family: Pretendard;
-  font-size: 18px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: 150%; /* 27px */
-`;
+  width: "100%",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+};
 
 function TextTable(prop: Iboard) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
+  const {
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   const count = 10;
   const col1 = css`
@@ -173,10 +193,13 @@ function TextTable(prop: Iboard) {
                   <EditableText
                     text={content.boardTitle as string}
                     className="boardTitle"
+                    id={"boardTitle" + index}
                     isTextArea={false}
                     defaultCss={style.boardTitle as CSSObject}
                     onChangeText={(key, value) => onChangeContent(key, value)}
                     onChangeCss={(key, value) => onChangeStyle(key, value)}
+                    activeEditor={activeEditor}
+                    setActiveEditor={setActiveEditor}
                   />
                 ) : (
                   <p css={[board_item_option_text_title_css_, col2_text]}>
@@ -301,8 +324,16 @@ function ImageItem(prop: Iboard) {
 }
 
 export default function Board(prop: Iboard) {
-  const { option, style, content, isEditable, onChangeContent, onChangeStyle } =
-    prop;
+  const {
+    option,
+    style,
+    content,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   const initialContent = {
     boardTitle: content?.boardTitle || item_title_,
@@ -318,38 +349,70 @@ export default function Board(prop: Iboard) {
     boardDesc: style?.boardDesc || board_item_option_image_desc_css_,
   };
 
-  const [editableContent, setEditableContent] = useState<any>(null);
-  const [editableStyle, setEditableStyle] = useState<any>(null);
+  /* *********** */
+
+  const updateValues = (source: any, initial: any) => {
+    return Object.keys(initial).reduce((acc, key) => {
+      const value = source?.[key];
+      acc[key] = value === "" ? initial[key] : value ?? initial[key];
+      return acc;
+    }, {} as any);
+  };
+
+  const [editableContent, setEditableContent] = useState(() =>
+    updateValues(content, initialContent)
+  );
+  const [editableStyle, setEditableStyle] = useState(() =>
+    updateValues(style, initialStyle)
+  );
+
+  // `useMemo`로 최적화된 업데이트 값 생성
+  const updatedContent = useMemo(
+    () => updateValues(content, initialContent),
+    [content, initialContent]
+  );
+  const updatedStyle = useMemo(
+    () => updateValues(style, initialStyle),
+    [style, initialStyle]
+  );
 
   useEffect(() => {
-    if (content?.boardTitle !== editableContent?.boardTitle) {
-      setEditableContent({
-        ...initialContent,
-        boardTitle: content?.boardTitle ?? initialContent.boardTitle,
-      });
-    }
-    if (content?.boardDesc !== editableContent?.boardDesc) {
-      setEditableContent({
-        ...initialContent,
-        boardDesc: content?.boardDesc ?? initialContent.boardDesc,
-      });
-    }
-  }, [content]);
+    setEditableContent((prev: any) => {
+      // 객체 비교를 수행하여 변경된 경우에만 업데이트
+      if (!shallowEqual(prev, updatedContent)) {
+        return updatedContent;
+      }
+      return prev;
+    });
+  }, [updatedContent]);
 
   useEffect(() => {
-    if (style?.boardTitle !== editableStyle?.boardTitle) {
-      setEditableStyle({
-        ...initialStyle,
-        boardTitle: style?.boardTitle ?? initialStyle.boardTitle,
-      });
-    }
-    if (style?.boardDesc !== editableStyle?.boardDesc) {
-      setEditableStyle({
-        ...initialStyle,
-        boardDesc: style?.boardDesc ?? initialStyle.boardDesc,
-      });
-    }
-  }, [style]);
+    setEditableStyle((prev: any) => {
+      if (!shallowEqual(prev, updatedStyle)) {
+        return updatedStyle;
+      }
+      return prev;
+    });
+  }, [updatedStyle]);
+
+  // 얕은 비교를 수행하는 함수
+  const shallowEqual = (objA: any, objB: any) => {
+    if (Object.is(objA, objB)) return true;
+    if (
+      typeof objA !== "object" ||
+      typeof objB !== "object" ||
+      objA === null ||
+      objB === null
+    )
+      return false;
+
+    const keysA = Object.keys(objA);
+    const keysB = Object.keys(objB);
+
+    if (keysA.length !== keysB.length) return false;
+
+    return keysA.every((key) => objA[key] === objB[key]);
+  };
 
   const handleEditContent = useCallback(
     (key: string, value: string) => {
@@ -362,17 +425,22 @@ export default function Board(prop: Iboard) {
     [onChangeContent]
   );
 
-  function handleEditStyle(key: string, value: CSSObject) {
-    setEditableStyle({
-      ...editableStyle,
-      [key]: value,
-    });
-    onChangeStyle?.(key, value);
-  }
+  const handleEditStyle = useCallback(
+    (key: string, value: CSSObject) => {
+      setEditableStyle((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeStyle?.(key, value);
+    },
+    [onChangeStyle]
+  );
 
   if (!editableContent) {
     return <></>;
   }
+
+  /* *********** */
 
   return (
     <OuterWrap padding="70px 0">
@@ -391,6 +459,8 @@ export default function Board(prop: Iboard) {
               isEditable={isEditable}
               onChangeContent={handleEditContent}
               onChangeStyle={handleEditStyle}
+              activeEditor={activeEditor}
+              setActiveEditor={setActiveEditor}
             />
           ) : option === "이미지형" ? (
             <ImageItem
@@ -399,6 +469,8 @@ export default function Board(prop: Iboard) {
               isEditable={isEditable}
               onChangeContent={handleEditContent}
               onChangeStyle={handleEditStyle}
+              activeEditor={activeEditor}
+              setActiveEditor={setActiveEditor}
             />
           ) : (
             <></>

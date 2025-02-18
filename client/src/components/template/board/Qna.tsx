@@ -32,19 +32,24 @@ export interface Iqna {
   option?: Tqna;
   onChangeContent: (key: string, value: string) => void;
   onChangeStyle: (key: string, value: CSSObject) => void;
+  index?: number;
+  activeEditor?: string;
+  setActiveEditor?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
-export const qna_item_title_css_ = css`
-  color: #486284;
-  text-align: center;
+export const qna_item_title_css_: CSSObject = {
+  color: "#486284",
+  fontFamily: "Inter",
+  fontSize: "15px",
+  fontStyle: "normal",
+  fontWeight: "400",
+  lineHeight: "160%",
 
-  /* 15 */
-  font-family: Inter;
-  font-size: 15px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 160%; /* 24px */
-`;
+  width: "100%",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+};
 
 function QnaTitle() {
   const container = css`
@@ -77,7 +82,15 @@ function QnaTitle() {
 }
 
 function QnaTable(prop: Iqna) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
+  const {
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   const count = 10;
 
@@ -176,10 +189,14 @@ function QnaTable(prop: Iqna) {
                   <EditableText
                     text={content.qnaTitle as string}
                     className="qnaTitle"
+                    id={"qnaTitle" + index}
                     isTextArea={false}
                     defaultCss={style.qnaTitle as CSSObject}
                     onChangeText={(key, value) => onChangeContent(key, value)}
                     onChangeCss={(key, value) => onChangeStyle(key, value)}
+                    activeEditor={activeEditor}
+                    setActiveEditor={setActiveEditor}
+                    isWidth100={true}
                   />
                 ) : (
                   <p css={style?.qnaTitle || qna_item_title_css_}>
@@ -322,8 +339,15 @@ function QnaSearch() {
 }
 
 export default function Qna(prop: Iqna) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle, option } =
-    prop;
+  const {
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   const container = css`
     width: 100%;
@@ -391,12 +415,13 @@ export default function Qna(prop: Iqna) {
         <div css={container}>
           <QnaTitle />
           <QnaTable
-            option={option}
             content={editableContent}
             style={editableStyle}
             isEditable={isEditable}
             onChangeContent={handleEditContent}
             onChangeStyle={handleEditStyle}
+            activeEditor={activeEditor}
+            setActiveEditor={setActiveEditor}
           />
           <QnaSearch />
         </div>

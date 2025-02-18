@@ -99,6 +99,15 @@ export default function EditableText(prop: IeditableText) {
       setActiveEditor?.(id);
     }
   };
+  const handleEditorFocusIn = () => {
+    setIsEditing(true);
+    setActiveEditor?.(id);
+  };
+
+  const handleEditorFocusOut = () => {
+    setIsEditing(false);
+    setActiveEditor?.(undefined);
+  };
 
   useEffect(() => {
     if (onChangeText && className && text) {
@@ -237,6 +246,8 @@ export default function EditableText(prop: IeditableText) {
     return createPortal(
       <div
         ref={toolbarRef}
+        onMouseDown={(e) => e.preventDefault()}
+        onClick={handleEditorFocusIn}
         style={{
           // position: "absolute",
           position: "fixed",
@@ -343,6 +354,7 @@ export default function EditableText(prop: IeditableText) {
         filter: "none",
         contain: "none",
       }}
+      onBlur={handleEditorFocusOut}
       ref={divRef}
     >
       {isEditing && <Toolbar />}
@@ -353,7 +365,9 @@ export default function EditableText(prop: IeditableText) {
             ref={inputRef as React.RefObject<HTMLTextAreaElement>}
             css={[defaultCss, input_style(isEditing), textarea(isEditing)]}
             value={text}
-            onClick={handleEditorClick}
+            // onClick={handleEditorClick}
+            onFocus={handleEditorFocusIn}
+            onBlur={handleEditorFocusOut}
             onChange={(e) =>
               onChangeText?.(className as string, e.target.value)
             }
@@ -369,7 +383,9 @@ export default function EditableText(prop: IeditableText) {
             ref={inputRef as React.RefObject<HTMLInputElement>}
             css={[defaultCss, input_style(isEditing), width_fit_auto]}
             value={text}
-            onClick={handleEditorClick}
+            // onClick={handleEditorClick}
+            onFocus={handleEditorFocusIn}
+            onBlur={handleEditorFocusOut}
             onChange={(e) =>
               onChangeText?.(className as string, e.target.value)
             }
@@ -383,7 +399,8 @@ export default function EditableText(prop: IeditableText) {
           ref={inputRef as React.RefObject<HTMLInputElement>}
           css={[defaultCss, input_style(isEditing)]}
           value={text}
-          onClick={handleEditorClick}
+          // onClick={handleEditorClick}
+          onFocus={handleEditorFocusIn}
           onChange={(e) => onChangeText?.(className as string, e.target.value)}
           className={className}
         />

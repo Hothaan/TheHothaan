@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 import EditableText from "@components/service/editableText/EditableText";
@@ -24,6 +24,9 @@ interface IimageBoardMain {
   isEditable?: boolean;
   onChangeContent: (key: string, value: string) => void;
   onChangeStyle: (key: string, value: CSSObject) => void;
+  index?: number;
+  activeEditor?: string;
+  setActiveEditor?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 export const image_board_title_css_: CSSObject = {
@@ -37,7 +40,16 @@ export const image_board_title_css_: CSSObject = {
 };
 
 function ImageBoardMainItem(prop: IimageBoardMain) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
+  const {
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    index,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   const container = css`
     display: flex;
@@ -68,10 +80,13 @@ function ImageBoardMainItem(prop: IimageBoardMain) {
         <EditableText
           text={content.imageBoardTitle as string}
           className="imageBoardTitle"
+          id={"imageBoardTitle" + index}
           isTextArea={false}
           defaultCss={style.imageBoardTitle as CSSObject}
           onChangeText={(key, value) => onChangeContent(key, value)}
           onChangeCss={(key, value) => onChangeStyle(key, value)}
+          activeEditor={activeEditor}
+          setActiveEditor={setActiveEditor}
         />
       ) : (
         <p
@@ -86,7 +101,15 @@ function ImageBoardMainItem(prop: IimageBoardMain) {
 }
 
 export default function ImageBoardMain(prop: IimageBoardMain) {
-  const { content, style, isEditable, onChangeContent, onChangeStyle } = prop;
+  const {
+    content,
+    style,
+    isEditable,
+    onChangeContent,
+    onChangeStyle,
+    activeEditor,
+    setActiveEditor,
+  } = prop;
 
   const count = 4;
 
@@ -98,27 +121,70 @@ export default function ImageBoardMain(prop: IimageBoardMain) {
     imageBoardTitle: style?.imageBoardTitle || image_board_title_css_,
   };
 
-  const [editableContent, setEditableContent] = useState<any>(null);
-  const [editableStyle, setEditableStyle] = useState<any>(null);
+  /* *********** */
+
+  const updateValues = (source: any, initial: any) => {
+    return Object.keys(initial).reduce((acc, key) => {
+      const value = source?.[key];
+      acc[key] = value === "" ? initial[key] : value ?? initial[key];
+      return acc;
+    }, {} as any);
+  };
+
+  const [editableContent, setEditableContent] = useState(() =>
+    updateValues(content, initialContent)
+  );
+  const [editableStyle, setEditableStyle] = useState(() =>
+    updateValues(style, initialStyle)
+  );
+
+  // `useMemo`로 최적화된 업데이트 값 생성
+  const updatedContent = useMemo(
+    () => updateValues(content, initialContent),
+    [content, initialContent]
+  );
+  const updatedStyle = useMemo(
+    () => updateValues(style, initialStyle),
+    [style, initialStyle]
+  );
 
   useEffect(() => {
-    if (content?.imageBoardTitle !== editableContent?.imageBoardTitle) {
-      setEditableContent({
-        ...initialContent,
-        imageBoardTitle:
-          content?.imageBoardTitle ?? initialContent.imageBoardTitle,
-      });
-    }
-  }, [content]);
+    setEditableContent((prev: any) => {
+      // 객체 비교를 수행하여 변경된 경우에만 업데이트
+      if (!shallowEqual(prev, updatedContent)) {
+        return updatedContent;
+      }
+      return prev;
+    });
+  }, [updatedContent]);
 
   useEffect(() => {
-    if (style?.imageBoardTitle !== editableStyle?.imageBoardTitle) {
-      setEditableStyle({
-        ...initialStyle,
-        imageBoardTitle: style?.imageBoardTitle ?? initialStyle.imageBoardTitle,
-      });
-    }
-  }, [style]);
+    setEditableStyle((prev: any) => {
+      if (!shallowEqual(prev, updatedStyle)) {
+        return updatedStyle;
+      }
+      return prev;
+    });
+  }, [updatedStyle]);
+
+  // 얕은 비교를 수행하는 함수
+  const shallowEqual = (objA: any, objB: any) => {
+    if (Object.is(objA, objB)) return true;
+    if (
+      typeof objA !== "object" ||
+      typeof objB !== "object" ||
+      objA === null ||
+      objB === null
+    )
+      return false;
+
+    const keysA = Object.keys(objA);
+    const keysB = Object.keys(objB);
+
+    if (keysA.length !== keysB.length) return false;
+
+    return keysA.every((key) => objA[key] === objB[key]);
+  };
 
   const handleEditContent = useCallback(
     (key: string, value: string) => {
@@ -131,17 +197,22 @@ export default function ImageBoardMain(prop: IimageBoardMain) {
     [onChangeContent]
   );
 
-  function handleEditStyle(key: string, value: CSSObject) {
-    setEditableStyle({
-      ...editableStyle,
-      [key]: value,
-    });
-    onChangeStyle?.(key, value);
-  }
+  const handleEditStyle = useCallback(
+    (key: string, value: CSSObject) => {
+      setEditableStyle((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeStyle?.(key, value);
+    },
+    [onChangeStyle]
+  );
 
   if (!editableContent) {
     return <></>;
   }
+
+  /* *********** */
 
   return (
     <OuterWrap padding="120px 0">
@@ -157,6 +228,8 @@ export default function ImageBoardMain(prop: IimageBoardMain) {
                 isEditable={isEditable}
                 onChangeContent={handleEditContent}
                 onChangeStyle={handleEditStyle}
+                activeEditor={activeEditor}
+                setActiveEditor={setActiveEditor}
               />
             ))}
           </div>

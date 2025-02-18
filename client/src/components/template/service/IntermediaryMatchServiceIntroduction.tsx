@@ -67,7 +67,7 @@ export const intermediary_match_service_introduction_desc_css_: CSSObject = {
   WebkitBoxOrient: "vertical",
   overflow: "hidden",
   textOverflow: "ellipsis",
-  height: "100px",
+  height: "calc(2 * 1.25em)",
   WebkitLineClamp: "2",
 
   "@media (max-width: 1000px)": {

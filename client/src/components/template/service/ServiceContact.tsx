@@ -29,7 +29,6 @@ interface IserviceContact {
 }
 
 export const service_contact_title_css_: CSSObject = {
-  width: "100%",
   color: "#486284",
   textAlign: "center",
   fontFamily: "Inter",
@@ -37,6 +36,11 @@ export const service_contact_title_css_: CSSObject = {
   fontStyle: "normal",
   fontWeight: "800",
   lineHeight: "normal",
+
+  width: "100%",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
 };
 
 export const service_contact_button_css_: CSSObject = {
@@ -54,6 +58,10 @@ export const service_contact_button_css_: CSSObject = {
   fontWeight: "400",
   lineHeight: "160%",
   textAlign: "center",
+
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
 };
 
 export default function ServiceContact(prop: IserviceContact) {
@@ -78,6 +86,8 @@ export default function ServiceContact(prop: IserviceContact) {
     serviceContactButton:
       style?.serviceContactButton || service_contact_button_css_,
   };
+
+  /* *********** */
 
   const updateValues = (source: any, initial: any) => {
     return Object.keys(initial).reduce((acc, key) => {
@@ -163,9 +173,12 @@ export default function ServiceContact(prop: IserviceContact) {
     },
     [onChangeStyle]
   );
-  if (!editableContent || !editableStyle) {
+
+  if (!editableContent) {
     return <></>;
   }
+
+  /* *********** */
 
   return (
     <OuterWrap padding="0">
@@ -192,6 +205,7 @@ export default function ServiceContact(prop: IserviceContact) {
               id={"serviceContactTitle"}
               activeEditor={activeEditor}
               setActiveEditor={setActiveEditor}
+              isWidth100={true}
             />
           ) : (
             <p css={editableStyle?.serviceContactTitle}>
