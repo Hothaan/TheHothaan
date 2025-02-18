@@ -206,23 +206,22 @@ exports.generateProjectText = async (req, res) => {
     const serviceType = selections.find((sel) => sel.selection_type === 'service')?.selection_value || '';
 
     // 메뉴와 각 메뉴에 대한 features 정보를 가져오기
-    const groupedSelections = [];
-    for (const selection of selections) {
-      if (selection.selection_type === 'menu') {
-        const menuSelection = { menu: selection.selection_value, features: [] };
-        const features = await projectModel.getProjectFeatures(selection.selection_id);
+    const groupedSelections = await Promise.all(
+      selections.map(async (selection) => {
+        if (selection.selection_type === 'menu') {
+          const menuSelection = { menu: selection.selection_value, features: [] };
+          const features = await projectModel.getProjectFeatures(selection.selection_id);
 
-        for (const feature of features) {
-          menuSelection.features.push({
+          menuSelection.features = features.map((feature) => ({
             feature_id: feature.feature_id,
             feature: feature.feature_name,
             option: feature.feature_option || null,
-          });
-        }
+          }));
 
-        groupedSelections.push(menuSelection);
-      }
-    }
+          return menuSelection;
+        }
+      }),
+    ).then((results) => results.filter(Boolean));
 
     const responses = [];
     let successCount = 0;
