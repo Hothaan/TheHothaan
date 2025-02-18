@@ -229,10 +229,10 @@ exports.generateProjectText = async (req, res) => {
     let failureCount = 0;
 
     // 각 메뉴와 그에 해당하는 feature에 대해 OpenAI API 호출
-    for (const group of groupedSelections) {
+    const featurePromises = groupedSelections.flatMap((group) => {
       const { menu, features } = group;
 
-      for (const featureObj of features) {
+      return features.map(async (featureObj) => {
         const { feature, option: featureOption, feature_id } = featureObj; // feature_id 추가
 
         try {
@@ -246,7 +246,7 @@ exports.generateProjectText = async (req, res) => {
               success: false,
             });
             failureCount++;
-            continue;
+            return;
           }
 
           const { depth1, depth2, structure, style, content, cnt } = featureDetails;
@@ -290,8 +290,10 @@ exports.generateProjectText = async (req, res) => {
 
           failureCount++;
         }
-      }
-    }
+      });
+    });
+
+    await Promise.all(featurePromises);
 
     // 최종 로그에 요약 정보 포함
     logger.info('프로젝트 텍스트 생성 결과', {
