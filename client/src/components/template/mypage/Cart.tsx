@@ -369,6 +369,7 @@ function CartOrder(prop: Icart) {
     align-items: center;
     gap: 10px;
     flex-shrink: 0;
+    white-space: nowrap;
 
     border: 1px solid #bcbcbc;
 
