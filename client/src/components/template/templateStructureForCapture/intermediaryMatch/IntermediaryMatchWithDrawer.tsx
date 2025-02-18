@@ -72,22 +72,19 @@ export default function IntermediaryMatchWithDrawer() {
     }
   }, [projectIdValue]);
 
-  // if (!generatedText || !headerData) {
-  //   return <Loading />;
-  // }
+  if (!headerData) {
+    return <Loading />;
+  }
 
   return (
     <div className="templateImage">
       <Header
-        // categories={headerData.categories || undefined}
-        // logo={headerData.logo || undefined}
+        categories={headerData.categories || undefined}
+        logo={headerData.logo || undefined}
         serviceType="중개·매칭"
       />
       <WithDrawer />
-      <Footer
-        // logo={headerData.logo}
-        serviceType="중개·매칭"
-      />
+      <Footer logo={headerData.logo} serviceType="중개·매칭" />
     </div>
   );
 }

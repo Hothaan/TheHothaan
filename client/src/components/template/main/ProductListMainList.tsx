@@ -44,12 +44,10 @@ export const product_list_option_list_title_css: CSSObject = {
   fontWeight: "400",
   lineHeight: "normal",
 
-  display: "-webkit-box",
   width: "100%",
-  WebkitBoxOrient: "vertical",
   overflow: "hidden",
   textOverflow: "ellipsis",
-  WebkitLineClamp: "1",
+  whiteSpace: "nowrap",
 };
 
 export const product_list_option_list_desc_css: CSSObject = {
@@ -61,13 +59,10 @@ export const product_list_option_list_desc_css: CSSObject = {
   fontWeight: "400",
   lineHeight: "normal",
 
-  display: "-webkit-box",
   width: "100%",
-
-  WebkitBoxOrient: "vertical",
   overflow: "hidden",
   textOverflow: "ellipsis",
-  WebkitLineClamp: "1",
+  whiteSpace: "nowrap",
 };
 
 function ProductListItemMainOptionList(prop: IproductListItem) {
@@ -161,10 +156,6 @@ export default function ProductListMainOptionList(prop: IproductList) {
     activeEditor,
     setActiveEditor,
   } = prop;
-
-  // const [activeEditor, setActiveEditor] = useState<string | undefined>(
-  //   undefined
-  // );
 
   const count = 3;
 

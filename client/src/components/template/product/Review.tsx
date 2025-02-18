@@ -41,32 +41,36 @@ interface Ireview {
 
 export const review_item_title_css: CSSObject = {
   color: "#6d758f",
-  display: "-webkit-box",
-  WebkitBoxOrient: "vertical",
-  overflow: "hidden",
-  textOverflow: "ellipsis",
-  WebkitLineClamp: "2",
-  height: "41px",
+
   fontFamily: "Inter",
   fontSize: "18px",
   fontStyle: "normal",
   fontWeight: "600",
-  lineHeight: "124%",
-};
+  lineHeight: "1.25em",
 
-export const review_item_desc_css: CSSObject = {
-  color: "#6d758f",
   display: "-webkit-box",
   WebkitBoxOrient: "vertical",
   overflow: "hidden",
   textOverflow: "ellipsis",
+  height: "calc(2 * 1.25em)",
   WebkitLineClamp: "2",
+};
+
+export const review_item_desc_css: CSSObject = {
+  color: "#6d758f",
   maxHeight: "48px",
   fontFamily: "Inter",
   fontSize: "16px",
   fontStyle: "normal",
   fontWeight: "400",
-  lineHeight: "150%",
+  lineHeight: "1.5em",
+
+  display: "-webkit-box",
+  WebkitBoxOrient: "vertical",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  height: "calc(2 * 1.5em)",
+  WebkitLineClamp: "2",
 };
 
 export const review_item_caption_name_css: CSSObject = {
@@ -76,6 +80,11 @@ export const review_item_caption_name_css: CSSObject = {
   fontStyle: "normal",
   fontWeight: "600",
   lineHeight: "16px",
+
+  width: "100%",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
 };
 
 export const review_item_caption_role_css: CSSObject = {
@@ -85,6 +94,11 @@ export const review_item_caption_role_css: CSSObject = {
   fontStyle: "normal",
   fontWeight: "600",
   lineHeight: "16px",
+
+  width: "100%",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
 };
 
 function ReviewItem(prop: Ireview) {

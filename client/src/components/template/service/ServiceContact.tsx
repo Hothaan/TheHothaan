@@ -35,12 +35,14 @@ export const service_contact_title_css_: CSSObject = {
   fontSize: "50px",
   fontStyle: "normal",
   fontWeight: "800",
-  lineHeight: "normal",
+  lineHeight: "1.25em",
 
-  width: "100%",
+  display: "-webkit-box",
+  WebkitBoxOrient: "vertical",
   overflow: "hidden",
   textOverflow: "ellipsis",
-  whiteSpace: "nowrap",
+  height: "calc(2 * 1.25em)",
+  WebkitLineClamp: "2",
 };
 
 export const service_contact_button_css_: CSSObject = {
@@ -48,7 +50,6 @@ export const service_contact_button_css_: CSSObject = {
   padding: "12px 20px",
   justifyContent: "center",
   alignItems: "center",
-  width: "fit-content",
   borderRadius: "50px",
   background: "var(--Neutral-10, #486284)",
   color: "var(--Neutral-0, #fff)",
@@ -56,9 +57,10 @@ export const service_contact_button_css_: CSSObject = {
   fontSize: "20px",
   fontStyle: "normal",
   fontWeight: "400",
-  lineHeight: "160%",
+  lineHeight: "1.6em",
   textAlign: "center",
 
+  width: "fit-content",
   overflow: "hidden",
   textOverflow: "ellipsis",
   whiteSpace: "nowrap",
@@ -198,7 +200,7 @@ export default function ServiceContact(prop: IserviceContact) {
             <EditableText
               text={editableContent.serviceContactTitle as string}
               className="serviceContactTitle"
-              isTextArea={false}
+              isTextArea={true}
               defaultCss={editableStyle.serviceContactTitle as CSSObject}
               onChangeText={(key, value) => handleEditContent(key, value)}
               onChangeCss={(key, value) => handleEditStyle(key, value)}

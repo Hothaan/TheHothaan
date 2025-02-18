@@ -268,7 +268,7 @@ export default function HomePageBoardGreetings() {
         activeEditor={activeEditor}
         setActiveEditor={setActiveEditor}
       />
-      <Footer serviceType="홈페이지·게시판" />
+      <Footer serviceType="홈페이지·게시판" logo={headerData.logo} />
     </div>
   );
 }

@@ -85,7 +85,7 @@ export default function IntermediaryMatchFAQ() {
         logo={headerData.logo}
       />
       <FAQ />
-      <Footer serviceType="중개·매칭" />
+      <Footer logo={headerData.logo} serviceType="중개·매칭" />
     </div>
   );
 }

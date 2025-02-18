@@ -332,10 +332,6 @@ export default function Notice(prop: Inotice) {
     gap: 50px;
   `;
 
-  // const [activeEditor, setActiveEditor] = useState<string | undefined>(
-  //   undefined
-  // );
-
   const updateValues = (source: any, initial: any) => {
     return Object.keys(initial).reduce((acc, key) => {
       const value = source?.[key];

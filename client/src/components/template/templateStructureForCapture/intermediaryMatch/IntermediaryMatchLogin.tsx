@@ -90,10 +90,7 @@ export default function IntermediaryMatchLogin() {
             : "기본 로그인"
         }
       />
-      <Footer
-        //  logo={headerData.logo}
-        serviceType="중개·매칭"
-      />
+      <Footer logo={headerData.logo} serviceType="중개·매칭" />
     </div>
   );
 }

@@ -84,10 +84,7 @@ export default function IntermediaryMatchFindPw() {
         logo={headerData.logo}
       />
       <FindPw />
-      <Footer
-        // logo={headerData.logo}
-        serviceType="중개·매칭"
-      />
+      <Footer logo={headerData.logo} serviceType="중개·매칭" />
     </div>
   );
 }

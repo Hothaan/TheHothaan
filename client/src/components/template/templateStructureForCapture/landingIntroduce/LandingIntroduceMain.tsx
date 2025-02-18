@@ -476,7 +476,7 @@ export default function LandingIntroduceMain() {
         activeEditor={activeEditor}
         setActiveEditor={setActiveEditor}
       />
-      <Footer serviceType="랜딩·소개" />
+      <Footer logo={headerData.logo} serviceType="랜딩·소개" />
     </div>
   );
 }

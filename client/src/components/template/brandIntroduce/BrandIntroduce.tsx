@@ -65,7 +65,7 @@ export const brandIntroduce_banner_desc_css: CSSObject = {
   fontSize: "32px",
   fontStyle: "normal",
   fontWeight: "400",
-  lineHeight: "normal",
+  lineHeight: "1.25em",
   // maxWidth: "676px",
 
   width: "100%",
@@ -73,7 +73,7 @@ export const brandIntroduce_banner_desc_css: CSSObject = {
   WebkitBoxOrient: "vertical",
   overflow: "hidden",
   textOverflow: "ellipsis",
-  height: "80px",
+  height: "calc(2 * 1.25em)",
   WebkitLineClamp: "2",
 };
 
@@ -98,14 +98,14 @@ export const brandIntroduce_item_desc_css: CSSObject = {
   fontSize: "32px",
   fontStyle: "normal",
   fontWeight: "400",
-  lineHeight: "normal",
+  lineHeight: "1.25em",
 
   display: "-webkit-box",
   width: "100%",
   WebkitBoxOrient: "vertical",
   overflow: "hidden",
   textOverflow: "ellipsis",
-  height: "312px",
+  height: "calc(6 * 1.25em)",
   WebkitLineClamp: "6",
 };
 

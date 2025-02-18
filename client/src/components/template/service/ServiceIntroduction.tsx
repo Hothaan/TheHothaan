@@ -35,19 +35,17 @@ interface IserviceIntroduction {
 }
 
 export const service_introduction_title_css_: CSSObject = {
-  width: "100%",
-  height: "36px",
   color: "#486284",
-  whiteSpace: "nowrap",
   fontFamily: "Inter",
   fontSize: "24px",
   fontStyle: "normal",
   fontWeight: "800",
-  lineHeight: "normal",
-  display: "-webkit-box",
-  WebkitBoxOrient: "vertical",
+  lineHeight: "1.5em",
+
+  width: "100%",
+  overflow: "hidden",
   textOverflow: "ellipsis",
-  WebkitLineClamp: "1",
+  whiteSpace: "nowrap",
 };
 
 export const service_introduction_desc_css_: CSSObject = {
@@ -58,11 +56,10 @@ export const service_introduction_desc_css_: CSSObject = {
   fontWeight: "400",
   lineHeight: "160%",
 
-  display: "-webkit-box",
-  WebkitBoxOrient: "vertical",
+  width: "100%",
   overflow: "hidden",
   textOverflow: "ellipsis",
-  WebkitLineClamp: "1",
+  whiteSpace: "nowrap",
 };
 
 function ServiceIntroductionItem(prop: IserviceIntroduction) {
@@ -160,9 +157,7 @@ export default function ServiceIntroduction(prop: IserviceIntroduction) {
     activeEditor,
     setActiveEditor,
   } = prop;
-  // const [activeEditor, setActiveEditor] = useState<string | undefined>(
-  //   undefined
-  // );
+
   const count = 3;
 
   const initialContent = {

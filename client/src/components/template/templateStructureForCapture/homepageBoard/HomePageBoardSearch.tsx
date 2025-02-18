@@ -73,15 +73,19 @@ export default function HomePageBoardSearch() {
     }
   }, [projectIdValue]);
 
-  // if (!generatedText || !headerData) {
-  //   return <Loading />;
-  // }
+  if (!headerData) {
+    return <Loading />;
+  }
 
   return (
     <div className="templateImage">
-      <Header serviceType="홈페이지·게시판" />
+      <Header
+        categories={headerData.categories}
+        logo={headerData.logo}
+        serviceType="홈페이지·게시판"
+      />
       <Search />
-      <Footer serviceType="홈페이지·게시판" />
+      <Footer serviceType="홈페이지·게시판" logo={headerData.logo} />
     </div>
   );
 }

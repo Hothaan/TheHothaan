@@ -35,15 +35,14 @@ export const mainBanner_desc_css_: CSSObject = {
   fontSize: "32px",
   fontStyle: "normal",
   fontWeight: "400",
-  lineHeight: "150%",
+  lineHeight: "1.5em",
   marginBottom: "80px",
-  // maxWidth: "676px",
 
   display: "-webkit-box",
   WebkitBoxOrient: "vertical",
   overflow: "hidden",
   textOverflow: "ellipsis",
-  height: "100px",
+  height: "calc(2 * 1.5em)",
   WebkitLineClamp: "2",
 };
 

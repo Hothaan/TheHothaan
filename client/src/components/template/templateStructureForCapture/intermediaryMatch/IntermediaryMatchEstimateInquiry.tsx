@@ -85,7 +85,7 @@ export default function IntermediaryMatchEstimateInquiry() {
         logo={headerData.logo}
       />
       <EstimateInquiry />
-      <Footer serviceType="중개·매칭" />
+      <Footer logo={headerData.logo} serviceType="중개·매칭" />
     </div>
   );
 }

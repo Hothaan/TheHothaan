@@ -86,10 +86,7 @@ export default function IntermediaryMatchJoin() {
         logo={headerData.logo}
       />
       <Join />
-      <Footer
-        // logo={headerData.logo}
-        serviceType="중개·매칭"
-      />
+      <Footer logo={headerData.logo} serviceType="중개·매칭" />
     </div>
   );
 }

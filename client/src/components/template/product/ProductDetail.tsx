@@ -64,13 +64,13 @@ export const product_detail_product_desc_css_: CSSObject = {
   fontSize: "15px",
   fontStyle: "normal",
   fontWeight: "400",
-  lineHeight: "160%",
+  lineHeight: "1.6em",
 
   display: "-webkit-box",
   WebkitBoxOrient: "vertical",
   overflow: "hidden",
   textOverflow: "ellipsis",
-  height: "100px",
+  height: "calc(4 * 1.6em)",
   WebkitLineClamp: "4",
 };
 
