@@ -74,22 +74,19 @@ export default function CommunitySnsJoin() {
     }
   }, [projectIdValue]);
 
-  // if (!generatedText || !headerData) {
-  //   return <Loading />;
-  // }
+  if (!headerData) {
+    return <Loading />;
+  }
 
   return (
     <div className="templateImage">
       <Header
-        // categories={headerData.categories}
-        // logo={headerData.logo}
+        categories={headerData.categories || undefined}
+        logo={headerData.logo || undefined}
         serviceType="커뮤니티·sns"
       />
       <Join />
-      <Footer
-        // logo={headerData.logo}
-        serviceType="커뮤니티·sns"
-      />
+      <Footer logo={headerData.logo} serviceType="커뮤니티·sns" />
     </div>
   );
 }

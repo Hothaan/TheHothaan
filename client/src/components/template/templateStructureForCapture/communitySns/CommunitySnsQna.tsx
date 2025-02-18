@@ -9,7 +9,7 @@ import { projectIdStore } from "@store/projectIdStore";
 /* component */
 import Header, { Iheader } from "@components/template/common/header/Header";
 import Footer from "@components/template/common/footer/Footer";
-import Qna from "@components/template/board/Qna";
+import Qna, { Tqna } from "@components/template/board/Qna";
 import Loading from "@components/common/ui/Loading/loading";
 
 /* data */
@@ -245,6 +245,7 @@ export default function CommunitySnsQna() {
         style={{
           qnaTitle: pageStyle?.qnaTitle,
         }}
+        option={(generatedText?.option as Tqna) || undefined}
         isEditable={true}
         onChangeContent={handleChangeContent}
         onChangeStyle={handleChangeStyle}

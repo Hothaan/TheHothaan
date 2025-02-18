@@ -419,11 +419,11 @@ export default function CommunitySnsMain() {
       />
       <ServiceContact
         content={{
-          serviceContactTitle: pageContent?.serviceContactButton,
+          serviceContactTitle: pageContent?.serviceContactTitle,
           serviceContactButton: pageContent?.serviceContactButton,
         }}
         style={{
-          serviceContactTitle: pageStyle?.serviceContactButton,
+          serviceContactTitle: pageStyle?.serviceContactTitle,
           serviceContactButton: pageStyle?.serviceContactButton,
         }}
         isEditable={true}

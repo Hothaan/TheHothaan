@@ -72,29 +72,25 @@ export default function CommunitySnsLogin() {
     }
   }, [projectIdValue]);
 
-  // if (!generatedText || !headerData) {
-  //   return <Loading />;
-  // }
+  if (!generatedText || !headerData) {
+    return <Loading />;
+  }
 
   return (
     <div className="templateImage">
       <Header
-        // categories={headerData.categories || undefined}
-        // logo={headerData.logo || undefined}
+        categories={headerData.categories || undefined}
+        logo={headerData.logo || undefined}
         serviceType="커뮤니티·sns"
       />
       <Login
-        // option={
-        //   generatedText.option
-        //     ? (generatedText.option as Tlogin)
-        //     : "기본 로그인"
-        // }
-        option={"기본 로그인"}
+        option={
+          generatedText.option
+            ? (generatedText.option as Tlogin)
+            : "기본 로그인"
+        }
       />
-      <Footer
-        //  logo={headerData.logo}
-        serviceType="커뮤니티·sns"
-      />
+      <Footer logo={headerData.logo} serviceType="커뮤니티·sns" />
     </div>
   );
 }

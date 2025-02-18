@@ -73,15 +73,19 @@ export default function CommunitySnsMyProfile() {
     }
   }, [projectIdValue]);
 
-  // if (!generatedText || !headerData) {
-  //   return <Loading />;
-  // }
+  if (!headerData) {
+    return <Loading />;
+  }
 
   return (
     <div className="templateImage">
-      <Header serviceType="커뮤니티·sns" />
+      <Header
+        categories={headerData.categories || undefined}
+        logo={headerData.logo || undefined}
+        serviceType="커뮤니티·sns"
+      />
       <MyProfile />
-      <Footer serviceType="커뮤니티·sns" />
+      <Footer serviceType="커뮤니티·sns" logo={headerData.logo} />
     </div>
   );
 }
