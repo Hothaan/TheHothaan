@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { OuterWrap, ContentsWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 import BreadCrumble from "../commonComponent/BreadCrumble";
@@ -12,6 +12,7 @@ import { ReactComponent as Heart } from "@svgs/template/heart.svg";
 import { ReactComponent as Plus } from "@svgs/template/productAmountPlus.svg";
 import { ReactComponent as Minus } from "@svgs/template/productAmountMinus.svg";
 import EditableText from "@components/service/editableText/EditableText";
+import useEditTemplate from "@hooks/useEditTemplate";
 
 const product_title_ = "상품제목입니다";
 const product_desc_ = "상품 설명 내용입니다.";

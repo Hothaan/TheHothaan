@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { OuterWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 import EditableText from "@components/service/editableText/EditableText";
+import useEditTemplate from "@hooks/useEditTemplate";
 
 const title_ = [`Lorem ipsum dolor`, <br key="1" />, `sit amet consectetur`];
 const button_ = "Lorem ipsum dolor";
@@ -89,36 +90,40 @@ export default function ServiceContact(prop: IserviceContact) {
       style?.serviceContactButton || service_contact_button_css_,
   };
 
-  /* *********** */
+  /* *************** */
 
-  const updateValues = (source: any, initial: any) => {
-    return Object.keys(initial).reduce((acc, key) => {
-      const value = source?.[key];
-      acc[key] = value === "" ? initial[key] : value ?? initial[key];
-      return acc;
-    }, {} as any);
-  };
+  const {
+    updateStyle,
+    updateContent,
+    shallowEqual,
+    handleEditContent,
+    handleEditStyle,
+  } = useEditTemplate();
+
+  const isFirstRender = useRef(true);
+
+  useEffect(() => {
+    isFirstRender.current = false;
+  }, []);
 
   const [editableContent, setEditableContent] = useState(() =>
-    updateValues(content, initialContent)
+    updateContent(content, initialContent, isFirstRender.current)
   );
   const [editableStyle, setEditableStyle] = useState(() =>
-    updateValues(style, initialStyle)
+    updateStyle(style, initialStyle)
   );
 
-  // `useMemo`로 최적화된 업데이트 값 생성
   const updatedContent = useMemo(
-    () => updateValues(content, initialContent),
+    () => updateContent(content, initialContent, isFirstRender.current),
     [content, initialContent]
   );
   const updatedStyle = useMemo(
-    () => updateValues(style, initialStyle),
+    () => updateStyle(style, initialStyle),
     [style, initialStyle]
   );
 
   useEffect(() => {
     setEditableContent((prev: any) => {
-      // 객체 비교를 수행하여 변경된 경우에만 업데이트
       if (!shallowEqual(prev, updatedContent)) {
         return updatedContent;
       }
@@ -135,52 +140,25 @@ export default function ServiceContact(prop: IserviceContact) {
     });
   }, [updatedStyle]);
 
-  // 얕은 비교를 수행하는 함수
-  const shallowEqual = (objA: any, objB: any) => {
-    if (Object.is(objA, objB)) return true;
-    if (
-      typeof objA !== "object" ||
-      typeof objB !== "object" ||
-      objA === null ||
-      objB === null
-    )
-      return false;
-
-    const keysA = Object.keys(objA);
-    const keysB = Object.keys(objB);
-
-    if (keysA.length !== keysB.length) return false;
-
-    return keysA.every((key) => objA[key] === objB[key]);
-  };
-
-  const handleEditContent = useCallback(
+  const memoizedHandleEditContent = useCallback(
     (key: string, value: string) => {
-      setEditableContent((prev: any) => ({
-        ...prev,
-        [key]: value,
-      }));
-      onChangeContent?.(key, value);
+      handleEditContent(key, value, setEditableContent, onChangeContent);
     },
-    [onChangeContent]
+    [handleEditContent, onChangeContent]
   );
 
-  const handleEditStyle = useCallback(
+  const memoizedHandleEditStyle = useCallback(
     (key: string, value: CSSObject) => {
-      setEditableStyle((prev: any) => ({
-        ...prev,
-        [key]: value,
-      }));
-      onChangeStyle?.(key, value);
+      handleEditStyle(key, value, setEditableStyle, onChangeStyle);
     },
-    [onChangeStyle]
+    [handleEditStyle, onChangeStyle]
   );
 
   if (!editableContent) {
     return <></>;
   }
 
-  /* *********** */
+  /* ************* */
 
   return (
     <OuterWrap padding="0">
@@ -202,8 +180,10 @@ export default function ServiceContact(prop: IserviceContact) {
               className="serviceContactTitle"
               isTextArea={true}
               defaultCss={editableStyle.serviceContactTitle as CSSObject}
-              onChangeText={(key, value) => handleEditContent(key, value)}
-              onChangeCss={(key, value) => handleEditStyle(key, value)}
+              onChangeText={(key, value) =>
+                memoizedHandleEditContent(key, value)
+              }
+              onChangeCss={(key, value) => memoizedHandleEditStyle(key, value)}
               id={"serviceContactTitle"}
               activeEditor={activeEditor}
               setActiveEditor={setActiveEditor}
@@ -221,8 +201,10 @@ export default function ServiceContact(prop: IserviceContact) {
               isTextArea={false}
               hasBg={true}
               defaultCss={editableStyle.serviceContactButton as CSSObject}
-              onChangeText={(key, value) => handleEditContent(key, value)}
-              onChangeCss={(key, value) => handleEditStyle(key, value)}
+              onChangeText={(key, value) =>
+                memoizedHandleEditContent(key, value)
+              }
+              onChangeCss={(key, value) => memoizedHandleEditStyle(key, value)}
               id={"serviceContactButton"}
               activeEditor={activeEditor}
               setActiveEditor={setActiveEditor}

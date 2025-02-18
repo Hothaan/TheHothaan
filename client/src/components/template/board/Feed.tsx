@@ -5,6 +5,7 @@ import Title from "../commonComponent/Title";
 import ImageBox from "../commonComponent/ImageBox";
 import { OuterWrap } from "../commonComponent/Wrap";
 import EditableText from "@components/service/editableText/EditableText";
+import useEditTemplate from "@hooks/useEditTemplate";
 
 const item_title_ = "lorem ipsum, quia do";
 

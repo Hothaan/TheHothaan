@@ -5,6 +5,7 @@ import { OuterWrap } from "../commonComponent/Wrap";
 import Title from "../commonComponent/Title";
 import ImageBox from "../commonComponent/ImageBox";
 import EditableText from "@components/service/editableText/EditableText";
+import useEditTemplate from "@hooks/useEditTemplate";
 
 const component_title_ = "media board";
 

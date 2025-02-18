@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { OuterWrap, ContentsWrap } from "../commonComponent/Wrap";
 import Title from "../commonComponent/Title";
 import { ReactComponent as Arrow } from "@svgs/template/processArrow.svg";
@@ -12,6 +12,7 @@ import { ReactComponent as Caption } from "@svgs/template/productCaption.svg";
 import Tabs from "../commonComponent/Tabs";
 import ImageBox from "../commonComponent/ImageBox";
 import EditableText from "@components/service/editableText/EditableText";
+import useEditTemplate from "@hooks/useEditTemplate";
 
 const title_ = "제품 이름";
 const title_className = "cart_title";

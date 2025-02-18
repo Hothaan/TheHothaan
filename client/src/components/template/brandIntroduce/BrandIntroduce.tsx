@@ -4,6 +4,7 @@ import { OuterWrap, ContentsWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 import { useEffect, useState, useCallback, useMemo } from "react";
 import EditableText from "@components/service/editableText/EditableText";
+import useEditTemplate from "@hooks/useEditTemplate";
 
 const banner_title_ = "headline h1";
 

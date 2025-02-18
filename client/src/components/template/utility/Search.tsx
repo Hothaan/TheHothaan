@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { OuterWrap } from "../commonComponent/Wrap";
 import { ReactComponent as SearchIcon } from "@svgs/template/search/search.svg";
 import EditableText from "@components/service/editableText/EditableText";
+import useEditTemplate from "@hooks/useEditTemplate";
 
 const search_result_title_bold_ = "‘검색어’";
 const search_result_title_ = " 검색 결과입니다.";

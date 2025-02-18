@@ -257,8 +257,6 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
   }
 
   function saveChangedContent() {
-    /* db 저장 api 적용 */
-
     let changedDataArr: any[] = [];
     let changedContentArr: any[] = [];
     let changedStyleArr: any[] = [];
@@ -266,7 +264,7 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
     const changedContent = localStorage.getItem("changedContent");
     if (changedContent) {
       const parsed = JSON.parse(changedContent);
-      changedContentArr = Object.values(parsed);
+      if (parsed) changedContentArr = Object.values(parsed);
     }
     const changedStyle = localStorage.getItem("changedStyle");
     if (changedStyle) {
@@ -280,9 +278,15 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
         const style = changedStyleArr.find(
           (styleItem) => styleItem.featureId === featureId
         ).style;
+        const updatedContent = Object.fromEntries(
+          Object.entries(content).map(([key, value]) => [
+            key,
+            value === "" ? "lorem ipsum, quia do" : value,
+          ])
+        );
         return {
           featureId: featureId,
-          content: content,
+          content: updatedContent,
           style: style,
         };
       });
@@ -292,9 +296,15 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
         const content = changedContentArr.find(
           (contentItem) => contentItem.featureId === featureId
         ).content;
+        const updatedContent = Object.fromEntries(
+          Object.entries(content).map(([key, value]) => [
+            key,
+            value === "" ? "lorem ipsum" : value,
+          ])
+        );
         return {
           featureId: featureId,
-          content: content,
+          content: updatedContent,
           style: style,
         };
       });

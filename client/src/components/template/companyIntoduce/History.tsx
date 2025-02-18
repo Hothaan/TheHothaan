@@ -3,6 +3,7 @@ import { css, CSSObject } from "@emotion/react";
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { OuterWrap } from "../commonComponent/Wrap";
 import EditableText from "@components/service/editableText/EditableText";
+import useEditTemplate from "@hooks/useEditTemplate";
 
 const desc_ =
   "lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non";

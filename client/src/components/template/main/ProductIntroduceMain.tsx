@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { OuterWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 import EditableText from "@components/service/editableText/EditableText";
+import useEditTemplate from "@hooks/useEditTemplate";
 
 const image_desc_ =
   "lorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non";

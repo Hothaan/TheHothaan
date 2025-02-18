@@ -338,7 +338,7 @@ export default function EditableText(prop: IeditableText) {
     );
   };
 
-  if (!text) {
+  if (text === null || text === undefined) {
     return <></>;
   }
 

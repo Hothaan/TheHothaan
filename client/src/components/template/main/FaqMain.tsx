@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { OuterWrap, InnerWrap } from "../commonComponent/Wrap";
 import { ReactComponent as ChevUp } from "@svgs/template/faqMain/chevUp.svg";
 import EditableText from "@components/service/editableText/EditableText";
+import useEditTemplate from "@hooks/useEditTemplate";
 
 const title_ = "FAQ";
 

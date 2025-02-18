@@ -1,11 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { OuterWrap, InnerWrap, ContentsWrap } from "../commonComponent/Wrap";
 import Title from "../commonComponent/Title";
 import Pagination from "../commonComponent/Pagination";
 import ImageBox from "../commonComponent/ImageBox";
 import EditableText from "@components/service/editableText/EditableText";
+import useEditTemplate from "@hooks/useEditTemplate";
 
 const title_ = "Nomal Board";
 

@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { OuterWrap, ContentsWrap } from "../commonComponent/Wrap";
 import Title from "../commonComponent/Title";
 import BreadCrumble from "../commonComponent/BreadCrumble";
@@ -10,6 +10,7 @@ import FormButton from "../commonComponent/form/FormButton";
 import SelectBox from "../commonComponent/form/SelectBox";
 import ImageBox from "../commonComponent/ImageBox";
 import EditableText from "@components/service/editableText/EditableText";
+import useEditTemplate from "@hooks/useEditTemplate";
 
 const title_ = "게시글 제목";
 
