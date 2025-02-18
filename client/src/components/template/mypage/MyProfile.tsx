@@ -34,7 +34,7 @@ function Input(prop: Iinput) {
   const input_text = (disabled: boolean) => css`
     color: ${disabled ? "#BCBCBC" : "#486284"};
     font-family: Pretendard;
-    font-size: 15px;
+    font-size: 16px;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
@@ -140,7 +140,7 @@ const required = css`
 
   color: var(--E01515, #e01515);
   font-family: Pretendard;
-  font-size: 15px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -192,7 +192,7 @@ const table_title = css`
 const table_title_text = css`
   color: #486284;
   font-family: Pretendard;
-  font-size: 15px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;

@@ -182,7 +182,7 @@ const depth2_menu = (theme: Theme) => css`
   gap: 10px;
   align-self: stretch;
   font-family: Pretendard;
-  font-size: 15px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 600;
   line-height: normal;

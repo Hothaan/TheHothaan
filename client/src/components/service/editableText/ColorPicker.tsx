@@ -91,6 +91,7 @@ const option_item = (option: string, selected: string) => css`
   position: relative;
   height: 33px;
   background-color: ${option};
+  cursor: pointer;
 
   &:after {
     position: absolute;

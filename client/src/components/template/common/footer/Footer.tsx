@@ -88,7 +88,7 @@ const font_14 = css`
 `;
 
 const font_15 = css`
-  font-size: 15px;
+  font-size: 16px;
 `;
 
 const title = css`

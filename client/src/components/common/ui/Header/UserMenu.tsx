@@ -120,7 +120,7 @@ const user_menu_btn = (theme: Theme, isMain: boolean) => css`
   gap: 5px;
   p {
     font-family: Pretendard;
-    font-size: 15px;
+    font-size: 16px;
     font-style: normal;
     font-weight: 600;
     line-height: normal;
@@ -141,7 +141,7 @@ const user_not_memeber = (theme: Theme, isMain: boolean) => css`
   gap: 30px;
   a {
     color: ${isMain ? "#fff" : theme.colors.mono.gray4};
-    font-size: 15px;
+    font-size: 16px;
     font-style: normal;
     font-weight: 500;
     line-height: normal;
@@ -169,7 +169,7 @@ const user_menu_layer = (theme: Theme) => css`
   p {
     color: ${theme.colors.text.dark};
     font-family: Pretendard;
-    font-size: 15px;
+    font-size: 16px;
     font-style: normal;
     font-weight: 500;
     line-height: normal;

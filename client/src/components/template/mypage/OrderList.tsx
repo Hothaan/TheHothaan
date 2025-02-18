@@ -38,7 +38,7 @@ function OrderListTitle() {
   const nav_item = css`
     color: #486284;
     font-family: "Noto Sans KR";
-    font-size: 15px;
+    font-size: 16px;
     font-style: normal;
     font-weight: 400;
     line-height: 35px; /* 233.333% */

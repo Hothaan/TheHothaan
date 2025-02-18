@@ -107,7 +107,7 @@ const button = css`
 
   /* 15 */
   font-family: Inter;
-  font-size: 15px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 400;
   line-height: 160%; /* 24px */
@@ -133,7 +133,7 @@ const text_style = css`
 
   /* 15 */
   font-family: Inter;
-  font-size: 15px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 400;
   line-height: 160%; /* 24px */

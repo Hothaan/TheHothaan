@@ -296,7 +296,7 @@ const list_item_color = (isSelected: boolean) => css`
 const list_item_title = (isSelected: boolean) => css`
   color: ${isSelected ? "#383838" : "#747474"};
   font-family: Pretendard;
-  font-size: 15px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 500;
   line-height: normal;

@@ -123,7 +123,9 @@ export const selectableColorArr = [
 export type TselectableColor = (typeof selectableColorArr)[number];
 
 export const selectableFontSizeArr = [
+  "13px",
   "16px",
+  "17px",
   "18px",
   "20px",
   "24px",

@@ -52,7 +52,7 @@ export const notice_title_option_text_css_: CSSObject = {
 export const notice_title_option_image_css_: CSSObject = {
   color: "#486284",
   fontFamily: "Montserrat",
-  fontSize: "17px",
+  fontSize: "16px",
   fontStyle: "normal",
   fontWeight: "500",
   lineHeight: "normal",
@@ -135,7 +135,7 @@ function NoticeTable(prop: Inotice) {
 
     /* 15 */
     font-family: Inter;
-    font-size: 15px;
+    font-size: 16px;
     font-style: normal;
     font-weight: 400;
     line-height: 160%; /* 24px */

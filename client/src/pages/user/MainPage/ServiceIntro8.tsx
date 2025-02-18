@@ -185,7 +185,7 @@ export function ServiceIntro8Card(prop: IserviceIntro8Card) {
 
     color: ${isSelected ? "#fff" : "383838"};
     font-family: Pretendard;
-    font-size: 15px;
+    font-size: 16px;
     font-style: normal;
     font-weight: 500;
     line-height: normal;

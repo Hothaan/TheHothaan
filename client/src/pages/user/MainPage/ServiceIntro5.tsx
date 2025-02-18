@@ -108,7 +108,7 @@ function ServiceIntro5Card(prop: IServiceIntro5Card) {
 
   const badge_text = css`
     font-family: Pretendard;
-    font-size: 15px;
+    font-size: 16px;
     font-style: normal;
     font-weight: 700;
     line-height: 150%; /* 22.5px */

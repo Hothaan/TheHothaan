@@ -49,7 +49,7 @@ const arrowDown_icon_container = css`
 const option_text = (isFontFamily: boolean, option: string) => css`
   width: 100%;
   color: var(--747474, #747474);
-  font-size: 15px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 350;
   line-height: normal;
@@ -59,7 +59,7 @@ const option_text = (isFontFamily: boolean, option: string) => css`
 const selected_text = (isFontFamily: boolean, selected: string) => css`
   white-space: nowrap;
   color: var(--747474, #747474);
-  font-size: 15px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;

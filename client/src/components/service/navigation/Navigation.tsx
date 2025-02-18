@@ -214,7 +214,7 @@ const list_item_info_container = (isSelected: boolean) => css`
 const list_item_title = css`
   color: var(--FFF, #fff);
   font-family: Pretendard;
-  font-size: 15px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 700;
   line-height: normal;
@@ -259,7 +259,7 @@ const caption = css`
   color: var(--747474, #747474);
   text-align: center;
   font-family: Pretendard;
-  font-size: 15px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 500;
   line-height: normal;

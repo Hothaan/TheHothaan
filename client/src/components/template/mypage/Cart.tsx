@@ -255,7 +255,7 @@ function CartOrder(prop: Icart) {
 
     /* 15 */
     font-family: Inter;
-    font-size: 15px;
+    font-size: 16px;
     font-style: normal;
     font-weight: 400;
   `;
@@ -264,7 +264,7 @@ function CartOrder(prop: Icart) {
     color: #486284;
     text-align: right;
     font-family: "Noto Sans KR";
-    font-size: 15px;
+    font-size: 16px;
     font-style: normal;
     font-weight: 700;
     line-height: 35px; /* 233.333% */
@@ -283,7 +283,7 @@ function CartOrder(prop: Icart) {
 
     /* 15 */
     font-family: Inter;
-    font-size: 15px;
+    font-size: 16px;
     font-style: normal;
     font-weight: 400;
     line-height: 160%; /* 24px */
@@ -314,7 +314,7 @@ function CartOrder(prop: Icart) {
 
     /* 15 */
     font-family: Inter;
-    font-size: 15px;
+    font-size: 16px;
     font-style: normal;
     font-weight: 400;
     line-height: 160%; /* 24px */
@@ -333,7 +333,7 @@ function CartOrder(prop: Icart) {
 
     /* 15 */
     font-family: Inter;
-    font-size: 15px;
+    font-size: 16px;
     font-style: normal;
     font-weight: 400;
     line-height: 160%; /* 24px */
@@ -354,7 +354,7 @@ function CartOrder(prop: Icart) {
     color: #fff;
     text-align: center;
     font-family: "Noto Sans KR";
-    font-size: 15px;
+    font-size: 16px;
     font-style: normal;
     font-weight: 500;
     line-height: 35px; /* 233.333% */
@@ -375,7 +375,7 @@ function CartOrder(prop: Icart) {
     color: #486284;
     text-align: center;
     font-family: "Noto Sans KR";
-    font-size: 15px;
+    font-size: 16px;
     font-style: normal;
     font-weight: 500;
     line-height: 35px; /* 233.333% */

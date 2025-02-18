@@ -48,7 +48,7 @@ function BoardItem(prop: IboardItem) {
   const info = css`
     color: var(--747474, #747474);
     font-family: Pretendard;
-    font-size: 15px;
+    font-size: 16px;
     font-style: normal;
     font-weight: 400;
     line-height: normal;

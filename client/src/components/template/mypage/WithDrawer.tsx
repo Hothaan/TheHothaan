@@ -73,7 +73,7 @@ const desc = css`
   color: #486284;
   text-align: center;
   font-family: "Noto Sans KR";
-  font-size: 15px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -119,7 +119,7 @@ const button_big_dark = css`
   color: #fff;
   text-align: center;
   font-family: "Noto Sans KR";
-  font-size: 15px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 400;
   line-height: 35px; /* 233.333% */
@@ -139,7 +139,7 @@ const button_big_light = css`
   color: #486284;
   text-align: center;
   font-family: "Noto Sans KR";
-  font-size: 15px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 400;
   line-height: 35px; /* 233.333% */

@@ -313,7 +313,7 @@ const slide_item = css`
 `;
 
 const text_container = css`
-  width: 100%;
+  width: calc(100% - 84px);
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -323,6 +323,7 @@ const product_info_container = css`
   display: flex;
   flex-direction: column;
   gap: 4px;
+  width: 100%;
 `;
 
 const info_container = css`

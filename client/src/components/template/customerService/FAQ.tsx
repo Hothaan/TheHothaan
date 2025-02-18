@@ -42,7 +42,7 @@ function FaqItem(prop: IfaqItem) {
 
     /* pretendard/Regular/15px */
     font-family: Pretendard;
-    font-size: 15px;
+    font-size: 16px;
     font-style: normal;
     font-weight: ${isOpen ? "700" : "400"};
     line-height: 150%; /* 22.5px */
@@ -55,7 +55,7 @@ function FaqItem(prop: IfaqItem) {
 
     /* pretendard/Regular/15px */
     font-family: Pretendard;
-    font-size: 15px;
+    font-size: 16px;
     font-style: normal;
     font-weight: 400;
     line-height: 150%; /* 22.5px */

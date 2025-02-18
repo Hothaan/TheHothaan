@@ -105,7 +105,7 @@ const label = css`
   margin-bottom: 10px;
   color: var(--383838, #383838);
   font-family: Pretendard;
-  font-size: 15px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 700;
   line-height: normal;

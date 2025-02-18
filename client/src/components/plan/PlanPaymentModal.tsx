@@ -357,7 +357,7 @@ const plan_price_text = css`
 const plan_price_caption_text = css`
   color: var(--747474, #747474);
   font-family: Pretendard;
-  font-size: 15px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 500;
   line-height: normal;
@@ -374,7 +374,7 @@ const card_container = css`
 const card_number_text = css`
   color: var(--383838, #383838);
   font-family: Pretendard;
-  font-size: 15px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 600;
   line-height: normal;

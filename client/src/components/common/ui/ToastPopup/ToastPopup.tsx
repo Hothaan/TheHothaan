@@ -66,7 +66,7 @@ const toastPopup = css`
   p {
     color: var(--FFFFFF, #fff);
     font-family: Pretendard;
-    font-size: 15px;
+    font-size: 16px;
     font-style: normal;
     font-weight: 600;
     line-height: normal;

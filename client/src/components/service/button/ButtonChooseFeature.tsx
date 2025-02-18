@@ -159,7 +159,7 @@ const info_text = css`
 
   color: var(--119CD4, #119cd4);
   font-family: Pretendard;
-  font-size: 15px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 600;
   line-height: 150%; /* 22.5px */

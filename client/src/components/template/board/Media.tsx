@@ -306,7 +306,7 @@ const number_style = css`
 
   /* pretendard/Regular/15px */
   font-family: Pretendard;
-  font-size: 15px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 400;
   line-height: 150%; /* 22.5px */
