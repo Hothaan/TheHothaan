@@ -39,11 +39,11 @@ export const product_introduce_image_desc_css_: CSSObject = {
   maxWidth: "calc(100% - 140px)",
   overflow: "hidden",
   textOverflow: "ellipsis",
-  whiteSpace: "nowrap",
   width: "100%",
   display: "-webkit-box",
   WebkitBoxOrient: "vertical",
   WebkitLineClamp: "2",
+  height: "calc(2 * 1.25em)",
 
   position: "absolute",
   bottom: "70px",
@@ -54,7 +54,7 @@ export const product_introduce_image_desc_css_: CSSObject = {
   fontSize: "32px",
   fontStyle: "normal",
   fontWeight: "400",
-  lineHeight: "normal",
+  lineHeight: "1.25em",
 };
 
 export const product_introduce_title_css_: CSSObject = {
@@ -68,15 +68,10 @@ export const product_introduce_title_css_: CSSObject = {
   fontSize: "96px",
   fontStyle: "normal",
   fontWeight: "900",
-  lineHeight: "150%",
+  lineHeight: "1.5em",
 
   "@media (max-width: 1000px)": {
-    color: "#486284",
-    fontFamily: "Inter",
     fontSize: "50px",
-    fontStyle: "normal",
-    fontWeight: "900",
-    lineHeight: "150%",
   },
 };
 
@@ -87,14 +82,14 @@ export const product_introduce_desc_css_: CSSObject = {
   display: "-webkit-box",
   WebkitBoxOrient: "vertical",
   WebkitLineClamp: "6",
-  height: "320px",
+  height: "calc(6 * 1.25em)",
 
   color: "#486284",
   fontFamily: "Inter",
   fontSize: "32px",
   fontStyle: "normal",
   fontWeight: "400",
-  lineHeight: "normal",
+  lineHeight: "1.25em",
   wordBreak: "break-all",
 };
 

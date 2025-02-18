@@ -33,8 +33,8 @@ export const history_desc_css_: CSSObject = {
   fontSize: "32px",
   fontStyle: "normal",
   fontWeight: "400",
-  lineHeight: "normal",
-  height: "80px",
+  lineHeight: "1.25em",
+  height: "calc(2 * 1.25em)",
 
   display: "-webkit-box",
   WebkitBoxOrient: "vertical",

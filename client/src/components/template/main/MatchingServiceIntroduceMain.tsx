@@ -54,7 +54,7 @@ export const matching_service_introduce_main_banner_title_css_: CSSObject = {
   fontSize: "96px",
   fontStyle: "normal",
   fontWeight: "900",
-  lineHeight: "150%",
+  lineHeight: "1.5em",
 };
 
 export const matching_service_introduce_main_banner_desc_css_: CSSObject = {
@@ -64,7 +64,7 @@ export const matching_service_introduce_main_banner_desc_css_: CSSObject = {
   overflow: "hidden",
   textOverflow: "ellipsis",
   width: "100%",
-  height: "300px",
+  height: "calc(6 * 1.25em)",
   WebkitLineClamp: "6",
 
   color: "#486284",
@@ -73,7 +73,7 @@ export const matching_service_introduce_main_banner_desc_css_: CSSObject = {
   fontSize: "32px",
   fontStyle: "normal",
   fontWeight: "400",
-  lineHeight: "normal",
+  lineHeight: "1.25em",
 };
 
 export const matching_service_introduce_main_item_title_css_: CSSObject = {

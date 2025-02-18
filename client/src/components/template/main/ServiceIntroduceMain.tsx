@@ -52,7 +52,7 @@ export const service_introduce_desc_css: CSSObject = {
   fontSize: "32px",
   fontStyle: "normal",
   fontWeight: "400",
-  lineHeight: "normal",
+  lineHeight: "1.25em",
   textAlign: "center",
 
   display: "-webkit-box",
@@ -60,8 +60,7 @@ export const service_introduce_desc_css: CSSObject = {
   overflow: "hidden",
   textOverflow: "ellipsis",
   WebkitLineClamp: "6",
-  height: "auto",
-  // height: "360px",
+  height: "calc(6 * 1.25em)",
 };
 
 export default function ServiceIntroduce(prop: IserviceIntroduce) {

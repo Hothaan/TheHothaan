@@ -36,7 +36,7 @@ export const intermediary_match_service_introduction_title_css_: CSSObject = {
   fontSize: "96px",
   fontStyle: "normal",
   fontWeight: "900",
-  lineHeight: "150%",
+  lineHeight: "1.5em",
 
   width: "100%",
   overflow: "hidden",
@@ -44,12 +44,7 @@ export const intermediary_match_service_introduction_title_css_: CSSObject = {
   whiteSpace: "nowrap",
 
   "@media (max-width: 1000px)": {
-    color: "#486284",
-    fontFamily: "Inter",
     fontSize: "64px",
-    fontStyle: "normal",
-    fontWeight: "900",
-    lineHeight: "150%",
   },
 };
 
@@ -59,7 +54,7 @@ export const intermediary_match_service_introduction_desc_css_: CSSObject = {
   fontSize: "32px",
   fontStyle: "normal",
   fontWeight: "400",
-  lineHeight: "normal",
+  lineHeight: "1.25em",
   wordBreak: "break-all",
 
   width: "100%",
@@ -69,15 +64,6 @@ export const intermediary_match_service_introduction_desc_css_: CSSObject = {
   textOverflow: "ellipsis",
   height: "calc(2 * 1.25em)",
   WebkitLineClamp: "2",
-
-  "@media (max-width: 1000px)": {
-    color: "#486284",
-    fontFamily: "Inter",
-    fontSize: "32px",
-    fontStyle: "normal",
-    fontWeight: "400",
-    lineHeight: "normal",
-  },
 };
 
 export default function IntermediaryMatchServiceIntroduction(

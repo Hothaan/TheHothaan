@@ -47,7 +47,6 @@ export const greetings_full_title_css_: CSSObject = {
   overflow: "hidden",
   textOverflow: "ellipsis",
   whiteSpace: "nowrap",
-
   textAlign: "center",
 };
 
@@ -58,15 +57,14 @@ export const greetings_full_desc_css_: CSSObject = {
   fontSize: "32px",
   fontStyle: "normal",
   fontWeight: "400",
-  lineHeight: "normal",
-  // maxWidth: "676px",
+  lineHeight: "1.25em",
 
   width: "100%",
   display: "-webkit-box",
   WebkitBoxOrient: "vertical",
   overflow: "hidden",
   textOverflow: "ellipsis",
-  height: "200px",
+  height: "calc(6 * 1.25em)",
   WebkitLineClamp: "6",
   textAlign: "center",
 };
@@ -77,7 +75,7 @@ export const greetings_half_title_css_: CSSObject = {
   fontSize: "96px",
   fontStyle: "normal",
   fontWeight: "900",
-  lineHeight: "150%",
+  lineHeight: "1.5em",
 
   width: "100%",
   overflow: "hidden",
@@ -85,12 +83,7 @@ export const greetings_half_title_css_: CSSObject = {
   whiteSpace: "nowrap",
 
   "@media (max-width: 1000px)": {
-    color: "#486284",
-    fontFamily: "Inter",
     fontSize: "50px",
-    fontStyle: "normal",
-    fontWeight: "900",
-    lineHeight: "150%",
   },
 };
 
@@ -100,7 +93,7 @@ export const greetings_half_desc_css_: CSSObject = {
   fontSize: "32px",
   fontStyle: "normal",
   fontWeight: "400",
-  lineHeight: "normal",
+  lineHeight: "1.25em",
   wordBreak: "break-all",
 
   width: "100%",
@@ -109,6 +102,7 @@ export const greetings_half_desc_css_: CSSObject = {
   overflow: "hidden",
   textOverflow: "ellipsis",
   WebkitLineClamp: "4",
+  height: "calc(4 * 1.25em)",
 };
 
 export default function Greetings(prop: Igreetings) {
