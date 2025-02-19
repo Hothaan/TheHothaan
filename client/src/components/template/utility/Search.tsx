@@ -1,6 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
-import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import {
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  useRef,
+  useLayoutEffect,
+} from "react";
 import { OuterWrap } from "../commonComponent/Wrap";
 import { ReactComponent as SearchIcon } from "@svgs/template/search/search.svg";
 import EditableText from "@components/service/editableText/EditableText";

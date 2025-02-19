@@ -58,7 +58,7 @@ export default function EstimateInquiry() {
               <path
                 d="M17.9984 2.39844C19.9867 2.39844 21.5984 4.01021 21.5984 5.99844V17.9985C21.5984 19.9868 19.9867 21.5985 17.9984 21.5985H5.99844C4.01021 21.5985 2.39844 19.9868 2.39844 17.9985L2.39844 5.99844C2.39844 4.01021 4.01021 2.39844 5.99844 2.39844L17.9984 2.39844Z"
                 stroke="#486284"
-                stroke-width="2"
+                strokeWidth="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
               />
@@ -78,7 +78,7 @@ export default function EstimateInquiry() {
                 <path
                   d="M0.681433 10.6328L5.3125 6.00175L0.681433 1.37068"
                   stroke="#898989"
-                  stroke-width="1.5"
+                  strokeWidth="1.5"
                 />
               </svg>
             </div>

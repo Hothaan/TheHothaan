@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css, CSSObject } from "@emotion/react";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useParams } from "react-router-dom";
 /* store */
 import { projectIdStore } from "@store/projectIdStore";
@@ -53,6 +53,13 @@ import {
   service_contact_button_css_,
 } from "@components/template/service/ServiceContact";
 
+interface Icontent {
+  [key: string]: string | undefined;
+}
+interface Istyle {
+  [key: string]: CSSObject | undefined;
+}
+
 interface IshoppingMallMainContent {
   mainBannerTitle?: string;
   mainBannerDesc?: string;
@@ -63,6 +70,8 @@ interface IshoppingMallMainContent {
   reviewDesc?: string;
   reviewName?: string;
   reviewRole?: string;
+  productListItemTitle?: string; // 수정 요청
+  productListItemDesc?: string; // 수정 요청
   serviceIntroductionTitle?: string;
   serviceIntroductionDesc?: string;
   serviceContactTitle?: string;
@@ -79,6 +88,8 @@ interface IshoppingMallMainStyle {
   reviewDesc?: CSSObject;
   reviewName?: CSSObject;
   reviewRole?: CSSObject;
+  productListItemTitle?: CSSObject; // 수정 요청
+  productListItemDesc?: CSSObject; // 수정 요청
   serviceIntroductionTitle?: CSSObject;
   serviceIntroductionDesc?: CSSObject;
   serviceContactTitle?: CSSObject;
@@ -136,11 +147,39 @@ export default function ShoppingMallMain() {
     }
   }, [projectId, storedProjectId]);
 
+  const prevProjectId = useRef<string | null>(null);
+
   useEffect(() => {
-    if (projectIdValue) {
+    if (projectIdValue && prevProjectId.current !== projectIdValue) {
+      prevProjectId.current = projectIdValue; // 같은 값이면 실행하지 않음
       fetchFeatureData(isProduction, projectIdValue);
     }
   }, [projectIdValue]);
+
+  const initialContent = useMemo(() => {
+    if (generatedText?.content) {
+      return {
+        mainBannerTitle: generatedText.content.mainBannerTitle || undefined,
+        mainBannerDesc: generatedText.content.mainBannerDesc || undefined,
+        mainBannerButton: generatedText.content.mainBannerButton || undefined,
+        productListTitle: generatedText.content.productListTitle || undefined,
+        productListDesc: generatedText.content.productListDesc || undefined,
+        reviewTitle: generatedText.content.reviewTitle || undefined,
+        reviewDesc: generatedText.content.reviewDesc || undefined,
+        reviewName: generatedText.content.reviewName || undefined,
+        reviewRole: generatedText.content.reviewRole || undefined,
+        serviceIntroductionTitle:
+          generatedText.content.serviceIntroductionTitle || undefined,
+        serviceIntroductionDesc:
+          generatedText.content.serviceIntroductionDesc || undefined,
+        serviceContactTitle:
+          generatedText.content.serviceContactTitle || undefined,
+        serviceContactButton:
+          generatedText.content.serviceContactButton || undefined,
+      };
+    }
+    return getLocalContent(); // localStorage 값 반환
+  }, [generatedText]);
 
   function updateInitialContent() {
     if (generatedText && generatedText.content) {
@@ -167,6 +206,24 @@ export default function ShoppingMallMain() {
     }
   }
 
+  const initialStyle = useMemo(() => {
+    return {
+      mainBannerTitle: mainBanner_title_css_ || undefined,
+      mainBannerDesc: mainBanner_desc_css_ || undefined,
+      mainBannerButton: mainBanner_button_css_ || undefined,
+      productListTitle: product_list_option_main_title_css || undefined,
+      productListDesc: product_list_option_main_desc_css || undefined,
+      reviewTitle: review_item_title_css || undefined,
+      reviewDesc: review_item_desc_css || undefined,
+      reviewName: review_item_caption_name_css || undefined,
+      reviewRole: review_item_caption_role_css || undefined,
+      serviceIntroductionTitle: service_introduction_title_css_ || undefined,
+      serviceIntroductionDesc: service_introduction_desc_css_ || undefined,
+      serviceContactTitle: service_contact_title_css_ || undefined,
+      serviceContactButton: service_contact_button_css_ || undefined,
+    };
+  }, []);
+
   function updateInitialStyle() {
     const initialStyle = {
       mainBannerTitle: mainBanner_title_css_ || undefined,
@@ -185,19 +242,19 @@ export default function ShoppingMallMain() {
       serviceIntroductionDesc: service_introduction_desc_css_ || undefined,
 
       serviceContactTitle: service_contact_title_css_ || undefined,
-      serviceContactButton: undefined,
+      serviceContactButton: service_contact_button_css_ || undefined,
     };
     setPageStyle({ ...initialStyle });
   }
 
-  /* ********** */
+  /* **** */
 
   function getLocalContent() {
     const localContent = localStorage.getItem("changedContent");
     if (localContent) {
       const parsed = JSON.parse(localContent);
       if (parsed[featureKey]?.content) {
-        return parsed[featureKey]?.content;
+        return parsed[featureKey].content;
       }
     }
     return null;
@@ -225,6 +282,7 @@ export default function ShoppingMallMain() {
     getLocalStyle()
   );
 
+  //featureData가 들어오면 초기 콘텐츠와 스타일 업데이트
   useEffect(() => {
     if (generatedText) {
       const localContent = localStorage.getItem("changedContent");
@@ -258,27 +316,21 @@ export default function ShoppingMallMain() {
   useEffect(() => {
     if (pageContent) {
       const localContent = localStorage.getItem("changedContent");
-      const existingContent = localContent
-        ? JSON.parse(localContent)?.[featureKey]?.content
-        : null;
-
-      if (JSON.stringify(existingContent) !== JSON.stringify(pageContent)) {
-        const updatedContent = localContent
-          ? {
-              ...JSON.parse(localContent),
-              [featureKey]: {
-                featureId: generatedText?.feature_id,
-                content: { ...pageContent },
-              },
-            }
-          : {
-              [featureKey]: {
-                featureId: generatedText?.feature_id,
-                content: { ...pageContent },
-              },
-            };
-        localStorage.setItem("changedContent", JSON.stringify(updatedContent));
-      }
+      const updatedContent = localContent
+        ? {
+            ...JSON.parse(localContent),
+            [featureKey]: {
+              featureId: generatedText?.feature_id,
+              content: { ...pageContent },
+            },
+          }
+        : {
+            [featureKey]: {
+              featureId: generatedText?.feature_id,
+              content: { ...pageContent },
+            },
+          };
+      localStorage.setItem("changedContent", JSON.stringify(updatedContent));
     }
   }, [pageContent]);
 
@@ -319,7 +371,7 @@ export default function ShoppingMallMain() {
     return <Loading />;
   }
 
-  /* ********** */
+  /* **** */
 
   return (
     <div className="templateImage">
@@ -328,23 +380,25 @@ export default function ShoppingMallMain() {
         logo={headerData.logo}
         serviceType="쇼핑몰"
       />
-      <Mainbanner
-        content={{
-          mainBannerTitle: pageContent?.mainBannerTitle,
-          mainBannerDesc: pageContent?.mainBannerDesc,
-          mainBannerButton: pageContent?.mainBannerButton,
-        }}
-        style={{
-          mainBannerTitle: pageStyle?.mainBannerTitle,
-          mainBannerDesc: pageStyle?.mainBannerDesc,
-          mainBannerButton: pageStyle?.mainBannerButton,
-        }}
-        isEditable={true}
-        onChangeContent={handleChangeContent}
-        onChangeStyle={handleChangeStyle}
-        activeEditor={activeEditor}
-        setActiveEditor={setActiveEditor}
-      />
+      {pageContent && pageStyle && (
+        <Mainbanner
+          content={{
+            mainBannerTitle: pageContent?.mainBannerTitle,
+            mainBannerDesc: pageContent?.mainBannerDesc,
+            mainBannerButton: pageContent?.mainBannerButton,
+          }}
+          style={{
+            mainBannerTitle: pageStyle?.mainBannerTitle,
+            mainBannerDesc: pageStyle?.mainBannerDesc,
+            mainBannerButton: pageStyle?.mainBannerButton,
+          }}
+          isEditable={true}
+          onChangeContent={handleChangeContent}
+          onChangeStyle={handleChangeStyle}
+          activeEditor={activeEditor}
+          setActiveEditor={setActiveEditor}
+        />
+      )}
       <ProductListMain
         content={{
           productListTitle: pageContent?.productListTitle,

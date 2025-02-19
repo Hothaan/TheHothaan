@@ -277,57 +277,42 @@ export default function ProductList(prop: IproductList) {
       style?.productListProductDesc || product_list_desc_css_,
   };
 
-  /* *************** */
+  /* *********** */
 
-  const {
-    updateStyle,
-    updateContent,
-    shallowEqual,
-    handleEditContent,
-    handleEditStyle,
-  } = useEditTemplate();
-
-  const isFirstRender = useRef(true);
-
-  useLayoutEffect(() => {
-    isFirstRender.current = false;
-  }, []);
+  const updateValues = (source: any, initial: any) => {
+    return Object.keys(initial).reduce((acc, key) => {
+      const value = source?.[key];
+      acc[key] = value === "" ? initial[key] : value ?? initial[key];
+      return acc;
+    }, {} as any);
+  };
 
   const [editableContent, setEditableContent] = useState(() =>
-    updateContent(content, initialContent, isFirstRender.current)
+    updateValues(content, initialContent)
   );
   const [editableStyle, setEditableStyle] = useState(() =>
-    updateStyle(style, initialStyle)
+    updateValues(style, initialStyle)
   );
 
+  // `useMemo`로 최적화된 업데이트 값 생성
   const updatedContent = useMemo(
-    () => updateContent(content, initialContent, isFirstRender.current),
+    () => updateValues(content, initialContent),
     [content, initialContent]
   );
   const updatedStyle = useMemo(
-    () => updateStyle(style, initialStyle),
+    () => updateValues(style, initialStyle),
     [style, initialStyle]
   );
 
   useEffect(() => {
     setEditableContent((prev: any) => {
-      const newContent = updateContent(
-        content,
-        initialContent,
-        isFirstRender.current
-      );
-
-      // 최초 렌더링 이후에도 `initialContent` 값을 유지하도록 보장
-      return Object.keys(newContent).reduce((acc, key) => {
-        if (prev[key] === undefined || prev[key] === null) {
-          acc[key] = newContent[key]; // ✅ 기존에 값이 없었다면 `newContent` 적용
-        } else {
-          acc[key] = newContent[key] === "" ? prev[key] : newContent[key]; // ✅ 이후에는 기존 값 유지
-        }
-        return acc;
-      }, {} as any);
+      // 객체 비교를 수행하여 변경된 경우에만 업데이트
+      if (!shallowEqual(prev, updatedContent)) {
+        return updatedContent;
+      }
+      return prev;
     });
-  }, [content]);
+  }, [updatedContent]);
 
   useEffect(() => {
     setEditableStyle((prev: any) => {
@@ -338,25 +323,52 @@ export default function ProductList(prop: IproductList) {
     });
   }, [updatedStyle]);
 
-  const memoizedHandleEditContent = useCallback(
+  // 얕은 비교를 수행하는 함수
+  const shallowEqual = (objA: any, objB: any) => {
+    if (Object.is(objA, objB)) return true;
+    if (
+      typeof objA !== "object" ||
+      typeof objB !== "object" ||
+      objA === null ||
+      objB === null
+    )
+      return false;
+
+    const keysA = Object.keys(objA);
+    const keysB = Object.keys(objB);
+
+    if (keysA.length !== keysB.length) return false;
+
+    return keysA.every((key) => objA[key] === objB[key]);
+  };
+
+  const handleEditContent = useCallback(
     (key: string, value: string) => {
-      handleEditContent(key, value, setEditableContent, onChangeContent);
+      setEditableContent((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeContent?.(key, value);
     },
-    [handleEditContent, onChangeContent]
+    [onChangeContent]
   );
 
-  const memoizedHandleEditStyle = useCallback(
+  const handleEditStyle = useCallback(
     (key: string, value: CSSObject) => {
-      handleEditStyle(key, value, setEditableStyle, onChangeStyle);
+      setEditableStyle((prev: any) => ({
+        ...prev,
+        [key]: value,
+      }));
+      onChangeStyle?.(key, value);
     },
-    [handleEditStyle, onChangeStyle]
+    [onChangeStyle]
   );
 
   if (!editableContent) {
     return <></>;
   }
 
-  /* ************* */
+  /* *********** */
 
   return (
     <OuterWrap padding="135px 0">
@@ -374,11 +386,9 @@ export default function ProductList(prop: IproductList) {
                       isTextArea={false}
                       defaultCss={editableStyle.productListCategories}
                       onChangeText={(key, value) =>
-                        memoizedHandleEditContent(key, value)
+                        handleEditContent(key, value)
                       }
-                      onChangeCss={(key, value) =>
-                        memoizedHandleEditStyle(key, value)
-                      }
+                      onChangeCss={(key, value) => handleEditStyle(key, value)}
                       id={"productListCategories" + index}
                       activeEditor={activeEditor}
                       setActiveEditor={setActiveEditor}
@@ -402,8 +412,8 @@ export default function ProductList(prop: IproductList) {
                     content={editableContent}
                     style={editableStyle}
                     isEditable={isEditable}
-                    onChangeContent={memoizedHandleEditContent}
-                    onChangeStyle={memoizedHandleEditStyle}
+                    onChangeContent={handleEditContent}
+                    onChangeStyle={handleEditStyle}
                     index={index2}
                     activeEditor={activeEditor}
                     setActiveEditor={setActiveEditor}
