@@ -356,22 +356,12 @@ export default function ProductListMain(prop: IproductList) {
   const handleEditContent = useCallback(
     (key: string, value: string) => {
       setEditableContent((prev: any) => {
-        if (
-          !prev ||
-          prev === undefined ||
-          !prev[key] ||
-          prev[key] === undefined ||
-          prev[key] === value
-        ) {
-          return;
-        } else {
-          onChangeContent?.(key, value);
-          return {
-            ...prev,
-            [key]: value,
-          };
-        }
+        return {
+          ...prev,
+          [key]: value,
+        };
       });
+      onChangeContent?.(key, value);
     },
     [onChangeContent]
   );
