@@ -168,6 +168,10 @@ export default function ShoppingMallMain() {
         reviewDesc: generatedText.content.reviewDesc || undefined,
         reviewName: generatedText.content.reviewName || undefined,
         reviewRole: generatedText.content.reviewRole || undefined,
+        productListItemTitle:
+          generatedText.content.productListItemTitle || undefined,
+        productListItemDesc:
+          generatedText.content.productListItemDesc || undefined,
         serviceIntroductionTitle:
           generatedText.content.serviceIntroductionTitle || undefined,
         serviceIntroductionDesc:
@@ -217,6 +221,8 @@ export default function ShoppingMallMain() {
       reviewDesc: review_item_desc_css || undefined,
       reviewName: review_item_caption_name_css || undefined,
       reviewRole: review_item_caption_role_css || undefined,
+      productListItemTitle: product_list_option_list_title_css || undefined,
+      productListItemDesc: product_list_option_list_desc_css || undefined,
       serviceIntroductionTitle: service_introduction_title_css_ || undefined,
       serviceIntroductionDesc: service_introduction_desc_css_ || undefined,
       serviceContactTitle: service_contact_title_css_ || undefined,
@@ -451,14 +457,14 @@ export default function ShoppingMallMain() {
       />
       <ProductListMainOptionList
         content={{
-          productListTitle: pageContent?.productListTitle,
-          productListDesc: pageContent?.productListDesc,
+          productListItemTitle: pageContent?.productListItemTitle,
+          productListItemDesc: pageContent?.productListItemDesc,
         }}
         style={{
-          productListTitle: product_list_option_list_title_css,
-          productListDesc: product_list_option_list_desc_css,
+          productListItemTitle: product_list_option_list_title_css,
+          productListItemDesc: product_list_option_list_desc_css,
         }}
-        // isEditable={true}
+        isEditable={true}
         onChangeContent={handleChangeContent}
         onChangeStyle={handleChangeStyle}
         activeEditor={activeEditor}

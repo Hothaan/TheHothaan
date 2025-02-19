@@ -21,13 +21,13 @@ const title_ = "lorem ipsum, quia do";
 const desc_ = "lorem ipsum, quia do";
 
 export interface IproductListContent {
-  productListTitle?: string;
-  productListDesc?: string;
+  productListItemTitle?: string;
+  productListItemDesc?: string;
 }
 
 export interface IproductListStyle {
-  productListTitle?: CSSObject;
-  productListDesc?: CSSObject;
+  productListItemTitle?: CSSObject;
+  productListItemDesc?: CSSObject;
 }
 
 interface IproductListItem extends IproductList {}
@@ -86,10 +86,10 @@ function ProductListItemMainOptionList(prop: IproductListItem) {
   } = prop;
 
   if (
-    content?.productListTitle === undefined ||
-    content?.productListDesc === undefined ||
-    style?.productListTitle === undefined ||
-    style?.productListDesc === undefined
+    content?.productListItemTitle === undefined ||
+    content?.productListItemDesc === undefined ||
+    style?.productListItemTitle === undefined ||
+    style?.productListItemDesc === undefined
   ) {
     return <></>;
   }
@@ -106,36 +106,36 @@ function ProductListItemMainOptionList(prop: IproductListItem) {
           <div css={product_info_container}>
             {isEditable ? (
               <EditableText
-                id={"productListTitle" + index}
-                text={content.productListTitle}
-                className="productListTitle"
+                id={"productListItemTitle" + index}
+                text={content.productListItemTitle}
+                className="productListItemTitle"
                 isTextArea={false}
-                defaultCss={style.productListTitle}
+                defaultCss={style.productListItemTitle}
                 activeEditor={activeEditor}
                 setActiveEditor={setActiveEditor}
                 onChangeText={(key, value) => onChangeContent(key, value)}
                 onChangeCss={(key, value) => onChangeStyle(key, value)}
               />
             ) : (
-              <p css={style?.productListTitle}>
-                {content?.productListTitle || title_}
+              <p css={style?.productListItemTitle}>
+                {content?.productListItemTitle || title_}
               </p>
             )}
             {isEditable ? (
               <EditableText
-                id={"productListDesc" + index}
-                text={content.productListDesc}
-                className="productListDesc"
+                id={"productListItemDesc" + index}
+                text={content.productListItemDesc}
+                className="productListItemDesc"
                 isTextArea={false}
-                defaultCss={style.productListDesc}
+                defaultCss={style.productListItemDesc}
                 activeEditor={activeEditor}
                 setActiveEditor={setActiveEditor}
                 onChangeText={(key, value) => onChangeContent(key, value)}
                 onChangeCss={(key, value) => onChangeStyle(key, value)}
               />
             ) : (
-              <p css={style?.productListDesc}>
-                {content?.productListDesc || desc_}
+              <p css={style?.productListItemDesc}>
+                {content?.productListItemDesc || desc_}
               </p>
             )}
           </div>
@@ -184,15 +184,15 @@ export default function ProductListMainOptionList(prop: IproductList) {
   `;
 
   const initialContent = {
-    productListTitle: content?.productListTitle || title_,
-    productListDesc: content?.productListDesc || desc_,
+    productListItemTitle: content?.productListItemTitle || title_,
+    productListItemDesc: content?.productListItemDesc || desc_,
   };
 
   const initialStyle = {
-    productListTitle:
-      style?.productListTitle || product_list_option_list_title_css,
-    productListDesc:
-      style?.productListDesc || product_list_option_list_desc_css,
+    productListItemTitle:
+      style?.productListItemTitle || product_list_option_list_title_css,
+    productListItemDesc:
+      style?.productListItemDesc || product_list_option_list_desc_css,
   };
 
   /* *********** */
@@ -200,7 +200,7 @@ export default function ProductListMainOptionList(prop: IproductList) {
   const updateValues = (source: any, initial: any) => {
     return Object.keys(initial).reduce((acc, key) => {
       const value = source?.[key];
-      acc[key] = value === "" ? initial[key] : value ?? initial[key];
+      acc[key] = value ?? initial[key];
       return acc;
     }, {} as any);
   };
@@ -262,11 +262,23 @@ export default function ProductListMainOptionList(prop: IproductList) {
 
   const handleEditContent = useCallback(
     (key: string, value: string) => {
-      setEditableContent((prev: any) => ({
-        ...prev,
-        [key]: value,
-      }));
-      onChangeContent?.(key, value);
+      setEditableContent((prev: any) => {
+        if (
+          !prev ||
+          prev === undefined ||
+          !prev[key] ||
+          prev[key] === undefined ||
+          prev[key] === value
+        ) {
+          return;
+        } else {
+          onChangeContent?.(key, value);
+          return {
+            ...prev,
+            [key]: value,
+          };
+        }
+      });
     },
     [onChangeContent]
   );

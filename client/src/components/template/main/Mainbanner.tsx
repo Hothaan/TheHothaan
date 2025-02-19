@@ -111,7 +111,7 @@ const MainBannerContent = memo(function MainBannerContent(prop: ImainBanner) {
     content?.mainBannerDesc === undefined ||
     content?.mainBannerButton === undefined ||
     style?.mainBannerTitle === undefined ||
-    style?.mainBannerTitle === undefined ||
+    style?.mainBannerDesc === undefined ||
     style?.mainBannerButton === undefined
   ) {
     return <></>;
@@ -200,7 +200,7 @@ export default function Mainbanner(prop: ImainBanner) {
   const updateValues = (source: any, initial: any) => {
     return Object.keys(initial).reduce((acc, key) => {
       const value = source?.[key];
-      acc[key] = value === "" ? initial[key] : value ?? initial[key];
+      acc[key] = value ?? initial[key];
       return acc;
     }, {} as any);
   };
@@ -262,11 +262,23 @@ export default function Mainbanner(prop: ImainBanner) {
 
   const handleEditContent = useCallback(
     (key: string, value: string) => {
-      setEditableContent((prev: any) => ({
-        ...prev,
-        [key]: value,
-      }));
-      onChangeContent?.(key, value);
+      setEditableContent((prev: any) => {
+        if (
+          !prev ||
+          prev === undefined ||
+          !prev[key] ||
+          prev[key] === undefined ||
+          prev[key] === value
+        ) {
+          return;
+        } else {
+          onChangeContent?.(key, value);
+          return {
+            ...prev,
+            [key]: value,
+          };
+        }
+      });
     },
     [onChangeContent]
   );
