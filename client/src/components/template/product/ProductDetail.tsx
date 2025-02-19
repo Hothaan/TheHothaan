@@ -588,14 +588,12 @@ export default function ProductDetail(prop: IproductDetail) {
       product_detail_more_product__option_main_desc_css,
   };
 
-  // const [activeEditor, setActiveEditor] = useState<string | undefined>(
-  //   undefined
-  // );
+  /* *********** */
 
   const updateValues = (source: any, initial: any) => {
     return Object.keys(initial).reduce((acc, key) => {
       const value = source?.[key];
-      acc[key] = value === "" ? initial[key] : value ?? initial[key];
+      acc[key] = value ?? initial[key];
       return acc;
     }, {} as any);
   };
@@ -619,9 +617,9 @@ export default function ProductDetail(prop: IproductDetail) {
 
   useEffect(() => {
     setEditableContent((prev: any) => {
-      // 기존 객체와 새 객체를 비교하여 변경된 경우에만 업데이트
+      // 객체 비교를 수행하여 변경된 경우에만 업데이트
       if (!shallowEqual(prev, updatedContent)) {
-        return { ...prev, ...updatedContent };
+        return updatedContent;
       }
       return prev;
     });
@@ -639,29 +637,29 @@ export default function ProductDetail(prop: IproductDetail) {
   // 얕은 비교를 수행하는 함수
   const shallowEqual = (objA: any, objB: any) => {
     if (Object.is(objA, objB)) return true;
-
     if (
-      !objA ||
-      !objB ||
       typeof objA !== "object" ||
-      typeof objB !== "object"
-    ) {
+      typeof objB !== "object" ||
+      objA === null ||
+      objB === null
+    )
       return false;
-    }
 
     const keysA = Object.keys(objA);
     const keysB = Object.keys(objB);
 
     if (keysA.length !== keysB.length) return false;
 
-    return keysA.every((key) => Object.is(objA[key], objB[key]));
+    return keysA.every((key) => objA[key] === objB[key]);
   };
 
   const handleEditContent = useCallback(
     (key: string, value: string) => {
       setEditableContent((prev: any) => {
-        if (prev[key] === value) return prev; // 값이 동일하면 업데이트 안 함
-        return { ...prev, [key]: value };
+        return {
+          ...prev,
+          [key]: value,
+        };
       });
       onChangeContent?.(key, value);
     },
@@ -678,6 +676,12 @@ export default function ProductDetail(prop: IproductDetail) {
     },
     [onChangeStyle]
   );
+
+  if (!editableContent) {
+    return <></>;
+  }
+
+  /* *********** */
 
   const container = css`
     display: flex;
