@@ -470,7 +470,9 @@ const content_container = css`
 
 const content = css`
   width: 100%;
+  max-width: 1920px;
   height: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
   background: #fff;
 `;

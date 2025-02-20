@@ -1,10 +1,45 @@
 import { CSSObject } from "@emotion/react";
 
 export default function useEditTemplate() {
+  const updateValues = (source: any, initial: any) => {
+    return Object.keys(initial).reduce((acc, key) => {
+      const value = source?.[key];
+      acc[key] = value ?? initial[key];
+      return acc;
+    }, {} as any);
+  };
+
   const updateStyle = (source: any, initial: any) => {
     return Object.keys(initial).reduce((acc, key) => {
       const value = source?.[key];
       acc[key] = value === "" ? initial[key] : value ?? initial[key];
+      return acc;
+    }, {} as any);
+  };
+
+  const updateInitialContent = (source: any, initial: any) => {
+    return Object.keys(initial).reduce((acc, key) => {
+      const value = source?.[key];
+
+      if (value === undefined || value === null || value === "") {
+        acc[key] = initial[key];
+      } else {
+        acc[key] = value;
+      }
+      console.log(acc);
+      return acc;
+    }, {} as any);
+  };
+
+  const updateContentTest = (source: any, initial: any) => {
+    return Object.keys(initial).reduce((acc, key) => {
+      const value = source?.[key];
+      if (value !== undefined && value !== null) {
+        acc[key] = value;
+      } else {
+        acc[key] = acc[key] ?? "";
+      }
+
       return acc;
     }, {} as any);
   };
@@ -23,7 +58,6 @@ export default function useEditTemplate() {
       } else {
         acc[key] = acc[key] ?? ""; // ✅ 이전 값 유지, 단 undefined/null이면 ""로 설정
       }
-
       return acc;
     }, {} as any);
   };
@@ -52,11 +86,17 @@ export default function useEditTemplate() {
     handle: (value: any) => void,
     onChange: (key: string, value: string) => void
   ) => {
-    handle((prev: any) => ({
-      ...prev,
-      [key]: value,
-    }));
-    onChange?.(key, value);
+    handle((prev: any) => {
+      if (prev[key] === value) {
+        return;
+      } else {
+        onChange?.(key, value);
+        return {
+          ...prev,
+          [key]: value,
+        };
+      }
+    });
   };
 
   const handleEditStyle = (
@@ -73,8 +113,7 @@ export default function useEditTemplate() {
   };
 
   return {
-    updateStyle,
-    updateContent,
+    updateValues,
     shallowEqual,
     handleEditContent,
     handleEditStyle,

@@ -123,7 +123,7 @@ export default function NormalBoardMain(prop: InormalBoardMain) {
   const updateValues = (source: any, initial: any) => {
     return Object.keys(initial).reduce((acc, key) => {
       const value = source?.[key];
-      acc[key] = value === "" ? initial[key] : value ?? initial[key];
+      acc[key] = value ?? initial[key];
       return acc;
     }, {} as any);
   };
@@ -185,10 +185,12 @@ export default function NormalBoardMain(prop: InormalBoardMain) {
 
   const handleEditContent = useCallback(
     (key: string, value: string) => {
-      setEditableContent((prev: any) => ({
-        ...prev,
-        [key]: value,
-      }));
+      setEditableContent((prev: any) => {
+        return {
+          ...prev,
+          [key]: value,
+        };
+      });
       onChangeContent?.(key, value);
     },
     [onChangeContent]

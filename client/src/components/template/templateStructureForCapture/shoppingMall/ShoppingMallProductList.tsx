@@ -92,6 +92,32 @@ export default function ShoppingMallProductList() {
     }
   }, [projectIdValue]);
 
+  function updateInitialContent() {
+    if (generatedText && generatedText.content) {
+      const initialContent = {
+        productListCategories:
+          generatedText.content.productListCategories || undefined,
+        productListProductTitle:
+          generatedText.content.productListProductTitle || undefined,
+        productListProductDesc:
+          generatedText.content.productListProductDesc || undefined,
+      };
+      setPageContent(initialContent);
+    }
+  }
+
+  //페이지에 적용될 초기 스타일 저장
+  function updateInitialStyle() {
+    const initialStyle = {
+      productListCategories: product_list_nav_item_css_ || undefined,
+      productListProductTitle: product_list_title_css_ || undefined,
+      productListProductDesc: product_list_desc_css_ || undefined,
+    };
+    setPageStyle({ ...initialStyle });
+  }
+
+  /* **** */
+
   function getLocalContent() {
     const localContent = localStorage.getItem("changedContent");
     if (localContent) {
@@ -123,30 +149,6 @@ export default function ShoppingMallProductList() {
     useState<IshoppingMallProductListContent | null>(getLocalContent());
   const [pageStyle, setPageStyle] =
     useState<IshoppingMallProductListStyle | null>(getLocalStyle());
-
-  function updateInitialContent() {
-    if (generatedText && generatedText.content) {
-      const initialContent = {
-        productListCategories:
-          generatedText.content.productListCategories || undefined,
-        productListProductTitle:
-          generatedText.content.productListProductTitle || undefined,
-        productListProductDesc:
-          generatedText.content.productListProductDesc || undefined,
-      };
-      setPageContent(initialContent);
-    }
-  }
-
-  //페이지에 적용될 초기 스타일 저장
-  function updateInitialStyle() {
-    const initialStyle = {
-      productListCategories: product_list_nav_item_css_ || undefined,
-      productListProductTitle: product_list_title_css_ || undefined,
-      productListProductDesc: product_list_desc_css_ || undefined,
-    };
-    setPageStyle({ ...initialStyle });
-  }
 
   //featureData가 들어오면 초기 콘텐츠와 스타일 업데이트
   useEffect(() => {
@@ -237,6 +239,8 @@ export default function ShoppingMallProductList() {
     return <Loading />;
   }
 
+  /* **** */
+
   return (
     <div className="templateImage">
       <Header
@@ -262,7 +266,6 @@ export default function ShoppingMallProductList() {
         activeEditor={activeEditor}
         setActiveEditor={setActiveEditor}
       />
-
       <Footer logo={headerData.logo} serviceType="쇼핑몰" />
     </div>
   );
