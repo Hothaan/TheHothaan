@@ -245,7 +245,6 @@ exports.generateProjectText = async (req, res) => {
               content: null,
               success: false,
             });
-            failureCount++;
             return;
           }
           totalCount++;
@@ -299,6 +298,7 @@ exports.generateProjectText = async (req, res) => {
     // 최종 로그에 요약 정보 포함
     logger.info('프로젝트 텍스트 생성 결과', {
       projectId,
+      totalCount,
       successCount,
       failureCount,
       responses: responses.map((r) => ({
