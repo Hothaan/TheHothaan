@@ -224,6 +224,7 @@ exports.generateProjectText = async (req, res) => {
     ).then((results) => results.filter(Boolean));
 
     const responses = [];
+    let totalCount = 0;
     let successCount = 0;
     let failureCount = 0;
 
@@ -247,6 +248,7 @@ exports.generateProjectText = async (req, res) => {
             failureCount++;
             return;
           }
+          totalCount++;
 
           const { depth1, depth2, structure, style, content, cnt } = featureDetails;
 
