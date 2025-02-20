@@ -250,6 +250,7 @@ exports.generateProjectText = async (req, res) => {
           totalCount++;
 
           const { depth1, depth2, structure, style, content, cnt } = featureDetails;
+          console.log('start generateOpenAiText');
 
           const featureResponseData = await generateOpenAiText(
             serviceType,
