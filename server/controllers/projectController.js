@@ -303,7 +303,7 @@ exports.generateProjectText = async (req, res) => {
         menu: r.menu,
         feature: r.feature,
         success: r.success,
-        summary: r.content ? generateSummary({ content: r.content }) : 'No content available',
+        // summary: r.content ? generateSummary({ content: r.content }) : 'No content available',
       })),
     });
 
