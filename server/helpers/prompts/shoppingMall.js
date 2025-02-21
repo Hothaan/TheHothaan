@@ -5,7 +5,7 @@ function generateShoppingMallPrompt(serviceDetails) {
     return `Generate category, title and description for the ${depth1} menu ${depth2} page on the '${component}' component of a ${service} website named ${serviceTitle}. 
       This website's purpose is: ${serviceDesc}. Follow this structure: ${JSON.stringify(structure)}. 
       
-      Each category should fit the style and purpose of the website. productListProductTitle and productListProductDesc should be created based on category 1.
+      category should fit the style and purpose of the website. productListProductTitle and productListProductDesc should be created based on category.
 
       Provide the response strictly in JSON format as follows:      
       {
