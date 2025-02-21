@@ -1,7 +1,7 @@
 function productListValidator(response, contentLength) {
   if (response.menu && response.feature && response.content) {
     if (
-      response.content?.productListCategories &&
+      response.content?.productListCategory &&
       response.content?.productListProductTitle &&
       response.content?.productListProductDesc
     )
