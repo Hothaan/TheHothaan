@@ -1,5 +1,4 @@
 function productListValidator(response, contentLength) {
-  contentLength ? contentLength : 5;
   if (response.menu && response.feature && response.content) {
     if (
       response.content?.productListCategories &&
@@ -12,9 +11,9 @@ function productListValidator(response, contentLength) {
         Array.isArray(response.content.productListProductDesc)
       ) {
         if (
-          response.content.productListCategories.length === contentLength &&
-          response.content.productListProductTitle.length === contentLength &&
-          response.content.productListProductDesc.length === contentLength
+          response.content.productListCategories.length === 6 &&
+          response.content.productListProductTitle.length === 15 &&
+          response.content.productListProductDesc.length === 15
         ) {
           return true;
         }
