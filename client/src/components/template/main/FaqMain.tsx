@@ -317,7 +317,6 @@ export default function FaqMain(prop: IfaqMain) {
   }
 
   /* *********** */
-
   return (
     <OuterWrap padding="114px 0">
       <InnerWrap>
