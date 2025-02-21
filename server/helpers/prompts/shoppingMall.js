@@ -2,20 +2,19 @@ function generateShoppingMallPrompt(serviceDetails) {
   const { service, serviceTitle, serviceDesc, depth1, depth2, component, structure, content, cnt } = serviceDetails;
 
   if (depth2 === '상품 목록') {
-    const categoryCnt = cnt ?? 5;
-    return `Generate ${categoryCnt} categories, titles and descriptoins for the ${depth1} menu ${depth2} page on the '${component}' component of a ${service} website named ${serviceTitle}. 
+    return `Generate 6 categories, 15 titles and descriptions for the ${depth1} menu ${depth2} page on the '${component}' component of a ${service} website named ${serviceTitle}. 
       This website's purpose is: ${serviceDesc}. Follow this structure: ${JSON.stringify(structure)}. 
       
       Each category should fit the style and purpose of the website. Provide the response strictly in JSON format as follows:
       
       {
-        "menu": "${depth1}",
-        "feature": "${depth2}",
-        "content": {
-            "productListCategories": ["카테고리", "카테고리", "카테고리"],
-            "productListProductTitle": ["상품이름", "상품이름", "상품이름"],
-            "productListProductDesc": ["상품설명", "상품설명", "상품설명"]
-          }        
+      "menu": "${depth1}",
+      "feature": "${depth2}",
+      "content": {
+        "productListCategories": ["카테고리", "카테고리", "카테고리", "카테고리", "카테고리", "카테고리"],
+        "productListProductTitle": ["상품이름", "상품이름", "상품이름", "상품이름", "상품이름", "상품이름", "상품이름", "상품이름", "상품이름", "상품이름", "상품이름", "상품이름", "상품이름", "상품이름", "상품이름"],
+        "productListProductDesc": ["상품설명", "상품설명", "상품설명", "상품설명", "상품설명", "상품설명", "상품설명", "상품설명", "상품설명", "상품설명", "상품설명", "상품설명", "상품설명", "상품설명", "상품설명"]
+        }        
       }
       
       Do not add any additional text or explanation. Only include the specified fields in JSON format. Answer in Korean.`;
