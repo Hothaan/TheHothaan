@@ -212,7 +212,6 @@ export default function NewsMain(prop: InewsMain) {
   }
 
   /* *********** */
-
   return (
     <OuterWrap padding="86px 0">
       <div css={container}>
