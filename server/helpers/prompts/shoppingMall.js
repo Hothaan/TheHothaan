@@ -12,7 +12,7 @@ function generateShoppingMallPrompt(serviceDetails) {
         "menu": "${depth1}",
         "feature": "${depth2}",
         "content": {
-          "productListCategories": ["카테고리1", "카테고리2", ..., "카테고리${cnt}"]
+          "productListCategories": "상품카테고리명"
           "productListProductTitle": "상품이름"
           "productListProductDesc": "상품설명"
         }
