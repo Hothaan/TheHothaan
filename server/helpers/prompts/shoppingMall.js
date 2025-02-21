@@ -5,16 +5,17 @@ function generateShoppingMallPrompt(serviceDetails) {
     return `Generate 6 categories, 15 titles and descriptions for the ${depth1} menu ${depth2} page on the '${component}' component of a ${service} website named ${serviceTitle}. 
       This website's purpose is: ${serviceDesc}. Follow this structure: ${JSON.stringify(structure)}. 
       
-      Each category should fit the style and purpose of the website. Provide the response strictly in JSON format as follows:
+      Each category should fit the style and purpose of the website. productListProductTitle and productListProductDesc should be created based on category 1.
+      Provide the response strictly in JSON format as follows:
       
       {
       "menu": "${depth1}",
       "feature": "${depth2}",
       "content": {
-        "productListCategories": ["카테고리", "카테고리", "카테고리", "카테고리", "카테고리", "카테고리"],
-        "productListProductTitle": ["상품이름", "상품이름", "상품이름", "상품이름", "상품이름", "상품이름", "상품이름", "상품이름", "상품이름", "상품이름", "상품이름", "상품이름", "상품이름", "상품이름", "상품이름"],
-        "productListProductDesc": ["상품설명", "상품설명", "상품설명", "상품설명", "상품설명", "상품설명", "상품설명", "상품설명", "상품설명", "상품설명", "상품설명", "상품설명", "상품설명", "상품설명", "상품설명"]
-        }        
+      "productListCategories": ["카테고리", "카테고리", "카테고리", "카테고리", "카테고리", "카테고리"],
+      "productListProductTitle": ["카테고리 1번 상품이름", "카테고리 1번 상품이름", "카테고리 1번 상품이름", "카테고리 1번 상품이름", "카테고리 1번 상품이름", "카테고리 1번 상품이름", "카테고리 1번 상품이름", "카테고리 1번 상품이름", "카테고리 1번 상품이름", "카테고리 1번 상품이름", "카테고리 1번 상품이름", "카테고리 1번 상품이름", "카테고리 1번 상품이름", "카테고리 1번 상품이름", "카테고리 1번 상품이름"],
+      "productListProductDesc": ["카테고리 1번 상품설명", "카테고리 1번 상품설명", "카테고리 1번 상품설명", "카테고리 1번 상품설명", "카테고리 1번 상품설명", "카테고리 1번 상품설명", "카테고리 1번 상품설명", "카테고리 1번 상품설명", "카테고리 1번 상품설명", "카테고리 1번 상품설명", "카테고리 1번 상품설명", "카테고리 1번 상품설명", "카테고리 1번 상품설명", "카테고리 1번 상품설명", "카테고리 1번 상품설명"]
+      }        
       }
       
       Do not add any additional text or explanation. Only include the specified fields in JSON format. Answer in Korean.`;
