@@ -11,11 +11,13 @@ function generateShoppingMallPrompt(serviceDetails) {
       {
         "menu": "${depth1}",
         "feature": "${depth2}",
-        "content": {
-          "productListCategories": "상품카테고리명"
-          "productListProductTitle": "상품이름"
-          "productListProductDesc": "상품설명"
-        }
+        "content": [
+          {
+            "productListCategories": "상품카테고리명"
+            "productListProductTitle": "상품이름"
+            "productListProductDesc": "상품설명"
+          }
+        ]        
       }
       
       Do not add any additional text or explanation. Only include the specified fields in JSON format. Answer in Korean.`;
