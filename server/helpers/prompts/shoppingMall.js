@@ -2,7 +2,8 @@ function generateShoppingMallPrompt(serviceDetails) {
   const { service, serviceTitle, serviceDesc, depth1, depth2, component, structure, content, cnt } = serviceDetails;
 
   if (depth2 === '상품 목록') {
-    const categoryCnt = cnt ?? 5;
+    // const categoryCnt = cnt ?? 5;
+    const categoryCnt = 3;
     return `Generate ${categoryCnt} categories, titles and descriptoins for the ${depth1} menu ${depth2} page on the '${component}' component of a ${service} website named ${serviceTitle}. 
       This website's purpose is: ${serviceDesc}. Follow this structure: ${JSON.stringify(structure)}. 
       
