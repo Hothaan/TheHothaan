@@ -24,13 +24,13 @@ import {
 } from "@components/template/product/ProductList";
 
 interface IshoppingMallProductListContent {
-  productListCategories?: string;
+  productListCategory?: string;
   productListProductTitle?: string;
   productListProductDesc?: string;
 }
 
 interface IshoppingMallProductListStyle {
-  productListCategories?: CSSObject;
+  productListCategory?: CSSObject;
   productListProductTitle?: CSSObject;
   productListProductDesc?: CSSObject;
 }
@@ -95,8 +95,8 @@ export default function ShoppingMallProductList() {
   function updateInitialContent() {
     if (generatedText && generatedText.content) {
       const initialContent = {
-        productListCategories:
-          generatedText.content.productListCategories || undefined,
+        productListCategory:
+          generatedText.content.productListCategory || undefined,
         productListProductTitle:
           generatedText.content.productListProductTitle || undefined,
         productListProductDesc:
@@ -109,7 +109,7 @@ export default function ShoppingMallProductList() {
   //페이지에 적용될 초기 스타일 저장
   function updateInitialStyle() {
     const initialStyle = {
-      productListCategories: product_list_nav_item_css_ || undefined,
+      productListCategory: product_list_nav_item_css_ || undefined,
       productListProductTitle: product_list_title_css_ || undefined,
       productListProductDesc: product_list_desc_css_ || undefined,
     };
@@ -251,12 +251,12 @@ export default function ShoppingMallProductList() {
 
       <ProductList
         content={{
-          productListCategories: pageContent?.productListCategories,
+          productListCategory: pageContent?.productListCategory,
           productListProductTitle: pageContent?.productListProductTitle,
           productListProductDesc: pageContent?.productListProductDesc,
         }}
         style={{
-          productListCategories: pageStyle?.productListCategories,
+          productListCategory: pageStyle?.productListCategory,
           productListProductTitle: pageStyle?.productListProductTitle,
           productListProductDesc: pageStyle?.productListProductDesc,
         }}

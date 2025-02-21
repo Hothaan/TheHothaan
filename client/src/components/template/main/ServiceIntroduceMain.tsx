@@ -205,11 +205,8 @@ export default function ServiceIntroduce(prop: IserviceIntroduce) {
         <div css={container}>
           {isEditable ? (
             <EditableText
-              text={editableContent?.serviceIntroduceTitle || title_}
-              defaultCss={
-                editableStyle?.serviceIntroduceTitle ||
-                service_introduce_title_css
-              }
+              text={editableContent?.serviceIntroduceTitle as string}
+              defaultCss={editableStyle?.serviceIntroduceTitle as CSSObject}
               isTextArea={false}
               className="serviceIntroduceTitle"
               id="serviceIntroduceTitle"
@@ -221,23 +218,15 @@ export default function ServiceIntroduce(prop: IserviceIntroduce) {
               justifyContent="center"
             />
           ) : (
-            <p
-              css={
-                editableStyle?.serviceIntroduceTitle ||
-                service_introduce_title_css
-              }
-            >
-              {editableContent?.serviceIntroduceTitle || title_}
+            <p css={editableStyle?.serviceIntroduceTitle}>
+              {editableContent?.serviceIntroduceTitle}
             </p>
           )}
 
           {isEditable ? (
             <EditableText
-              text={editableContent?.serviceIntroduceDesc || desc_}
-              defaultCss={
-                editableStyle?.serviceIntroduceDesc ||
-                service_introduce_desc_css
-              }
+              text={editableContent?.serviceIntroduceDesc as string}
+              defaultCss={editableStyle?.serviceIntroduceDesc as CSSObject}
               isTextArea={true}
               className="serviceIntroduceDesc"
               id="serviceIntroduceDesc"
@@ -249,13 +238,8 @@ export default function ServiceIntroduce(prop: IserviceIntroduce) {
               justifyContent="center"
             />
           ) : (
-            <p
-              css={
-                editableStyle?.serviceIntroduceDesc ||
-                service_introduce_desc_css
-              }
-            >
-              {editableContent?.serviceIntroduceDesc || desc_}
+            <p css={editableStyle?.serviceIntroduceDesc}>
+              {editableContent?.serviceIntroduceDesc}
             </p>
           )}
         </div>

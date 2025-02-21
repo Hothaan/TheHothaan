@@ -24,13 +24,13 @@ const product_title_ = "lorem ipsum, quia do";
 const product_desc_ = "lorem ipsum, quia do";
 
 export interface IproductListContent {
-  productListCategories?: string;
+  productListCategory?: string;
   productListProductTitle?: string;
   productListProductDesc?: string;
 }
 
 export interface IproductListStyle {
-  productListCategories?: CSSObject;
+  productListCategory?: CSSObject;
   productListProductTitle?: CSSObject;
   productListProductDesc?: CSSObject;
 }
@@ -263,14 +263,14 @@ export default function ProductList(prop: IproductList) {
   } = prop;
 
   const initialContent = {
-    productListCategories: content?.productListCategories || categories_,
+    productListCategory: content?.productListCategory || categories_,
     productListProductTitle: content?.productListProductTitle || product_title_,
     productListProductDesc: content?.productListProductDesc || product_desc_,
   };
 
   const initialStyle = {
-    productListCategories:
-      style?.productListCategories || product_list_nav_item_css_,
+    productListCategory:
+      style?.productListCategory || product_list_nav_item_css_,
     productListProductTitle:
       style?.productListProductTitle || product_list_title_css_,
     productListProductDesc:
@@ -383,21 +383,21 @@ export default function ProductList(prop: IproductList) {
                 <li css={nav_item} key={index}>
                   {isEditable ? (
                     <EditableText
-                      text={editableContent.productListCategories}
-                      className="productListCategories"
+                      text={editableContent.productListCategory}
+                      className="productListCategory"
                       isTextArea={false}
-                      defaultCss={editableStyle.productListCategories}
+                      defaultCss={editableStyle.productListCategory}
                       onChangeText={(key, value) =>
                         handleEditContent(key, value)
                       }
                       onChangeCss={(key, value) => handleEditStyle(key, value)}
-                      id={"productListCategories" + index}
+                      id={"productListCategory" + index}
                       activeEditor={activeEditor}
                       setActiveEditor={setActiveEditor}
                     />
                   ) : (
-                    <p css={editableStyle?.productListCategories}>
-                      {editableContent?.productListCategories}
+                    <p css={editableStyle?.productListCategory}>
+                      {editableContent?.productListCategory}
                     </p>
                   )}
                   <ChevDown />
