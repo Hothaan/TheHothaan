@@ -119,7 +119,7 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
     } catch (error) {
       console.error(error);
       setIsFail(true);
-      // window.location.href = "/error";
+      window.location.href = "/error";
     }
   }
 
@@ -250,7 +250,7 @@ export default function FullPageModalEditable(prop: IFullPageModal) {
       }
     } catch (error) {
       console.error("Error saving images:", error);
-      // // window.location.href = "/error";
+      // window.location.href = "/error";
       return null;
     } finally {
     }

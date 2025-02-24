@@ -75,7 +75,7 @@ export default function CommunitySnsBoard() {
       }
     } catch (error) {
       console.error(error);
-      // window.location.href = "/error";
+      window.location.href = "/error";
     }
   }
 

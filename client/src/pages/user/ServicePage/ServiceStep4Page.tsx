@@ -91,7 +91,7 @@ export default function ServicePreviewPage() {
     } catch (error) {
       console.error(error);
       setIsFail(true);
-      // window.location.href = "/error";
+      window.location.href = "/error";
     }
   }
 

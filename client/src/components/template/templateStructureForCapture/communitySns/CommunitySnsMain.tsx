@@ -122,7 +122,7 @@ export default function CommunitySnsMain() {
       }
     } catch (error) {
       console.error(error);
-      // window.location.href = "/error";
+      window.location.href = "/error";
     }
   }
 

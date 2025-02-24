@@ -74,7 +74,7 @@ export default function ServiceStep5Page() {
     } catch (error) {
       console.error(error);
       setIsFail(true);
-      // window.location.href = "/error";
+      window.location.href = "/error";
     }
   }
 
@@ -118,7 +118,7 @@ export default function ServiceStep5Page() {
       setIsLoadingModalOpen(false);
     } catch (error) {
       console.error("파일 다운로드 중 오류 발생:", error);
-      // window.location.href = "/error";
+      window.location.href = "/error";
     }
   }
 
@@ -187,7 +187,7 @@ export default function ServiceStep5Page() {
         }
       } catch (error) {
         console.log(error);
-        // window.location.href = "/error";
+        window.location.href = "/error";
       } finally {
       }
     }

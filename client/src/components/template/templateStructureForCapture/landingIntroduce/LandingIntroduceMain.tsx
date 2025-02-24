@@ -146,7 +146,7 @@ export default function LandingIntroduceMain() {
       }
     } catch (error) {
       console.error(error);
-      // window.location.href = "/error";
+      window.location.href = "/error";
     }
   }
 

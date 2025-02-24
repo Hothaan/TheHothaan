@@ -147,7 +147,7 @@ export default function ServiceStep3Page() {
         }
       } catch (error) {
         console.error("Error fetching service type menu:", error);
-        // window.location.href = "/error";
+        window.location.href = "/error";
       } finally {
         setLoading(false);
       }
@@ -341,7 +341,7 @@ export default function ServiceStep3Page() {
         }
       } catch (error) {
         console.error("API 요청 실패:", error);
-        // window.location.href = "/error";
+        window.location.href = "/error";
       } finally {
         // fetchGeneratedText();
       }
@@ -386,7 +386,7 @@ export default function ServiceStep3Page() {
       }
     } catch (error) {
       console.error("Error fetching generated text:", error);
-      // window.location.href = "/error";
+      window.location.href = "/error";
     } finally {
     }
   }
@@ -409,7 +409,7 @@ export default function ServiceStep3Page() {
       }
     } catch (error) {
       console.error(error);
-      // window.location.href = "/error";
+      window.location.href = "/error";
     }
   }
 
@@ -487,7 +487,7 @@ export default function ServiceStep3Page() {
       }
     } catch (error) {
       console.error("Error saving images:", error);
-      // // window.location.href = "/error";
+      // window.location.href = "/error";
       return null;
     } finally {
       setIsImgageSaved(true);

@@ -56,7 +56,7 @@ export default function IntermediaryMatchJoin() {
       }
     } catch (error) {
       console.error(error);
-      // window.location.href = "/error";
+      window.location.href = "/error";
     }
   }
 
