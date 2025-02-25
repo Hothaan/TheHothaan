@@ -29,6 +29,7 @@ import {
   getServiceTypeMenu,
   IserviceTypeMenuItem,
   TmenuItem,
+  ToptionItem,
   TserviceTypeMenu,
 } from "@api/service/serviceTypeMenu";
 import { saveImageDb } from "@api/image/saveImageDb";
@@ -90,6 +91,8 @@ export default function ServiceStep3Page() {
   const isFirstRenderProjectId = useRef(true);
   const isFirstRenderFeatureData = useRef(true);
   const [localProjectId, setLocalProjectId] = useState<string | null>(null);
+
+  /*  옵션선택 후 해당 메뉴를 삭제하면 옵션이 아래에 있는 메뉴로 옮겨가는 현상 수정 필요 */
 
   useEffect(() => {
     setLocalProjectId(null);
@@ -221,7 +224,8 @@ export default function ServiceStep3Page() {
   function handleSelectOption(
     item_name: string,
     option_type: string,
-    menu_id: number
+    menu_id: number,
+    selectedOption: ToptionItem | null | undefined
   ): void {
     if (formData) {
       setFormData((prev: TserviceTypeMenu | null) => {
@@ -235,13 +239,21 @@ export default function ServiceStep3Page() {
                     return {
                       ...item,
                       options: item.options?.map((option) => {
-                        if (option.option_type === option_type) {
+                        if (
+                          selectedOption !== undefined &&
+                          selectedOption !== null
+                        ) {
                           return {
                             ...option,
-                            is_selected: !option.is_selected,
+                            is_selected:
+                              selectedOption.option_type === option_type,
+                          };
+                        } else {
+                          return {
+                            ...option,
+                            is_selected: false,
                           };
                         }
-                        return option;
                       }),
                     };
                   }
@@ -268,7 +280,17 @@ export default function ServiceStep3Page() {
                 ...menu,
                 items: menu.items.map((item) => {
                   if (item.item_name === item_name) {
-                    return { ...item, is_selected: false };
+                    if (item.is_option && item.options) {
+                      return {
+                        ...item,
+                        is_selected: false,
+                        options: item.options.map((item) => {
+                          return { ...item, is_selected: false };
+                        }),
+                      };
+                    } else {
+                      return { ...item, is_selected: false };
+                    }
                   }
                   return item;
                 }),
@@ -570,6 +592,8 @@ export default function ServiceStep3Page() {
       return () => clearTimeout(timer);
     }
   }, [isFail]);
+
+  console.log(formData);
 
   if (isFail) {
     return <Loading />;

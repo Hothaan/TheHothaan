@@ -6,7 +6,11 @@ import ButtonMenuItem from "../button/ButtonMenuItem";
 import { IbuttonChooseDepth2Function } from "../button/ButtonChooseFeature";
 import ButtonChooseFeature from "../button/ButtonChooseFeature";
 import ButtonAddFeature from "../button/ButtonAddFeature";
-import { IserviceTypeMenuItem, TmenuItem } from "@api/service/serviceTypeMenu";
+import {
+  IserviceTypeMenuItem,
+  TmenuItem,
+  ToptionItem,
+} from "@api/service/serviceTypeMenu";
 
 export interface ImenuConstructBox {
   data: IserviceTypeMenuItem;
@@ -14,7 +18,8 @@ export interface ImenuConstructBox {
   onSelectOption: (
     item_name: string,
     option_type: string,
-    menu_id: number
+    menu_id: number,
+    selectedOption: ToptionItem | null | undefined
   ) => void;
   onDelete: (menu_id: number, item_name: string) => void;
 }
@@ -45,8 +50,24 @@ export default function MenuConstructBox(prop: ImenuConstructBox) {
 
   function handleDelete(item_name: string): void {
     setSelectableFeature((prevDepths) =>
-      prevDepths.map((item) =>
-        item.item_name === item_name ? { ...item, is_selected: false } : item
+      prevDepths.map(
+        (item) => {
+          if (item.item_name === item_name) {
+            if (item.is_option && item.options) {
+              return {
+                ...item,
+                is_selected: false,
+                options: item.options.map((item) => {
+                  return { ...item, is_selected: false };
+                }),
+              };
+            } else {
+              return { ...item, is_selected: false };
+            }
+          }
+          return item;
+        }
+        // item.item_name === item_name ? { ...item, is_selected: false } : item
       )
     );
     onDelete(data.menu_id, item_name);

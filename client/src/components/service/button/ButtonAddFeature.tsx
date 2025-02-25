@@ -23,11 +23,15 @@ export default function ButtonAddFeature(prop: IbuttonAddFeature) {
   );
   const [selectedValue, setSelectedValue] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [updateDepth2, setUpdateDepth2] = useState<TmenuItem[]>(data.items);
+  const [updateDepth2, setUpdateDepth2] = useState<TmenuItem[]>([]);
 
   useEffect(() => {
     setUpdateDepth2(data.items);
   }, [data.items]);
+
+  // useEffect(() => {
+  //   setUpdateDepth2(data.items);
+  // }, [data.items]);
 
   const serviceModal: IserviceModal = {
     isOpen: isModalOpen,
