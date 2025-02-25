@@ -19,7 +19,7 @@ export interface ImenuConstructBox {
     item_name: string,
     option_type: string,
     menu_id: number,
-    selectedOption: ToptionItem | null | undefined
+    options: ToptionItem[] | undefined
   ) => void;
   onDelete: (menu_id: number, item_name: string) => void;
 }
@@ -30,12 +30,12 @@ export default function MenuConstructBox(prop: ImenuConstructBox) {
     data.items
   );
 
-  const filteredSelectedFeature = selectableFeature.filter(
+  const filteredSelectedFeature = data.items.filter(
     (menuItem: TmenuItem) => menuItem.is_selected
   );
   const canAddMoreDepth2: boolean =
     filteredSelectedFeature.length < MAX_NUM &&
-    filteredSelectedFeature.length < selectableFeature.length - 1;
+    filteredSelectedFeature.length < data.items.length - 1;
 
   function handleAddMenu(updatedMenuItems: TmenuItem[]) {
     onAddMenu(updatedMenuItems, data.menu_id);
@@ -73,12 +73,12 @@ export default function MenuConstructBox(prop: ImenuConstructBox) {
     onDelete(data.menu_id, item_name);
   }
 
-  useEffect(() => {
-    setAddDepth2((prev) => ({
-      ...prev,
-      selectableFeature: selectableFeature,
-    }));
-  }, [selectableFeature]);
+  // useEffect(() => {
+  //   setAddDepth2((prev) => ({
+  //     ...prev,
+  //     selectableFeature: data.items,
+  //   }));
+  // }, [data.items]);
 
   return (
     <div css={wrap}>

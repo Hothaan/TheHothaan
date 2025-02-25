@@ -225,7 +225,7 @@ export default function ServiceStep3Page() {
     item_name: string,
     option_type: string,
     menu_id: number,
-    selectedOption: ToptionItem | null | undefined
+    options: ToptionItem[] | undefined
   ): void {
     if (formData) {
       setFormData((prev: TserviceTypeMenu | null) => {
@@ -235,25 +235,14 @@ export default function ServiceStep3Page() {
               return {
                 ...menu,
                 items: menu.items.map((item) => {
-                  if (item.item_name === item_name) {
+                  if (item.item_name === item_name && options) {
                     return {
                       ...item,
-                      options: item.options?.map((option) => {
-                        if (
-                          selectedOption !== undefined &&
-                          selectedOption !== null
-                        ) {
-                          return {
-                            ...option,
-                            is_selected:
-                              selectedOption.option_type === option_type,
-                          };
-                        } else {
-                          return {
-                            ...option,
-                            is_selected: false,
-                          };
-                        }
+                      options: item.options?.map((option, idx) => {
+                        return {
+                          ...option,
+                          is_selected: option_type === options[idx].option_type,
+                        };
                       }),
                     };
                   }

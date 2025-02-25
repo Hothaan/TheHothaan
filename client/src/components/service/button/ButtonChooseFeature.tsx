@@ -16,7 +16,7 @@ export interface IbuttonChooseDepth2Function {
     item_name: string,
     option_type: string,
     menu_id: number,
-    selectedOption: ToptionItem | null | undefined
+    options: ToptionItem[] | undefined
   ) => void;
   onDelete: (item_name: string) => void;
 }
@@ -29,7 +29,6 @@ export default function ButtonChooseFeature(prop: IbuttonChooseDepth2Function) {
   const optionRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    console.log(data);
     if (data.is_option === true && data.options !== undefined) {
       const option = data.options.filter((item) => {
         if (item.is_selected === true) {
@@ -41,21 +40,6 @@ export default function ButtonChooseFeature(prop: IbuttonChooseDepth2Function) {
       }
     }
   }, [data]);
-
-  useEffect(() => {
-    console.log(data.item_name, selectedValue);
-  }, [selectedValue]);
-
-  // useEffect(() => {
-  //   console.log(data);
-  //   if (!data?.is_option || !data?.options) return;
-
-  //   // 선택된 옵션 찾기
-  //   const selectedOption = data.options.find((item) => item.is_selected);
-
-  //   // 최신 선택된 값을 반영
-  //   setSelectedValue(selectedOption ? selectedOption.option_type : "");
-  // }, [data]); // ✅ `data.options` 만 감지하도록 변경
 
   const serviceModal: IserviceModal = {
     isOpen: isModalOpen,
@@ -70,7 +54,7 @@ export default function ButtonChooseFeature(prop: IbuttonChooseDepth2Function) {
         text: "취소",
         onClick: () => {
           setSelectedValue("");
-          onSelectOption(data.item_name, "", menu_id, null);
+          onSelectOption(data.item_name, "", menu_id, data.options);
           setIsModalOpen(!isModalOpen);
         },
       },
@@ -78,10 +62,6 @@ export default function ButtonChooseFeature(prop: IbuttonChooseDepth2Function) {
         size: "M",
         bg: "gradient",
         text: "저장",
-        // onClick: () => {
-        //   onSelectOption(data.item_name, selectedValue, menu_id);
-        //   setIsModalOpen(!isModalOpen);
-        // },
         onClick: () => {
           const selectedOption =
             data.options !== undefined
@@ -89,20 +69,15 @@ export default function ButtonChooseFeature(prop: IbuttonChooseDepth2Function) {
                   (option) => option.option_type === selectedValue
                 )
               : null;
-          onSelectOption(
-            data.item_name,
-            selectedValue,
-            menu_id,
-            selectedOption
-          );
+          onSelectOption(data.item_name, selectedValue, menu_id, data.options);
 
-          if (selectedOption) {
-            setSelectedValue(selectedOption.option_type);
-          } else {
-            setSelectedValue("");
-          }
+          // if (selectedOption) {
+          //   setSelectedValue(selectedOption.option_type);
+          // } else {
+          //   setSelectedValue("");
+          // }
 
-          setIsModalOpen(false); // ✅ 불필요한 ! 연산자 제거 (그냥 false로 설정)
+          setIsModalOpen(false);
         },
       },
     ],
