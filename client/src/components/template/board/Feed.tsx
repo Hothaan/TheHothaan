@@ -52,7 +52,7 @@ function FeedItem(prop: Ifeed) {
     setActiveEditor,
   } = prop;
 
-  const count = 36;
+  const count = 16;
 
   if (content?.feedTitle === undefined || style?.feedTitle === undefined) {
     return <></>;
@@ -239,10 +239,10 @@ const item = css`
 
 const image_wrap = css`
   width: 100%;
-  padding: 0 45px;
+  padding: 45px 0 120px;
   flex-wrap: wrap;
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 30px;
 
   @media (max-width: 1000px) {

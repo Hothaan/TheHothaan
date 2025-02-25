@@ -18,13 +18,18 @@ import { getFeatureData } from "@api/project/getFeatureData";
 import useIsProduction from "@hooks/useIsProduction";
 
 /* css */
-import { price_main_item_desc_css_ } from "@components/template/main/PriceMain";
+import {
+  price_main_info_css,
+  price_main_item_desc_css_,
+} from "@components/template/main/PriceMain";
 
 interface IntermediaryMatchPriceContent {
+  priceMainInfo?: string; //수정
   priceMainDesc?: string;
 }
 
 interface IntermediaryMatchPriceStyle {
+  priceMainInfo?: CSSObject; //수정
   priceMainDesc?: CSSObject;
 }
 
@@ -89,6 +94,7 @@ export default function IntermediaryMatchPrice() {
   function updateInitialContent() {
     if (generatedText && generatedText.content) {
       const initialContent = {
+        priceMainInfo: generatedText.content.priceMainInfo || undefined,
         priceMainDesc: generatedText.content.priceMainDesc || undefined,
       };
       setPageContent({ ...initialContent });
@@ -97,6 +103,7 @@ export default function IntermediaryMatchPrice() {
 
   function updateInitialStyle() {
     const initialStyle = {
+      priceMainInfo: price_main_info_css || undefined,
       priceMainDesc: price_main_item_desc_css_ || undefined,
     };
     setPageStyle({ ...initialStyle });
@@ -240,8 +247,14 @@ export default function IntermediaryMatchPrice() {
         logo={headerData.logo}
       />
       <PriceMain
-        content={{ priceMainDesc: pageContent?.priceMainDesc }}
-        style={{ priceMainDesc: pageStyle?.priceMainDesc }}
+        content={{
+          priceMainInfo: pageContent?.priceMainInfo,
+          priceMainDesc: pageContent?.priceMainDesc,
+        }}
+        style={{
+          priceMainInfo: pageStyle?.priceMainInfo,
+          priceMainDesc: pageStyle?.priceMainDesc,
+        }}
         isEditable={true}
         onChangeContent={handleChangeContent}
         onChangeStyle={handleChangeStyle}

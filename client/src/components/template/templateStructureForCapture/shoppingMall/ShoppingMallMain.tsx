@@ -37,6 +37,7 @@ import {
 } from "@components/template/main/ProductListMain";
 
 import {
+  review_info_css,
   review_item_caption_name_css,
   review_item_caption_role_css,
   review_item_desc_css,
@@ -53,25 +54,19 @@ import {
   service_contact_button_css_,
 } from "@components/template/service/ServiceContact";
 
-interface Icontent {
-  [key: string]: string | undefined;
-}
-interface Istyle {
-  [key: string]: CSSObject | undefined;
-}
-
 interface IshoppingMallMainContent {
   mainBannerTitle?: string;
   mainBannerDesc?: string;
   mainBannerButton?: string;
   productListTitle?: string;
   productListDesc?: string;
+  reviewInfo?: string; // 수정
   reviewTitle?: string;
   reviewDesc?: string;
   reviewName?: string;
   reviewRole?: string;
-  productListItemTitle?: string; // 수정 요청
-  productListItemDesc?: string; // 수정 요청
+  productListItemTitle?: string;
+  productListItemDesc?: string;
   serviceIntroductionTitle?: string;
   serviceIntroductionDesc?: string;
   serviceContactTitle?: string;
@@ -84,12 +79,13 @@ interface IshoppingMallMainStyle {
   mainBannerButton?: CSSObject;
   productListTitle?: CSSObject;
   productListDesc?: CSSObject;
+  reviewInfo?: CSSObject; // 수정
   reviewTitle?: CSSObject;
   reviewDesc?: CSSObject;
   reviewName?: CSSObject;
   reviewRole?: CSSObject;
-  productListItemTitle?: CSSObject; // 수정 요청
-  productListItemDesc?: CSSObject; // 수정 요청
+  productListItemTitle?: CSSObject;
+  productListItemDesc?: CSSObject;
   serviceIntroductionTitle?: CSSObject;
   serviceIntroductionDesc?: CSSObject;
   serviceContactTitle?: CSSObject;
@@ -164,6 +160,7 @@ export default function ShoppingMallMain() {
         mainBannerButton: generatedText.content.mainBannerButton || undefined,
         productListTitle: generatedText.content.productListTitle || undefined,
         productListDesc: generatedText.content.productListDesc || undefined,
+        reviewInfo: generatedText.content.reviewInfo || undefined,
         reviewTitle: generatedText.content.reviewTitle || undefined,
         reviewDesc: generatedText.content.reviewDesc || undefined,
         reviewName: generatedText.content.reviewName || undefined,
@@ -193,6 +190,7 @@ export default function ShoppingMallMain() {
         mainBannerButton: generatedText.content.mainBannerButton || undefined,
         productListTitle: generatedText.content.productListTitle || undefined,
         productListDesc: generatedText.content.productListDesc || undefined,
+        reviewInfo: generatedText.content.reviewInfo || undefined,
         reviewTitle: generatedText.content.reviewTitle || undefined,
         reviewDesc: generatedText.content.reviewDesc || undefined,
         reviewName: generatedText.content.reviewName || undefined,
@@ -217,6 +215,7 @@ export default function ShoppingMallMain() {
       mainBannerButton: mainBanner_button_css_ || undefined,
       productListTitle: product_list_option_main_title_css || undefined,
       productListDesc: product_list_option_main_desc_css || undefined,
+      reviewInfo: review_info_css || undefined,
       reviewTitle: review_item_title_css || undefined,
       reviewDesc: review_item_desc_css || undefined,
       reviewName: review_item_caption_name_css || undefined,
@@ -239,6 +238,7 @@ export default function ShoppingMallMain() {
       productListTitle: product_list_option_main_title_css || undefined,
       productListDesc: product_list_option_main_desc_css || undefined,
 
+      reviewInfo: review_info_css || undefined,
       reviewTitle: review_item_title_css || undefined,
       reviewDesc: review_item_desc_css || undefined,
       reviewName: review_item_caption_name_css || undefined,
@@ -423,12 +423,14 @@ export default function ShoppingMallMain() {
       />
       <Review
         content={{
+          reviewInfo: pageContent?.reviewInfo,
           reviewTitle: pageContent?.reviewTitle,
           reviewDesc: pageContent?.reviewDesc,
           reviewName: pageContent?.reviewName,
           reviewRole: pageContent?.reviewRole,
         }}
         style={{
+          reviewInfo: pageStyle?.reviewInfo,
           reviewTitle: pageStyle?.reviewTitle,
           reviewDesc: pageStyle?.reviewDesc,
           reviewName: pageStyle?.reviewName,

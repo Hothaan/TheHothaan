@@ -68,9 +68,12 @@ interface IlandingIntroduceMainContent {
   serviceIntroduceTitle?: string;
   serviceIntroduceDesc?: string;
 
-  productIntroduceImageDesc?: string;
-  productIntroduceTitle?: string;
-  productIntroduceDesc?: string;
+  productIntroduceImageDesc1?: string; //수정
+  productIntroduceTitle1?: string; // 수정
+  productIntroduceDesc1?: string; // 수정
+  productIntroduceImageDesc2?: string; //수정
+  productIntroduceTitle2?: string; // 수정
+  productIntroduceDesc2?: string; // 수정
 
   noticeTitle?: string;
   noticeDesc?: string;
@@ -92,9 +95,12 @@ interface IlandingIntroduceMainStyle {
   mainBannerButton?: CSSObject;
   serviceIntroduceTitle?: CSSObject;
   serviceIntroduceDesc?: CSSObject;
-  productIntroduceImageDesc?: CSSObject;
-  productIntroduceTitle?: CSSObject;
-  productIntroduceDesc?: CSSObject;
+  productIntroduceImageDesc1?: CSSObject; //수정
+  productIntroduceTitle1?: CSSObject; // 수정
+  productIntroduceDesc1?: CSSObject; // 수정
+  productIntroduceImageDesc2?: CSSObject; //수정
+  productIntroduceTitle2?: CSSObject; // 수정
+  productIntroduceDesc2?: CSSObject; // 수정
   noticeTitle?: CSSObject;
   noticeDesc?: CSSObject;
   recruitTitle?: CSSObject;
@@ -209,12 +215,18 @@ export default function LandingIntroduceMain() {
         serviceIntroduceDesc:
           generatedText.content.serviceIntroduceDesc || undefined,
 
-        productIntroduceImageDesc:
-          generatedText.content.productIntroduceImageDesc || undefined,
-        productIntroduceTitle:
-          generatedText.content.productIntroduceTitle || undefined,
-        productIntroduceDesc:
-          generatedText.content.productIntroduceDesc || undefined,
+        productIntroduceImageDesc1:
+          generatedText.content.productIntroduceImageDesc1 || undefined,
+        productIntroduceTitle1:
+          generatedText.content.productIntroduceTitle1 || undefined,
+        productIntroduceDesc1:
+          generatedText.content.productIntroduceDesc1 || undefined,
+        productIntroduceImageDesc2:
+          generatedText.content.productIntroduceImageDesc2 || undefined,
+        productIntroduceTitle2:
+          generatedText.content.productIntroduceTitle2 || undefined,
+        productIntroduceDesc2:
+          generatedText.content.productIntroduceDesc2 || undefined,
 
         noticeTitle: generatedText.content.noticeTitle || undefined,
         noticeDesc: generatedText.content.noticeDesc || undefined,
@@ -247,9 +259,14 @@ export default function LandingIntroduceMain() {
       serviceIntroduceTitle: service_introduce_title_css || undefined,
       serviceIntroduceDesc: service_introduce_desc_css || undefined,
 
-      productIntroduceImageDesc: product_introduce_image_desc_css_ || undefined,
-      productIntroduceTitle: product_introduce_title_css_ || undefined,
-      productIntroduceDesc: product_introduce_desc_css_ || undefined,
+      productIntroduceImageDesc1:
+        product_introduce_image_desc_css_ || undefined,
+      productIntroduceTitle1: product_introduce_title_css_ || undefined,
+      productIntroduceDesc1: product_introduce_desc_css_ || undefined,
+      productIntroduceImageDesc2:
+        product_introduce_image_desc_css_ || undefined,
+      productIntroduceTitle2: product_introduce_title_css_ || undefined,
+      productIntroduceDesc2: product_introduce_desc_css_ || undefined,
 
       noticeTitle: notice_main_title_css_ || undefined,
       noticeDesc: notice_main_desc_css_ || undefined,
@@ -399,14 +416,20 @@ export default function LandingIntroduceMain() {
       />
       <ProductIntroduceMain
         content={{
-          productIntroduceImageDesc: pageContent?.productIntroduceImageDesc,
-          productIntroduceTitle: pageContent?.productIntroduceTitle,
-          productIntroduceDesc: pageContent?.productIntroduceDesc,
+          productIntroduceImageDesc1: pageContent?.productIntroduceImageDesc1,
+          productIntroduceTitle1: pageContent?.productIntroduceTitle1,
+          productIntroduceDesc1: pageContent?.productIntroduceDesc1,
+          productIntroduceImageDesc2: pageContent?.productIntroduceImageDesc2,
+          productIntroduceTitle2: pageContent?.productIntroduceTitle2,
+          productIntroduceDesc2: pageContent?.productIntroduceDesc2,
         }}
         style={{
-          productIntroduceImageDesc: pageStyle?.productIntroduceImageDesc,
-          productIntroduceTitle: pageStyle?.productIntroduceTitle,
-          productIntroduceDesc: pageStyle?.productIntroduceDesc,
+          productIntroduceImageDesc1: pageStyle?.productIntroduceImageDesc1,
+          productIntroduceTitle1: pageStyle?.productIntroduceTitle1,
+          productIntroduceDesc1: pageStyle?.productIntroduceDesc1,
+          productIntroduceImageDesc2: pageStyle?.productIntroduceImageDesc2,
+          productIntroduceTitle2: pageStyle?.productIntroduceTitle2,
+          productIntroduceDesc2: pageStyle?.productIntroduceDesc2,
         }}
         isEditable={true}
         onChangeContent={handleChangeContent}

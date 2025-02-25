@@ -23,6 +23,7 @@ const name_ = "Lorem ipsum";
 const role_ = "Lorem ipsum";
 
 export interface IreviewContent {
+  reviewInfo?: string;
   reviewTitle?: string;
   reviewDesc?: string;
   reviewName?: string;
@@ -30,6 +31,7 @@ export interface IreviewContent {
 }
 
 export interface IreviewStyle {
+  reviewInfo?: CSSObject;
   reviewTitle?: CSSObject;
   reviewDesc?: CSSObject;
   reviewName?: CSSObject;
@@ -46,6 +48,17 @@ interface Ireview {
   activeEditor?: string;
   setActiveEditor?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
+
+export const review_info_css: CSSObject = {
+  color: "var(--Neutral-colors-600, #6d758f)",
+  textAlign: "center",
+  wordBreak: "keep-all",
+  fontFamily: "Inter",
+  fontSize: "20px",
+  fontStyle: "normal",
+  fontWeight: "400",
+  lineHeight: "160%",
+};
 
 export const review_item_title_css: CSSObject = {
   color: "#6d758f",
@@ -230,6 +243,7 @@ export default function Review(prop: Ireview) {
   const count = 7;
 
   const initialContent = {
+    reviewInfo: content?.reviewInfo || title_,
     reviewTitle: content?.reviewTitle || title_,
     reviewDesc: content?.reviewDesc || desc_,
     reviewName: content?.reviewName || name_,
@@ -237,6 +251,7 @@ export default function Review(prop: Ireview) {
   };
 
   const initialStyle = {
+    reviewInfo: style?.reviewInfo || review_info_css,
     reviewTitle: style?.reviewTitle || review_item_title_css,
     reviewDesc: style?.reviewDesc || review_item_desc_css,
     reviewName: style?.reviewName || review_item_caption_name_css,
@@ -343,7 +358,21 @@ export default function Review(prop: Ireview) {
       <InnerWrap>
         <div css={text_container}>
           <Title title="Review" transform="capitalize" marginBottom={24} />
-          <p css={desc_style}>{desc_}</p>
+          {isEditable ? (
+            <EditableText
+              text={editableContent.reviewInfo}
+              className="reviewInfo"
+              id={"reviewInfo"}
+              isTextArea={false}
+              defaultCss={editableStyle.reviewInfo}
+              onChangeText={(key, value) => onChangeContent(key, value)}
+              onChangeCss={(key, value) => onChangeStyle(key, value)}
+              activeEditor={activeEditor}
+              setActiveEditor={setActiveEditor}
+            />
+          ) : (
+            <p css={editableStyle.reviewInfo}>{editableContent.reviewInfo}</p>
+          )}
         </div>
         <div css={item_container}>
           {Array.from({ length: count }, (_, index) => (
@@ -369,19 +398,6 @@ const text_container = css`
   width: 100%;
   max-width: 900px;
   margin-bottom: 40px;
-`;
-
-const desc_style = css`
-  color: var(--Neutral-colors-600, #6d758f);
-  text-align: center;
-  word-break: keep-all;
-
-  /* h2_small */
-  font-family: Inter;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 160%; /* 32px */
 `;
 
 const item_container = css`

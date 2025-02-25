@@ -4,7 +4,6 @@ import { OuterWrap, ContentsWrap } from "../commonComponent/Wrap";
 import ImageBox from "../commonComponent/ImageBox";
 import { useEffect, useState, useCallback, useMemo } from "react";
 import EditableText from "@components/service/editableText/EditableText";
-import useEditTemplate from "@hooks/useEditTemplate";
 
 const banner_title_ = "headline h1";
 
@@ -19,15 +18,19 @@ const item_desc_ =
 export interface IbrandIntroduceContent {
   brandIntroduceBannerTitle?: string;
   brandIntroduceBannerDesc?: string;
-  brandIntroduceItemTitle?: string;
-  brandIntroduceItemDesc?: string;
+  brandIntroduceItemTitle1?: string; // 수정
+  brandIntroduceItemDesc1?: string; // 수정
+  brandIntroduceItemTitle2?: string; // 수정
+  brandIntroduceItemDesc2?: string; // 수정
 }
 
 export interface IbrandIntroduceStyle {
   brandIntroduceBannerTitle?: CSSObject;
   brandIntroduceBannerDesc?: CSSObject;
-  brandIntroduceItemTitle?: CSSObject;
-  brandIntroduceItemDesc?: CSSObject;
+  brandIntroduceItemTitle1?: CSSObject; // 수정
+  brandIntroduceItemDesc1?: CSSObject; // 수정
+  brandIntroduceItemTitle2?: CSSObject; // 수정
+  brandIntroduceItemDesc2?: CSSObject; // 수정
 }
 
 interface IbrandIntroduce {
@@ -110,79 +113,79 @@ export const brandIntroduce_item_desc_css: CSSObject = {
   WebkitLineClamp: "6",
 };
 
-function BrandIntroduceItem(prop: IbrandIntroduce) {
-  const {
-    content,
-    style,
-    isEditable,
-    onChangeContent,
-    onChangeStyle,
-    index,
-    activeEditor,
-    setActiveEditor,
-  } = prop;
+// function BrandIntroduceItem(prop: IbrandIntroduce) {
+//   const {
+//     content,
+//     style,
+//     isEditable,
+//     onChangeContent,
+//     onChangeStyle,
+//     index,
+//     activeEditor,
+//     setActiveEditor,
+//   } = prop;
 
-  if (
-    content?.brandIntroduceItemTitle === undefined ||
-    content?.brandIntroduceItemDesc === undefined ||
-    style?.brandIntroduceItemTitle === undefined ||
-    style?.brandIntroduceItemDesc === undefined
-  ) {
-    return <></>;
-  }
+//   if (
+//     content?.brandIntroduceItemTitle === undefined ||
+//     content?.brandIntroduceItemDesc === undefined ||
+//     style?.brandIntroduceItemTitle === undefined ||
+//     style?.brandIntroduceItemDesc === undefined
+//   ) {
+//     return <></>;
+//   }
 
-  return (
-    <div css={item_container}>
-      <ImageBox
-        container={{ width: "100%", height: "905px" }}
-        icon={{ width: "100px", height: "100px" }}
-        borderRadius="none"
-        responsive={{
-          maxWidth: 1000,
-          container: "",
-          icon: "width: 100px; height: 100px;",
-        }}
-      />
-      {isEditable ? (
-        <EditableText
-          text={content.brandIntroduceItemTitle}
-          className="brandIntroduceItemTitle"
-          isTextArea={false}
-          defaultCss={style.brandIntroduceItemTitle}
-          onChangeText={(key, value) => onChangeContent(key, value)}
-          onChangeCss={(key, value) => onChangeStyle(key, value)}
-          id={"brandIntroduceItemTitle" + index}
-          activeEditor={activeEditor}
-          setActiveEditor={setActiveEditor}
-        />
-      ) : (
-        <p
-          css={style?.brandIntroduceItemTitle || brandIntroduce_item_title_css}
-        >
-          {content?.brandIntroduceItemTitle || item_title_}
-        </p>
-      )}
-      {isEditable ? (
-        <EditableText
-          text={content.brandIntroduceItemDesc}
-          className="brandIntroduceItemDesc"
-          isTextArea={true}
-          defaultCss={style.brandIntroduceItemDesc}
-          onChangeText={(key, value) => onChangeContent(key, value)}
-          onChangeCss={(key, value) => onChangeStyle(key, value)}
-          id={"brandIntroduceItemDesc" + index}
-          isWidth100={true}
-          activeEditor={activeEditor}
-          setActiveEditor={setActiveEditor}
-        />
-      ) : (
-        <p css={style?.brandIntroduceItemDesc || brandIntroduce_item_desc_css}>
-          {content?.brandIntroduceItemDesc || item_desc_}
-        </p>
-      )}
-    </div>
-  );
-}
+//   return (
+//     <div css={item_container}>
+//       <ImageBox
+//         container={{ width: "100%", height: "905px" }}
+//         icon={{ width: "100px", height: "100px" }}
+//         borderRadius="none"
+//         responsive={{
+//           maxWidth: 1000,
+//           container: "",
+//           icon: "width: 100px; height: 100px;",
+//         }}
+//       />
+//       {isEditable ? (
+//         <EditableText
+//           text={content.brandIntroduceItemTitle}
+//           className="brandIntroduceItemTitle"
+//           isTextArea={false}
+//           defaultCss={style.brandIntroduceItemTitle}
+//           onChangeText={(key, value) => onChangeContent(key, value)}
+//           onChangeCss={(key, value) => onChangeStyle(key, value)}
+//           id={"brandIntroduceItemTitle" + index}
+//           activeEditor={activeEditor}
+//           setActiveEditor={setActiveEditor}
+//         />
+//       ) : (
+//         <p
+//           css={style?.brandIntroduceItemTitle || brandIntroduce_item_title_css}
+//         >
+//           {content?.brandIntroduceItemTitle || item_title_}
+//         </p>
+//       )}
+//       {isEditable ? (
+//         <EditableText
+//           text={content.brandIntroduceItemDesc}
+//           className="brandIntroduceItemDesc"
+//           isTextArea={true}
+//           defaultCss={style.brandIntroduceItemDesc}
+//           onChangeText={(key, value) => onChangeContent(key, value)}
+//           onChangeCss={(key, value) => onChangeStyle(key, value)}
+//           id={"brandIntroduceItemDesc" + index}
+//           isWidth100={true}
+//           activeEditor={activeEditor}
+//           setActiveEditor={setActiveEditor}
+//         />
+//       ) : (
+//         <p css={style?.brandIntroduceItemDesc || brandIntroduce_item_desc_css}>
+//           {content?.brandIntroduceItemDesc || item_desc_}
+//         </p>
+//       )}
+//     </div>
+//   );
+// }
 
 export default function BrandIntroduce(prop: IbrandIntroduce) {
   const {
@@ -201,8 +204,10 @@ export default function BrandIntroduce(prop: IbrandIntroduce) {
     brandIntroduceBannerTitle:
       content?.brandIntroduceBannerTitle || banner_title_,
     brandIntroduceBannerDesc: content?.brandIntroduceBannerDesc || banner_desc_,
-    brandIntroduceItemTitle: content?.brandIntroduceItemTitle || item_title_,
-    brandIntroduceItemDesc: content?.brandIntroduceItemDesc || item_desc_,
+    brandIntroduceItemTitle1: content?.brandIntroduceItemTitle1 || item_title_,
+    brandIntroduceItemDesc1: content?.brandIntroduceItemDesc1 || item_desc_,
+    brandIntroduceItemTitle2: content?.brandIntroduceItemTitle2 || item_title_,
+    brandIntroduceItemDesc2: content?.brandIntroduceItemDesc2 || item_desc_,
   };
 
   const initialStyle = {
@@ -210,10 +215,14 @@ export default function BrandIntroduce(prop: IbrandIntroduce) {
       style?.brandIntroduceBannerTitle || brandIntroduce_banner_title_css,
     brandIntroduceBannerDesc:
       style?.brandIntroduceBannerDesc || brandIntroduce_banner_desc_css,
-    brandIntroduceItemTitle:
-      style?.brandIntroduceItemTitle || brandIntroduce_item_title_css,
-    brandIntroduceItemDesc:
-      style?.brandIntroduceItemDesc || brandIntroduce_item_desc_css,
+    brandIntroduceItemTitle1:
+      style?.brandIntroduceItemTitle1 || brandIntroduce_item_title_css,
+    brandIntroduceItemDesc1:
+      style?.brandIntroduceItemDesc1 || brandIntroduce_item_desc_css,
+    brandIntroduceItemTitle2:
+      style?.brandIntroduceItemTitle2 || brandIntroduce_item_title_css,
+    brandIntroduceItemDesc2:
+      style?.brandIntroduceItemDesc2 || brandIntroduce_item_desc_css,
   };
 
   /* *********** */
@@ -378,19 +387,140 @@ export default function BrandIntroduce(prop: IbrandIntroduce) {
       <OuterWrap padding="290px">
         <ContentsWrap>
           <div css={item_wrap}>
-            {Array.from({ length: count }, (_, index) => (
-              <BrandIntroduceItem
-                key={index}
+            <div css={item_container}>
+              <ImageBox
+                container={{ width: "100%", height: "905px" }}
+                icon={{ width: "100px", height: "100px" }}
+                borderRadius="none"
+                responsive={{
+                  maxWidth: 1000,
+                  container: "",
+                  icon: "width: 100px; height: 100px;",
+                }}
+              />
+              {isEditable ? (
+                <EditableText
+                  text={editableContent.brandIntroduceItemTitle1}
+                  className="brandIntroduceItemTitle1"
+                  isTextArea={false}
+                  defaultCss={editableStyle.brandIntroduceItemTitle1}
+                  onChangeText={(key, value) => onChangeContent(key, value)}
+                  onChangeCss={(key, value) => onChangeStyle(key, value)}
+                  id={"brandIntroduceItemTitle1"}
+                  activeEditor={activeEditor}
+                  setActiveEditor={setActiveEditor}
+                />
+              ) : (
+                <p
+                  css={
+                    style?.brandIntroduceItemTitle1 ||
+                    brandIntroduce_item_title_css
+                  }
+                >
+                  {content?.brandIntroduceItemTitle1 || item_title_}
+                </p>
+              )}
+              {isEditable ? (
+                <EditableText
+                  text={editableContent.brandIntroduceItemDesc1}
+                  className="brandIntroduceItemDesc1"
+                  isTextArea={true}
+                  defaultCss={editableStyle.brandIntroduceItemDesc1}
+                  onChangeText={(key, value) => onChangeContent(key, value)}
+                  onChangeCss={(key, value) => onChangeStyle(key, value)}
+                  id={"brandIntroduceItemDesc1"}
+                  isWidth100={true}
+                  activeEditor={activeEditor}
+                  setActiveEditor={setActiveEditor}
+                />
+              ) : (
+                <p
+                  css={
+                    style?.brandIntroduceItemDesc1 ||
+                    brandIntroduce_item_desc_css
+                  }
+                >
+                  {content?.brandIntroduceItemDesc1 || item_desc_}
+                </p>
+              )}
+            </div>
+            {/* <BrandIntroduceItem
                 content={editableContent}
                 style={editableStyle}
                 isEditable={isEditable}
                 onChangeContent={handleEditContent}
                 onChangeStyle={handleEditStyle}
-                index={index}
                 activeEditor={activeEditor}
                 setActiveEditor={setActiveEditor}
+              /> */}
+          </div>
+          <div css={item_wrap}>
+            <div css={item_container}>
+              <ImageBox
+                container={{ width: "100%", height: "905px" }}
+                icon={{ width: "100px", height: "100px" }}
+                borderRadius="none"
+                responsive={{
+                  maxWidth: 1000,
+                  container: "",
+                  icon: "width: 100px; height: 100px;",
+                }}
               />
-            ))}
+              {isEditable ? (
+                <EditableText
+                  text={editableContent.brandIntroduceItemTitle2}
+                  className="brandIntroduceItemTitle2"
+                  isTextArea={false}
+                  defaultCss={editableStyle.brandIntroduceItemTitle2}
+                  onChangeText={(key, value) => onChangeContent(key, value)}
+                  onChangeCss={(key, value) => onChangeStyle(key, value)}
+                  id={"brandIntroduceItemTitle2"}
+                  activeEditor={activeEditor}
+                  setActiveEditor={setActiveEditor}
+                />
+              ) : (
+                <p
+                  css={
+                    style?.brandIntroduceItemTitle2 ||
+                    brandIntroduce_item_title_css
+                  }
+                >
+                  {content?.brandIntroduceItemTitle2 || item_title_}
+                </p>
+              )}
+              {isEditable ? (
+                <EditableText
+                  text={editableContent.brandIntroduceItemDesc2}
+                  className="brandIntroduceItemDesc2"
+                  isTextArea={true}
+                  defaultCss={editableStyle.brandIntroduceItemDesc2}
+                  onChangeText={(key, value) => onChangeContent(key, value)}
+                  onChangeCss={(key, value) => onChangeStyle(key, value)}
+                  id={"brandIntroduceItemDesc2"}
+                  isWidth100={true}
+                  activeEditor={activeEditor}
+                  setActiveEditor={setActiveEditor}
+                />
+              ) : (
+                <p
+                  css={
+                    style?.brandIntroduceItemDesc2 ||
+                    brandIntroduce_item_desc_css
+                  }
+                >
+                  {content?.brandIntroduceItemDesc2 || item_desc_}
+                </p>
+              )}
+            </div>
+            {/* <BrandIntroduceItem
+                content={editableContent}
+                style={editableStyle}
+                isEditable={isEditable}
+                onChangeContent={handleEditContent}
+                onChangeStyle={handleEditStyle}
+                activeEditor={activeEditor}
+                setActiveEditor={setActiveEditor}
+              /> */}
           </div>
         </ContentsWrap>
       </OuterWrap>

@@ -43,13 +43,17 @@ import {
 } from "@components/template/main/ProductIntroduceMain";
 
 import {
+  review_info_css,
   review_item_title_css,
   review_item_desc_css,
   review_item_caption_name_css,
   review_item_caption_role_css,
 } from "@components/template/product/Review";
 
-import { price_main_item_desc_css_ } from "@components/template/main/PriceMain";
+import {
+  price_main_info_css,
+  price_main_item_desc_css_,
+} from "@components/template/main/PriceMain";
 
 import {
   explore_service_title_css_,
@@ -66,14 +70,19 @@ interface IntermediaryMatchMainContent {
   MatchingServiceIntroduceMainBannerDesc?: string;
   MatchingServiceIntroduceMainItemTitle?: string;
   MatchingServiceIntroduceMainItemDesc?: string;
-  productIntroduceImageDesc?: string;
-  productIntroduceTitle?: string;
-  productIntroduceDesc?: string;
-  reviewTitle?: string; //수정 요청
-  reviewDesc?: string; //수정 요청
-  reviewName?: string; //수정 요청
-  reviewRole?: string; //수정 요청
-  priceMainDesc?: string; //수정 요청
+  productIntroduceImageDesc1?: string; //수정
+  productIntroduceTitle1?: string; // 수정
+  productIntroduceDesc1?: string; // 수정
+  productIntroduceImageDesc2?: string; //수정
+  productIntroduceTitle2?: string; // 수정
+  productIntroduceDesc2?: string; // 수정
+  reviewInfo?: string; // 수정
+  reviewTitle?: string;
+  reviewDesc?: string;
+  reviewName?: string;
+  reviewRole?: string;
+  priceMainInfo?: string; //수정
+  priceMainDesc?: string;
   exploreServiceTitle?: string;
   exploreServiceButton?: string;
   exploreServiceExploreTitle?: string;
@@ -88,14 +97,19 @@ interface IntermediaryMatchMainStyle {
   MatchingServiceIntroduceMainBannerDesc?: CSSObject;
   MatchingServiceIntroduceMainItemTitle?: CSSObject;
   MatchingServiceIntroduceMainItemDesc?: CSSObject;
-  productIntroduceImageDesc?: CSSObject;
-  productIntroduceTitle?: CSSObject;
-  productIntroduceDesc?: CSSObject;
-  reviewTitle?: CSSObject; //수정 요청
-  reviewDesc?: CSSObject; //수정 요청
-  reviewName?: CSSObject; //수정 요청
-  reviewRole?: CSSObject; //수정 요청
-  priceMainDesc?: CSSObject; //수정 요청
+  productIntroduceImageDesc1?: CSSObject; //수정
+  productIntroduceTitle1?: CSSObject; // 수정
+  productIntroduceDesc1?: CSSObject; // 수정
+  productIntroduceImageDesc2?: CSSObject; //수정
+  productIntroduceTitle2?: CSSObject; // 수정
+  productIntroduceDesc2?: CSSObject; // 수정
+  reviewInfo?: CSSObject; // 수정
+  reviewTitle?: CSSObject;
+  reviewDesc?: CSSObject;
+  reviewName?: CSSObject;
+  reviewRole?: CSSObject;
+  priceMainInfo?: CSSObject; //수정
+  priceMainDesc?: CSSObject;
   exploreServiceTitle?: CSSObject;
   exploreServiceButton?: CSSObject;
   exploreServiceExploreTitle?: CSSObject;
@@ -180,18 +194,26 @@ export default function IntermediaryMatchMain() {
           generatedText.content.MatchingServiceIntroduceMainItemDesc ||
           undefined,
 
-        productIntroduceImageDesc:
-          generatedText.content.productIntroduceImageDesc || undefined,
-        productIntroduceTitle:
-          generatedText.content.productIntroduceTitle || undefined,
-        productIntroduceDesc:
-          generatedText.content.productIntroduceDesc || undefined,
+        productIntroduceImageDesc1:
+          generatedText.content.productIntroduceImageDesc1 || undefined,
+        productIntroduceTitle1:
+          generatedText.content.productIntroduceTitle1 || undefined,
+        productIntroduceDesc1:
+          generatedText.content.productIntroduceDesc1 || undefined,
+        productIntroduceImageDesc2:
+          generatedText.content.productIntroduceImageDesc2 || undefined,
+        productIntroduceTitle2:
+          generatedText.content.productIntroduceTitle2 || undefined,
+        productIntroduceDesc2:
+          generatedText.content.productIntroduceDesc2 || undefined,
 
+        reviewInfo: generatedText.content.reviewInfo || undefined,
         reviewTitle: generatedText.content.reviewTitle || undefined,
         reviewDesc: generatedText.content.reviewDesc || undefined,
         reviewName: generatedText.content.reviewName || undefined,
         reviewRole: generatedText.content.reviewRole || undefined,
 
+        priceMainInfo: generatedText.content.priceMainInfo || undefined,
         priceMainDesc: generatedText.content.priceMainDesc || undefined,
 
         exploreServiceTitle:
@@ -222,15 +244,22 @@ export default function IntermediaryMatchMain() {
       MatchingServiceIntroduceMainItemDesc:
         matching_service_introduce_main_item_desc_css_ || undefined,
 
-      productIntroduceImageDesc: product_introduce_image_desc_css_ || undefined,
-      productIntroduceTitle: product_introduce_title_css_ || undefined,
-      productIntroduceDesc: product_introduce_desc_css_ || undefined,
+      productIntroduceImageDesc1:
+        product_introduce_image_desc_css_ || undefined,
+      productIntroduceTitle1: product_introduce_title_css_ || undefined,
+      productIntroduceDesc1: product_introduce_desc_css_ || undefined,
+      productIntroduceImageDesc2:
+        product_introduce_image_desc_css_ || undefined,
+      productIntroduceTitle2: product_introduce_title_css_ || undefined,
+      productIntroduceDesc2: product_introduce_desc_css_ || undefined,
 
+      reviewInfo: review_info_css || undefined,
       reviewTitle: review_item_title_css || undefined,
       reviewDesc: review_item_desc_css || undefined,
       reviewName: review_item_caption_name_css || undefined,
       reviewRole: review_item_caption_role_css || undefined,
 
+      priceMainInfo: price_main_info_css || undefined,
       priceMainDesc: price_main_item_desc_css_ || undefined,
 
       exploreServiceTitle: explore_service_title_css_ || undefined,
@@ -427,14 +456,20 @@ export default function IntermediaryMatchMain() {
       />
       <ProductIntroduceMain
         content={{
-          productIntroduceImageDesc: pageContent?.productIntroduceImageDesc,
-          productIntroduceTitle: pageContent?.productIntroduceTitle,
-          productIntroduceDesc: pageContent?.productIntroduceDesc,
+          productIntroduceImageDesc1: pageContent?.productIntroduceImageDesc1,
+          productIntroduceTitle1: pageContent?.productIntroduceTitle1,
+          productIntroduceDesc1: pageContent?.productIntroduceDesc1,
+          productIntroduceImageDesc2: pageContent?.productIntroduceImageDesc2,
+          productIntroduceTitle2: pageContent?.productIntroduceTitle2,
+          productIntroduceDesc2: pageContent?.productIntroduceDesc2,
         }}
         style={{
-          productIntroduceImageDesc: pageStyle?.productIntroduceImageDesc,
-          productIntroduceTitle: pageStyle?.productIntroduceTitle,
-          productIntroduceDesc: pageStyle?.productIntroduceDesc,
+          productIntroduceImageDesc1: pageStyle?.productIntroduceImageDesc1,
+          productIntroduceTitle1: pageStyle?.productIntroduceTitle1,
+          productIntroduceDesc1: pageStyle?.productIntroduceDesc1,
+          productIntroduceImageDesc2: pageStyle?.productIntroduceImageDesc2,
+          productIntroduceTitle2: pageStyle?.productIntroduceTitle2,
+          productIntroduceDesc2: pageStyle?.productIntroduceDesc2,
         }}
         isEditable={true}
         onChangeContent={handleChangeContent}
@@ -444,12 +479,14 @@ export default function IntermediaryMatchMain() {
       />
       <Review
         content={{
+          reviewInfo: pageContent?.reviewInfo,
           reviewTitle: pageContent?.reviewTitle,
           reviewDesc: pageContent?.reviewDesc,
           reviewName: pageContent?.reviewName,
           reviewRole: pageContent?.reviewRole,
         }}
         style={{
+          reviewInfo: pageStyle?.reviewInfo,
           reviewTitle: pageStyle?.reviewTitle,
           reviewDesc: pageStyle?.reviewDesc,
           reviewName: pageStyle?.reviewName,
@@ -462,8 +499,14 @@ export default function IntermediaryMatchMain() {
         setActiveEditor={setActiveEditor}
       />
       <PriceMain
-        content={{ priceMainDesc: pageContent?.priceMainDesc }}
-        style={{ priceMainDesc: pageStyle?.priceMainDesc }}
+        content={{
+          priceMainInfo: pageContent?.priceMainInfo,
+          priceMainDesc: pageContent?.priceMainDesc,
+        }}
+        style={{
+          priceMainInfo: pageStyle?.priceMainInfo,
+          priceMainDesc: pageStyle?.priceMainDesc,
+        }}
         isEditable={true}
         onChangeContent={handleChangeContent}
         onChangeStyle={handleChangeStyle}

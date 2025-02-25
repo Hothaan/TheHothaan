@@ -27,15 +27,19 @@ import {
 interface IshoppingMallBrandIntroduceContent {
   brandIntroduceBannerTitle?: string;
   brandIntroduceBannerDesc?: string;
-  brandIntroduceItemTitle?: string;
-  brandIntroduceItemDesc?: string;
+  brandIntroduceItemTitle1?: string; // 수정
+  brandIntroduceItemDesc1?: string; // 수정
+  brandIntroduceItemTitle2?: string; // 수정
+  brandIntroduceItemDesc2?: string; // 수정
 }
 
 interface IshoppingMallBrandIntroduceStyle {
   brandIntroduceBannerTitle?: CSSObject;
   brandIntroduceBannerDesc?: CSSObject;
-  brandIntroduceItemTitle?: CSSObject;
-  brandIntroduceItemDesc?: CSSObject;
+  brandIntroduceItemTitle1?: CSSObject; // 수정
+  brandIntroduceItemDesc1?: CSSObject; // 수정
+  brandIntroduceItemTitle2?: CSSObject; // 수정
+  brandIntroduceItemDesc2?: CSSObject; // 수정
 }
 
 export default function ShoppingMallBrandIntroduce() {
@@ -134,10 +138,14 @@ export default function ShoppingMallBrandIntroduce() {
           generatedText.content.brandIntroduceBannerTitle || undefined,
         brandIntroduceBannerDesc:
           generatedText.content.brandIntroduceBannerDesc || undefined,
-        brandIntroduceItemTitle:
-          generatedText.content.brandIntroduceItemTitle || undefined,
-        brandIntroduceItemDesc:
-          generatedText.content.brandIntroduceItemDesc || undefined,
+        brandIntroduceItemTitle1:
+          generatedText.content.brandIntroduceItemTitle1 || undefined,
+        brandIntroduceItemDesc1:
+          generatedText.content.brandIntroduceItemDesc1 || undefined,
+        brandIntroduceItemTitle2:
+          generatedText.content.brandIntroduceItemTitle2 || undefined,
+        brandIntroduceItemDesc2:
+          generatedText.content.brandIntroduceItemDesc2 || undefined,
       };
       setPageContent(initialContent);
     }
@@ -148,8 +156,10 @@ export default function ShoppingMallBrandIntroduce() {
     const initialStyle = {
       brandIntroduceBannerTitle: brandIntroduce_banner_title_css || undefined,
       brandIntroduceBannerDesc: brandIntroduce_banner_desc_css || undefined,
-      brandIntroduceItemTitle: brandIntroduce_item_title_css || undefined,
-      brandIntroduceItemDesc: brandIntroduce_item_desc_css || undefined,
+      brandIntroduceItemTitle1: brandIntroduce_item_title_css || undefined,
+      brandIntroduceItemDesc1: brandIntroduce_item_desc_css || undefined,
+      brandIntroduceItemTitle2: brandIntroduce_item_title_css || undefined,
+      brandIntroduceItemDesc2: brandIntroduce_item_desc_css || undefined,
     };
     setPageStyle({ ...initialStyle });
   }
@@ -253,14 +263,16 @@ export default function ShoppingMallBrandIntroduce() {
         content={{
           brandIntroduceBannerTitle: pageContent?.brandIntroduceBannerTitle,
           brandIntroduceBannerDesc: pageContent?.brandIntroduceBannerDesc,
-          brandIntroduceItemTitle: pageContent?.brandIntroduceItemTitle,
-          brandIntroduceItemDesc: pageContent?.brandIntroduceItemDesc,
+          brandIntroduceItemTitle1: pageContent?.brandIntroduceItemTitle1,
+          brandIntroduceItemDesc1: pageContent?.brandIntroduceItemDesc1,
+          brandIntroduceItemTitle2: pageContent?.brandIntroduceItemTitle2,
+          brandIntroduceItemDesc2: pageContent?.brandIntroduceItemDesc2,
         }}
         style={{
           brandIntroduceBannerTitle: pageStyle?.brandIntroduceBannerTitle,
           brandIntroduceBannerDesc: pageStyle?.brandIntroduceBannerDesc,
-          brandIntroduceItemTitle: pageStyle?.brandIntroduceItemTitle,
-          brandIntroduceItemDesc: pageStyle?.brandIntroduceItemDesc,
+          brandIntroduceItemTitle1: pageStyle?.brandIntroduceItemTitle1,
+          brandIntroduceItemDesc2: pageStyle?.brandIntroduceItemDesc2,
         }}
         isEditable={true}
         onChangeContent={handleChangeContent}

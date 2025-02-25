@@ -20,9 +20,11 @@ const item_desc_ = "Lorem ipsum dolor";
 const item_price = 3300;
 
 export interface iPriceMainContent {
+  priceMainInfo?: string;
   priceMainDesc?: string;
 }
 export interface iPriceMainStyle {
+  priceMainInfo?: CSSObject;
   priceMainDesc?: CSSObject;
 }
 
@@ -41,6 +43,17 @@ interface iPriceMainItem extends IpriceMain {
   itemDay?: string;
 }
 
+export const price_main_info_css: CSSObject = {
+  width: "100%",
+  color: "var(--Neutral-colors-600, #6d758f)",
+  textAlign: "center",
+  fontFamily: "Inter",
+  fontSize: "20px",
+  fontStyle: "normal",
+  fontWeight: "400",
+  lineHeight: "160%",
+};
+
 export const price_main_item_desc_css_: CSSObject = {
   width: "100%",
   maxWidth: "150px",
@@ -53,7 +66,6 @@ export const price_main_item_desc_css_: CSSObject = {
   lineHeight: "160%",
   display: "-webkit-box",
   WebkitBoxOrient: "vertical",
-  // overflow: "hidden",
   textOverflow: "ellipsis",
   WebkitLineClamp: "3",
   zIndex: "10",
@@ -113,7 +125,6 @@ function PriceMainItem(prop: iPriceMainItem) {
             {content?.priceMainDesc || item_desc_}
           </p>
         )}
-
         <p css={item_price_text_style}>
           <span css={item_bold_text_40_style}>
             {item_price.toLocaleString()}
@@ -139,10 +150,12 @@ export default function PriceMain(prop: IpriceMain) {
   const count = 3;
 
   const initialContent = {
+    priceMainInfo: content?.priceMainInfo || component_desc_,
     priceMainDesc: content?.priceMainDesc || item_desc_,
   };
 
   const initialStyle = {
+    priceMainInfo: style?.priceMainInfo || price_main_info_css,
     priceMainDesc: style?.priceMainDesc || price_main_item_desc_css_,
   };
   /* *********** */
@@ -246,7 +259,23 @@ export default function PriceMain(prop: IpriceMain) {
         <div css={container}>
           <div>
             <Title title="price" transform="uppercase" marginBottom={24} />
-            <p css={component_desc_style}>{component_desc_}</p>
+            {isEditable ? (
+              <EditableText
+                text={editableContent.priceMainInfo as string}
+                className="priceMainInfo"
+                id={"priceMainInfo"}
+                isTextArea={false}
+                defaultCss={editableStyle.priceMainInfo as CSSObject}
+                onChangeText={(key, value) => onChangeContent(key, value)}
+                onChangeCss={(key, value) => onChangeStyle(key, value)}
+                activeEditor={activeEditor}
+                setActiveEditor={setActiveEditor}
+              />
+            ) : (
+              <p css={editableStyle.priceMainInfo}>
+                {editableContent.priceMainInfo}
+              </p>
+            )}
           </div>
           <div css={item_wrap}>
             {Array.from({ length: count }, (_, index) => (
@@ -276,19 +305,6 @@ const container = css`
   gap: 40px;
   align-items: center;
   justify-content: center;
-`;
-
-const component_desc_style = css`
-  width: 100%;
-  color: var(--Neutral-colors-600, #6d758f);
-  text-align: center;
-
-  /* h2_small */
-  font-family: Inter;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 160%; /* 32px */
 `;
 
 const item_wrap = css`
