@@ -11,6 +11,7 @@ export interface ItextField {
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
+  maxLength?: number;
 }
 
 export default function TextField(prop: ItextField) {
@@ -24,6 +25,7 @@ export default function TextField(prop: ItextField) {
     value,
     onChange,
     className,
+    maxLength,
   } = prop;
   return (
     <div css={text_field}>
@@ -40,6 +42,7 @@ export default function TextField(prop: ItextField) {
         onChange={onChange || undefined}
         disabled={disabled || false}
         value={value || ""}
+        maxLength={maxLength}
       />
     </div>
   );

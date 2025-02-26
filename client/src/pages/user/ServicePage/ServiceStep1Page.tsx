@@ -94,18 +94,19 @@ export default function ServiceStep1Page() {
     size: "normal",
     label: "serviceTitle",
     id: "serviceTitle",
-    placeholder: "ex) 스킨케어 코스메틱 브랜드 쇼핑몰 홈페이지를 제작건",
+    placeholder: "ex) ㅇㅇ 코스메틱 (최대 40자)",
     value: formData.serviceTitle,
     disabled: false,
     onChange: (e) =>
       setFormData((prev) => ({ ...prev, serviceTitle: e.target.value })),
+    maxLength: 30,
   };
 
   const textAreaDefault: ItextArea = {
     label: "serviceDesc",
     id: "serviceDesc",
     placeholder:
-      "ex) 스킨케어 코스메틱 브랜드 쇼핑몰 홈페이지이며 메인 페이지와 브랜드 소개 페이지가 들어가 있어야 하며, 상품 카테고리가 나올 수 있는 상품 리스트 페이지와 상품 뷰 페이지가 필요합니다. 게시판은 공지사항과 후기가 필요하며, 결제 기능이 추가되어야 합니다.",
+      "ex) 스킨케어 제품과 다양한 색조 화장품을 판매하는 화장품 브랜드의 쇼핑몰입니다.",
     value: formData.serviceDesc,
     disabled: false,
     onChange: (e) =>
