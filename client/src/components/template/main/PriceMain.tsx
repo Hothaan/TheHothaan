@@ -300,6 +300,7 @@ export default function PriceMain(prop: IpriceMain) {
 }
 
 const container = css`
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 40px;
