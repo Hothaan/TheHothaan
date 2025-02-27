@@ -94,6 +94,8 @@ export default function ServiceStep3Page() {
 
   /*  옵션선택 후 해당 메뉴를 삭제하면 옵션이 아래에 있는 메뉴로 옮겨가는 현상 수정 필요 */
 
+  console.log(formData?.find((item) => item.menu_id === 5)?.items);
+
   useEffect(() => {
     setLocalProjectId(null);
   }, []);
@@ -203,22 +205,77 @@ export default function ServiceStep3Page() {
     setCurrentStep(parseInt(currentLocation.slice(-1)));
   }, [currentLocation]);
 
+  // function handleAddMenu(updatedMenuItems: TmenuItem[], menu_id: number): void {
+  //   if (formData) {
+  //     setFormData((prev: TserviceTypeMenu | null) => {
+  //       if (prev !== null) {
+  //         const update = prev.map((item) => {
+  //           if (item.menu_id === menu_id) {
+  //             return { ...item, items: updatedMenuItems };
+  //           }
+  //           return item;
+  //         });
+  //         return update;
+  //       }
+  //       return prev;
+  //     });
+  //   }
+  // }
+
   function handleAddMenu(updatedMenuItems: TmenuItem[], menu_id: number): void {
-    if (formData) {
-      setFormData((prev: TserviceTypeMenu | null) => {
-        if (prev !== null) {
-          const update = prev.map((item) => {
-            if (item.menu_id === menu_id) {
-              return { ...item, items: updatedMenuItems };
-            }
-            return item;
-          });
-          return update;
-        }
-        return prev;
+    if (!formData) return;
+
+    setFormData((prev: TserviceTypeMenu | null) => {
+      if (!prev) return prev;
+
+      return prev.map((menu) => {
+        if (menu.menu_id !== menu_id) return { ...menu };
+
+        return {
+          ...menu,
+          items: updatedMenuItems.map((item) => ({ ...item })), // 깊은 복사 추가
+        };
       });
-    }
+    });
   }
+
+  // function handleSelectOption(
+  //   item_name: string,
+  //   option_type: string,
+  //   menu_id: number,
+  //   options: ToptionItem[] | undefined
+  // ): void {
+  //   if (formData) {
+  //     setFormData((prev: TserviceTypeMenu | null) => {
+  //       if (prev !== null) {
+  //         const updatedFormData = prev.map((menu) => {
+  //           if (menu.menu_id === menu_id) {
+  //             return {
+  //               ...menu,
+  //               items: menu.items.map((item) => {
+  //                 if (item.item_name === item_name && options) {
+  //                   return {
+  //                     ...item,
+  //                     options: item.options?.map((option, idx) => {
+  //                       return {
+  //                         ...option,
+  //                         is_selected: option_type === options[idx].option_type,
+  //                       };
+  //                     }),
+  //                   };
+  //                 }
+  //                 return item;
+  //               }),
+  //             };
+  //           }
+  //           return menu;
+  //         });
+  //         return updatedFormData;
+  //       }
+  //       return prev;
+  //     });
+  //   }
+  // }
 
   function handleSelectOption(
     item_name: string,
@@ -226,71 +283,93 @@ export default function ServiceStep3Page() {
     menu_id: number,
     options: ToptionItem[] | undefined
   ): void {
-    if (formData) {
-      setFormData((prev: TserviceTypeMenu | null) => {
-        if (prev !== null) {
-          const updatedFormData = prev.map((menu) => {
-            if (menu.menu_id === menu_id) {
-              return {
-                ...menu,
-                items: menu.items.map((item) => {
-                  if (item.item_name === item_name && options) {
-                    return {
-                      ...item,
-                      options: item.options?.map((option, idx) => {
-                        return {
-                          ...option,
-                          is_selected: option_type === options[idx].option_type,
-                        };
-                      }),
-                    };
-                  }
-                  return item;
-                }),
-              };
-            }
-            return menu;
-          });
-          return updatedFormData;
-        }
-        return prev;
+    if (!formData) return;
+
+    setFormData((prev: TserviceTypeMenu | null) => {
+      if (!prev) return prev;
+
+      return prev.map((menu) => {
+        if (menu.menu_id !== menu_id) return { ...menu };
+
+        return {
+          ...menu,
+          items: menu.items.map((item) => {
+            if (item.item_name !== item_name || !options) return { ...item };
+
+            return {
+              ...item,
+              options: item.options?.map((option, idx) => ({
+                ...option,
+                is_selected: option_type === options[idx].option_type,
+              })),
+            };
+          }),
+        };
       });
-    }
+    });
   }
 
+  // function handleDeleteMenu(menu_id: number, item_name: string): void {
+  //   if (formData) {
+  //     setFormData((prev: TserviceTypeMenu | null) => {
+  //       if (prev !== null) {
+  //         const updatedFormData = prev.map((menu) => {
+  //           if (menu.menu_id === menu_id) {
+  //             return {
+  //               ...menu,
+  //               items: menu.items.map((item) => {
+  //                 if (item.item_name === item_name) {
+  //                   if (item.is_option && item.options) {
+  //                     return {
+  //                       ...item,
+  //                       is_selected: false,
+  //                       options: item.options.map((item) => {
+  //                         return { ...item, is_selected: false };
+  //                       }),
+  //                     };
+  //                   } else {
+  //                     return { ...item, is_selected: false };
+  //                   }
+  //                 }
+  //                 return item;
+  //               }),
+  //             };
+  //           }
+  //           return menu;
+  //         });
+  //         return updatedFormData;
+  //       }
+  //       return prev;
+  //     });
+  //   }
+  // }
+
   function handleDeleteMenu(menu_id: number, item_name: string): void {
-    if (formData) {
-      setFormData((prev: TserviceTypeMenu | null) => {
-        if (prev !== null) {
-          const updatedFormData = prev.map((menu) => {
-            if (menu.menu_id === menu_id) {
-              return {
-                ...menu,
-                items: menu.items.map((item) => {
-                  if (item.item_name === item_name) {
-                    if (item.is_option && item.options) {
-                      return {
-                        ...item,
-                        is_selected: false,
-                        options: item.options.map((item) => {
-                          return { ...item, is_selected: false };
-                        }),
-                      };
-                    } else {
-                      return { ...item, is_selected: false };
-                    }
-                  }
-                  return item;
-                }),
-              };
-            }
-            return menu;
-          });
-          return updatedFormData;
-        }
-        return prev;
+    setFormData((prev: TserviceTypeMenu | null) => {
+      if (!prev) return prev;
+
+      return prev.map((menu) => {
+        if (menu.menu_id !== menu_id) return { ...menu }; // 다른 메뉴는 그대로 유지
+
+        return {
+          ...menu,
+          items: menu.items.map((item) => {
+            if (item.item_name !== item_name) return { ...item }; // 변경할 아이템이 아니면 복사만
+
+            return {
+              ...item,
+              is_selected: false,
+              options: item.is_option
+                ? item.options?.map((option) => ({
+                    ...option,
+                    is_selected: false,
+                  }))
+                : item.options,
+            };
+          }),
+        };
       });
-    }
+    });
   }
 
   function makeSendData(formData: TserviceTypeMenu | null): void {

@@ -12,11 +12,11 @@ import { MAX_NUM } from "@data/maxNum";
 export interface IbuttonAddFeature {
   data: IserviceTypeMenuItem;
   onAddMenu: (updatedMenuItems: TmenuItem[]) => void;
-  onCancel: () => void;
+  onDelete: (item_name: string) => void;
 }
 
 export default function ButtonAddFeature(prop: IbuttonAddFeature) {
-  const { data, onAddMenu, onCancel } = prop;
+  const { data, onAddMenu, onDelete } = prop;
   const [showOptions, setShowOptions] = useState(false);
   const [selectedArr, setSelectedArr] = useState<number>(
     data.items.filter((item) => item.is_selected === true).length
@@ -61,20 +61,51 @@ export default function ButtonAddFeature(prop: IbuttonAddFeature) {
     ],
   };
 
+  // function handleCheckboxChange(
+  //   selectedArrAmt: number,
+  //   item_name: string,
+  //   checked: boolean
+  // ) {
+  //   if (selectedArrAmt < MAX_NUM) {
+  //     setUpdateDepth2((prevState) =>
+  //       prevState.map((item) =>
+  //         item.item_name === item_name
+  //           ? { ...item, is_selected: checked }
+  //           : item
+  //       )
+  //     );
+  //   }
+  // }
+
   function handleCheckboxChange(
     selectedArrAmt: number,
     item_name: string,
     checked: boolean
   ) {
-    if (selectedArrAmt < MAX_NUM) {
-      setUpdateDepth2((prevState) =>
-        prevState.map((item) =>
-          item.item_name === item_name
-            ? { ...item, is_selected: checked }
-            : item
-        )
-      );
-    }
+    // 깊은 복사 수행하여 참조 문제 방지
+    setUpdateDepth2((prevState) => {
+      if (!prevState) return prevState;
+
+      // 새로운 배열을 생성하여 깊은 복사 적용
+      const newState = prevState.map((item) => {
+        if (item.item_name !== item_name) {
+          return { ...item }; // 기존 아이템 유지 (새로운 객체 반환)
+        }
+
+        return {
+          ...item,
+          is_selected: checked, // 선택 여부 업데이트
+          options: item.is_option
+            ? item.options?.map((option) => ({
+                ...option, // 깊은 복사 적용
+                is_selected: checked, // 현재 체크 상태 반영
+              }))
+            : item.options,
+        };
+      });
+
+      return newState;
+    });
   }
 
   useEffect(() => {

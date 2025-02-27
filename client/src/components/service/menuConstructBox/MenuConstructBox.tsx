@@ -39,38 +39,32 @@ export default function MenuConstructBox(prop: ImenuConstructBox) {
 
   function handleAddMenu(updatedMenuItems: TmenuItem[]) {
     onAddMenu(updatedMenuItems, data.menu_id);
-    setSelectableFeature(updatedMenuItems);
+    // setSelectableFeature(updatedMenuItems);
   }
 
-  const [addDepth2, setAddDepth2] = useState({
-    data: data,
-    onAddMenu: handleAddMenu,
-    onCancel: () => {},
-  });
-
   function handleDelete(item_name: string): void {
-    setSelectableFeature((prevDepths) =>
-      prevDepths.map(
-        (item) => {
-          if (item.item_name === item_name) {
-            if (item.is_option && item.options) {
-              return {
-                ...item,
-                is_selected: false,
-                options: item.options.map((item) => {
-                  return { ...item, is_selected: false };
-                }),
-              };
-            } else {
-              return { ...item, is_selected: false };
-            }
-          }
-          return item;
-        }
-        // item.item_name === item_name ? { ...item, is_selected: false } : item
-      )
-    );
+    // setSelectableFeature((prevDepths) =>
+    //   prevDepths.map(
+    //     (item) => {
+    //       if (item.item_name === item_name) {
+    //         if (item.is_option && item.options) {
+    //           return {
+    //             ...item,
+    //             is_selected: false,
+    //             options: item.options.map((item) => {
+    //               return { ...item, is_selected: false };
+    //             }),
+    //           };
+    //         } else {
+    //           return { ...item, is_selected: false };
+    //         }
+    //       }
+    //       return item;
+    //     }
+    //   )
+    // );
     onDelete(data.menu_id, item_name);
+    console.log(data.menu_id, item_name);
   }
 
   // useEffect(() => {
@@ -92,7 +86,13 @@ export default function MenuConstructBox(prop: ImenuConstructBox) {
         };
         return <ButtonChooseFeature {...chooseDepth2} key={idx} />;
       })}
-      {canAddMoreDepth2 && <ButtonAddFeature {...addDepth2} />}
+      {canAddMoreDepth2 && (
+        <ButtonAddFeature
+          data={data}
+          onAddMenu={handleAddMenu}
+          onDelete={handleDelete}
+        />
+      )}
     </div>
   );
 }
