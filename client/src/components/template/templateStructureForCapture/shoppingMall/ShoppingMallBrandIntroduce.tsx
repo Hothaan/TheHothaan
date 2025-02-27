@@ -272,6 +272,8 @@ export default function ShoppingMallBrandIntroduce() {
           brandIntroduceBannerTitle: pageStyle?.brandIntroduceBannerTitle,
           brandIntroduceBannerDesc: pageStyle?.brandIntroduceBannerDesc,
           brandIntroduceItemTitle1: pageStyle?.brandIntroduceItemTitle1,
+          brandIntroduceItemDesc1: pageStyle?.brandIntroduceItemDesc1,
+          brandIntroduceItemTitle2: pageStyle?.brandIntroduceItemTitle2,
           brandIntroduceItemDesc2: pageStyle?.brandIntroduceItemDesc2,
         }}
         isEditable={true}

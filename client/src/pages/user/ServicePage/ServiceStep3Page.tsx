@@ -99,7 +99,6 @@ export default function ServiceStep3Page() {
   }, []);
 
   useEffect(() => {
-    console.log(localProjectId);
     if (localProjectId) {
       console.log("projectId changed, calling fetchGeneratedText...");
       fetchGeneratedText();
@@ -581,8 +580,6 @@ export default function ServiceStep3Page() {
       return () => clearTimeout(timer);
     }
   }, [isFail]);
-
-  console.log(formData);
 
   if (isFail) {
     return <Loading />;

@@ -152,9 +152,9 @@ export default function ShoppingMallMain() {
     }
   }, [projectIdValue]);
 
-  const initialContent = useMemo(() => {
-    if (generatedText?.content) {
-      return {
+  function updateInitialContent() {
+    if (generatedText && generatedText.content) {
+      const initialContent = {
         mainBannerTitle: generatedText.content.mainBannerTitle || undefined,
         mainBannerDesc: generatedText.content.mainBannerDesc || undefined,
         mainBannerButton: generatedText.content.mainBannerButton || undefined,
@@ -178,56 +178,9 @@ export default function ShoppingMallMain() {
         serviceContactButton:
           generatedText.content.serviceContactButton || undefined,
       };
-    }
-    return getLocalContent(); // localStorage 값 반환
-  }, [generatedText]);
-
-  function updateInitialContent() {
-    if (generatedText && generatedText.content) {
-      const initialContent = {
-        mainBannerTitle: generatedText.content.mainBannerTitle || undefined,
-        mainBannerDesc: generatedText.content.mainBannerDesc || undefined,
-        mainBannerButton: generatedText.content.mainBannerButton || undefined,
-        productListTitle: generatedText.content.productListTitle || undefined,
-        productListDesc: generatedText.content.productListDesc || undefined,
-        reviewInfo: generatedText.content.reviewInfo || undefined,
-        reviewTitle: generatedText.content.reviewTitle || undefined,
-        reviewDesc: generatedText.content.reviewDesc || undefined,
-        reviewName: generatedText.content.reviewName || undefined,
-        reviewRole: generatedText.content.reviewRole || undefined,
-        serviceIntroductionTitle:
-          generatedText.content.serviceIntroductionTitle || undefined,
-        serviceIntroductionDesc:
-          generatedText.content.serviceIntroductionDesc || undefined,
-        serviceContactTitle:
-          generatedText.content.serviceContactTitle || undefined,
-        serviceContactButton:
-          generatedText.content.serviceContactButton || undefined,
-      };
       setPageContent(initialContent);
     }
   }
-
-  const initialStyle = useMemo(() => {
-    return {
-      mainBannerTitle: mainBanner_title_css_ || undefined,
-      mainBannerDesc: mainBanner_desc_css_ || undefined,
-      mainBannerButton: mainBanner_button_css_ || undefined,
-      productListTitle: product_list_option_main_title_css || undefined,
-      productListDesc: product_list_option_main_desc_css || undefined,
-      reviewInfo: review_info_css || undefined,
-      reviewTitle: review_item_title_css || undefined,
-      reviewDesc: review_item_desc_css || undefined,
-      reviewName: review_item_caption_name_css || undefined,
-      reviewRole: review_item_caption_role_css || undefined,
-      productListItemTitle: product_list_option_list_title_css || undefined,
-      productListItemDesc: product_list_option_list_desc_css || undefined,
-      serviceIntroductionTitle: service_introduction_title_css_ || undefined,
-      serviceIntroductionDesc: service_introduction_desc_css_ || undefined,
-      serviceContactTitle: service_contact_title_css_ || undefined,
-      serviceContactButton: service_contact_button_css_ || undefined,
-    };
-  }, []);
 
   function updateInitialStyle() {
     const initialStyle = {
@@ -243,6 +196,9 @@ export default function ShoppingMallMain() {
       reviewDesc: review_item_desc_css || undefined,
       reviewName: review_item_caption_name_css || undefined,
       reviewRole: review_item_caption_role_css || undefined,
+
+      productListItemTitle: product_list_option_list_title_css || undefined,
+      productListItemDesc: product_list_option_list_desc_css || undefined,
 
       serviceIntroductionTitle: service_introduction_title_css_ || undefined,
       serviceIntroductionDesc: service_introduction_desc_css_ || undefined,
@@ -463,8 +419,8 @@ export default function ShoppingMallMain() {
           productListItemDesc: pageContent?.productListItemDesc,
         }}
         style={{
-          productListItemTitle: product_list_option_list_title_css,
-          productListItemDesc: product_list_option_list_desc_css,
+          productListItemTitle: pageStyle?.productListItemTitle,
+          productListItemDesc: pageStyle?.productListItemDesc,
         }}
         isEditable={true}
         onChangeContent={handleChangeContent}
